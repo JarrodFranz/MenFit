@@ -12168,7 +12168,7 @@ class WeightLog extends DataClass implements Insertable<WeightLog> {
   final double weightKg;
 
   /// Free-text note the user attached to this weigh-in. Nullable: nothing
-  /// is ever required here. S2 — wiped by "Delete my data" with the rest
+  /// is ever required here. S3 — wiped by "Delete my data" with the rest
   /// of the row.
   final String? notes;
 
