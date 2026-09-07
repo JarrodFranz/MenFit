@@ -20,7 +20,7 @@ import 'package:menfit_app/features/wellbeing/presentation/widgets/checkin_score
 ///
 /// It used to be the hard-coded "How are you feeling today?" for every
 /// day, which was true while the only way in was today's card. The
-/// wellbeing calendar opens it on any past day, and asking how she feels
+/// wellbeing calendar opens it on any past day, and asking how they feel
 /// *today* while saving against 12 August is asking the wrong question of
 /// the wrong day. Past tense plus the date; today keeps its original words.
 ///

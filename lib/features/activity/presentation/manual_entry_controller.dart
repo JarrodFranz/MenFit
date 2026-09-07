@@ -74,8 +74,8 @@ class ManualEntryController extends _$ManualEntryController {
   /// new entry.
   ///
   /// The form has **no RPE control** — nothing calls [updateMindfulRpe] —
-  /// so [ManualEntryState.mindfulRpe] cannot tell "she chose 6" from "she
-  /// was never asked", and `MindfulWorkoutDetails.rpe` must be `null` in
+  /// so [ManualEntryState.mindfulRpe] cannot tell "they chose 6" from "they
+  /// were never asked", and `MindfulWorkoutDetails.rpe` must be `null` in
   /// that case rather than a fabricated number. What [save] writes
   /// therefore comes from here: whatever the activity being edited
   /// already stored, preserved untouched. If an RPE control is ever added
@@ -95,7 +95,7 @@ class ManualEntryController extends _$ManualEntryController {
   }
 
   /// The state under [type], with a mindful style that belonged to the type
-  /// she has just left cleared — see [mindfulStyleAfterTypeChange].
+  /// they have just left cleared — see [mindfulStyleAfterTypeChange].
   ManualEntryState _movedToType(ActivityType type) {
     return state.copyWith(
       activityType: type,

@@ -49,7 +49,7 @@ String formatIronMg(num milligrams) => '${milligrams.toStringAsFixed(1)} mg';
 /// anything under 0.005 to `'0.00'` and then to `'0'`, which is the same
 /// falsehood as seeding `'0'` for `null`, only harder to spot: it turns a
 /// small true number into a claim of *none*, in a field the user is about to
-/// save as her own definition of the food. So below that point the value is
+/// save as their own definition of the food. So below that point the value is
 /// rendered to two **significant** figures instead of two decimal places,
 /// which keeps a digit alive however small it is. Values under 1e-6 come out
 /// in exponent form (`'1.0e-7'`); they are reachable only from arithmetic on

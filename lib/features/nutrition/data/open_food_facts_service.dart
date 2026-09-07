@@ -48,7 +48,7 @@ const String openFoodFactsClientVersion = '0.1.0';
 /// arrives as a flag.
 ///
 /// **Region and language.** Every request carries the user's food-search
-/// language, and every *search* request carries her region as a country
+/// language, and every *search* request carries their region as a country
 /// filter (`domain/food_search_region.dart`); [search] documents how each
 /// endpoint spells them. Nothing about the user goes with it — a country and
 /// a language are properties of the shelf being searched, not of the person.
@@ -362,7 +362,7 @@ class OpenFoodFactsService implements FoodDataProvider {
         // Search-a-licious has no country parameter; its `q` is a Lucene
         // query, and a field term appended to the user's words is how a
         // filter is expressed. The user's text is passed through unaltered,
-        // exactly as before — this adds a term, it does not rewrite hers.
+        // exactly as before — this adds a term, it does not rewrite theirs.
         'q': switch (region.countryTag) {
           final tag? => '$query countries_tags:"$tag"',
           null => query,

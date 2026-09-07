@@ -22,7 +22,7 @@ import 'package:menfit_app/features/accessibility/presentation/accessibility_con
 /// - [mediumImpact] — an ordinary confirmation (a set started, a lap
 ///   counted, a share taken, a badge shown).
 /// - [heavyImpact] — an interval boundary or a target reached: the pulses
-///   that have to land when she is *not* looking at the screen.
+///   that have to land when they are *not* looking at the screen.
 abstract final class AccessibilityHaptics {
   static Future<void> lightImpact(WidgetRef ref) =>
       _fire(ref, HapticFeedback.lightImpact);

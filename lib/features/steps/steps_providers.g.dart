@@ -217,7 +217,7 @@ String _$stepsTargetHash() => r'51c944fb92165845772290e5c120982ce51f5e65';
 /// because this is the only asynchronous part of that question and keeping
 /// it separate lets availability stay a plain synchronous value the UI can
 /// switch on. A throwing `hasPermissions()` answers `false`: if the app
-/// cannot establish that it has been granted access to her health data, it
+/// cannot establish that it has been granted access to their health data, it
 /// must not behave as though it has.
 
 @ProviderFor(stepsPermission)
@@ -229,7 +229,7 @@ final stepsPermissionProvider = StepsPermissionProvider._();
 /// because this is the only asynchronous part of that question and keeping
 /// it separate lets availability stay a plain synchronous value the UI can
 /// switch on. A throwing `hasPermissions()` answers `false`: if the app
-/// cannot establish that it has been granted access to her health data, it
+/// cannot establish that it has been granted access to their health data, it
 /// must not behave as though it has.
 
 final class StepsPermissionProvider
@@ -241,7 +241,7 @@ final class StepsPermissionProvider
   /// because this is the only asynchronous part of that question and keeping
   /// it separate lets availability stay a plain synchronous value the UI can
   /// switch on. A throwing `hasPermissions()` answers `false`: if the app
-  /// cannot establish that it has been granted access to her health data, it
+  /// cannot establish that it has been granted access to their health data, it
   /// must not behave as though it has.
   StepsPermissionProvider._()
     : super(
@@ -371,9 +371,9 @@ String _$stepsAvailabilityHash() => r'acdd451e99a52e47eb9fd582dfeb1e15b757b6e2';
 /// S2 (`knowledge/engineering/security_and_privacy.md`: health-platform
 /// data). Three rules hold throughout:
 ///
-/// * **Nothing is read unless she asked for it.** Every entry point returns
+/// * **Nothing is read unless they asked for it.** Every entry point returns
 ///   without touching the adapter while the fitness-device sync toggle is
-///   off, which is her explicit per-source permission for this app.
+///   off, which is their explicit per-source permission for this app.
 /// * **No step value is ever logged**, and no platform exception is either —
 ///   a health platform's error text can carry the values themselves.
 /// * **Outcomes are honest.** A missing permission is reported as
@@ -394,9 +394,9 @@ final stepsSyncProvider = StepsSyncProvider._();
 /// S2 (`knowledge/engineering/security_and_privacy.md`: health-platform
 /// data). Three rules hold throughout:
 ///
-/// * **Nothing is read unless she asked for it.** Every entry point returns
+/// * **Nothing is read unless they asked for it.** Every entry point returns
 ///   without touching the adapter while the fitness-device sync toggle is
-///   off, which is her explicit per-source permission for this app.
+///   off, which is their explicit per-source permission for this app.
 /// * **No step value is ever logged**, and no platform exception is either —
 ///   a health platform's error text can carry the values themselves.
 /// * **Outcomes are honest.** A missing permission is reported as
@@ -415,9 +415,9 @@ final class StepsSyncProvider
   /// S2 (`knowledge/engineering/security_and_privacy.md`: health-platform
   /// data). Three rules hold throughout:
   ///
-  /// * **Nothing is read unless she asked for it.** Every entry point returns
+  /// * **Nothing is read unless they asked for it.** Every entry point returns
   ///   without touching the adapter while the fitness-device sync toggle is
-  ///   off, which is her explicit per-source permission for this app.
+  ///   off, which is their explicit per-source permission for this app.
   /// * **No step value is ever logged**, and no platform exception is either —
   ///   a health platform's error text can carry the values themselves.
   /// * **Outcomes are honest.** A missing permission is reported as
@@ -463,9 +463,9 @@ String _$stepsSyncHash() => r'ead4f92ddb2766b528ed91553f74474d778afb66';
 /// S2 (`knowledge/engineering/security_and_privacy.md`: health-platform
 /// data). Three rules hold throughout:
 ///
-/// * **Nothing is read unless she asked for it.** Every entry point returns
+/// * **Nothing is read unless they asked for it.** Every entry point returns
 ///   without touching the adapter while the fitness-device sync toggle is
-///   off, which is her explicit per-source permission for this app.
+///   off, which is their explicit per-source permission for this app.
 /// * **No step value is ever logged**, and no platform exception is either —
 ///   a health platform's error text can carry the values themselves.
 /// * **Outcomes are honest.** A missing permission is reported as

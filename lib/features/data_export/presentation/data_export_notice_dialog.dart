@@ -16,18 +16,18 @@ class DataExportChoice {
 
 /// Shown every time, before an export is built.
 ///
-/// A real gate, not an announcement: [show] completes `null` when she backs
+/// A real gate, not an announcement: [show] completes `null` when they back
 /// out, and the caller abandons the export — the same shape as
 /// `features/nutrition/presentation/online_lookup_notice_dialog.dart`. Unlike
 /// that one it is **not** remembered and shown once, because it is not a
 /// consent to an ongoing behaviour: each export is a separate file, made from
-/// whatever is in the database that day, going somewhere she picks that day.
+/// whatever is in the database that day, going somewhere they pick that day.
 ///
 /// The copy answers the four things a person needs in order to decide what to
 /// do with a file: what is in it, where it comes from and goes, what is *not*
 /// happening (nothing is sent anywhere), and the one part that would surprise
-/// her — that entries she deleted are still in there until they are purged.
-/// The voice is the app's: plain, unalarming, and not selling her a yes.
+/// them — that entries they deleted are still in there until they are purged.
+/// The voice is the app's: plain, unalarming, and not selling them a yes.
 ///
 /// ## Why health check-in data is a checkbox, and defaults to off
 ///
@@ -43,7 +43,7 @@ class DataExportChoice {
 class DataExportNoticeDialog extends StatefulWidget {
   const DataExportNoticeDialog({super.key});
 
-  /// Returns her choice, or `null` to abandon the export — including when the
+  /// Returns their choice, or `null` to abandon the export — including when the
   /// dialog is dismissed by tapping outside or by the system back gesture,
   /// which are both ways of saying no.
   static Future<DataExportChoice?> show(BuildContext context) {
@@ -84,7 +84,7 @@ class _DataExportNoticeDialogState extends State<DataExportNoticeDialog> {
               SizedBox(height: tokens.spacingMd),
               // On the web there is no save dialog to choose a destination
               // in - the browser takes the download to wherever it puts
-              // downloads - so promising her a choice she does not get would
+              // downloads - so promising them a choice they do not get would
               // be the one false sentence in a screen about trust.
               Text(
                 kIsWeb
@@ -97,7 +97,7 @@ class _DataExportNoticeDialogState extends State<DataExportNoticeDialog> {
                 style: textTheme.bodyMedium,
               ),
               SizedBox(height: tokens.spacingMd),
-              // Named because it is the one thing in the file she would not
+              // Named because it is the one thing in the file they would not
               // predict, and finding it later without being told would be
               // worse than being told now.
               Text(

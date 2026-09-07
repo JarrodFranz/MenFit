@@ -31,7 +31,7 @@ class StepsDayView {
 ///
 /// [average] and [daysAtTarget] are both computed over [daysWithData] only.
 /// Dividing the total by the calendar length instead would turn every
-/// unsynced day into a silent zero and report an average she never walked.
+/// unsynced day into a silent zero and report an average they never walked.
 class StepsRangeStats {
   const StepsRangeStats({
     required this.totalSteps,

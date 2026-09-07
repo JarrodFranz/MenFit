@@ -125,7 +125,7 @@ class StrengthExercise {
 
   /// Total volume lifted across all sets in this exercise, **including
   /// sets that were planned but never completed** — see
-  /// [completedVolumeKg] for the "what she actually lifted" figure.
+  /// [completedVolumeKg] for the "what they actually lifted" figure.
   double get totalVolumeKg => sets.fold(0, (sum, s) => sum + s.volumeKg);
 
   /// Volume from completed sets only ([StrengthSet.isCompleted]).
@@ -183,7 +183,7 @@ class StrengthWorkoutDetails extends WorkoutDetails {
   /// were planned but never completed** — the live-tracker figure, which
   /// is what a session in progress should show.
   ///
-  /// Any surface that reports what she *actually* lifted — a recap, an
+  /// Any surface that reports what they *actually* lifted — a recap, an
   /// insight comparison — must use [completedVolumeKg] instead.
   double get totalVolumeKg =>
       exercises.fold(0, (sum, e) => sum + e.totalVolumeKg);
@@ -194,9 +194,9 @@ class StrengthWorkoutDetails extends WorkoutDetails {
   /// `features/insights/application/insight_observation_mapper.dart#completedTonnageKg`.
   ///
   /// Lives here rather than in either consumer so the two can never
-  /// disagree about what she lifted: a planned-but-unfinished set carries
-  /// a weight and a rep count, and counting it would report work she did
-  /// not do back to her as fact.
+  /// disagree about what they lifted: a planned-but-unfinished set carries
+  /// a weight and a rep count, and counting it would report work they did
+  /// not do back to them as fact.
   double get completedVolumeKg =>
       exercises.fold(0, (sum, e) => sum + e.completedVolumeKg);
 
@@ -297,7 +297,7 @@ class MindfulWorkoutDetails extends WorkoutDetails {
     return MindfulWorkoutDetails(
       style: json['style'] as String? ?? 'Vinyasa',
       focusArea: json['focusArea'] as String? ?? 'Full Body Flow',
-      // Deliberately no `?? 6`: an absent key means she was never asked,
+      // Deliberately no `?? 6`: an absent key means they were never asked,
       // and coalescing it would fabricate an answer (see [rpe]).
       rpe: (json['rpe'] as num?)?.toInt(),
       poses:
@@ -313,7 +313,7 @@ class MindfulWorkoutDetails extends WorkoutDetails {
   final String focusArea;
 
   /// Rating of Perceived Exertion, 1-10, **as the user actually stated
-  /// it** — `null` when she was never asked or did not answer.
+  /// it** — `null` when they were never asked or did not answer.
   ///
   /// Nullable rather than defaulted on purpose: a stored `6` used to be
   /// indistinguishable from an unanswered question, which is why

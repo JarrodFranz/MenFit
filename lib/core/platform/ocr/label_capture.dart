@@ -111,7 +111,7 @@ final class LabelCaptureService {
     // Sweep first, and **delete rather than recognise**. A photo recovered
     // here is the leftover of a capture this process never saw finish; the
     // user is standing in front of a form asking to scan a label now, and
-    // silently reading a stale picture of whatever she photographed last
+    // silently reading a stale picture of whatever they photographed last
     // time would be both wrong and a surprise. The only thing owed to that
     // file is that it stops existing.
     for (final lost in await _sweepLostPhotos()) {

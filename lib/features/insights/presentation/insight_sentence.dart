@@ -21,9 +21,9 @@ import 'package:menfit_app/features/insights/domain/personal_insight.dart';
 ///    training or nutrition recommendation tied to any of these signals —
 ///    cycle phase above all — needs a documented evidence review first
 ///    (`knowledge/domain/mens_health.md` rule 2).
-/// 3. **It never generalises past her.** Every phrase is second-person and
-///    about her own logs. Nothing here may say what women, or athletes, or
-///    anyone else does.
+/// 3. **It never generalises past them.** Every phrase is second-person and
+///    about their own logs. Nothing here may say what other men, or
+///    athletes, or anyone else does.
 ///
 /// The sample size is always carried in the sentence itself — an insight
 /// read without its `n` is a stronger claim than the data supports, which

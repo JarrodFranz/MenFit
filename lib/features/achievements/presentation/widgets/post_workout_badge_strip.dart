@@ -23,12 +23,12 @@ const String postWorkoutBadgeHeading = 'Also earned just now';
 /// Badges and milestones stay two systems: a milestone is about the session
 /// just finished, a badge about a lifetime total crossing a line. This
 /// strip only exists so a crossing is noticed at the moment it most likely
-/// happened, instead of waiting for her next visit to the trophy case.
+/// happened, instead of waiting for their next visit to the trophy case.
 ///
 /// It renders **nothing at all** until there is something to say — no
 /// heading, no spacing, no "no new badges" line. A celebration that
 /// announces the absence of a celebration is a small disappointment
-/// delivered at the exact moment she finished a workout.
+/// delivered at the exact moment they finished a workout.
 class PostWorkoutBadgeStrip extends ConsumerStatefulWidget {
   const PostWorkoutBadgeStrip({super.key});
 

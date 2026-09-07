@@ -122,7 +122,7 @@ class _WeightHistoryTile extends ConsumerWidget {
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text('Delete this reading?'),
-        // No number in the body: the confirmation should not make her read
+        // No number in the body: the confirmation should not make them read
         // the value back one more time on the way out (S2, and
         // `knowledge/domain/mens_health.md`).
         // "permanently", not "for good": the feature's copy gate forbids

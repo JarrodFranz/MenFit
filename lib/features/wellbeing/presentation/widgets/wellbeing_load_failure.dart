@@ -4,7 +4,7 @@ import 'package:menfit_app/core/theme/tokens.dart';
 /// Says a read of wellbeing data failed, rather than letting the failure
 /// read as an absence.
 ///
-/// "Nothing logged" is a claim about her records; a `StorageException`
+/// "Nothing logged" is a claim about their records; a `StorageException`
 /// swallowed into an empty list makes the app state that claim about data
 /// it never managed to look at. For S3 health data that is the wrong
 /// silence to keep.

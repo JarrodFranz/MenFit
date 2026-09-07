@@ -361,9 +361,9 @@ String _$yogaSequenceRepositoryHash() =>
 /// Every saved yoga sequence, most recently updated first.
 ///
 /// Stored rows only. `YogaSequenceStarters.starters` is a domain constant
-/// and is deliberately **not** merged in here - an empty list means she has
+/// and is deliberately **not** merged in here - an empty list means they have
 /// saved nothing, and the UI offers a starter separately, saving
-/// `starter.copyAsNew()` if she takes it.
+/// `starter.copyAsNew()` if they take it.
 
 @ProviderFor(yogaSequences)
 final yogaSequencesProvider = YogaSequencesProvider._();
@@ -371,9 +371,9 @@ final yogaSequencesProvider = YogaSequencesProvider._();
 /// Every saved yoga sequence, most recently updated first.
 ///
 /// Stored rows only. `YogaSequenceStarters.starters` is a domain constant
-/// and is deliberately **not** merged in here - an empty list means she has
+/// and is deliberately **not** merged in here - an empty list means they have
 /// saved nothing, and the UI offers a starter separately, saving
-/// `starter.copyAsNew()` if she takes it.
+/// `starter.copyAsNew()` if they take it.
 
 final class YogaSequencesProvider
     extends
@@ -388,9 +388,9 @@ final class YogaSequencesProvider
   /// Every saved yoga sequence, most recently updated first.
   ///
   /// Stored rows only. `YogaSequenceStarters.starters` is a domain constant
-  /// and is deliberately **not** merged in here - an empty list means she has
+  /// and is deliberately **not** merged in here - an empty list means they have
   /// saved nothing, and the UI offers a starter separately, saving
-  /// `starter.copyAsNew()` if she takes it.
+  /// `starter.copyAsNew()` if they take it.
   YogaSequencesProvider._()
     : super(
         from: null,
@@ -650,7 +650,7 @@ String _$screenAwakePreferenceStoreHash() =>
 ///
 /// `keepAlive` because a tracker holds onto this for the whole of a
 /// session, and that outlives the hub screen the switch lives on: an
-/// autoDispose family would drop the listener the moment she left the hub,
+/// autoDispose family would drop the listener the moment they left the hub,
 /// which is exactly when a running workout still needs to hear about a
 /// change.
 
@@ -662,7 +662,7 @@ final screenAwakePreferenceProvider = ScreenAwakePreferenceFamily._();
 ///
 /// `keepAlive` because a tracker holds onto this for the whole of a
 /// session, and that outlives the hub screen the switch lives on: an
-/// autoDispose family would drop the listener the moment she left the hub,
+/// autoDispose family would drop the listener the moment they left the hub,
 /// which is exactly when a running workout still needs to hear about a
 /// change.
 final class ScreenAwakePreferenceProvider
@@ -672,7 +672,7 @@ final class ScreenAwakePreferenceProvider
   ///
   /// `keepAlive` because a tracker holds onto this for the whole of a
   /// session, and that outlives the hub screen the switch lives on: an
-  /// autoDispose family would drop the listener the moment she left the hub,
+  /// autoDispose family would drop the listener the moment they left the hub,
   /// which is exactly when a running workout still needs to hear about a
   /// change.
   ScreenAwakePreferenceProvider._({
@@ -727,7 +727,7 @@ String _$screenAwakePreferenceHash() =>
 ///
 /// `keepAlive` because a tracker holds onto this for the whole of a
 /// session, and that outlives the hub screen the switch lives on: an
-/// autoDispose family would drop the listener the moment she left the hub,
+/// autoDispose family would drop the listener the moment they left the hub,
 /// which is exactly when a running workout still needs to hear about a
 /// change.
 
@@ -754,7 +754,7 @@ final class ScreenAwakePreferenceFamily extends $Family
   ///
   /// `keepAlive` because a tracker holds onto this for the whole of a
   /// session, and that outlives the hub screen the switch lives on: an
-  /// autoDispose family would drop the listener the moment she left the hub,
+  /// autoDispose family would drop the listener the moment they left the hub,
   /// which is exactly when a running workout still needs to hear about a
   /// change.
 
@@ -770,7 +770,7 @@ final class ScreenAwakePreferenceFamily extends $Family
 ///
 /// `keepAlive` because a tracker holds onto this for the whole of a
 /// session, and that outlives the hub screen the switch lives on: an
-/// autoDispose family would drop the listener the moment she left the hub,
+/// autoDispose family would drop the listener the moment they left the hub,
 /// which is exactly when a running workout still needs to hear about a
 /// change.
 

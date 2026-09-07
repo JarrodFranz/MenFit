@@ -3,7 +3,7 @@
 ///
 /// These are deliberately `static const` on a class with no constructor
 /// rather than parameters on the engine: an insight makes a claim about a
-/// woman's body from sparse, self-reported data, so no caller — not a
+/// user's body from sparse, self-reported data, so no caller — not a
 /// controller, not a test, not a debug flag — may relax them. An insight
 /// below any gate is **absent**, never "shown with lower confidence".
 ///
@@ -17,11 +17,11 @@
 ///   noise dressed as self-knowledge.
 /// * [minObservationsPerGroup] — 4. A group of 1-3 has no meaningful
 ///   median at all. Both arms must clear this independently, so an
-///   insight built on "18 days where she hit protein and 2 where she
+///   insight built on "18 days where they hit protein and 2 where they
 ///   didn't" cannot surface.
 /// * [minRelativeDifference] — 0.10. The difference the UI will read out
 ///   ("14% higher") has to be large enough that a reader would notice it
-///   in her own life. A 3% difference in weekly distance is not a pattern,
+///   in their own life. A 3% difference in weekly distance is not a pattern,
 ///   it is rounding.
 /// * [minCliffsDelta] — 0.33. Relative difference alone can be produced by
 ///   one outlier session, so a second, rank-based effect size has to agree.
@@ -36,7 +36,7 @@
 ///   and half again the minimum relative difference.
 /// * [maxSimultaneousInsights] — 3. More than a handful of "we noticed
 ///   this about you" cards stops being discovery and starts being a
-///   verdict on her body.
+///   verdict on their body.
 class InsightThresholds {
   const InsightThresholds._();
 

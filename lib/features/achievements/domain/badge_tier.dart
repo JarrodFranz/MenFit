@@ -7,7 +7,7 @@ import 'package:freezed_annotation/freezed_annotation.dart' show immutable;
 /// III, …). The ladder deliberately never tops out: a user who has been
 /// with the app for years must always have a next rung, and a badge whose
 /// highest tier can be reached and then never moved again stops being a
-/// progression ladder the moment she reaches it.
+/// progression ladder the moment they reach it.
 ///
 /// Modelled as a value type over a single integer [rank] rather than an
 /// `enum`, because an enum cannot be open-ended. `rank` 0-3 are the four

@@ -44,7 +44,7 @@ class _StepsRingCardState extends ConsumerState<StepsRingCard> {
     // this a fresh, permitted install shows seven hollow "no data" rings on
     // the app's most-viewed card until the user happens to open `/steps`.
     // Syncing here is safe on both counts that matter: the notifier returns
-    // immediately while the fitness-device sync toggle is off (her stated
+    // immediately while the fitness-device sync toggle is off (their stated
     // preference), and a successful sync throttles the next one for an
     // hour, so mounting this card repeatedly costs nothing.
     //
@@ -66,7 +66,7 @@ class _StepsRingCardState extends ConsumerState<StepsRingCard> {
     final isSyncEnabled = ref.watch(fitnessDeviceSyncControllerProvider);
     // Today's live count, or null when no snapshot has been read yet.
     // Nullable rather than defaulted to zero: the week strip must be able
-    // to tell "she has walked nothing yet today" from "nothing has been
+    // to tell "they have walked nothing yet today" from "nothing has been
     // read", and a `0` passed for the second is exactly the fabrication
     // this card was fixed to stop making.
     final steps = ref.watch(healthSyncProvider).latestSnapshot?.steps;

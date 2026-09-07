@@ -13,11 +13,11 @@ import 'package:menfit_app/features/achievements/domain/badge_progress.dart';
 /// two rungs between two runs of the detector, ends up with the complete
 /// ladder rather than a Gold with no Bronze under it. The trophy case shows
 /// a ladder; a ladder with rungs missing looks like a bug, and a user who
-/// never sees her Bronze has effectively had it taken from her.
+/// never sees their Bronze has effectively had it taken from them.
 ///
 /// The consequence is worth naming for whoever wires the celebration: the
 /// **first** detector run on an established install can return a large
-/// list. That is correct — she did earn them — but presentation should
+/// list. That is correct — they did earn them — but presentation should
 /// decide how to show twenty awards at once rather than firing twenty
 /// celebrations.
 ///

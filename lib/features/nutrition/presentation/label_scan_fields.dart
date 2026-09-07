@@ -25,7 +25,7 @@ import 'package:menfit_app/features/nutrition/presentation/nutrition_format.dart
 ///
 /// The number is a **UI threshold, not a truth threshold**. Every scanned
 /// value is checked by the user regardless (ADR 012); this only decides
-/// where to point her eye first. 0.6 is the parser's own scale: a clean
+/// where to point their eye first. 0.6 is the parser's own scale: a clean
 /// read with a clean unit and a confident column scores ~1.0, a nutrient
 /// name the parser had to guess at costs 30%, a repaired digit 20%, a
 /// "less than" bound 50% — so 0.6 catches roughly "one thing went wrong
@@ -272,7 +272,7 @@ const labelScanExplainerText =
 /// Names only the amount field, and deliberately not "or a serving weight":
 /// a per-volume panel puts the form in per-reference mode, where the
 /// serving-weight field is not rendered at all, so offering it would point
-/// at something she cannot see.
+/// at something they cannot see.
 const labelScanPerVolumeWarning =
     'This label is per 100 mL. MenFit records weight — enter the grams for '
     '100 mL before saving.';
@@ -284,7 +284,7 @@ const labelScanPerVolumeWarning =
 /// applied) are the controller's, the words and the snack bar are the
 /// widget's.
 enum LabelScanOutcome {
-  /// She backed out of the camera. Says nothing — a cancel that produced a
+  /// They backed out of the camera. Says nothing — a cancel that produced a
   /// message would be the app arguing with a decision.
   cancelled,
 

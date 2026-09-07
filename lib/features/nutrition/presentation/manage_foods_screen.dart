@@ -122,7 +122,7 @@ class _ManageFoodsScreenState extends ConsumerState<ManageFoodsScreen> {
   /// food id makes the form *save a new food*, so editing from here would
   /// quietly duplicate every row it touched. The factory carries the id (and
   /// the source, which a hand-built seed also got wrong — it would relabel a
-  /// food the user typed herself as provider-sourced).
+  /// food the user typed themselves as provider-sourced).
   Future<void> _edit(Food food) async {
     await NutritionNewFoodRouteData(
       $extra: FoodFormSeed.forEditing(food),

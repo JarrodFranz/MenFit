@@ -17,7 +17,7 @@ import 'package:menfit_app/features/achievements/presentation/widgets/badge_embl
 /// The first detector run on an established install can legitimately return
 /// twenty awards at once (`domain/award_diff.dart` explains why: every
 /// crossed rung is awarded, not only the highest). Twenty celebrations in a
-/// row is not twenty times the joy — it is a modal queue she has to dismiss
+/// row is not twenty times the joy — it is a modal queue they have to dismiss
 /// one at a time, and it would make the app's first badge moment an
 /// annoyance.
 const int badgeCelebrationFloodThreshold = 3;

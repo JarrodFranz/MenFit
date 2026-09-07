@@ -72,7 +72,7 @@ List<HomeMacroRow> homeMacroRows({
   required int? basisKcal,
 }) {
   // Never `goals?.proteinTargetGrams` and friends directly: those hold a
-  // value only when the user stated her targets in grams, so a percent-mode
+  // value only when the user stated their targets in grams, so a percent-mode
   // goal read that way would show no macro target at all.
   final targets = goals?.macroTargetGramsFor(basisKcal);
   return [

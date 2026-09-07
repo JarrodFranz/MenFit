@@ -22,7 +22,7 @@ enum DuplicateBarcodeChoice { useExisting, saveAnyway, keepEditing }
 /// **Editing a food** ([isEditingExistingFood] true):
 /// [DuplicateBarcodeChoice.useExisting] is not offered at all. It would pop
 /// the *other* food and silently discard every edit made to *this* one —
-/// the collision has nothing to do with what she is editing, so "use the
+/// the collision has nothing to do with what they are editing, so "use the
 /// one I already have" is not a sensible answer to it. The only choices are
 /// keeping editing, or attaching the barcode to this food anyway — which is
 /// **not a new row**, it is the same in-place update

@@ -33,7 +33,7 @@ const int insightWindowDays = 90;
 /// ## Absence is never a zero
 ///
 /// A day with no diary entries gets `proteinGrams: null`, not `0` — an
-/// unlogged day is not a day she ate nothing. Likewise a day absent from
+/// unlogged day is not a day they ate nothing. Likewise a day absent from
 /// [waterTotalsByDay] gets `waterMl: null`, and a day with no check-in
 /// gets `null` for all five scores. [DailyObservation] documents why the
 /// engine needs that distinction.
@@ -42,8 +42,8 @@ const int insightWindowDays = 90;
 ///
 /// [DailyObservation.waterTargetMl] is always `null`: the app has no
 /// user-set hydration target, and `HydrationOutputEvaluator`'s dartdoc is
-/// explicit that inventing a default one would have the engine measure her
-/// against a number she never chose. The evaluator therefore stays dormant
+/// explicit that inventing a default one would have the engine measure their
+/// against a number they never chose. The evaluator therefore stays dormant
 /// until a real target exists; water intake is still mapped so that adding
 /// one later is the only change needed.
 List<DailyObservation> buildDailyObservations({
@@ -97,7 +97,7 @@ List<DailyObservation> buildDailyObservations({
         proteinGrams: dayEntries == null
             ? null
             : computeDayTotals(dayEntries).total.proteinGrams,
-        // The target is "in force on this day" whether or not she logged
+        // The target is "in force on this day" whether or not they logged
         // against it, matching `DailyObservation.proteinTargetGrams`'s
         // meaning ("`null` when the user has set no target"). A day with a
         // target but no intake still contributes nothing: `proteinTargetMet`
@@ -122,7 +122,7 @@ List<DailyObservation> buildDailyObservations({
 /// goes with it is not repeated here either — it lives once, in
 /// `InsightThresholds.targetMetFraction`, whose dartdoc records that it
 /// matches the fueling evaluator for exactly this reason. Two surfaces
-/// disagreeing about whether she hit her protein target on a given day
+/// disagreeing about whether they hit their protein target on a given day
 /// would be worse than either rule being slightly off.
 double? resolveProteinTargetGrams(NutritionGoals? goals) {
   final target = goals?.proteinTargetGrams;
@@ -140,7 +140,7 @@ ObservedSession observedSessionFor(Activity activity) {
   );
 }
 
-/// The RPE the user actually stated for [activity], or `null` when she was
+/// The RPE the user actually stated for [activity], or `null` when they were
 /// never asked or did not answer.
 ///
 /// `MindfulWorkoutDetails.rpe` and `GeneralWorkoutDetails.rpe` (see
@@ -151,7 +151,7 @@ ObservedSession observedSessionFor(Activity activity) {
 /// carry no RPE, so for those there is nothing to map even in principle.
 ///
 /// **Honest caveat about older rows.** Sessions written *before* that
-/// change stored a hard `6` whether or not she chose it, so those rows are
+/// change stored a hard `6` whether or not they chose it, so those rows are
 /// indistinguishable from a genuine 6 and will be read as stated values
 /// here. That is accepted rather than worked around: the app is pre-release
 /// with no real user data, and any exertion comparison still has to clear
@@ -161,8 +161,8 @@ ObservedSession observedSessionFor(Activity activity) {
 ///
 /// `ObservedSession.perceivedExertion`'s dartdoc states the rule this
 /// upholds: an assumed value must never be fed in, because the engine would
-/// find a pattern in its own defaults and report it back to her as a fact
-/// about her body.
+/// find a pattern in its own defaults and report it back to them as a fact
+/// about their body.
 int? statedPerceivedExertion(Activity activity) {
   return switch (activity.workoutDetails) {
     MindfulWorkoutDetails(:final rpe) => rpe,
@@ -180,7 +180,7 @@ int? statedPerceivedExertion(Activity activity) {
 /// `features/recaps/domain/recap_builder.dart` uses too. It matches
 /// [DailyObservation]'s "sum of `reps x weightKg` over completed sets",
 /// unlike `StrengthWorkoutDetails.totalVolumeKg`, which includes
-/// planned-but-unfinished sets and would overstate what she actually
+/// planned-but-unfinished sets and would overstate what they actually
 /// lifted. A session whose sets were all bodyweight totals zero kilograms
 /// and is reported as `null` by `DailyObservation._sumStrengthTonnage`
 /// anyway; the distinction that matters here is "recorded no sets" versus

@@ -72,7 +72,7 @@ class NutritionGoals extends Table {
   ///
   /// The grams and percent columns are stored **side by side and
   /// independently**; neither is written from the other. That is what lets
-  /// a user switch representation and back without losing the numbers she
+  /// a user switch representation and back without losing the numbers they
   /// typed, and it keeps derived grams out of the database — they are
   /// recomputed from the current energy target instead of going stale
   /// (`knowledge/architecture/data_architecture.md`'s derived-vs-stored

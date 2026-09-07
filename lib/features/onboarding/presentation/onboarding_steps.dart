@@ -526,10 +526,13 @@ class _OnboardingGoalStepper extends StatelessWidget {
 class PrivacyStep extends StatelessWidget {
   const PrivacyStep({super.key});
 
+  static const String _healthDataBullet =
+      'Health and location data never leave your device without explicit '
+      'consent.';
+
   static const List<String> _bullets = [
     'Your data stays on this device unless you choose to sync it.',
-    'Health and location data never leave your device without explicit '
-        'consent.',
+    _healthDataBullet,
     'You can delete your data at any time.',
   ];
 

@@ -19,15 +19,15 @@ import 'package:menfit_app/core/platform/audio/audio_cue_player.dart';
 ///
 /// ## Audio session (ADR 014)
 ///
-/// * **Android** — `gainTransientMayDuck`: her music dips under the chime
+/// * **Android** — `gainTransientMayDuck`: their music dips under the chime
 ///   and comes back by itself. `AndroidContentType.sonification` +
 ///   `AndroidUsageType.assistanceSonification` describe what this actually
 ///   is, so the system routes and attenuates it as a cue rather than as
 ///   media.
 /// * **iOS** — `ambient`, with **no** explicit options. Ambient respects
 ///   the hardware silent switch and mixes with other apps rather than
-///   interrupting them, which is the contract ADR 014 chose: if she has
-///   silenced her phone on the mat, the app is not the one to override
+///   interrupting them, which is the contract ADR 014 chose: if they have
+///   silenced their phone on the mat, the app is not the one to override
 ///   that. `mixWithOthers` is deliberately *not* passed even though it is
 ///   the behaviour we want — `AudioContextIOS` asserts that the option may
 ///   only be set explicitly under `playback`/`playAndRecord`/`multiRoute`,

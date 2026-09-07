@@ -32,7 +32,7 @@ import 'package:menfit_app/features/achievements/domain/badge_definition.dart';
 ///    justify collecting something new, and none may depend on an outside
 ///    service. See "Ideas deliberately not shipped" below.
 /// 4. **Celebration only — never obligation, comparison, or valence.** No
-///    badge says what she should do, implies she is behind, ranks her
+///    badge says what they should do, implies they are behind, ranks their
 ///    against anyone, or treats a quiet week as a failure. Recovery is
 ///    never framed as a lapse (`knowledge/product/terminology.md`), which
 ///    is why the one consistency ladder that could have punished a period
@@ -57,8 +57,8 @@ import 'package:menfit_app/features/achievements/domain/badge_definition.dart';
 ///    least one tiered ladder and at least two one-off badges that can
 ///    genuinely fire for it — shared badges count, but only where they
 ///    really do fire. This is what stops the catalogue quietly becoming a
-///    running app's badge list: a woman who only swims, or only walks, has
-///    a ladder of her own and firsts of her own. It is a **test**, not an
+///    running app's badge list: someone who only swims, or only walks, has
+///    a ladder of their own and firsts of their own. It is a **test**, not an
 ///    aspiration —
 ///    `test/features/achievements/badge_type_coverage_test.dart` proves the
 ///    claim by evaluating a session of each type through the real engine,
@@ -72,7 +72,7 @@ import 'package:menfit_app/features/achievements/domain/badge_definition.dart';
 /// * **First data export** — the app has no whole-account export path, and
 ///   the per-activity file export
 ///   (`features/activity/domain/activity_file_exporter.dart`) records
-///   nothing durable, so "she exported once" is not a fact the app knows.
+///   nothing durable, so "they exported once" is not a fact the app knows.
 ///   Rule 3. Worth revisiting if an export ever writes a marker.
 /// * **Weight-logging consistency** — excluded on principle. Rule 5.
 /// * **Nutrition-target adherence** ("days you hit your protein target") —
@@ -92,7 +92,7 @@ import 'package:menfit_app/features/achievements/domain/badge_definition.dart';
 /// * **"Finished every round you planned"** — computable, and worthless:
 ///   a hand-logged interval session stores its planned rounds *as* its
 ///   completed ones, so the badge would fire on every one of them.
-///   Replaced by `twenty_interval_rounds`, which is a number she chose.
+///   Replaced by `twenty_interval_rounds`, which is a number they chose.
 /// * **Per-stroke swimming ladders** — splits one honest swim ladder into
 ///   four thin ones, and `SwimWorkoutDetails.stroke` is a free string with
 ///   a "Mixed" value that would land in none of them. Rule 2's cousin.

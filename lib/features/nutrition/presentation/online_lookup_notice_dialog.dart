@@ -14,7 +14,7 @@ import 'package:menfit_app/core/theme/tokens.dart';
 /// language setting), who receives it, what does *not* go out, and what gets
 /// kept —
 /// because searching a food database is the first time this app sends
-/// anything the user typed off her device (ADR 010). The voice is
+/// anything the user typed off their device (ADR 010). The voice is
 /// `domain/nutrition_validation.dart`'s: plain, non-clinical, not alarming,
 /// and not pleading for a yes.
 ///
@@ -26,7 +26,7 @@ import 'package:menfit_app/core/theme/tokens.dart';
 /// disclosure as material enough to **withhold web barcode scanning over
 /// it**, and a consent dialog cannot be more relaxed about a fact than the
 /// code two layers down. So the promise is now the one we can actually
-/// keep — nothing from her account or her diary — and the address is stated
+/// keep — nothing from their account or their diary — and the address is stated
 /// plainly, next to the everyday comparison that makes it proportionate
 /// rather than frightening.
 class OnlineLookupNoticeDialog extends StatelessWidget {

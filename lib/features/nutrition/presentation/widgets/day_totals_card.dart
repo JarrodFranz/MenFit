@@ -46,9 +46,9 @@ class DayTotalsCard extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final floored = target.floored;
     // Never `goals?.proteinTargetGrams` and friends directly: those hold a
-    // value only when the user stated her targets in grams, so a percent-mode
+    // value only when the user stated their targets in grams, so a percent-mode
     // goal read that way would show no macro target at all. `target.targetKcal`
-    // is already "her explicit calorie target, else the resolved one with the
+    // is already "their explicit calorie target, else the resolved one with the
     // BMR floor applied", which is exactly the basis a share is a share of.
     final macroTargets = goals?.macroTargetGramsFor(target.targetKcal);
 

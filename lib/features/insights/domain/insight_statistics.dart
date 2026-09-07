@@ -4,13 +4,13 @@
 /// are a handful of self-logged sessions, where one 21 km long run or one
 /// mis-typed 500 kg lift can be an order of magnitude away from the rest.
 /// A mean would let that single day decide what the app tells the user
-/// about her own body; a median or a rank statistic cannot.
+/// about their own body; a median or a rank statistic cannot.
 library;
 
 /// The median of [values].
 ///
 /// Returns `null` for an empty list — there is no median of nothing, and
-/// returning 0 would silently become "her output was zero".
+/// returning 0 would silently become "their output was zero".
 double? median(List<double> values) {
   if (values.isEmpty) return null;
   final sorted = List<double>.of(values)..sort();

@@ -82,7 +82,7 @@ class FoodBarcodeSection extends ConsumerWidget {
           MaterialPageRoute(builder: (_) => const BarcodeScanScreen()),
         );
     // Backing out pops null, which means "I didn't scan anything" and must
-    // not wipe a barcode she had already typed.
+    // not wipe a barcode they had already typed.
     if (digits == null) return;
     controller.updateBarcode(digits);
   }

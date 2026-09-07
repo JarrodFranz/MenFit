@@ -21,7 +21,7 @@ import 'package:menfit_app/features/steps/steps_providers.dart';
 /// shows "No data" in the list, and is excluded from the average and the
 /// at-target count — which is why both are captioned "of N days with data".
 /// The alternative (treating an unsynced day as zero) would quietly report
-/// an average she never walked, on a surface whose only job is to tell her
+/// an average they never walked, on a surface whose only job is to tell them
 /// what happened.
 ///
 /// ## Availability is a header, not a wall
@@ -92,8 +92,8 @@ class _StepsScreenState extends ConsumerState<StepsScreen> {
     await ref.read(stepsSyncProvider.notifier).syncRecent(force: true);
   }
 
-  /// Schedules a fetch for the window the user has navigated to, once she
-  /// stops navigating.
+  /// Schedules a fetch for the window the user has navigated to, once they
+  /// stop navigating.
   void _syncSelectedRange() {
     _rangeSettleTimer?.cancel();
     _rangeSettleTimer = Timer(_rangeSettleDelay, () {
@@ -108,7 +108,7 @@ class _StepsScreenState extends ConsumerState<StepsScreen> {
   ///
   /// `syncRecent` only covers the recent window, so stepping back a few
   /// months would otherwise show gaps that are an artefact of the sync
-  /// window rather than of her data.
+  /// window rather than of their data.
   void _requestSelectedRange() {
     final view = ref.read(stepsViewControllerProvider);
     final range = view.period.rangeFor(view.anchor);
@@ -149,7 +149,7 @@ class _StepsScreenState extends ConsumerState<StepsScreen> {
     if (granted) {
       // `stepsPermissionProvider` asked the platform once, before the grant;
       // nothing else invalidates it, so without this the screen would keep
-      // showing the permission panel after she had just said yes.
+      // showing the permission panel after they had just said yes.
       ref.invalidate(stepsPermissionProvider);
       await ref.read(stepsSyncProvider.notifier).syncRecent(force: true);
     }

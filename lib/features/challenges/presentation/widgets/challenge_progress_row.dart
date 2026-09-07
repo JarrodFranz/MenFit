@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:menfit_app/core/theme/tokens.dart';
 
-/// One participant's standing: her label, her percentage, and a bar.
+/// One participant's standing: their label, their percentage, and a bar.
 ///
 /// Used for both people, and deliberately identical for both — a
-/// different treatment for "you" and "her" is the first step towards a
+/// different treatment for "you" and "them" is the first step towards a
 /// scoreboard, and the domain layer has no way to say who is ahead
 /// anyway (`domain/challenge_progress.dart`).
 ///

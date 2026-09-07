@@ -24,7 +24,7 @@ const int maxChallengeStartFutureDays = 365;
 ///
 /// Distance is counted in hundreds of metres, so the range is 1 km to
 /// 1,000 km. Sessions run 1 to 500. Both ends are generous: the point is
-/// to reject a slipped decimal point, never to tell anyone her goal is
+/// to reject a slipped decimal point, never to tell anyone their goal is
 /// too big or too small.
 const int minDistanceTargetUnits = 10;
 const int maxDistanceTargetUnits = 10000;
@@ -79,7 +79,7 @@ class ChallengeValidation {
 /// Note what is **not** validated: which activity types were chosen (an
 /// empty set legitimately means "anything counts") and how ambitious the
 /// target is relative to anything the user has done before. The app does
-/// not have an opinion on whether a goal suits her.
+/// not have an opinion on whether a goal suits them.
 ChallengeValidation validateChallenge({
   required ChallengeKind kind,
   required int targetUnits,
@@ -95,15 +95,15 @@ ChallengeValidation validateChallenge({
   );
 }
 
-/// Validates a self-chosen display name on its own — the joiner picks hers
+/// Validates a self-chosen display name on its own — the joiner picks theirs
 /// without touching the challenge's other parameters, and the export
-/// screen may let her change it later.
+/// screen may let them change it later.
 ///
 /// The byte bound is a real constraint of the wire format
 /// ([maxDisplayNameBytes]), not a stylistic one, which is why it counts
 /// UTF-8 bytes rather than characters: an emoji or an accented name costs
 /// more than one byte, and a name that would be silently truncated in the
-/// code is better rejected here where she can see it.
+/// code is better rejected here where they can see it.
 String? validateDisplayName(String displayName) {
   final trimmed = displayName.trim();
   if (trimmed.isEmpty) return _displayNameEmptyMessage;

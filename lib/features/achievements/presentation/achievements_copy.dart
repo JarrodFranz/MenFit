@@ -35,7 +35,7 @@ const String trophyCaseTitle = 'Your trophy case';
 ///
 /// The empty state of this screen is the screen: every badge is listed
 /// below it at zero, with Bronze as the next rung. So the line says what is
-/// true and invites, and carries no suggestion that she is late.
+/// true and invites, and carries no suggestion that they are late.
 const String trophyCaseEmptyLine =
     'Nothing in the case yet. Every badge below is on offer, and none of '
     'them expire.';
@@ -111,13 +111,13 @@ String awardedOnLine(DateTime awardedAt) =>
 /// "round to nearest" would get each of them wrong half the time:
 ///
 /// * An **ask** ("12 km to Silver") may only ever round *up*. Rounding it
-///   down promises a rung early: she reads "11 km to Silver", runs 11 km,
-///   and the badge does not arrive. Rounding up costs her nothing — the
+///   down promises a rung early: they read "11 km to Silver", runs 11 km,
+///   and the badge does not arrive. Rounding up costs them nothing — the
 ///   rung lands a few hundred metres sooner than the label implied, which
 ///   is a small gift and never a broken promise.
 /// * A **total** ("88 km so far") may only ever round *down*. Rounding it
-///   up credits her with distance she has not run. This app does not
-///   inflate what she has done, not even by 400 metres.
+///   up credits them with distance they have not run. This app does not
+///   inflate what they have done, not even by 400 metres.
 enum BadgeAmountRounding {
   /// Round away from zero — for an ask.
   up,
@@ -126,15 +126,15 @@ enum BadgeAmountRounding {
   down,
 }
 
-/// An amount still to go, in the units she reads. Never understated.
+/// An amount still to go, in the units they read. Never understated.
 String formatRemainingAmount(double value, BadgeMetricUnit unit) =>
     formatBadgeAmount(value, unit, rounding: BadgeAmountRounding.up);
 
-/// An amount already accumulated, in the units she reads. Never overstated.
+/// An amount already accumulated, in the units they read. Never overstated.
 String formatEarnedAmount(double value, BadgeMetricUnit unit) =>
     formatBadgeAmount(value, unit, rounding: BadgeAmountRounding.down);
 
-/// A canonical-unit amount in the units she actually reads.
+/// A canonical-unit amount in the units they actually read.
 ///
 /// Metres become kilometres and minutes become hours exactly as everywhere
 /// else in this app; counts stay counts. Distances and durations carry one

@@ -28,7 +28,7 @@ import 'package:menfit_app/features/nutrition/nutrition_widgets.dart';
 ///
 /// The energy target comes from `dayCalorieTargetProvider` rather than from
 /// `goals.calorieTargetKcal` so this card and the diary cannot disagree
-/// about the figure: that provider is where "her own target, else the
+/// about the figure: that provider is where "their own target, else the
 /// estimate with the BMR floor applied" is decided, and re-deriving it here
 /// would be a second definition of a number the floor exists to protect.
 class MacrosTodayCard extends ConsumerWidget {

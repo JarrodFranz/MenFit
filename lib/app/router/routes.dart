@@ -130,7 +130,7 @@ class MindfulTrackerRouteData extends GoRouteData
 ///
 /// Outside [AppShellRouteData]'s [StatefulShellRoute] like every other
 /// tracker: a practice with the phone on the mat wants the whole screen,
-/// and the active-workout banner is what brings her back to it.
+/// and the active-workout banner is what brings them back to it.
 @TypedGoRoute<YogaSequenceRunnerRouteData>(
   path: '/activity/track/yoga-sequence/:sequenceId',
 )

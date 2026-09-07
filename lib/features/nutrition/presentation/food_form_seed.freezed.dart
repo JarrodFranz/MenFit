@@ -23,7 +23,7 @@ mixin _$FoodFormSeed {
 /// **This is a discriminator, not a decoration.** The form previously
 /// inferred provenance from "was there a seed at all", which made
 /// [FoodFormSeed.forUnknownBarcode] — the provider had no product and
-/// the user typed every figure off the packet herself — save as
+/// the user typed every figure off the packet themselves — save as
 /// `openFoodFacts`. That is a false attribution in both directions: it
 /// credits a database with numbers it never supplied, and it would let a
 /// future sync backend treat a hand-authored row as ODbL-derived. Only a
@@ -39,7 +39,7 @@ mixin _$FoodFormSeed {
 /// The provider never supplies these; they exist for
 /// [FoodFormSeed.forEditing]. An edit **overwrites the food's own row**,
 /// so any nutrient the seed leaves blank is one the save would erase —
-/// fibre and sodium a user typed in six months ago have to survive her
+/// fibre and sodium a user typed in six months ago have to survive their
 /// correcting the calorie figure.
 ///
 /// Today most of them cannot be erased because they are never stored:
@@ -67,14 +67,14 @@ mixin _$FoodFormSeed {
  String? get existingFoodId;/// Where the seeded per-serving numbers came from, or `null` when the
 /// provider had no record at all
 /// ([FoodFormSeed.forUnknownBarcode]). Surfaced on the
-/// review screen so the user knows what she is looking at rather than
+/// review screen so the user knows what they are looking at rather than
 /// meeting three different things all labelled "per serving".
  ServingBasis? get servingBasis;/// The provider records that this product carries **no** nutrition
 /// information at all — the database asserting there is nothing to
 /// have, which is worth saying out loud instead of showing an empty
 /// form with no explanation.
  bool get hasNoNutritionData;/// Whether energy and all three macros arrived. `false` means the user
-/// has blanks to fill before she can save.
+/// has blanks to fill before they can save.
  bool get hasCompleteMacros;/// The provider's own 0–1 completeness score for the *record*, when it
 /// publishes one. A statement about how many people have filled the
 /// product in, never about the food.
@@ -311,7 +311,7 @@ class _FoodFormSeed extends FoodFormSeed {
 /// **This is a discriminator, not a decoration.** The form previously
 /// inferred provenance from "was there a seed at all", which made
 /// [FoodFormSeed.forUnknownBarcode] — the provider had no product and
-/// the user typed every figure off the packet herself — save as
+/// the user typed every figure off the packet themselves — save as
 /// `openFoodFacts`. That is a false attribution in both directions: it
 /// credits a database with numbers it never supplied, and it would let a
 /// future sync backend treat a hand-authored row as ODbL-derived. Only a
@@ -338,7 +338,7 @@ class _FoodFormSeed extends FoodFormSeed {
 /// The provider never supplies these; they exist for
 /// [FoodFormSeed.forEditing]. An edit **overwrites the food's own row**,
 /// so any nutrient the seed leaves blank is one the save would erase —
-/// fibre and sodium a user typed in six months ago have to survive her
+/// fibre and sodium a user typed in six months ago have to survive their
 /// correcting the calorie figure.
 ///
 /// Today most of them cannot be erased because they are never stored:
@@ -380,7 +380,7 @@ class _FoodFormSeed extends FoodFormSeed {
 /// Where the seeded per-serving numbers came from, or `null` when the
 /// provider had no record at all
 /// ([FoodFormSeed.forUnknownBarcode]). Surfaced on the
-/// review screen so the user knows what she is looking at rather than
+/// review screen so the user knows what they are looking at rather than
 /// meeting three different things all labelled "per serving".
 @override final  ServingBasis? servingBasis;
 /// The provider records that this product carries **no** nutrition
@@ -389,7 +389,7 @@ class _FoodFormSeed extends FoodFormSeed {
 /// form with no explanation.
 @override@JsonKey() final  bool hasNoNutritionData;
 /// Whether energy and all three macros arrived. `false` means the user
-/// has blanks to fill before she can save.
+/// has blanks to fill before they can save.
 @override@JsonKey() final  bool hasCompleteMacros;
 /// The provider's own 0–1 completeness score for the *record*, when it
 /// publishes one. A statement about how many people have filled the

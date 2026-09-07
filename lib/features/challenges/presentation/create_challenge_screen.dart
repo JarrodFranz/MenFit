@@ -19,7 +19,7 @@ import 'package:menfit_app/features/challenges/presentation/widgets/challenge_co
 ///
 /// ## Units
 ///
-/// She types kilometres; the blueprint stores hundreds of metres
+/// They type kilometres; the blueprint stores hundreds of metres
 /// (`domain/challenge.dart#ChallengeBlueprint.targetUnits`), because that
 /// is what the wire format carries and a shared target both sides cannot
 /// read identically is worse than a coarse one. The conversion lives in
@@ -61,7 +61,7 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
     final today = ref.read(challengesTodayProvider);
     _windowStart = today;
     // Four weeks: long enough to mean something, short enough that the
-    // end is in sight. She can change it, and most people will.
+    // end is in sight. They can change it, and most people will.
     _windowEnd = today.addDays(27);
   }
 
@@ -281,7 +281,7 @@ class _CreateChallengeScreenState extends ConsumerState<CreateChallengeScreen> {
   }
 }
 
-/// What she sees once the challenge exists: the code, big, and what it
+/// What they see once the challenge exists: the code, big, and what it
 /// does and does not contain.
 class _CreatedView extends StatelessWidget {
   const _CreatedView({required this.code});

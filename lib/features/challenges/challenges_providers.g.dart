@@ -241,13 +241,13 @@ final class ActiveChallengesProvider
 String _$activeChallengesHash() => r'2777b19819ee4644f8315b616d24d082fc3e2ffc';
 
 /// Challenges whose window has closed. Kept, not deleted — a finished
-/// challenge is something she did, and the celebration card lives here.
+/// challenge is something they did, and the celebration card lives here.
 
 @ProviderFor(archivedChallenges)
 final archivedChallengesProvider = ArchivedChallengesProvider._();
 
 /// Challenges whose window has closed. Kept, not deleted — a finished
-/// challenge is something she did, and the celebration card lives here.
+/// challenge is something they did, and the celebration card lives here.
 
 final class ArchivedChallengesProvider
     extends
@@ -258,7 +258,7 @@ final class ArchivedChallengesProvider
         >
     with $FutureModifier<List<Challenge>>, $StreamProvider<List<Challenge>> {
   /// Challenges whose window has closed. Kept, not deleted — a finished
-  /// challenge is something she did, and the celebration card lives here.
+  /// challenge is something they did, and the celebration card lives here.
   ArchivedChallengesProvider._()
     : super(
         from: null,
@@ -288,7 +288,7 @@ final class ArchivedChallengesProvider
 String _$archivedChallengesHash() =>
     r'cf7bd49da3524bf146adba9657e766f6a2337630';
 
-/// Where the user stands in one challenge, recomputed from her own logs.
+/// Where the user stands in one challenge, recomputed from their own logs.
 ///
 /// Null when there is no such challenge (it was deleted while a screen
 /// held its id).
@@ -318,7 +318,7 @@ String _$archivedChallengesHash() =>
 @ProviderFor(selfProgress)
 final selfProgressProvider = SelfProgressFamily._();
 
-/// Where the user stands in one challenge, recomputed from her own logs.
+/// Where the user stands in one challenge, recomputed from their own logs.
 ///
 /// Null when there is no such challenge (it was deleted while a screen
 /// held its id).
@@ -355,7 +355,7 @@ final class SelfProgressProvider
     with
         $FutureModifier<ChallengeSelfProgress?>,
         $FutureProvider<ChallengeSelfProgress?> {
-  /// Where the user stands in one challenge, recomputed from her own logs.
+  /// Where the user stands in one challenge, recomputed from their own logs.
   ///
   /// Null when there is no such challenge (it was deleted while a screen
   /// held its id).
@@ -427,7 +427,7 @@ final class SelfProgressProvider
 
 String _$selfProgressHash() => r'b6ca6ce404a1cac9eea99d42b5324e3a214a9909';
 
-/// Where the user stands in one challenge, recomputed from her own logs.
+/// Where the user stands in one challenge, recomputed from their own logs.
 ///
 /// Null when there is no such challenge (it was deleted while a screen
 /// held its id).
@@ -465,7 +465,7 @@ final class SelfProgressFamily extends $Family
         isAutoDispose: true,
       );
 
-  /// Where the user stands in one challenge, recomputed from her own logs.
+  /// Where the user stands in one challenge, recomputed from their own logs.
   ///
   /// Null when there is no such challenge (it was deleted while a screen
   /// held its id).

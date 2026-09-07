@@ -4,9 +4,9 @@
 ///
 /// The original one-offs marked firsts for the two disciplines that had
 /// dedicated tracking (strength, mindful movement) and then ran on
-/// curiosities that any activity could satisfy. That left a woman whose
+/// curiosities that any activity could satisfy. That left someone whose
 /// sport is walking, hiking, riding, intervals or swimming with no *first*
-/// of her own to mark — the moment that most deserves marking, missing for
+/// of their own to mark — the moment that most deserves marking, missing for
 /// most of the app's activity types.
 ///
 /// So each of those five types gets its first, and one further milestone
@@ -16,7 +16,7 @@
 /// * **A single session, never a total.** Totals are what the ladders are
 ///   for, and a one-off that is secretly a small ladder is the worst of
 ///   both.
-/// * **Reachable without a phone strapped to her.** Every mark here except
+/// * **Reachable without a phone strapped to them.** Every mark here except
 ///   the climb badge is computable from a hand-logged session, because
 ///   most sessions are hand-logged. The climb one-off is the deliberate
 ///   exception (`domain/badge_metrics.dart#ascentOf`), and it is nobody's
@@ -65,7 +65,7 @@ const List<BadgeDefinition> perTypeOneOffBadgeDefinitions = [
 
   // Any activity type, not just hikes: a hilly ride or a run up the same
   // hill is the same 500 metres, and the badge would be an odd thing to
-  // withhold on the grounds that she called it something else.
+  // withhold on the grounds that they called it something else.
   BadgeDefinition.oneOff(
     id: 'big_climb_session',
     title: 'Five Hundred Up',
@@ -100,8 +100,8 @@ const List<BadgeDefinition> perTypeOneOffBadgeDefinitions = [
 
   // Twenty rounds rather than "all the rounds you planned": a session
   // created by hand stores its planned rounds as its completed ones, so
-  // "finished what she started" would fire on every hand-logged session
-  // and mean nothing. A round count is a thing she chose either way.
+  // "finished what they started" would fire on every hand-logged session
+  // and mean nothing. A round count is a thing they chose either way.
   BadgeDefinition.oneOff(
     id: 'twenty_interval_rounds',
     title: 'Twenty Rounds',

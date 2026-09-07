@@ -14,7 +14,7 @@ import 'package:menfit_app/features/achievements/presentation/widgets/achievemen
 import 'package:menfit_app/features/achievements/presentation/widgets/badge_celebration_dialog.dart';
 import 'package:menfit_app/features/achievements/presentation/widgets/badge_tile.dart';
 
-/// The trophy case: every badge she holds, every badge on offer, and how
+/// The trophy case: every badge they hold, every badge on offer, and how
 /// far the next rung is — the three things Task 1.8 asks to be visible at
 /// once.
 ///
@@ -38,7 +38,7 @@ import 'package:menfit_app/features/achievements/presentation/widgets/badge_tile
 /// ## Two readings of the same badge
 ///
 /// The case renders [badgeDisplayProgressProvider] — the engine's read of
-/// the data with every persisted award folded in, so a rung she was awarded
+/// the data with every persisted award folded in, so a rung they were awarded
 /// never disappears from a tile because the data behind it moved
 /// (`presentation/badge_display.dart`). Detection below deliberately keeps
 /// reading the un-merged [badgeProgressProvider]: it is asking what the

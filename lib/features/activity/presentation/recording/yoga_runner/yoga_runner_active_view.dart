@@ -8,7 +8,7 @@ import 'package:menfit_app/features/activity/presentation/recording/yoga_sequenc
 /// and the four controls.
 ///
 /// The transition phase is drawn in a different colour role and names the
-/// pose she is moving *into* — the colour is the redundant channel, the
+/// pose they are moving *into* — the colour is the redundant channel, the
 /// words are the information (same reasoning as the HIIT tracker's phase
 /// banner, which is why neither relies on colour alone).
 class YogaRunnerActiveView extends StatelessWidget {
@@ -52,8 +52,8 @@ class YogaRunnerActiveView extends StatelessWidget {
         ? scheme.onTertiaryContainer
         : scheme.onPrimaryContainer;
 
-    // During a transition the pose she is moving into is the headline; the
-    // one she just left is over.
+    // During a transition the pose they are moving into is the headline; the
+    // one they just left is over.
     final headline = state.displayPose?.displayName ?? '';
     final seconds = state.phaseRemaining.inSeconds;
 
@@ -170,7 +170,7 @@ class YogaRunnerActiveView extends StatelessWidget {
           SizedBox(height: tokens.spacingLg),
           // Wrap, not Row: at 150% text scale on a 320dp screen four 48dp
           // targets do not fit on one line, and controls that overflow are
-          // controls she cannot press.
+          // controls they cannot press.
           Wrap(
             alignment: WrapAlignment.center,
             spacing: tokens.spacingSm,

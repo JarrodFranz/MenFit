@@ -9,9 +9,9 @@ import 'package:menfit_app/features/challenges/presentation/challenges_copy.dart
 ///
 /// Settings' "Delete my data" takes everything at once; this takes one
 /// thing, which is the half of `knowledge/engineering/security_and_privacy.md`'s
-/// rules 7 and 8 that a whole-account wipe does not satisfy — a woman who
-/// wants a particular person's name off her phone should not have to
-/// choose between keeping it and deleting her training history.
+/// rules 7 and 8 that a whole-account wipe does not satisfy — someone who
+/// wants a particular person's name off their phone should not have to
+/// choose between keeping it and deleting their training history.
 ///
 /// **Hard delete, with a confirm.** There is no `deleted_at` column to
 /// hide the row behind (`core/db/tables/challenges.dart`), so leaving
@@ -73,7 +73,7 @@ class LeaveChallengeButton extends ConsumerWidget {
       return;
     }
 
-    // Popped before the message, so the message lands on the list she is
+    // Popped before the message, so the message lands on the list they are
     // looking at rather than on a screen whose challenge no longer exists.
     if (navigator.canPop()) navigator.pop();
     messenger.showSnackBar(const SnackBar(content: Text(leftChallengeMessage)));
@@ -82,9 +82,9 @@ class LeaveChallengeButton extends ConsumerWidget {
 
 /// What the detail screen shows when its challenge is no longer there.
 ///
-/// Reachable two ways: she left it in another window, or "Delete my data"
+/// Reachable two ways: they left it in another window, or "Delete my data"
 /// ran while this screen was open. Either way a blank [Scaffold] is the
-/// one answer that tells her nothing, so this says what happened and
+/// one answer that tells them nothing, so this says what happened and
 /// offers the way back.
 class ChallengeGoneMessage extends StatelessWidget {
   const ChallengeGoneMessage({super.key});

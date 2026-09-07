@@ -26,7 +26,7 @@ String weightUnitWord(UnitSystem unitSystem) =>
 double displayWeight(double kg, UnitSystem unitSystem) =>
     unitSystem == UnitSystem.imperial ? UnitConversions.kgToLb(kg) : kg;
 
-/// Converts a number the user typed in her own units back to kilograms.
+/// Converts a number the user typed in their own units back to kilograms.
 double displayWeightToKg(double value, UnitSystem unitSystem) =>
     unitSystem == UnitSystem.imperial ? UnitConversions.lbToKg(value) : value;
 

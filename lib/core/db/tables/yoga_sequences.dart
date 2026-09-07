@@ -18,7 +18,7 @@ import 'package:drift/drift.dart';
 /// writes a copy under a fresh id.
 ///
 /// S1-tier data (`knowledge/engineering/security_and_privacy.md`):
-/// self-authored training content, not a health measurement — but still hers,
+/// self-authored training content, not a health measurement — but still theirs,
 /// so it never enters logs, analytics or a thrown exception's message, and
 /// "Delete my data" hard-deletes every row, soft-deleted ones included
 /// (`features/activity/domain/yoga_sequence_repository.dart#deleteAllData`).

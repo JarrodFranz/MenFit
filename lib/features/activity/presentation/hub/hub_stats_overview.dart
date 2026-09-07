@@ -185,7 +185,7 @@ class HubStatsOverview extends StatelessWidget {
                   ),
                   // No history means no most-practised style, so the tile
                   // says so. It used to invent 'Primary Focus: Flow', which
-                  // is not a style she has ever logged and not one the
+                  // is not a style they have ever logged and not one the
                   // tracker even offers (ADR 014 §5).
                   StatTile(
                     label: 'Most practised style',

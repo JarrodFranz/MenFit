@@ -51,7 +51,7 @@ class MealSection extends StatelessWidget {
   /// day the diary would refuse. The caller decides
   /// (`presentation/copy_meal_controller.dart`); this widget only renders
   /// what it is handed, and never shows the action on a meal that already
-  /// has entries — a "copy" that appended to a meal she has started is a
+  /// has entries — a "copy" that appended to a meal they have started is a
   /// duplicate waiting to happen.
   final VoidCallback? onCopyFromYesterday;
 
@@ -174,7 +174,7 @@ class _EntryTile extends StatelessWidget {
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // What she logged, in the unit she logged it in — never the
+          // What they logged, in the unit they logged it in — never the
           // converted serving count as well, which would print the same
           // fact twice in two different numbers.
           Text(

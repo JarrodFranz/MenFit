@@ -50,8 +50,8 @@ class _YogaSequenceRunnerScreenState
   /// suspension produces one chime, not a burst of them for boundaries
   /// nobody heard (ADR 014 §3).
   ///
-  /// Pausing and resuming are deliberately not boundaries: she pressed the
-  /// button, she knows.
+  /// Pausing and resuming are deliberately not boundaries: they pressed the
+  /// button, they know.
   void _onRunnerChanged(YogaRunnerState? previous, YogaRunnerState next) {
     if (previous == null) return;
     if (previous.phase == YogaRunPhase.paused ||
@@ -65,8 +65,8 @@ class _YogaSequenceRunnerScreenState
     }
 
     switch (next.phase) {
-      // A pose starting, and the sequence ending, are the two moments she
-      // has to feel with her eyes closed.
+      // A pose starting, and the sequence ending, are the two moments they
+      // have to feel with their eyes closed.
       case YogaRunPhase.pose:
       case YogaRunPhase.complete:
         unawaited(AccessibilityHaptics.heavyImpact(ref));
@@ -170,8 +170,8 @@ class _YogaSequenceRunnerScreenState
       activity = await _controller.finish();
     } on Object catch (error) {
       // The practice is untouched by a failed write — same phase, same
-      // poses — so the honest thing is to say so and leave her on the
-      // Save button rather than popping her out of a session that was
+      // poses — so the honest thing is to say so and leave them on the
+      // Save button rather than popping them out of a session that was
       // never stored.
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

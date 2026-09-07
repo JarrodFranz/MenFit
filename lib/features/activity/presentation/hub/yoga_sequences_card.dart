@@ -16,8 +16,8 @@ import 'package:menfit_app/features/activity/presentation/hub/yoga_sequence_form
 /// practise or edit each, and — on an empty list — the two starters.
 ///
 /// The starters are never rows (`YogaSequenceStarters`' doc): "Add Morning
-/// flow" saves `starter.copyAsNew()`, so from that tap on it is her
-/// sequence, with her id, editable and deletable without the starter
+/// flow" saves `starter.copyAsNew()`, so from that tap on it is their
+/// sequence, with their id, editable and deletable without the starter
 /// changing.
 class YogaSequencesCard extends ConsumerWidget {
   const YogaSequencesCard({super.key});
@@ -227,9 +227,9 @@ class _SequenceTile extends ConsumerWidget {
           // (`YogaSequenceRepository.saveSequence`), so Undo restores the
           // row under its original id rather than making a near-copy.
           //
-          // A failed Undo is the worst of the three to swallow: she has
+          // A failed Undo is the worst of the three to swallow: they have
           // been told the sequence is deleted and would be left believing
-          // she got it back.
+          // they got it back.
           onPressed: () => unawaited(_undoDelete(repository, messenger)),
         ),
       ),

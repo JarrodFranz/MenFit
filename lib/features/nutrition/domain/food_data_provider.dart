@@ -98,7 +98,7 @@ abstract interface class FoodDataProvider {
   /// packet in the user's hand, wherever it was catalogued. Filtering that
   /// by country could only turn a correct answer into "not found". The
   /// language still applies, because a found record may hold names in
-  /// several and the user should see hers.
+  /// several and the user should see theirs.
   Future<ProviderFood?> findByBarcode(String barcode, {FoodSearchScope scope});
 
   /// Free-text product search, [pageSize] hits at a time, [page] counting
@@ -115,7 +115,7 @@ abstract interface class FoodDataProvider {
   /// names in one language. It is a **request** parameter, never a filter
   /// applied to the answer: a result the provider returned for the region
   /// asked for is shown as it came, because "this name doesn't look like
-  /// her alphabet" is a heuristic that would drop legitimate products
+  /// their alphabet" is a heuristic that would drop legitimate products
   /// (`domain/food_search_region.dart`).
   ///
   /// Throws a `ValidationException` when [supportsTextSearch] is `false`,

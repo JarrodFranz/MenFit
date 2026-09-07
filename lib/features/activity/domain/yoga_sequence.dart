@@ -248,7 +248,7 @@ class YogaSequence {
   /// This is how a starter from [YogaSequenceStarters] becomes the user's
   /// own: starters are a domain constant with fixed ids and are **never**
   /// persisted, so "Add a starter sequence" saves `starter.copyAsNew()` and
-  /// from that moment the copy is an ordinary user row she can edit or
+  /// from that moment the copy is an ordinary user row they can edit or
   /// delete without the starter changing.
   YogaSequence copyAsNew({String? name}) {
     final now = DateTime.now().toUtc();
@@ -321,7 +321,7 @@ List<String> validateYogaSequence(YogaSequence sequence) {
 /// Names only. No benefit claims, no "good for X" copy, nothing that reads
 /// as guidance about a body or a condition — the app does not make those
 /// claims (`knowledge/domain/mens_health.md`). The list is a convenience,
-/// not a closed set: a user may type any pose name she likes, and
+/// not a closed set: a user may type any pose name they like, and
 /// [validateYogaSequence] never checks membership here.
 abstract final class YogaPoseCatalogue {
   static const List<String> commonPoses = [
@@ -363,7 +363,7 @@ abstract final class YogaPoseCatalogue {
 /// **These are never persisted.** `YogaSequenceRepository.watchSequences()`
 /// returns stored rows and nothing else, so the list is honestly empty until
 /// the user saves something. The UI offers "Add a starter sequence", which
-/// saves `starter.copyAsNew()` — a fresh id, her row, hers to edit or
+/// saves `starter.copyAsNew()` — a fresh id, their row, theirs to edit or
 /// delete. The fixed ids below exist so the offer can tell which starters
 /// are on screen, not so anything can be looked up by them in the database.
 ///

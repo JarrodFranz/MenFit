@@ -76,10 +76,10 @@ abstract class FoodFormState with _$FoodFormState {
     /// The `ScanField` names whose reading scored below
     /// `labelScanCheckThreshold`, so the field can be marked "check this".
     ///
-    /// A field the user then edits herself is **not** removed from the set;
+    /// A field the user then edits themselves is **not** removed from the set;
     /// it is only ever recomputed by another scan. The marker says "this
     /// number came off a photo and was not read cleanly", which stays true
-    /// of the row until she saves.
+    /// of the row until they save.
     @Default(<String>{}) Set<String> lowConfidenceFields,
 
     /// Cautions to list under the review banner: the parser's own
@@ -96,17 +96,17 @@ abstract class FoodFormState with _$FoodFormState {
     ///
     /// A stored flag rather than a guess from an empty amount: a per-100 g
     /// scan also fills the amount, and if the user cleared *that* field the
-    /// form would otherwise show her a message about millilitres.
+    /// form would otherwise show them a message about millilitres.
     ///
     /// **Sticky.** Once a per-volume panel has been read, this stays true
     /// for the life of the form: the numbers in the fields are still per
-    /// 100 mL however many times she scans afterwards.
+    /// 100 mL however many times they scan afterwards.
     @Default(false) bool labelIsPerVolume,
 
     /// Whether the user has set the amount **since** the per-volume scan.
     ///
-    /// A weight she typed before scanning was not about this label's basis
-    /// — she was defining a food by weight and then photographed a drink
+    /// A weight they typed before scanning was not about this label's basis
+    /// — they were defining a food by weight and then photographed a drink
     /// printed per 100 mL. Saving that pair records "these macros are per
     /// 250 g" about figures printed per 100 mL, which is false, so the form
     /// asks again rather than accepting the coincidence.
@@ -145,10 +145,10 @@ abstract class FoodFormState with _$FoodFormState {
   /// 100 mL, the exact class of silent-wrong-number
   /// `knowledge/domain/nutrition.md` withdrew the `ml` unit over.
   ///
-  /// Two gates, and both are needed. An **unconfirmed** weight is one she
+  /// Two gates, and both are needed. An **unconfirmed** weight is one they
   /// typed before the scan, which said nothing about this label. A
   /// **blank** amount is the one the scan itself left behind — and it stays
-  /// a blocker even after she has confirmed once, because clearing the
+  /// a blocker even after they have confirmed once, because clearing the
   /// field again puts the same silent 100 back.
   bool get needsWeightForVolumeLabel =>
       labelIsPerVolume &&

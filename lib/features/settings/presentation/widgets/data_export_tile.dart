@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:menfit_app/features/data_export/data_export_widgets.dart';
 
-/// The Settings row that saves a copy of everything she has logged as a file
+/// The Settings row that saves a copy of everything they have logged as a file
 /// — the "export" half of security_and_privacy.md rule 7 ("deletion & export
 /// are features"), sitting beside the "Delete my data" flow that is the other
 /// half.

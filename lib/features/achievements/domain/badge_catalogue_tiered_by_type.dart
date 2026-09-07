@@ -7,9 +7,9 @@
 ///
 /// The original twelve were the app-wide ladders: total sessions, total
 /// running, tonnage, minutes on the mat. They left whole activity types
-/// with no ladder of their own — a woman who walks and swims and does
+/// with no ladder of their own — someone who walks and swims and does
 /// nothing else progressed on exactly one badge. These seven give every
-/// `ActivityType` a ladder that is about *her* sport rather than about
+/// `ActivityType` a ladder that is about *their* sport rather than about
 /// sport in general. They are additions only: nothing in the first file
 /// moved, and no shipped id, metric or threshold changed (rule 1).
 ///
@@ -59,7 +59,7 @@ const List<BadgeDefinition> perTypeTieredBadgeDefinitions = [
   //
   // Distance rather than ascent on purpose: manual entry has no elevation
   // field today, so a hiker who logs by hand records metres walked and
-  // nothing else. Her ladder had to be the one she can always move. The
+  // nothing else. Their ladder had to be the one they can always move. The
   // climbing ladder below is the bonus, never the substitute.
   BadgeDefinition.tiered(
     id: 'hike_distance',
@@ -90,7 +90,7 @@ const List<BadgeDefinition> perTypeTieredBadgeDefinitions = [
   // import, and a hand-logged session has none
   // (`domain/badge_metrics.dart#ascentOf`). That is survivable only
   // because every activity type it could apply to already has a ladder of
-  // its own — this is the extra one for the days she took the hills, not
+  // its own — this is the extra one for the days they took the hills, not
   // anybody's only route to a tier.
   BadgeDefinition.tiered(
     id: 'elevation_climbed',
@@ -166,8 +166,8 @@ const List<BadgeDefinition> perTypeTieredBadgeDefinitions = [
   // Sessions, not minutes: Time on the Mat already counts yoga and pilates
   // minutes together, and a second ladder over the same quantity would be
   // the same badge twice. Counting sessions per discipline instead means
-  // a woman who does both progresses on three distinct things, and a woman
-  // who does one of them has a ladder that is hers.
+  // someone who does both progresses on three distinct things, and someone
+  // who does one of them has a ladder that is theirs.
   BadgeDefinition.tiered(
     id: 'yoga_sessions',
     title: 'Breath by Breath',

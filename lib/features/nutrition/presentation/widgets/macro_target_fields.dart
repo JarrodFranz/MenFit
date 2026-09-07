@@ -309,8 +309,8 @@ class _MacroLockButton extends StatelessWidget {
 /// the grams it works out to underneath.
 ///
 /// **The grams are shown on purpose.** They are the figures the diary
-/// measures against, so a user who states her targets as percentages would
-/// otherwise never see the numbers she is actually working to.
+/// measures against, so a user who states their targets as percentages would
+/// otherwise never see the numbers they are actually working to.
 ///
 /// **The energy figure behind them is not always shown.**
 /// [DerivedMacroTargetGrams.basisKcal] is

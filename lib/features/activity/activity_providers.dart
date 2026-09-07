@@ -81,9 +81,9 @@ YogaSequenceRepository yogaSequenceRepository(Ref ref) {
 /// Every saved yoga sequence, most recently updated first.
 ///
 /// Stored rows only. `YogaSequenceStarters.starters` is a domain constant
-/// and is deliberately **not** merged in here - an empty list means she has
+/// and is deliberately **not** merged in here - an empty list means they have
 /// saved nothing, and the UI offers a starter separately, saving
-/// `starter.copyAsNew()` if she takes it.
+/// `starter.copyAsNew()` if they take it.
 @riverpod
 Stream<List<YogaSequence>> yogaSequences(Ref ref) {
   final repository = ref.watch(yogaSequenceRepositoryProvider);
@@ -141,7 +141,7 @@ ScreenAwakePreferenceStore screenAwakePreferenceStore(Ref ref) {
 ///
 /// `keepAlive` because a tracker holds onto this for the whole of a
 /// session, and that outlives the hub screen the switch lives on: an
-/// autoDispose family would drop the listener the moment she left the hub,
+/// autoDispose family would drop the listener the moment they left the hub,
 /// which is exactly when a running workout still needs to hear about a
 /// change.
 @Riverpod(keepAlive: true)
@@ -153,7 +153,7 @@ class ScreenAwakePreference extends _$ScreenAwakePreference {
 
   /// Applies [enabled] optimistically, then persists it.
   ///
-  /// The switch has to move under her finger, so state goes first; a failed
+  /// The switch has to move under their finger, so state goes first; a failed
   /// write puts it back and rethrows, so the caller can say why rather than
   /// leaving a switch that looks set and is not.
   Future<void> set({required bool enabled}) async {

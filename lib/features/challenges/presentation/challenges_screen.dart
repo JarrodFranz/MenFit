@@ -25,7 +25,7 @@ import 'package:menfit_app/features/challenges/presentation/widgets/challenge_ca
 ///
 /// ## Finished challenges are kept and de-emphasised, not hidden
 ///
-/// A finished challenge is something she did, and the mutual celebration
+/// A finished challenge is something they did, and the mutual celebration
 /// lives on it. It sits in a collapsed section rather than on the main
 /// list so that "what am I doing now" is the first thing the screen
 /// answers.

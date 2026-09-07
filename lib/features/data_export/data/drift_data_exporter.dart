@@ -10,7 +10,7 @@ import 'package:menfit_app/features/data_export/domain/data_export_tables.dart';
 /// exists, because nobody has to remember to come back here. The failure mode
 /// of the obvious alternative — a hand-written list of `db.select(db.foo)`
 /// calls — is silent and permanent: an export that has quietly stopped being
-/// a copy of her data, discovered only by someone comparing a file against a
+/// a copy of their data, discovered only by someone comparing a file against a
 /// database. `features/settings/application/delete_my_data_service.dart` runs
 /// the same risk on the deletion side and answers it with a test that seeds
 /// every table; export answers it in the code itself.
@@ -19,8 +19,8 @@ import 'package:menfit_app/features/data_export/domain/data_export_tables.dart';
 /// deliberately an explicit *exclusion* set
 /// (`domain/data_export_tables.dart`) rather than an inclusion list: a new
 /// table is included by default, which is the safe direction to be wrong in
-/// for an export (a missing table loses data; an unexpected table is data she
-/// already owns, from the app she already installed). The tier decision is
+/// for an export (a missing table loses data; an unexpected table is data they
+/// already own, from the app they already installed). The tier decision is
 /// forced anyway by
 /// `test/features/data_export/data_export_table_coverage_test.dart`.
 class DriftDataExporter implements DataExportSource {

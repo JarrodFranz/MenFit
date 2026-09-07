@@ -352,7 +352,7 @@ class _MindfulTrackerScreenState extends ConsumerState<MindfulTrackerScreen> {
             ),
             // The slider starts unrated: its thumb rests at the mid-point
             // so there is somewhere to drag from, but nothing is stored
-            // until she actually moves it. An unanswered RPE must reach
+            // until they actually move it. An unanswered RPE must reach
             // storage as null — `MindfulWorkoutDetails.rpe`.
             Slider(
               value: (state.rpe ?? 5).toDouble(),

@@ -3,11 +3,11 @@ import 'package:menfit_app/core/theme/tokens.dart';
 import 'package:menfit_app/features/activity/domain/pace_format.dart';
 import 'package:menfit_app/features/activity/presentation/recording/yoga_sequence_runner_controller.dart';
 
-/// The end of the sequence: what she practised, and the one button that
+/// The end of the sequence: what they practised, and the one button that
 /// saves it.
 ///
-/// Nothing is written until she presses Save — a practice that saved itself
-/// the instant the last pose ran out would record sessions she walked away
+/// Nothing is written until they press Save — a practice that saved itself
+/// the instant the last pose ran out would record sessions they walked away
 /// from mid-way through.
 class YogaRunnerCompleteView extends StatelessWidget {
   const YogaRunnerCompleteView({

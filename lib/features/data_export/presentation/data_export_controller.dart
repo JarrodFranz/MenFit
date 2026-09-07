@@ -9,7 +9,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'data_export_controller.g.dart';
 
 /// Hands the finished export [bytes] to the platform's save dialog,
-/// returning where the user chose to put it or `null` if she backed out.
+/// returning where the user chose to put it or `null` if they backed out.
 ///
 /// Injectable so the flow above it is testable without a native dialog —
 /// the same seam `features/activity/presentation/activity_export_controller.dart`
@@ -38,7 +38,7 @@ final class DataExportInProgress extends DataExportState {
   const DataExportInProgress();
 }
 
-/// The file was written to wherever she chose.
+/// The file was written to wherever they chose.
 final class DataExportSaved extends DataExportState {
   const DataExportSaved({required this.filename, required this.summary});
 
@@ -46,14 +46,14 @@ final class DataExportSaved extends DataExportState {
   final DataExportSummary summary;
 }
 
-/// She dismissed the save dialog. Not an error — she already knows.
+/// They dismissed the save dialog. Not an error — they already know.
 final class DataExportCancelled extends DataExportState {
   const DataExportCancelled();
 }
 
 /// Something failed. [userMessage] comes from `userMessageFor`, so it is one
 /// of a fixed set of sentences and can never contain a table name, a row, or
-/// anything else out of her data — an error string reaches SnackBars and,
+/// anything else out of their data — an error string reaches SnackBars and,
 /// one careless line later, logs (security_and_privacy.md rule 3).
 final class DataExportFailed extends DataExportState {
   const DataExportFailed(this.userMessage);
@@ -82,7 +82,7 @@ class DataExportController extends _$DataExportController {
 
   /// Builds the export and offers it to the user to save.
   ///
-  /// [includeSensitiveHealth] is the answer she gave the notice dialog and
+  /// [includeSensitiveHealth] is the answer they gave the notice dialog and
   /// has no default — a caller has to have asked before it can call this.
   ///
   /// [saver] defaults to the real `file_picker` save dialog; tests pass their

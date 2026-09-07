@@ -35,7 +35,7 @@ class ScreenAwakePreferenceStore {
   /// Whether [type]'s tracker should hold the screen on.
   ///
   /// Missing reads as [screenAwakeDefaultEnabled] (true): nothing stored
-  /// means she has never chosen, and the app's default is on.
+  /// means they have never chosen, and the app's default is on.
   bool isEnabled(ActivityType type) =>
       _preferences?.getBool(_keyFor(type)) ?? screenAwakeDefaultEnabled;
 

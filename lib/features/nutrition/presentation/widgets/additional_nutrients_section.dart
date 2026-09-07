@@ -30,7 +30,7 @@ class AdditionalNutrientsSection extends ConsumerWidget {
       // afresh — and therefore honours `initiallyExpanded` again — the one
       // time its contents change without the user touching it. A scan that
       // fills eight optional nutrients behind a collapsed header is a scan
-      // whose result she cannot check, which is the whole review step.
+      // whose result they cannot check, which is the whole review step.
       key: ValueKey('additionalNutrients-${state.labelScanApplied}'),
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),

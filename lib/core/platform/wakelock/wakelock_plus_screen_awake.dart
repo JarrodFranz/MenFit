@@ -16,8 +16,8 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 /// ## Why it counts holders instead of holding a bool
 ///
 /// The platform lock is a single global, and this app can have **two
-/// sessions running at once**: the GPS recorder keeps running while she
-/// opens a strength or HIIT hub on top of it (that fallthrough is
+/// sessions running at once**: the GPS recorder keeps running while they
+/// open a strength or HIIT hub on top of it (that fallthrough is
 /// deliberate — see `active_workout_summary.dart`). Six keep-alive tracker
 /// controllers each own a `TrackerScreenAwake`, so with one bool the second
 /// tracker to finish would switch the screen lock off underneath a

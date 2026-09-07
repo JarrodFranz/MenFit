@@ -42,7 +42,7 @@ enum MacroNutrient {
   };
 }
 
-/// Which of the three gram targets the user has pinned to the value she
+/// Which of the three gram targets the user has pinned to the value they
 /// typed.
 ///
 /// A lock says "keep this one where I put it". With two of the three locked

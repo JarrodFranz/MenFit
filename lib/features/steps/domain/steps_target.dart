@@ -10,6 +10,6 @@
 /// 7 500 is a **display default, not health advice**
 /// (`knowledge/domain/mens_health.md`: this app does not set clinical
 /// targets). It is a round number the user is expected to be able to change
-/// once a per-user target exists; nothing in the app tells her it is a
-/// figure she ought to hit.
+/// once a per-user target exists; nothing in the app tells them it is a
+/// figure they ought to hit.
 const int defaultDailyStepTarget = 7500;

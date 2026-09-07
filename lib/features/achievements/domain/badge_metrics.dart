@@ -22,11 +22,11 @@ import 'package:menfit_app/features/progress/domain/weekly_summary.dart'
 ///
 /// Not an invented judgement: this is the same 2,000 ml the hydration card
 /// has celebrated since S1-5 (`features/nutrition/presentation/widgets/
-/// water_intake_card.dart`). The insights engine refuses to *measure* her
-/// against a hydration figure she never chose
+/// water_intake_card.dart`). The insights engine refuses to *measure* their
+/// against a hydration figure they never chose
 /// (`features/insights/domain/evaluators/hydration_output_evaluator.dart`),
 /// and that refusal stands — a badge only ever adds a celebration, never a
-/// verdict, so counting the days she already gets congratulated for is a
+/// verdict, so counting the days they already get congratulated for is a
 /// different act entirely.
 const int badgeWaterTargetMl = 2000;
 
@@ -58,7 +58,7 @@ const double bigClimbMetres = 500;
 
 /// Completed rounds within one interval session that earn the rounds
 /// one-off. Well clear of the eight-round default a HIIT session is
-/// created with, so it marks a session she deliberately made long.
+/// created with, so it marks a session they deliberately made long.
 const int longIntervalRounds = 20;
 
 /// How long a single yoga or pilates session runs to earn its hour badge.
@@ -136,7 +136,7 @@ Map<BadgeMetric, double> computeBadgeMetrics(BadgeInputs inputs) {
     final details = activity.workoutDetails;
     if (details is StrengthWorkoutDetails) {
       // `completedVolumeKg`, never `totalVolumeKg`: a planned-but-unfinished
-      // set is not tonnage she lifted (see `workout_details.dart`).
+      // set is not tonnage they lifted (see `workout_details.dart`).
       strengthVolumeKg += details.completedVolumeKg;
     }
     if (_isMindful(activity)) {
@@ -237,7 +237,7 @@ bool _isMindful(Activity activity) =>
 /// Type **or** details, the same rule mindful movement already uses: a run
 /// logged with interval structure attached to it is an interval session by
 /// any reading, and refusing it would make the badge a fact about which
-/// button she pressed rather than about what she did.
+/// button they pressed rather than about what they did.
 bool isIntervalSession(Activity activity) =>
     activity.activityType == ActivityType.hiit ||
     activity.workoutDetails is HiitWorkoutDetails;
@@ -270,7 +270,7 @@ double swimDistanceMetres(Activity activity) {
 /// most logged sessions carry `null`, and every one of them must simply
 /// contribute nothing rather than break the sum or drop the session. A
 /// negative or non-finite stored value is treated the same way: a corrupt
-/// row cannot take away climbing she did.
+/// row cannot take away climbing they did.
 double ascentOf(Activity activity) {
   final climbed = activity.elevationGainMeters;
   if (climbed == null || !climbed.isFinite || climbed <= 0) return 0;

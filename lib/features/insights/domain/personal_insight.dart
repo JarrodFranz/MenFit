@@ -62,7 +62,7 @@ enum InsightGroup {
 /// is and how cleanly it splits.
 enum InsightConfidence {
   /// Clears every gate, but only just — a pattern worth noticing, not a
-  /// settled fact about her.
+  /// settled fact about them.
   emerging,
 
   /// A large sample with a large, clean separation.
@@ -76,7 +76,7 @@ enum InsightConfidence {
 /// There is no free-text field anywhere on it. Everything is an enum, a
 /// count, a date, or a number, so the domain layer has no way to write
 /// "because", "this will improve", "you should", or any statement about
-/// women in general. The UI composes a sentence from these parts, and the
+/// people in general. The UI composes a sentence from these parts, and the
 /// parts it is given only support the shape *"across N logged days, X
 /// measured Y% higher than Z"*.
 ///

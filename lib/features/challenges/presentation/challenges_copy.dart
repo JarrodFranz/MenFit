@@ -14,7 +14,7 @@
 ///    is winning, losing, ahead, behind, or being beaten. The domain
 ///    layer makes a leader *unrepresentable*
 ///    (`domain/challenge_progress.dart`: participants expose a name, a
-///    percentage and "did she reach her own goal", and nothing else), and
+///    percentage and "did they reach their own goal", and nothing else), and
 ///    the copy must not smuggle back in what the model refuses to hold.
 ///    The two percentages measure different, privately-adjusted targets,
 ///    so ranking them would not even be arithmetic — but the rule stands
@@ -22,7 +22,7 @@
 /// 2. **Nothing cycle-related appears on any challenge surface, ever.**
 ///    Not a phase, not a period, not a flare, not a recovery day, and not
 ///    a number any of those could be read out of. A buddy may well be
-///    looking at this screen over her shoulder — that is the whole
+///    looking at this screen over their shoulder — that is the whole
 ///    premise of the feature. [fairnessNote] is the one sentence allowed
 ///    to acknowledge that targets flex, and it says so without naming
 ///    what makes them flex.
@@ -61,7 +61,7 @@ const String activeChallengesHeading = 'On the go';
 const String finishedChallengesHeading = 'Finished';
 
 /// The empty state. An invitation and a description — no suggestion that
-/// she is late to something, and no second sentence nudging her to act.
+/// they are late to something, and no second sentence nudging them to act.
 const String challengesEmptyLine =
     'Nothing on the go. A challenge is a shared plan with a friend: you '
     'pick something together, and you each aim at your own version of it.';
@@ -87,12 +87,12 @@ String challengeTargetLine(ChallengeBlueprint blueprint) =>
 // There is deliberately no "42.3 km so far" line in this file any more,
 // and adding one back to a challenge surface needs the argument in
 // `knowledge/engineering/security_and_privacy.md` re-opened first. A
-// surface showing her raw work *and* her percentage *and* the shared
-// target *and* the window states four numbers from which her
+// surface showing their raw work *and* their percentage *and* the shared
+// target *and* the window states four numbers from which their
 // protected-day count follows by arithmetic — see the co-presence rule
 // pinned by `test/features/challenges/challenge_surfaces_privacy_test.dart`
-// and the class doc on `challenge_detail_screen.dart`. Her raw distance
-// belongs where it always was: in her activity history, on a screen that
+// and the class doc on `challenge_detail_screen.dart`. Their raw distance
+// belongs where it always was: in their activity history, on a screen that
 // says nothing about a challenge.
 
 /// Shown when a challenge counts every activity type.
@@ -137,8 +137,8 @@ String originLine(ChallengeOrigin origin) => switch (origin) {
 // Progress
 // ---------------------------------------------------------------------------
 
-/// The label for the user's own row. "You", never her display name: the
-/// name she chose is for her buddy's screen, not her own.
+/// The label for the user's own row. "You", never their display name: the
+/// name they chose is for their buddy's screen, not their own.
 const String selfLabel = 'You';
 
 /// `'112%'`. Floored, never capped — see the library doc.
@@ -154,29 +154,29 @@ String formatPercent(double percent) {
 String buddyAsOfLine(LocalDate asOf) => 'as of ${challengeDayLabel(asOf)}';
 
 /// The buddy's standing on a list card, as a sentence:
-/// `'Sam: 48% of her own goal · as of 12 Sep'`.
+/// `'Sam: 48% of their own goal · as of 12 Sep'`.
 ///
 /// A sentence rather than a second progress bar, and that is the whole
 /// point of it — see the class doc on
-/// `presentation/widgets/challenge_card.dart`. "of her own goal" is
+/// `presentation/widgets/challenge_card.dart`. "of their own goal" is
 /// carried in the visible text rather than left to the screen reader,
 /// because the number beside a bar of the user's own is exactly where a
 /// reader supplies the comparison the two figures do not support.
 String buddyCardLine(String displayName, double percent, LocalDate asOf) =>
-    '$displayName: ${formatPercent(percent)} of her own goal · '
+    '$displayName: ${formatPercent(percent)} of their own goal · '
     '${buddyAsOfLine(asOf)}';
 
 String selfProgressSemanticsLabel(double percent) =>
     'You: ${formatPercent(percent)} of your own goal.';
 
 String buddyProgressSemanticsLabel(String displayName, double percent) =>
-    '$displayName: ${formatPercent(percent)} of her own goal.';
+    '$displayName: ${formatPercent(percent)} of their own goal.';
 
-/// Said about her, alone. There is deliberately no counterpart that
+/// Said about them, alone. There is deliberately no counterpart that
 /// mentions both people unless [bothReachedLine] applies.
 const String selfReachedLine = 'You reached your goal.';
 
-String buddyReachedLine(String displayName) => '$displayName reached hers.';
+String buddyReachedLine(String displayName) => '$displayName reached theirs.';
 
 const String bothReachedTitle = 'You both got there';
 
@@ -230,7 +230,7 @@ const String createSubmitLabel = 'Create and get the code';
 const String challengeCreatedTitle = 'Here is your code';
 
 const String challengeCreatedLine =
-    'Send it to your buddy. She pastes it into Join with a code, and you '
+    'Send it to your buddy. They paste it into Join with a code, and you '
     'are both in the same challenge.';
 
 /// The plain-language half of the privacy invariant, on the screen that
@@ -269,7 +269,7 @@ const String alreadyJoinedMessage =
     'You already have this one — it is on your list.';
 
 /// What a code turned out to describe, shown live under the paste field
-/// so she can see she has the right one before she commits.
+/// so they can see they have the right one before they commit.
 String joinCodePreviewLine(ChallengeBlueprint blueprint) =>
     '${challengeTargetLine(blueprint)} · '
     '${challengeActivityLine(blueprint.activityTypes)} · '
@@ -278,9 +278,9 @@ String joinCodePreviewLine(ChallengeBlueprint blueprint) =>
 /// Why a pasted **challenge** code could not be used, in human terms.
 ///
 /// Every branch is honest about whose problem it is and what to do next.
-/// None of them says "invalid", "error" or "checksum": a woman who was
+/// None of them says "invalid", "error" or "checksum": someone who was
 /// sent a code by a friend has done nothing wrong, and a technical word
-/// here would only make her feel she had.
+/// here would only make them feel they had.
 String joinCodeRejectionMessage(CodeRejection rejection) => switch (rejection) {
   CodeRejection.malformed =>
     "That doesn't look like a challenge code yet. Paste the whole "
@@ -290,7 +290,7 @@ String joinCodeRejectionMessage(CodeRejection rejection) => switch (rejection) {
         'will open.',
   CodeRejection.wrongCodeKind =>
     'That is a progress code. Ask your buddy for the challenge code '
-        'she got when she set it up.',
+        'they got when they set it up.',
   CodeRejection.checksumFailed =>
     'That code looks damaged — a character probably went astray on '
         'the way. Ask for it again.',
@@ -308,12 +308,12 @@ const String challengeDetailTitle = 'Challenge';
 const String buddySectionHeading = 'Your buddy';
 
 const String buddyEmptyLine =
-    'Nothing pasted yet. Whenever she sends her progress code, it goes in '
+    'Nothing pasted yet. Whenever they send their progress code, it goes in '
     'here — and a challenge runs just fine without one.';
 
-const String pasteBuddyCodeLabel = 'Paste her latest code';
+const String pasteBuddyCodeLabel = 'Paste their latest code';
 
-const String buddyCodeFieldLabel = 'Her progress code';
+const String buddyCodeFieldLabel = 'Their progress code';
 
 const String buddyCodeHelper = 'It starts with FP1.';
 
@@ -324,13 +324,13 @@ String buddyImportedMessage(String displayName) =>
 
 const String buddyNotNewerMessage = 'You already have this one.';
 
-/// Her own progress code, pasted back into her own buddy box.
+/// Their own progress code, pasted back into their own buddy box.
 ///
 /// Says whose code it is and what to do with it, in that order, and does
 /// not call it a mistake: pasting the wrong one of two very similar
 /// strings is not a mistake anyone needs telling off for.
 const String buddyOwnCodeMessage =
-    "That's your own progress code — send it to her, and paste hers here.";
+    "That's your own progress code — send it to them, and paste theirs here.";
 
 const String buddyUnknownChallengeMessage =
     'That code belongs to a different challenge. Open that one and paste '
@@ -343,8 +343,8 @@ const String buddyUnknownChallengeMessage =
 String progressCodeRejectionMessage(CodeRejection rejection) =>
     switch (rejection) {
       CodeRejection.wrongCodeKind =>
-        'That is the challenge code, not a progress code. Ask her for the '
-            'one from her own Share my progress button.',
+        'That is the challenge code, not a progress code. Ask them for the '
+            'one from their own Share my progress button.',
       _ => joinCodeRejectionMessage(rejection),
     };
 
@@ -353,10 +353,10 @@ const String shareProgressLabel = 'Share my progress';
 const String progressCodeTitle = 'Your progress code';
 
 const String progressCodeLine =
-    'Send this to your buddy so she can see how you are getting on.';
+    'Send this to your buddy so they can see how you are getting on.';
 
 /// The plain-language half of the privacy invariant, on the one screen
-/// that hands out something derived from her own data.
+/// that hands out something derived from their own data.
 ///
 /// It lists the whole contents of the code, because the whole contents
 /// is four things — see `domain/challenge_codes.dart`.
@@ -370,22 +370,22 @@ const String progressCodePrivacyNote =
 // ---------------------------------------------------------------------------
 
 /// The way out of one challenge, as opposed to Settings' "Delete my data"
-/// which takes everything (privacy rules 7 and 8: what she can put in,
-/// she can take out, one item at a time).
+/// which takes everything (privacy rules 7 and 8: what they can put in,
+/// they can take out, one item at a time).
 const String leaveChallengeLabel = 'Leave this challenge';
 
 const String leaveChallengeTitle = 'Leave this challenge?';
 
-/// What leaving actually does, in the two facts she needs before she taps.
+/// What leaving actually does, in the two facts they need before they tap.
 ///
 /// It names the buddy's name as one of the things that goes, because that
-/// is the part a woman leaving a challenge with someone she no longer
-/// wants a record of is really asking about. It restates **no numbers** —
-/// not the target, not her percentage, not her buddy's: a confirm dialog
+/// is the part someone leaving a challenge with someone they no longer
+/// want a record of is really asking about. It restates **no numbers** —
+/// not the target, not their percentage, not their buddy's: a confirm dialog
 /// is not a place to put a scoreline, least of all on the way out.
 const String leaveChallengeBody =
     'This challenge leaves this phone permanently, and your buddy’s name '
-    'goes with it. She keeps her own copy on hers.';
+    'goes with it. They keep their own copy on theirs.';
 
 const String leaveChallengeConfirmLabel = 'Leave';
 
@@ -421,7 +421,7 @@ const String celebrationShareLabel = 'Copy card text';
 
 /// Hands the same card text to the OS share sheet. Text, not the card
 /// image: the image carries both names, and the sheet's own copy has
-/// always been the thing she sends.
+/// always been the thing they send.
 const String celebrationSystemShareLabel = 'Share card text';
 
 const String celebrationCopiedMessage = 'Copied, ready to send.';
@@ -430,7 +430,7 @@ const String celebrationCardFooter = 'Built for the work · MenFit';
 
 /// `'Alex & Sam'` — two names, joined by an ampersand and nothing that
 /// puts one of them first in any sense that means anything. The user's
-/// own name leads only because it is her card.
+/// own name leads only because it is their card.
 String celebrationNamesLine(String selfDisplayName, String buddyDisplayName) =>
     '$selfDisplayName & $buddyDisplayName';
 

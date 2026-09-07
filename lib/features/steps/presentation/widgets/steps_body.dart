@@ -59,7 +59,7 @@ class _StepsBodyState extends ConsumerState<StepsBody> {
   ///
   /// Without it, a read-only screen that showed the history and was then
   /// stepped back to an empty month would drop the period header along with
-  /// the chart — taking away the only control that could bring her back.
+  /// the chart — taking away the only control that could bring them back.
   /// Deliberately assigned during `build` and never un-set: it only ever
   /// turns on, and it turns on in the very build that already has the rows,
   /// so no extra frame or `setState` is involved.

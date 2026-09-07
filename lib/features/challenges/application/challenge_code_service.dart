@@ -17,7 +17,7 @@ import 'package:menfit_app/features/challenges/domain/challenge_validation.dart'
 /// **Nothing here can widen what a progress code carries.** Exporting goes
 /// through [progressCodeFor], which takes a percentage and hands it to
 /// `challenge_codes.dart#encodeProgressCode`; neither function is given
-/// the user's raw distance, her adjusted target, or her protected days.
+/// the user's raw distance, their adjusted target, or their protected days.
 /// See that library's privacy invariant.
 class ChallengeCodeService {
   ChallengeCodeService(
@@ -46,7 +46,7 @@ class ChallengeCodeService {
   /// a shared goal, and the only thing knowing one lets you do is join it.
   /// The author tag is a tie-breaker between two devices in the same
   /// challenge, not a credential — forging one buys an attacker the
-  /// ability to have a progress code she wrote *ignored*.
+  /// ability to have a progress code they wrote *ignored*.
   static int _random32() => _random.nextInt(0x100000000);
 
   /// Creates a challenge, persists it, and returns it with the code to
@@ -100,9 +100,9 @@ class ChallengeCodeService {
   ///
   /// Pasting a code for a challenge already held is **not an error**: it
   /// returns [ChallengeAlreadyJoined] carrying the row as it stands, with
-  /// her existing display name and her buddy's last snapshot untouched.
+  /// their existing display name and their buddy's last snapshot untouched.
   /// The alternative — overwriting — would let a re-shared code silently
-  /// wipe progress she had already imported.
+  /// wipe progress they had already imported.
   ///
   /// The window is re-validated on this side. A code that arrives long
   /// after its window has passed, or that names a window this build
@@ -147,7 +147,7 @@ class ChallengeCodeService {
   ///
   /// [progressPercent] comes from
   /// `domain/challenge_progress_engine.dart`'s
-  /// `ChallengeSelfProgress.percent` and is the **only** thing about her
+  /// `ChallengeSelfProgress.percent` and is the **only** thing about their
   /// standing that crosses the gap — see this class's doc and the privacy
   /// invariant on `domain/challenge_codes.dart`.
   String progressCodeFor(
@@ -166,7 +166,7 @@ class ChallengeCodeService {
 
   /// Applies a pasted progress code to the challenge it names.
   ///
-  /// **Her own code coming back is not an import.** Every progress code
+  /// **Their own code coming back is not an import.** Every progress code
   /// carries the author tag of the device that wrote it
   /// (`domain/challenge_codes.dart`), and a code whose tag matches this
   /// challenge's own is one this device exported — pasted back by mistake,
@@ -185,7 +185,7 @@ class ChallengeCodeService {
   /// anyone feel behind, exactly the wrong kind of wrong.
   ///
   /// **A code for the same day is applied, unless it says the same thing.**
-  /// Two codes exported on one day are an ordinary event — she trains
+  /// Two codes exported on one day are an ordinary event — they train
   /// twice, or fixes a name — and the later paste is the one the user
   /// chose to paste, so it wins. Only a code that would change nothing is
   /// reported as [BuddyProgressNotNewer], which is what keeps re-pasting
@@ -285,7 +285,7 @@ final class ChallengeCodeUnusable extends JoinChallengeResult {
   final CodeRejection reason;
 }
 
-/// The code decoded, but what it describes (or the name she picked) did
+/// The code decoded, but what it describes (or the name they picked) did
 /// not pass validation on this side.
 final class ChallengeJoinRejected extends JoinChallengeResult {
   const ChallengeJoinRejected(this.validation);

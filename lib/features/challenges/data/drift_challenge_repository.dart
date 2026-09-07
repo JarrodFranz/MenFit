@@ -105,8 +105,8 @@ class DriftChallengeRepository implements ChallengeRepository {
             // which quietly breaks the contract
             // `domain/challenge_repository.dart#saveChallenge` states: the
             // stored `createdAt` is the first-ever save's, so callers never
-            // read-before-write and re-joining a challenge she already
-            // holds cannot move the moment she picked it up.
+            // read-before-write and re-joining a challenge they already
+            // hold cannot move the moment they picked it up.
             onConflict: DoUpdate(
               (_) => row.copyWith(createdAt: const Value.absent()),
             ),

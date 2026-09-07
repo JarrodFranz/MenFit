@@ -15,16 +15,16 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ChallengeSelfProgress {
 
-/// What she actually did inside the window, in the challenge kind's
+/// What they actually did inside the window, in the challenge kind's
 /// working unit: metres for a distance challenge, a session count for
 /// a session challenge.
  double get rawValue;/// What the challenge asks of a person with no protected days —
 /// identical on both devices, because it is part of the shared
 /// blueprint.
- double get nominalTarget;/// What it asks of *her*, after pro-rating by her protected days. Less
+ double get nominalTarget;/// What it asks of *them*, after pro-rating by their protected days. Less
 /// than or equal to [nominalTarget], always. Zero when every day of
 /// the window was protected.
- double get adjustedTarget;/// How many days of the window were protected recovery for her. Never
+ double get adjustedTarget;/// How many days of the window were protected recovery for them. Never
 /// leaves this object.
  int get protectedDaysInWindow;/// Days in the window, both endpoints included.
  int get windowDays;/// [rawValue] against [adjustedTarget], as a percentage. Not capped:
@@ -230,7 +230,7 @@ class _ChallengeSelfProgress extends ChallengeSelfProgress {
   const _ChallengeSelfProgress({required this.rawValue, required this.nominalTarget, required this.adjustedTarget, required this.protectedDaysInWindow, required this.windowDays, required this.percent}): super._();
   
 
-/// What she actually did inside the window, in the challenge kind's
+/// What they actually did inside the window, in the challenge kind's
 /// working unit: metres for a distance challenge, a session count for
 /// a session challenge.
 @override final  double rawValue;
@@ -238,11 +238,11 @@ class _ChallengeSelfProgress extends ChallengeSelfProgress {
 /// identical on both devices, because it is part of the shared
 /// blueprint.
 @override final  double nominalTarget;
-/// What it asks of *her*, after pro-rating by her protected days. Less
+/// What it asks of *them*, after pro-rating by their protected days. Less
 /// than or equal to [nominalTarget], always. Zero when every day of
 /// the window was protected.
 @override final  double adjustedTarget;
-/// How many days of the window were protected recovery for her. Never
+/// How many days of the window were protected recovery for them. Never
 /// leaves this object.
 @override final  int protectedDaysInWindow;
 /// Days in the window, both endpoints included.

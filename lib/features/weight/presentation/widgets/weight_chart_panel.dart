@@ -38,7 +38,7 @@ class WeightChartPanel extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     // Range-independent, like the header's "latest reading": it separates
-    // "she has never logged anything" from "this window happens to be
+    // "they have never logged anything" from "this window happens to be
     // empty", which are different sentences (see `weight_copy.dart`).
     final hasAnyReading = ref.watch(latestWeightLogProvider).value != null;
 

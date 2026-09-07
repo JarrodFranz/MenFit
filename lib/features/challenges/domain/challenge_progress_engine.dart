@@ -3,8 +3,8 @@ import 'package:menfit_app/features/activity/domain/activity.dart';
 import 'package:menfit_app/features/challenges/domain/challenge.dart';
 import 'package:menfit_app/features/challenges/domain/challenge_progress.dart';
 
-/// Computes the user's own standing in [challenge] from her activity log
-/// and her protected days.
+/// Computes the user's own standing in [challenge] from their activity log
+/// and their protected days.
 ///
 /// Pure: no clock, no repositories, no providers — the caller hands over
 /// already-loaded lists (`challenges_providers.dart#selfProgress` does the
@@ -15,7 +15,7 @@ import 'package:menfit_app/features/challenges/domain/challenge_progress.dart';
 ///
 /// The challenge's nominal target is what it asks of a person with no
 /// protected days. Each participant's *personal* target is that figure
-/// pro-rated to the days that were actually hers to use:
+/// pro-rated to the days that were actually theirs to use:
 ///
 /// * `activeDays = windowDays - protectedDaysInWindow`
 /// * `adjustedTarget = nominalTarget × activeDays / windowDays`
@@ -28,17 +28,17 @@ import 'package:menfit_app/features/challenges/domain/challenge_progress.dart';
 /// and it inherits that rule's hard-won correction verbatim:
 ///
 /// * **Protection only ever lowers the ask.** Every protected day in the
-///   window is deducted, whether or not she also trained on it.
-/// * **Training on a protected day only ever helps.** All of her activity
+///   window is deducted, whether or not they also trained on it.
+/// * **Training on a protected day only ever helps.** All of their activity
 ///   inside the window counts, wherever in the window it fell —
 ///   including on protected days. An earlier draft of the walking rule
-///   deducted only protected days she had *not* trained on, which made
+///   deducted only protected days they had *not* trained on, which made
 ///   moving on a flare day strictly worse than resting. That was an error
 ///   and it is not repeated here.
 ///
 /// The consequence worth stating plainly, and pinned by a monotonicity
-/// test: **adding an activity can never lower her percentage, and marking
-/// a day protected can never raise her target.**
+/// test: **adding an activity can never lower their percentage, and marking
+/// a day protected can never raise their target.**
 ///
 /// ## Why each side is pro-rated privately
 ///
@@ -46,7 +46,7 @@ import 'package:menfit_app/features/challenges/domain/challenge_progress.dart';
 /// protected days, on their own device, and neither ever learns the
 /// other's. What crosses the gap is one percentage measured against a
 /// target only its owner knows — which is precisely why the percentage
-/// cannot be run backwards into "how many days did she rest".
+/// cannot be run backwards into "how many days did they rest".
 /// `challenge_codes.dart` holds the full invariant.
 ///
 /// [protectedDays] must come from `streaks`' single decision source

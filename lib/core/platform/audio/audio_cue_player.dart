@@ -1,6 +1,6 @@
 /// Port for the app's short, non-speech audio cues.
 ///
-/// One sound, one job: the chime that marks a boundary she is not looking
+/// One sound, one job: the chime that marks a boundary they are not looking
 /// at the screen for (ADR 014's pose transitions; interval boundaries when
 /// the trackers are wired to it). It is deliberately not a general audio
 /// API — no volume, no seeking, no queue — because everything this port

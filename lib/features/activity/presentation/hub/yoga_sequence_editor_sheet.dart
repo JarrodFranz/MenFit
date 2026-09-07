@@ -87,7 +87,7 @@ class _YogaSequenceEditorSheetState
 
   /// Built directly rather than through `copyWith`, which cannot clear
   /// `style`: its `style ?? this.style` would silently keep the old label
-  /// when she deselects the chip.
+  /// when they deselect the chip.
   YogaSequence get _draft => YogaSequence(
     id: _id,
     name: _nameController.text.trim(),
@@ -142,9 +142,9 @@ class _YogaSequenceEditorSheetState
     try {
       await ref.read(yogaSequenceRepositoryProvider).saveSequence(sequence);
     } on Object catch (error) {
-      // The sheet stays open on the draft she typed, and Save comes back:
+      // The sheet stays open on the draft they typed, and Save comes back:
       // latching `_saving` on a failed write would leave the only way out
-      // the close button, and everything she entered gone with it.
+      // the close button, and everything they entered gone with it.
       if (!mounted) return;
       messenger.showSnackBar(
         SnackBar(content: Text(userMessageFor(error))),

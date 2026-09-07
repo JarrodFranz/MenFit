@@ -159,7 +159,7 @@ class LogEntryController extends _$LogEntryController {
     if (existing != null) {
       // Reopening in the unit it was logged in is the entire reason those
       // columns exist: an entry entered as 47 g must not come back as
-      // 1.57 servings for her to edit. `amountFor` refuses when the entry
+      // 1.57 servings for them to edit. `amountFor` refuses when the entry
       // carries no serving-weight snapshot (every pre-v13 row, and any food
       // that never had a weight), and the honest fallback there is servings
       // — the serving count is the one number such an entry does hold.
@@ -219,7 +219,7 @@ class LogEntryController extends _$LogEntryController {
 
   /// Switches the unit, **keeping the number already typed**. Retyping 47
   /// after tapping "gram" would be a small insult to someone holding a
-  /// scale; the preview below the field is what shows her the change.
+  /// scale; the preview below the field is what shows them the change.
   void setUnit(QuantityUnit value) {
     state = state.copyWith(unit: value, quantityError: null);
   }

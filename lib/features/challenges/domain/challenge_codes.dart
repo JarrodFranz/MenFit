@@ -12,21 +12,21 @@
 /// per-challenge author tag.**
 ///
 /// It does not carry — and no future version of this file may add without
-/// re-arguing this paragraph — how far she ran, how many sessions she
-/// logged, what her adjusted target was, how many of her days were
-/// protected, or anything else derived from her cycle, her flares or her
-/// recovery days. Her target is pro-rated privately on her own device
+/// re-arguing this paragraph — how far they ran, how many sessions they
+/// logged, what their adjusted target was, how many of their days were
+/// protected, or anything else derived from their cycle, their flares or their
+/// recovery days. Their target is pro-rated privately on their own device
 /// (`challenge_progress_engine.dart`); only the ratio crosses the gap.
 ///
 /// The author tag is four bytes of noise drawn once per challenge, per
-/// device, at the moment she creates or joins it — see
+/// device, at the moment they create or join it — see
 /// [ProgressCodePayload.authorTag]. It is a function of a random number
-/// generator and nothing else: it is not derived from her name, her
-/// device, her account (there is none), her body or her calendar, so it
-/// says nothing about her that a coin-flip would not. Its whole job is to
+/// generator and nothing else: it is not derived from their name, their
+/// device, their account (there is none), their body or their calendar, so it
+/// says nothing about them that a coin-flip would not. Its whole job is to
 /// let a device recognise its *own* code and refuse to import it, which is
-/// what stops a woman who pastes her own progress code back into her own
-/// buddy box from silently overwriting her buddy's snapshot with her own
+/// what stops someone who pastes their own progress code back into their own
+/// buddy box from silently overwriting their buddy's snapshot with their own
 /// figure.
 ///
 /// This is not a matter of taste. Cycle data is S3
@@ -129,8 +129,8 @@
 /// because every display of it floors too
 /// (`presentation/challenges_copy.dart#formatPercent`). Rounding here
 /// would let 99.97% cross the goal line on the receiving device while
-/// reading as 99% on the device that sent it, and "she says she finished,
-/// my phone says she did not" is the one disagreement a feature with no
+/// reading as 99% on the device that sent it, and "they say they finished,
+/// my phone says they did not" is the one disagreement a feature with no
 /// server to arbitrate cannot afford.
 library;
 

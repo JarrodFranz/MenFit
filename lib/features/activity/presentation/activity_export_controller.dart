@@ -31,7 +31,7 @@ final class ActivityExportSaved extends ActivityExportOutcome {
 }
 
 /// The user dismissed the save dialog. Not an error, and not something to
-/// announce — she already knows she cancelled.
+/// announce — they already know they cancelled.
 final class ActivityExportCancelled extends ActivityExportOutcome {
   const ActivityExportCancelled();
 }

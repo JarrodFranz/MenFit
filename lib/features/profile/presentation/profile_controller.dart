@@ -207,7 +207,7 @@ class ProfileController extends _$ProfileController {
   /// display name, a training day — can't quietly stamp a duplicate
   /// weigh-in, and so that re-saving the same number is a no-op rather
   /// than a second identical point that would flatten a trend line.
-  /// Clearing the weight (`clearWeightKg`) records nothing: "she removed
+  /// Clearing the weight (`clearWeightKg`) records nothing: "they removed
   /// the value" is not a measurement.
   ///
   /// Multiple genuine changes on the same day each get their own row —
@@ -238,7 +238,7 @@ class ProfileController extends _$ProfileController {
           .saveLog(
             WeightLog(
               id: EntityId.generate(),
-              // The day she entered it, in her own timezone - the profile
+              // The day they entered it, in their own timezone - the profile
               // has no measurement date to carry over.
               day: LocalDate.today(),
               weightKg: weightKg,

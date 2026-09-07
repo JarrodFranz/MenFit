@@ -194,7 +194,7 @@ class BarcodeLookupController extends _$BarcodeLookupController {
   ///
   /// Consults the catalogue first, exactly as [lookUp] does. That is not
   /// only the round trip saved and the request not made: without it, picking
-  /// a search hit for a product the user *already has* would walk her
+  /// a search hit for a product the user *already has* would walk their
   /// through the review screen again and save a **second** catalogue row for
   /// the same food — a duplicate the barcode path is already careful not to
   /// create. Reaching a food by searching for it rather than by scanning it
@@ -286,7 +286,7 @@ class BarcodeLookupController extends _$BarcodeLookupController {
 
     _set(const BarcodeLookupState());
     final granted = await grantOnlineLookupConsent(store, confirm);
-    // Busy again if we are about to make the request; idle if she backed out.
+    // Busy again if we are about to make the request; idle if they backed out.
     _set(BarcodeLookupState(isLookingUp: granted));
     return granted;
   }

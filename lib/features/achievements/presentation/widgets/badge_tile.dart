@@ -6,7 +6,7 @@ import 'package:menfit_app/features/achievements/domain/badge_progress.dart';
 import 'package:menfit_app/features/achievements/presentation/achievements_copy.dart';
 import 'package:menfit_app/features/achievements/presentation/widgets/badge_emblem.dart';
 
-/// One badge in the trophy case: what she has earned, what it is, and — the
+/// One badge in the trophy case: what they have earned, what it is, and — the
 /// hero of the tile — how far the next rung is.
 ///
 /// Earned and unearned differ in weight, never in presence: an unearned
@@ -152,7 +152,7 @@ class _Header extends StatelessWidget {
 }
 
 /// The tiered badge's hero: the bar, the distance to the next rung, and
-/// where she stands now.
+/// where they stand now.
 class _NextRung extends StatelessWidget {
   const _NextRung({required this.progress});
 

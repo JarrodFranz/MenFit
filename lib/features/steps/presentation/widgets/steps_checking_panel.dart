@@ -10,7 +10,7 @@ import 'package:menfit_app/features/steps/presentation/steps_copy.dart';
 ///
 /// It gives up after [timeout] and calls [onTimeout]. A spinner with no end
 /// is its own kind of dishonesty — after eight seconds an unanswered check
-/// is indistinguishable from a refused one, and the screen owes her the
+/// is indistinguishable from a refused one, and the screen owes them the
 /// button rather than the wheel.
 ///
 /// The timer lives here rather than on the screen so its lifetime is

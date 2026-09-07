@@ -35,7 +35,7 @@ const Map<String, String> _messagesByKey = {
   // The route-suggestion API key is a build-time setting, not something the
   // user can fix in-app - see `core/config/env.dart#orsApiKey`. Worded for a
   // person, not a developer: naming the vendor or the key would only tell
-  // her about a thing she has no way to act on. Keep this in step with the
+  // them about a thing they have no way to act on. Keep this in step with the
   // setup card in `features/routes/presentation/route_suggest_screen.dart`.
   'error.routes.apiKeyMissing':
       "Route suggestions aren't switched on yet. There's nothing you need "

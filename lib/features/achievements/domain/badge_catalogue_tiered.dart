@@ -14,7 +14,7 @@ import 'package:menfit_app/features/achievements/domain/badge_definition.dart';
 /// Thresholds are calibrated so that **Bronze arrives within a few weeks**
 /// of ordinary use, Gold is a season's worth, Platinum around a year, and
 /// **Diamond I takes a year or more** — with the diamond progression
-/// carrying it on from there for as long as she keeps going. The working
+/// carrying it on from there for as long as they keep going. The working
 /// cadences behind the numbers are written on each badge.
 const List<BadgeDefinition> tieredBadgeDefinitions = [
   // Cadence assumed: a walker logging 15 km across a week. Bronze at 4
@@ -107,7 +107,7 @@ const List<BadgeDefinition> tieredBadgeDefinitions = [
   // Cadence assumed: ~2,500 kg of completed tonnage per session, twice a
   // week (~260,000 kg/year). Bronze inside a month, Gold ~7 months,
   // Platinum ~14 months, Diamond I ~2 years. Geometric past there: tonnage
-  // accumulates multiplicatively as she gets stronger and adds sessions, so
+  // accumulates multiplicatively as they get stronger and add sessions, so
   // a fixed step would be crossed again within weeks of the last one.
   BadgeDefinition.tiered(
     id: 'strength_volume',

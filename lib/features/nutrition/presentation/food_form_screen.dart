@@ -271,7 +271,7 @@ class FoodFormScreen extends ConsumerWidget {
   }
 
   /// Saves, and — when the barcode already belongs to a food in the
-  /// catalogue — asks which food she meant before anything is written.
+  /// catalogue — asks which food they meant before anything is written.
   ///
   /// The decision that there *is* a collision belongs to the controller; this
   /// only renders the choice and acts on the answer.
@@ -301,13 +301,13 @@ class FoodFormScreen extends ConsumerWidget {
       case DuplicateBarcodeChoice.keepEditing:
         controller.dismissDuplicateBarcode();
       case DuplicateBarcodeChoice.useExisting:
-        // Pops the food she already has, which is what every caller of this
+        // Pops the food they already have, which is what every caller of this
         // screen does with a saved food anyway — so "use the one I have"
         // continues into the log dialog exactly like a fresh save would.
         //
         // Never reachable on the edit path: the dialog doesn't offer this
         // choice there (`widgets/duplicate_barcode_dialog.dart`) because
-        // popping the OTHER food would silently discard the edits she made
+        // popping the OTHER food would silently discard the edits they made
         // to this one.
         controller.dismissDuplicateBarcode();
         navigator.pop(existing);

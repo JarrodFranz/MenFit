@@ -36,7 +36,7 @@ abstract final class AppTheme {
   ///    minimum, landing on 44dp rather than 48dp.
   /// 3. `minimumSize` on the button styles, so the *visible* control grows
   ///    with its hit area instead of a 40dp button floating inside an
-  ///    invisible 48dp box — a motor-impaired user aims at what she sees.
+  ///    invisible 48dp box — a motor-impaired user aims at what they see.
   static ThemeData _withLargeTouchTargets(ThemeData base) {
     const buttonStyle = ButtonStyle(
       minimumSize: WidgetStatePropertyAll(_minTouchTarget),
@@ -237,9 +237,7 @@ abstract final class AppTheme {
       onSecondaryContainer: isMonochrome ? const Color(0xFFFFFFFF) : null,
       surface: accessibility.highContrast
           ? const Color(0xFF000000)
-          : (isMonochrome
-                ? const Color(0xFF141414)
-                : const Color(0xFF121212)),
+          : (isMonochrome ? const Color(0xFF141414) : const Color(0xFF121212)),
       onSurface: accessibility.highContrast
           ? const Color(0xFFFFFFFF)
           : (isMonochrome ? const Color(0xFFEEEEEE) : null),

@@ -3,7 +3,7 @@ import 'package:menfit_app/features/achievements/domain/badge_definition.dart';
 import 'package:menfit_app/features/achievements/domain/badge_tier.dart';
 
 /// Where the user currently stands on one badge — the three things the
-/// achievements screen shows at once: what she has earned, what is on
+/// achievements screen shows at once: what they have earned, what is on
 /// offer, and how far away the next rung is.
 ///
 /// Produced by `domain/badge_progress_engine.dart`. Contains no strings of

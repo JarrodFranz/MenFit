@@ -226,7 +226,7 @@ class IoHealthPlatformAdapter implements HealthPlatformAdapter {
   /// smear is exactly the error that would never be noticed. Android's
   /// aggregate path also reports an internal exception as
   /// `result.success(null)`, which reaches Dart as an empty list
-  /// indistinguishable from "she took no steps".
+  /// indistinguishable from "they took no steps".
   ///
   /// Passing real local midnights (`DateTime(y, m, d)` to
   /// `DateTime(y, m, d + 1)`, which normalises the month/year overflow and

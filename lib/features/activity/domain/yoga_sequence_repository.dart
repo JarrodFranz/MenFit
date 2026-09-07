@@ -4,8 +4,8 @@ import 'package:menfit_app/features/activity/domain/yoga_sequence.dart';
 ///
 /// Returns **stored rows only** — `YogaSequenceStarters.starters` is a domain
 /// constant and is never merged in here, so an empty stream honestly means
-/// "she has saved nothing". The UI offers a starter and saves
-/// `starter.copyAsNew()` when she accepts.
+/// "they have saved nothing". The UI offers a starter and saves
+/// `starter.copyAsNew()` when they accept.
 abstract interface class YogaSequenceRepository {
   /// Live list of non-deleted sequences, most recently updated first.
   ///

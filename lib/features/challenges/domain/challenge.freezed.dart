@@ -327,27 +327,27 @@ as int,
 /// @nodoc
 mixin _$Challenge {
 
- ChallengeBlueprint get blueprint;/// The name she chose to show her buddy for this challenge. Per
+ ChallengeBlueprint get blueprint;/// The name they chose to show their buddy for this challenge. Per
 /// challenge, not per account: the same person may be "Ana" to a
 /// running club and something else to a sister.
  String get selfDisplayName; ChallengeOrigin get origin;/// This device's 32-bit tag for this challenge, drawn at random when
-/// she created or joined it and stamped into every progress code she
-/// exports for it.
+/// they created or joined it and stamped into every progress code they
+/// export for it.
 ///
 /// Local, not shared identity: the two devices in a challenge hold
 /// **different** tags for the same challenge, which is the entire
-/// point — a pasted code whose tag equals this one is her own code
-/// coming back, and importing it would overwrite her buddy's snapshot
-/// with her own figure
+/// point — a pasted code whose tag equals this one is their own code
+/// coming back, and importing it would overwrite their buddy's snapshot
+/// with their own figure
 /// (`application/challenge_code_service.dart#importProgressCode`).
 ///
-/// It is random noise: not derived from her name, her device or
-/// anything she has logged. See the privacy invariant on
+/// It is random noise: not derived from their name, their device or
+/// anything they have logged. See the privacy invariant on
 /// `challenge_codes.dart`.
  int get authorTag;/// UTC. When this device created or joined the challenge — local
 /// metadata, not part of the shared identity.
- DateTime get createdAt;/// The buddy's last pasted progress, or null if she has not pasted
-/// one yet. Null is a completely normal, permanent-if-she-likes state:
+ DateTime get createdAt;/// The buddy's last pasted progress, or null if they have not pasted
+/// one yet. Null is a completely normal, permanent-if-they-likes state:
 /// a challenge works perfectly well with nobody exchanging progress at
 /// all.
  ChallengeBuddySnapshot? get buddy;
@@ -572,31 +572,31 @@ class _Challenge extends Challenge {
   
 
 @override final  ChallengeBlueprint blueprint;
-/// The name she chose to show her buddy for this challenge. Per
+/// The name they chose to show their buddy for this challenge. Per
 /// challenge, not per account: the same person may be "Ana" to a
 /// running club and something else to a sister.
 @override final  String selfDisplayName;
 @override final  ChallengeOrigin origin;
 /// This device's 32-bit tag for this challenge, drawn at random when
-/// she created or joined it and stamped into every progress code she
-/// exports for it.
+/// they created or joined it and stamped into every progress code they
+/// export for it.
 ///
 /// Local, not shared identity: the two devices in a challenge hold
 /// **different** tags for the same challenge, which is the entire
-/// point — a pasted code whose tag equals this one is her own code
-/// coming back, and importing it would overwrite her buddy's snapshot
-/// with her own figure
+/// point — a pasted code whose tag equals this one is their own code
+/// coming back, and importing it would overwrite their buddy's snapshot
+/// with their own figure
 /// (`application/challenge_code_service.dart#importProgressCode`).
 ///
-/// It is random noise: not derived from her name, her device or
-/// anything she has logged. See the privacy invariant on
+/// It is random noise: not derived from their name, their device or
+/// anything they have logged. See the privacy invariant on
 /// `challenge_codes.dart`.
 @override final  int authorTag;
 /// UTC. When this device created or joined the challenge — local
 /// metadata, not part of the shared identity.
 @override final  DateTime createdAt;
-/// The buddy's last pasted progress, or null if she has not pasted
-/// one yet. Null is a completely normal, permanent-if-she-likes state:
+/// The buddy's last pasted progress, or null if they have not pasted
+/// one yet. Null is a completely normal, permanent-if-they-likes state:
 /// a challenge works perfectly well with nobody exchanging progress at
 /// all.
 @override final  ChallengeBuddySnapshot? buddy;
@@ -687,8 +687,8 @@ $ChallengeBuddySnapshotCopyWith<$Res>? get buddy {
 /// @nodoc
 mixin _$ChallengeBuddySnapshot {
 
-/// The name she chose for herself.
- String get displayName;/// Her progress against her own privately-adjusted target, as a
+/// The name they chose for themselves.
+ String get displayName;/// Their progress against their own privately-adjusted target, as a
 /// percentage. May exceed 100 — going past your own goal is a thing
 /// that happens, and clamping it would quietly delete the best part.
  double get progressPercent;/// The day the code was exported for.
@@ -889,9 +889,9 @@ class _ChallengeBuddySnapshot extends ChallengeBuddySnapshot {
   const _ChallengeBuddySnapshot({required this.displayName, required this.progressPercent, required this.asOf}): super._();
   
 
-/// The name she chose for herself.
+/// The name they chose for themselves.
 @override final  String displayName;
-/// Her progress against her own privately-adjusted target, as a
+/// Their progress against their own privately-adjusted target, as a
 /// percentage. May exceed 100 — going past your own goal is a thing
 /// that happens, and clamping it would quietly delete the best part.
 @override final  double progressPercent;

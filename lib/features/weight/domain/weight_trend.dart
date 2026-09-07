@@ -133,7 +133,7 @@ class WeightTrendSeries {
 /// made the same call for the same reason (see
 /// `features/insights/domain/insight_statistics.dart`'s library doc — "a
 /// mean would let that single day decide what the app tells the user about
-/// her own body; a median or a rank statistic cannot"). Two engines
+/// their own body; a median or a rank statistic cannot"). Two engines
 /// reading the same self-logged data should not disagree about how much a
 /// single bad number is allowed to matter.
 ///
@@ -148,7 +148,7 @@ const WeightTrendMethod defaultWeightTrendMethod =
 /// Seven so the window always spans a whole week: a user who weighs in
 /// only on weekdays, or only on Mondays and Thursdays, still gets a window
 /// with a fixed real-world meaning instead of one that silently stretches
-/// over however many weeks her last seven readings happened to cover.
+/// over however many weeks their last seven readings happened to cover.
 const int defaultTrendWindowDays = 7;
 
 /// Days-with-a-reading required before any trend value is emitted at all.
@@ -185,7 +185,7 @@ const double trendSteadyThresholdKg = 0.5;
 /// (`domain/weight_repository.dart`), and a day has to become one point
 /// before it can be smoothed. The last reading wins rather than the mean
 /// of the day's readings: a mean would blend a post-run reading into a
-/// morning one and produce a number the user never saw on her scale.
+/// morning one and produce a number the user never saw on their scale.
 ///
 /// Input order is not trusted. The repository documents oldest-first
 /// (`day` ASC, `createdAt` ASC, `id` ASC) and this function reproduces
@@ -228,9 +228,9 @@ List<WeightLog> latestReadingPerDay(List<WeightLog> logs) {
 /// The window is a *calendar* window, so a gap in logging shrinks it
 /// rather than reaching further back in time. **No missing day is ever
 /// filled in** — not with the previous reading, not with a straight line
-/// between neighbours, not with a group mean. A gap is information (she
-/// didn't weigh in), and inventing values across it would put numbers she
-/// never measured into a chart of her own body.
+/// between neighbours, not with a group mean. A gap is information (they
+/// didn't weigh in), and inventing values across it would put numbers they
+/// never measured into a chart of their own body.
 ///
 /// [WeightTrendMethod.exponentialMovingAverage] additionally **restarts**
 /// after a gap longer than [windowDays]: carrying a month-old average into

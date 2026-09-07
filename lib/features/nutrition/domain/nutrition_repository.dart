@@ -37,7 +37,7 @@ abstract interface class NutritionRepository {
   ///
   /// Recency is the time of the most recent entry that links to the food
   /// (`NutritionEntry.foodId`), not the food's own `updatedAt`: a food is
-  /// "recent" because she ate it, not because she corrected its macros.
+  /// "recent" because they ate it, not because they corrected its macros.
   ///
   /// The link is soft and lossy by design — an entry keeps its own snapshot
   /// and may name no food at all (quick-add) or a food since deleted (see
@@ -93,9 +93,9 @@ abstract interface class NutritionRepository {
   ///
   /// The `barcode` column is deliberately **non-unique**
   /// (`core/db/tables/foods.dart`), so several live rows can carry the same
-  /// code — a provider-sourced row the user saved and a hand-entered one she
+  /// code — a provider-sourced row the user saved and a hand-entered one they
   /// typed first, say. When they do, the **most recently updated** live row
-  /// wins: it is the definition she most recently stood behind, and it is
+  /// wins: it is the definition they most recently stood behind, and it is
   /// the one an edit would have just touched.
   Future<Food?> getFoodByBarcode(String barcode);
 

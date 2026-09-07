@@ -17,7 +17,7 @@ class ScreenAwakeSection extends ConsumerWidget {
 
   final ActivityType type;
 
-  /// What this switch actually covers, in her words.
+  /// What this switch actually covers, in their words.
   ///
   /// Yoga is the one type with two ways in — the free-running Flow Timer
   /// and a saved sequence — and both obey this switch, so the subtitle says

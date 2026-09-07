@@ -1,13 +1,13 @@
 import 'package:menfit_app/features/nutrition/domain/calorie_target.dart';
 import 'package:menfit_app/features/nutrition/domain/macro_locks.dart';
 
-/// Whether the user states her three macro targets directly in grams, or as
+/// Whether the user states their three macro targets directly in grams, or as
 /// percentages of the day's energy target.
 ///
 /// Both representations are stored side by side on the same row and neither
 /// is derived from the other; this value is the answer to "which of the two
 /// counts". That is deliberate: a user who switches to percentages and back
-/// again finds the grams she typed still there, because nothing overwrote
+/// again finds the grams they typed still there, because nothing overwrote
 /// them. Grams are never written from a split — [deriveMacroTargetGrams]
 /// computes them on demand, so a changed calorie target moves the grams with
 /// it instead of leaving a stale snapshot behind
@@ -101,7 +101,7 @@ final class DerivedMacroTargetGrams extends MacroTargetGramsOutcome {
   final int basisKcal;
 
   /// Whether [basisKcal] came from the resolved estimate rather than from a
-  /// calorie target the user typed herself. Carried so the UI can say which
+  /// calorie target the user typed themselves. Carried so the UI can say which
   /// of the two it used instead of implying a figure was chosen.
   final bool basisIsEstimated;
 
@@ -122,7 +122,7 @@ final class DerivedMacroTargetGrams extends MacroTargetGramsOutcome {
 ///
 /// Reached when the user has set no calorie target *and* the estimate can't
 /// be made (see `domain/energy_estimate.dart` for what that needs), or when
-/// the calorie target she set is not a positive number. There is no fallback
+/// the calorie target they set is not a positive number. There is no fallback
 /// figure — inventing one would be exactly the unsourced,
 /// medical-flavoured claim `domain/calorie_target.dart` refuses to make.
 final class NoMacroTargetBasis extends MacroTargetGramsOutcome {
@@ -133,15 +133,15 @@ final class NoMacroTargetBasis extends MacroTargetGramsOutcome {
 ///
 /// **What the percentages are percentages of**, in order:
 ///
-/// 1. [calorieTargetKcal] — the target the user typed herself — whenever
-///    she has set one. Hers wins over anything the app worked out; a
+/// 1. [calorieTargetKcal] — the target the user typed themselves — whenever
+///    they have set one. Theirs wins over anything the app worked out; a
 ///    non-positive value set explicitly yields [NoMacroTargetBasis] rather
 ///    than quietly falling through to the estimate, because falling through
-///    would silently replace her number with a different one.
+///    would silently replace their number with a different one.
 /// 2. Otherwise the target [resolvedTarget] resolves to, which is the
 ///    estimate with the BMR floor already applied
 ///    (`domain/calorie_target.dart`) — including the floored case, where the
-///    floor *is* the target she is working to.
+///    floor *is* the target they are working to.
 /// 3. Otherwise [NoMacroTargetBasis].
 ///
 /// A percentage that is absent, negative or non-finite yields `null` grams
@@ -190,12 +190,12 @@ MacroTargetGramsOutcome deriveMacroTargetGrams({
 /// The single answer to "what is a macro target a share of", used by both
 /// [deriveMacroTargetGrams] and [solveMacroTargets] so the two can never
 /// disagree about which number the user is budgeting against. The rule is
-/// spelled out in [deriveMacroTargetGrams]'s dartdoc: her own
+/// spelled out in [deriveMacroTargetGrams]'s dartdoc: their own
 /// [calorieTargetKcal] first, then the target [resolvedTarget] settled on
 /// (the estimate with the BMR floor already applied), then nothing.
 ///
 /// The record's `isEstimated` field says which of the two it came from, so
-/// the UI can name the source instead of implying she chose a figure she
+/// the UI can name the source instead of implying they chose a figure they
 /// didn't.
 ({int kcal, bool isEstimated})? macroEnergyBasis({
   required int? calorieTargetKcal,
@@ -225,7 +225,7 @@ double? macroGramsForPercent({
 /// The daily target [outcome] settled on, or `null` when it produced none.
 ///
 /// [FlooredCalorieTarget] counts: the floor is the figure the user is
-/// actually working to, so a split of it is a split of her day.
+/// actually working to, so a split of it is a split of their day.
 int? _resolvedTargetKcal(CalorieTargetOutcome? outcome) => switch (outcome) {
   CalorieTarget(:final targetKcal) => targetKcal,
   FlooredCalorieTarget(:final targetKcal) => targetKcal,
@@ -289,7 +289,7 @@ final class SolvedMacroTarget extends MacroLockSolution {
 /// **The overage is carried rather than clamped.** Solving anyway would
 /// produce a negative gram figure, and clamping it to zero would hide the
 /// arithmetic behind a target the user could meet by eating nothing of that
-/// macro — neither is honest about the numbers she entered. This is not a
+/// macro — neither is honest about the numbers they entered. This is not a
 /// judgement about the numbers; it is the app declining to print one it
 /// can't stand behind.
 final class MacroTargetsOverBudget extends MacroLockSolution {
@@ -356,7 +356,7 @@ final class UnderdeterminedMacroTargets extends MacroLockSolution {
 ///
 /// Reports [differenceKcal] and stops. Deliberately **not** an error: three
 /// locked targets that don't add up to the day's energy are a shape the user
-/// chose, and she may not want them to sum exactly. The app states the
+/// chose, and they may not want them to sum exactly. The app states the
 /// arithmetic and leaves it there.
 final class AllMacroTargetsLocked extends MacroLockSolution {
   const AllMacroTargetsLocked({
@@ -391,7 +391,7 @@ final class NoMacroLockSolutionBasis extends MacroLockSolution {
 }
 
 /// Works out the one macro target the user has left free, from the day's
-/// energy basis and the two she locked.
+/// energy basis and the two they locked.
 ///
 /// The whole rule, in order:
 ///

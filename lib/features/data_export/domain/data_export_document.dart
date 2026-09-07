@@ -23,7 +23,7 @@ const String dataExportFormatName = 'menfit-export';
 /// describes the shape of the rows inside `tables` and moves far more often.
 const int dataExportFormatVersion = 1;
 
-/// How much of her data ended up in the file. Not a report — two counts, so
+/// How much of their data ended up in the file. Not a report — two counts, so
 /// the app can say something truthful after saving and a test can assert the
 /// export was not silently empty.
 class DataExportSummary {
@@ -63,7 +63,7 @@ class DataExportSummary {
 /// columns still epoch milliseconds, soft-deleted rows still present — and
 /// nothing in this class reformats, rounds, derives, or interprets any of
 /// them. That is the point: the file has to be able to stand in for the
-/// database, and anything this class "helpfully" tidied would be data she
+/// database, and anything this class "helpfully" tidied would be data they
 /// could not get back. Presentation formatting belongs to screens.
 ///
 /// Pure Dart with no Drift and no Flutter, so the file's shape is decided
@@ -147,8 +147,8 @@ class DataExportDocument {
   /// Whether the S3-tier tables in `sensitiveHealthTables` are included.
   ///
   /// Stated in the file itself rather than left to be inferred from the
-  /// presence of the keys: absent-because-she-said-no and
-  /// absent-because-she-logged-none are different facts, and a person
+  /// presence of the keys: absent-because-they-said-no and
+  /// absent-because-they-logged-none are different facts, and a person
   /// deciding whether a file is safe to hand to someone should not have to
   /// tell them apart by squinting at it.
   final bool includesSensitiveHealthData;
@@ -210,8 +210,8 @@ Map<String, Object?> decodeDataExportJson(Uint8List bytes) {
 /// isolate boundary without anything special.
 ///
 /// Pretty-printed with a two-space indent on purpose. This file is the one
-/// artefact of the app she can open and read without the app, and a
+/// artefact of the app they can open and read without the app, and a
 /// megabyte on one line is technically the same data and practically not
-/// hers at all.
+/// theirs at all.
 Uint8List encodeDataExportJson(Map<String, Object?> json) =>
     utf8.encode(const JsonEncoder.withIndent('  ').convert(json));

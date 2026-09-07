@@ -24,7 +24,7 @@ import 'package:menfit_app/features/challenges/presentation/challenges_copy.dart
 /// * **There is no cycle-phase toggle, because there is nothing to
 ///   toggle.** The other two sheets offer an opt-in phase pill; a
 ///   challenge surface has no phase on it to offer, at any point, under
-///   any setting. The card a woman sends to the friend she is training
+///   any setting. The card someone sends to the friend they are training
 ///   with is the last place a phase should be one tap away.
 /// * **No percentages.** Both people reached their own goals, and that is
 ///   the whole statement. Printing 118% beside 103% would invite exactly
@@ -34,7 +34,7 @@ import 'package:menfit_app/features/challenges/presentation/challenges_copy.dart
 /// Share hands the OS share sheet the *text* (ADR 011), byte-identical to
 /// what Copy writes, and Copy stays beside it as a peer rather than a
 /// fallback. The card image is deliberately not shared: it carries both
-/// names, and what she has always sent from here is the sentence.
+/// names, and what they have always sent from here is the sentence.
 class ChallengeCelebrationSheet extends ConsumerStatefulWidget {
   const ChallengeCelebrationSheet({
     required this.blueprint,

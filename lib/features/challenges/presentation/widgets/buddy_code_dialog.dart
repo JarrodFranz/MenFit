@@ -91,8 +91,8 @@ class _BuddyCodeDialogState extends ConsumerState<BuddyCodeDialog> {
       case BuddyProgressIsYourOwn():
         setState(() {
           _message = buddyOwnCodeMessage;
-          // Information, not an error: she pasted one of two very similar
-          // strings, and the sentence tells her which one to send instead.
+          // Information, not an error: they pasted one of two very similar
+          // strings, and the sentence tells them which one to send instead.
           _messageIsProblem = false;
         });
       case BuddyProgressUnknownChallenge():

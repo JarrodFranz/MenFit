@@ -33,8 +33,8 @@ const List<String> shareOutcomeMessages = [
 /// The snackbar for [outcome], or `null` when there is nothing honest and
 /// useful to say.
 ///
-/// [ShareOutcome.dismissed] returns `null` on purpose: she closed the
-/// sheet, she knows, and a confirmation of a non-event is noise.
+/// [ShareOutcome.dismissed] returns `null` on purpose: they closed the
+/// sheet, they know, and a confirmation of a non-event is noise.
 String? shareOutcomeMessage(ShareOutcome outcome) => switch (outcome) {
   ShareOutcome.success => shareSharedMessage,
   ShareOutcome.dismissed => null,

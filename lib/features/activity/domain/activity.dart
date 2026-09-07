@@ -153,7 +153,7 @@ abstract class Activity with _$Activity {
   }
 
   /// Rating of Perceived Exertion, 1-10, as stated by the user — `null`
-  /// when the workout type doesn't collect one, or when she was asked and
+  /// when the workout type doesn't collect one, or when they were asked and
   /// left it unanswered. Never coalesce this to a number; see
   /// [MindfulWorkoutDetails.rpe].
   int? get rpe => switch (workoutDetails) {

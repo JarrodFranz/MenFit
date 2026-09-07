@@ -37,10 +37,10 @@ mixin _$FoodFormState {
  bool get labelScanApplied;/// The `ScanField` names whose reading scored below
 /// `labelScanCheckThreshold`, so the field can be marked "check this".
 ///
-/// A field the user then edits herself is **not** removed from the set;
+/// A field the user then edits themselves is **not** removed from the set;
 /// it is only ever recomputed by another scan. The marker says "this
 /// number came off a photo and was not read cleanly", which stays true
-/// of the row until she saves.
+/// of the row until they save.
  Set<String> get lowConfidenceFields;/// Cautions to list under the review banner: the parser's own
 /// (`domain/label_ocr/label_warnings.dart`, fixed strings) plus the
 /// merge's "kept your value" notes.
@@ -53,15 +53,15 @@ mixin _$FoodFormState {
 ///
 /// A stored flag rather than a guess from an empty amount: a per-100 g
 /// scan also fills the amount, and if the user cleared *that* field the
-/// form would otherwise show her a message about millilitres.
+/// form would otherwise show them a message about millilitres.
 ///
 /// **Sticky.** Once a per-volume panel has been read, this stays true
 /// for the life of the form: the numbers in the fields are still per
-/// 100 mL however many times she scans afterwards.
+/// 100 mL however many times they scan afterwards.
  bool get labelIsPerVolume;/// Whether the user has set the amount **since** the per-volume scan.
 ///
-/// A weight she typed before scanning was not about this label's basis
-/// — she was defining a food by weight and then photographed a drink
+/// A weight they typed before scanning was not about this label's basis
+/// — they were defining a food by weight and then photographed a drink
 /// printed per 100 mL. Saving that pair records "these macros are per
 /// 250 g" about figures printed per 100 mL, which is false, so the form
 /// asks again rather than accepting the coincidence.
@@ -362,18 +362,18 @@ class _FoodFormState extends FoodFormState {
 /// The `ScanField` names whose reading scored below
 /// `labelScanCheckThreshold`, so the field can be marked "check this".
 ///
-/// A field the user then edits herself is **not** removed from the set;
+/// A field the user then edits themselves is **not** removed from the set;
 /// it is only ever recomputed by another scan. The marker says "this
 /// number came off a photo and was not read cleanly", which stays true
-/// of the row until she saves.
+/// of the row until they save.
  final  Set<String> _lowConfidenceFields;
 /// The `ScanField` names whose reading scored below
 /// `labelScanCheckThreshold`, so the field can be marked "check this".
 ///
-/// A field the user then edits herself is **not** removed from the set;
+/// A field the user then edits themselves is **not** removed from the set;
 /// it is only ever recomputed by another scan. The marker says "this
 /// number came off a photo and was not read cleanly", which stays true
-/// of the row until she saves.
+/// of the row until they save.
 @override@JsonKey() Set<String> get lowConfidenceFields {
   if (_lowConfidenceFields is EqualUnmodifiableSetView) return _lowConfidenceFields;
   // ignore: implicit_dynamic_type
@@ -406,16 +406,16 @@ class _FoodFormState extends FoodFormState {
 ///
 /// A stored flag rather than a guess from an empty amount: a per-100 g
 /// scan also fills the amount, and if the user cleared *that* field the
-/// form would otherwise show her a message about millilitres.
+/// form would otherwise show them a message about millilitres.
 ///
 /// **Sticky.** Once a per-volume panel has been read, this stays true
 /// for the life of the form: the numbers in the fields are still per
-/// 100 mL however many times she scans afterwards.
+/// 100 mL however many times they scan afterwards.
 @override@JsonKey() final  bool labelIsPerVolume;
 /// Whether the user has set the amount **since** the per-volume scan.
 ///
-/// A weight she typed before scanning was not about this label's basis
-/// — she was defining a food by weight and then photographed a drink
+/// A weight they typed before scanning was not about this label's basis
+/// — they were defining a food by weight and then photographed a drink
 /// printed per 100 mL. Saving that pair records "these macros are per
 /// 250 g" about figures printed per 100 mL, which is false, so the form
 /// asks again rather than accepting the coincidence.

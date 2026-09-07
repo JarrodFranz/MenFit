@@ -23,7 +23,7 @@ import 'package:menfit_app/features/steps/steps_providers.dart';
 /// * **filled dot** — a stored day below the target;
 /// * **hollow ring** — no row for that day at all, i.e. nothing was ever
 ///   synced. It is never a tick, and never a "below target" marker either,
-///   because "she walked less than her target" is a claim and "nothing was
+///   because "they walked less than their target" is a claim and "nothing was
 ///   recorded" is the absence of one;
 /// * **dash** — the history has not been read back yet. Its own glyph, so
 ///   "still loading" is never mistaken for "nothing recorded".

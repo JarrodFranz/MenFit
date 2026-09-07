@@ -6,7 +6,7 @@
 /// target"); it may never appear as a judgement about the person, and no
 /// string here praises or scolds. The same rule that governs
 /// `features/weight`'s vocabulary applies for the same reason — the number
-/// is hers, the app just reports it.
+/// is theirs, the app just reports it.
 library;
 
 const String stepsScreenTitle = 'Steps';
@@ -19,7 +19,7 @@ const String stepsCheckingMessage = 'Checking step access…';
 /// Shown on the permission panel when the platform never answered within
 /// `StepsCheckingPanel`'s timeout. The spinner gives way rather than
 /// spinning forever: an unanswered check is indistinguishable from a
-/// refused one after long enough, and she is better served by the button
+/// refused one after long enough, and they are better served by the button
 /// than by a wheel.
 const String stepsStillCheckingNote =
     'Still checking… you can try allowing access.';

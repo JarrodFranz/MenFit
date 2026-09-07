@@ -19,16 +19,16 @@ import 'package:menfit_app/features/nutrition/domain/macro_targets.dart';
 //    are fixed constants, not user data. There are two exceptions, both
 //    narrow and both about *targets* rather than about anything eaten:
 //    [validateMacroTargetPercentages]'s sum message, which quotes the
-//    arithmetic the user just typed back to her because the message is
-//    useless without it; and [macroLockNote], which quotes what her locked
-//    gram targets come to in energy. Both are shapes she chose for her day,
-//    not things she logged — see those functions' dartdocs — and both remain
+//    arithmetic the user just typed back to them because the message is
+//    useless without it; and [macroLockNote], which quotes what their locked
+//    gram targets come to in energy. Both are shapes they chose for their day,
+//    not things they logged — see those functions' dartdocs — and both remain
 //    UI strings that must never reach a log, an analytics event or an
 //    exception.
 // 5. Every message that would name an energy figure has to say the same
 //    thing without one when `hideCalorieNumbers` is on. Falling silent is
-//    not an option: a user who cannot see *that* her locked targets exceed
-//    her calories is worse off than one who sees it without the number.
+//    not an option: a user who cannot see *that* their locked targets exceed
+//    their calories is worse off than one who sees it without the number.
 
 /// Result of validating a user-entered food definition.
 ///
@@ -153,7 +153,7 @@ const String _tooLargeMessage =
 // Both quantity messages are worded without naming a unit: the same field
 // now holds servings, grams, ounces, kilograms or pounds
 // (`domain/quantity_unit.dart`), and copy that says "servings" to someone
-// who just typed a gram figure reads like the app misunderstood her.
+// who just typed a gram figure reads like the app misunderstood them.
 const String _nonPositiveQuantityMessage = 'That needs to be more than zero.';
 const String _tooManyServingsMessage =
     "That's more than we can log in one entry — splitting it into a few "
@@ -332,9 +332,9 @@ const String macroPercentTooLargeMessage =
 /// **The sum message quotes the total the user typed** — "These come to 96%
 /// …" — which is the one place in this file a message carries a number that
 /// came from the user. It is deliberate and narrow: without the total the
-/// message can only say "these don't add up", which leaves her to do the
-/// arithmetic the app already did. A split is a *shape* she chose for her
-/// day, not something she logged eating, so quoting it back is not the S2
+/// message can only say "these don't add up", which leaves them to do the
+/// arithmetic the app already did. A split is a *shape* they chose for their
+/// day, not something they logged eating, so quoting it back is not the S2
 /// disclosure rule 4 exists to prevent — but the message is still a UI
 /// string only, and like everything else here must never reach a log, an
 /// analytics event or an exception.
@@ -407,7 +407,7 @@ String? _percentError(double? value) {
 /// enforced. Every message states arithmetic: what the locked targets come
 /// to, and how that sits against the day's energy figure. None of them
 /// describes a split as balanced, sensible, high or low, and none implies
-/// the user has done something wrong — the app is doing her sums, not
+/// the user has done something wrong — the app is doing their sums, not
 /// recommending a diet (`knowledge/domain/mens_health.md` rule 1).
 ///
 /// **`null` when nothing is locked.** A user who hasn't asked for this
@@ -584,8 +584,8 @@ class NutritionEntryValidation {
 /// make sense of — a zero-or-less amount is a deletion rather than a log
 /// whatever it measures, and a non-finite one came from a parse of
 /// something that wasn't a number. Checking it *first* also means a typed
-/// `0` is reported against what she typed rather than against a converted
-/// zero she never saw.
+/// `0` is reported against what they typed rather than against a converted
+/// zero they never saw.
 NutritionEntryValidation validateNutritionEntry({
   required LocalDate day,
   required LocalDate today,

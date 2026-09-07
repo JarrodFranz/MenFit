@@ -1,13 +1,13 @@
 /// Merging a scanned nutrition panel into a form the user may already have
 /// started.
 ///
-/// **Never replace what she typed.** A scan fills blanks and nothing else.
+/// **Never replace what they typed.** A scan fills blanks and nothing else.
 /// The alternative — a scan that overwrites — turns one tap into silent
 /// data loss on the one screen where the numbers are the whole point, and
-/// it does it at the moment she is least likely to re-read the fields she
-/// had already finished. Where the panel and the form disagree, hers wins
+/// it does it at the moment they are least likely to re-read the fields they
+/// had already finished. Where the panel and the form disagree, theirs wins
 /// and the disagreement is *said*, under the review banner, rather than
-/// resolved on her behalf.
+/// resolved on their behalf.
 ///
 /// Pure: takes a state, returns a state. The controller owns when this
 /// runs; this owns what it does.
@@ -19,7 +19,7 @@ import 'package:menfit_app/features/nutrition/presentation/label_scan_fields.dar
 /// [current] with every blank field the panel could fill, filled.
 ///
 /// The basis (amount, unit, serving weight) is only taken from the panel
-/// when the form is still on its untouched defaults — an amount she has
+/// when the form is still on its untouched defaults — an amount they have
 /// already set is a field like any other, and a scan may not move it.
 FoodFormState applyLabelScan(
   FoodFormState current,
@@ -49,8 +49,8 @@ FoodFormState applyLabelScan(
   return next.copyWith(
     labelScanApplied: true,
     // Only the fields actually taken from the panel can be marked "check
-    // this": a marker beside a number she typed herself would be the app
-    // doubting her handwriting.
+    // this": a marker beside a number they typed themselves would be the app
+    // doubting their handwriting.
     //
     // Markers from an earlier scan survive for fields **this** scan did not
     // refill. Their values are still on the form and were still read off a
@@ -72,7 +72,7 @@ FoodFormState applyLabelScan(
     // blank amount is read as 100 by `_effectiveServing` and per-100 mL
     // figures are saved as per-100 g.
     labelIsPerVolume: fields.needsWeight || current.labelIsPerVolume,
-    // A weight she typed *before* this scan was not about this label's
+    // A weight they typed *before* this scan was not about this label's
     // basis, so a per-volume panel always asks again. Cleared by
     // `FoodFormController.updateBasisAmount` — touching the amount is the
     // confirmation.
@@ -90,7 +90,7 @@ FoodFormState applyLabelScan(
 /// crash text; this string is built in the presentation layer, exists only
 /// to be rendered on the form beside the fields it is about, and is
 /// useless without the two numbers it compares — "we read something
-/// different" tells the user nothing she can act on. It stays S2: display
+/// different" tells the user nothing they can act on. It stays S2: display
 /// only, never a log line, never an exception message.
 String _keptNote(String field, {required String read}) {
   final name = ScanField.displayNames[field] ?? field;
@@ -104,7 +104,7 @@ const _keptBasisNote =
 /// opened.
 ///
 /// Conservative on purpose: anything at all in the serving weight or the
-/// portion description, or an amount other than the default, means she has
+/// portion description, or an amount other than the default, means they have
 /// been here, and a scan does not get to redefine what the numbers are per.
 bool _isUntouchedBasis(FoodFormState state) =>
     state.basisMode == FoodBasisMode.serving &&
@@ -118,7 +118,7 @@ FoodFormState _withBasis(FoodFormState state, LabelScanFields fields) {
     case LabelScanBasis.serving:
       if (fields.servingGrams.isEmpty) {
         // Numbers per an unstated serving: the values are worth having,
-        // the amount is hers to give.
+        // the amount is theirs to give.
         return state.copyWith(
           servingDescription: fields.servingDescription,
         );
@@ -141,8 +141,8 @@ FoodFormState _withBasis(FoodFormState state, LabelScanFields fields) {
       // 100 mL into 100 g. A millilitre is not a mass
       // (`knowledge/domain/nutrition.md`: 100 ml of oil is ~92 g, of honey
       // ~140 g), so the weight is the one thing on this panel the app
-      // cannot supply. `labelIsPerVolume` then blocks the save until she
-      // does — see `FoodFormState.needsWeightForVolumeLabel`.
+      // cannot supply. `labelIsPerVolume` then blocks the save until they
+      // do — see `FoodFormState.needsWeightForVolumeLabel`.
       return state.copyWith(
         basisMode: FoodBasisMode.perReference,
         basisUnit: 'g',

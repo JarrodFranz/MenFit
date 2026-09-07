@@ -65,7 +65,7 @@ class _WorkoutShareDialogState extends ConsumerState<WorkoutShareDialog> {
   final GlobalKey _cardKey = GlobalKey();
   final GlobalKey _shareButtonKey = GlobalKey();
 
-  /// The card as PNG, captured *before* she taps Share.
+  /// The card as PNG, captured *before* they tap Share.
   ///
   /// On the web `navigator.share()` needs transient user activation and
   /// an `await` inside the tap handler consumes it, so the capture is
@@ -76,7 +76,7 @@ class _WorkoutShareDialogState extends ConsumerState<WorkoutShareDialog> {
   /// takes over instead of a share sheet.
   Uint8List? _cardPng;
 
-  /// Which card [_cardPng] is a picture of, so a toggle she flips after
+  /// Which card [_cardPng] is a picture of, so a toggle they flip after
   /// the capture is not silently shared as the old card.
   String? _capturedCard;
 
@@ -313,7 +313,7 @@ class _WorkoutShareDialogState extends ConsumerState<WorkoutShareDialog> {
     final durationStr = _formatDuration(widget.activity.movingTime);
 
     // The boundary is what `captureCardPng` rasterises for the native
-    // share — the preview she is looking at IS the image that gets sent.
+    // share — the preview they are looking at IS the image that gets sent.
     return RepaintBoundary(
       key: _cardKey,
       child: Container(
@@ -534,7 +534,7 @@ class _WorkoutShareDialogState extends ConsumerState<WorkoutShareDialog> {
   /// pre-captured: on the web that first `await` would spend the user
   /// gesture `navigator.share()` requires. Hence the unawaited haptic and
   /// the `??` — `_cardPng` non-null means no suspension at all between
-  /// her tap and the platform call.
+  /// their tap and the platform call.
   Future<void> _handleShare(BuildContext context) async {
     unawaited(AccessibilityHaptics.mediumImpact(ref));
 

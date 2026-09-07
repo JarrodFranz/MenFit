@@ -289,7 +289,7 @@ class BadgeLadder {
 /// persist as `(badgeId, tierKey)` rows (`core/db/tables/badge_awards.dart`),
 /// so renaming an id silently takes a badge away from everyone who had
 /// earned it, and there is no migration that can put it back — the old id
-/// is the only record that she earned anything at all. Retiring a badge
+/// is the only record that they earned anything at all. Retiring a badge
 /// means leaving its definition in the catalogue (so earned awards still
 /// resolve to a title) and, if it must stop being offered, hiding it in
 /// presentation. Ids are lower_snake_case and describe the achievement,
@@ -299,7 +299,7 @@ class BadgeLadder {
 ///
 /// [title] and [description] are user-facing and are written to the same
 /// standard as recap and insight copy: celebration only, never obligation.
-/// No badge tells her what she should do, implies she is behind, or refers
+/// No badge tells them what they should do, implies they are behind, or refers
 /// to body weight or appearance. A shared vocabulary test
 /// (`test/features/achievements/achievements_test_vocabulary.dart`) fails
 /// the build over every string here.

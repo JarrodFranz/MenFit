@@ -43,7 +43,7 @@ class MindfulTrackerState {
   final String style;
   final String focusArea;
 
-  /// The RPE she has actually chosen, or `null` while the slider has
+  /// The RPE they have actually chosen, or `null` while the slider has
   /// never been touched. Starts unset so an untouched session stores no
   /// exertion at all rather than a fabricated 6 — see
   /// `activity/domain/workout_details.dart`'s `MindfulWorkoutDetails.rpe`.

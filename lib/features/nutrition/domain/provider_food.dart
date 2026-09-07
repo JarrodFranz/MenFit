@@ -8,7 +8,7 @@ part 'provider_food.freezed.dart';
 /// This is an honesty requirement rather than bookkeeping: "per serving"
 /// means three materially different things depending on what the source
 /// database actually stated, and the review screen shows the user which one
-/// she is looking at instead of presenting all three as equally
+/// they are looking at instead of presenting all three as equally
 /// authoritative.
 enum ServingBasis {
   /// The provider stated per-serving values itself. Authoritative — prefer

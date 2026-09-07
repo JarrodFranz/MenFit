@@ -89,7 +89,7 @@ class DriftNutritionRepository implements NutritionRepository {
   /// An inner join collapses the two rules the callers need into the query
   /// itself: an entry with no `foodId` (quick-add) contributes no row, and a
   /// soft-deleted food is filtered out before the grouping, so a food the
-  /// user removed can never resurface through her own history.
+  /// user removed can never resurface through their own history.
   JoinedSelectStatement<HasResultSet, dynamic> _loggedFoodsQuery({
     required Expression<Object> aggregate,
     required int limit,

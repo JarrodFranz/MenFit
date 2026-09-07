@@ -33,9 +33,9 @@ Stream<Set<MealType>> copyableMeals(Ref ref, LocalDate day) {
 ///
 /// Each source entry is duplicated **as it stands** — its own snapshot of
 /// the food's name, brand, serving description, per-serving nutrition and
-/// serving weight, plus the exact amount and unit she typed. The referenced
+/// serving weight, plus the exact amount and unit they typed. The referenced
 /// food is deliberately never re-read: an entry's snapshot is the record of
-/// what she ate (`domain/nutrition_entry.dart`), and "the same breakfast as
+/// what they ate (`domain/nutrition_entry.dart`), and "the same breakfast as
 /// yesterday" means the same numbers, not today's corrected definition of
 /// them. It follows that a source entry whose food has since been edited,
 /// or deleted, or which never had one at all (a quick add), copies across

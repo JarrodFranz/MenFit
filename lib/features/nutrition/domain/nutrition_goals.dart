@@ -33,7 +33,7 @@ part 'nutrition_goals.freezed.dart';
 /// held; `domain/macro_targets.dart` turns a split into grams on demand.
 ///
 /// [macroLocks] pins gram targets the user wants left alone, which is what
-/// lets the app work out the third from the other two and her calorie
+/// lets the app work out the third from the other two and their calorie
 /// target. It is stored for the same reason the targets themselves are: a
 /// lock that vanished on reopen would stop the free macro tracking a changed
 /// calorie target, which is the entire point of locking one.
@@ -81,10 +81,10 @@ abstract class NutritionGoals with _$NutritionGoals {
     /// `null` means none set.
     double? fatTargetPercent,
 
-    /// Which gram targets the user has pinned, so the one she left free can
-    /// be worked out from her calorie target
+    /// Which gram targets the user has pinned, so the one they left free can
+    /// be worked out from their calorie target
     /// (`domain/macro_targets.dart#solveMacroTargets`). Defaults to
-    /// [MacroLocks.none] — nothing is locked until she says so, and nothing
+    /// [MacroLocks.none] — nothing is locked until they say so, and nothing
     /// is prefilled.
     ///
     /// Only meaningful in [MacroTargetMode.grams]; a percentage split is

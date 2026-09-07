@@ -82,7 +82,7 @@ abstract interface class WeightRepository {
   ///
   /// A hard delete, not the soft-delete-and-sync-later pattern of ADR 004:
   /// a weigh-in the user removed must actually be gone. Body weight is
-  /// ED-sensitive as well as S2 — a number she chose to delete must not be
+  /// ED-sensitive as well as S2 — a number they chose to delete must not be
   /// recoverable by anything in the app.
   Future<void> deleteLog(String id);
 

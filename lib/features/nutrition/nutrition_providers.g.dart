@@ -550,7 +550,7 @@ String _$foodSearchRegionStoreHash() =>
 ///
 /// Defaults to the device's country when this app covers it
 /// (`FoodSearchRegion.forCountryCode`) and to `anywhere` otherwise, until the
-/// user picks one in Settings — at which point her choice wins permanently,
+/// user picks one in Settings — at which point their choice wins permanently,
 /// including a deliberate choice of `anywhere`.
 ///
 /// Defaulting from the device rather than shipping `anywhere` is the actual
@@ -570,7 +570,7 @@ final foodSearchRegionControllerProvider =
 ///
 /// Defaults to the device's country when this app covers it
 /// (`FoodSearchRegion.forCountryCode`) and to `anywhere` otherwise, until the
-/// user picks one in Settings — at which point her choice wins permanently,
+/// user picks one in Settings — at which point their choice wins permanently,
 /// including a deliberate choice of `anywhere`.
 ///
 /// Defaulting from the device rather than shipping `anywhere` is the actual
@@ -587,7 +587,7 @@ final class FoodSearchRegionControllerProvider
   ///
   /// Defaults to the device's country when this app covers it
   /// (`FoodSearchRegion.forCountryCode`) and to `anywhere` otherwise, until the
-  /// user picks one in Settings — at which point her choice wins permanently,
+  /// user picks one in Settings — at which point their choice wins permanently,
   /// including a deliberate choice of `anywhere`.
   ///
   /// Defaulting from the device rather than shipping `anywhere` is the actual
@@ -632,7 +632,7 @@ String _$foodSearchRegionControllerHash() =>
 ///
 /// Defaults to the device's country when this app covers it
 /// (`FoodSearchRegion.forCountryCode`) and to `anywhere` otherwise, until the
-/// user picks one in Settings — at which point her choice wins permanently,
+/// user picks one in Settings — at which point their choice wins permanently,
 /// including a deliberate choice of `anywhere`.
 ///
 /// Defaulting from the device rather than shipping `anywhere` is the actual
@@ -1206,7 +1206,7 @@ final class RangeNutritionTotalsFamily extends $Family
 ///
 /// Every emission is an estimate, never a measurement, and never medical
 /// advice — `knowledge/research/nutrition_energy_estimates.md` documents
-/// the equation, the female-coefficient assumption, and the error margins
+/// the equation, the male-coefficient assumption, and the error margins
 /// the UI must not paper over.
 
 @ProviderFor(energyEstimate)
@@ -1221,7 +1221,7 @@ final energyEstimateProvider = EnergyEstimateProvider._();
 ///
 /// Every emission is an estimate, never a measurement, and never medical
 /// advice — `knowledge/research/nutrition_energy_estimates.md` documents
-/// the equation, the female-coefficient assumption, and the error margins
+/// the equation, the male-coefficient assumption, and the error margins
 /// the UI must not paper over.
 
 final class EnergyEstimateProvider
@@ -1243,7 +1243,7 @@ final class EnergyEstimateProvider
   ///
   /// Every emission is an estimate, never a measurement, and never medical
   /// advice — `knowledge/research/nutrition_energy_estimates.md` documents
-  /// the equation, the female-coefficient assumption, and the error margins
+  /// the equation, the male-coefficient assumption, and the error margins
   /// the UI must not paper over.
   EnergyEstimateProvider._()
     : super(

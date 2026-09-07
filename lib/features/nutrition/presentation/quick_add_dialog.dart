@@ -148,7 +148,7 @@ class _QuickAddDialogState extends ConsumerState<QuickAddDialog> {
           id: EntityId.generate(),
           name: name,
           // One serving with no gram weight, because that is all a quick
-          // add knows: the numbers describe the portion she ate, not a
+          // add knows: the numbers describe the portion they ate, not a
           // measurable unit of the food. `QuantityUnit.availableFor` then
           // offers servings only, which is the honest picker for it.
           servingDescription: '1 serving',

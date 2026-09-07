@@ -89,7 +89,7 @@ class AccessibilityPreferences {
   ///
   /// On by default, and the counterpart to [hapticFeedback] rather than a
   /// duplicate of it: the two channels reach different situations. A
-  /// vibration is felt by the phone's owner and only while she is near it;
+  /// vibration is felt by the phone's owner and only while they are near it;
   /// a chime carries across a mat when the phone is face-down, and exists
   /// on web and Windows where there is no haptics API at all. Both are
   /// backed up by the visual channel, which is never switchable.

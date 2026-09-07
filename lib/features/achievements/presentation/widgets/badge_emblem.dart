@@ -35,7 +35,7 @@ class BadgeEmblem extends ConsumerWidget {
 
   /// Whether anything at all is held — a one-off's single award, or any
   /// tier. An unearned emblem is muted, never crossed out or padlocked:
-  /// nothing here has been withheld from her.
+  /// nothing here has been withheld from them.
   final bool isEarned;
 
   final double size;

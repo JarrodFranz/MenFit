@@ -7,7 +7,7 @@ import 'package:menfit_app/features/insights/domain/personal_insight.dart';
 /// Compares same-day sessions on days with a higher logged sleep (or
 /// energy) score against days with a lower one.
 ///
-/// Same day rather than next day: the check-in asks how she woke up
+/// Same day rather than next day: the check-in asks how they woke up
 /// feeling, so it already precedes the session it is paired with.
 ///
 /// Scores are 1-5 ordinals. Days scoring 3 are dropped from **both**

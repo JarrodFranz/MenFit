@@ -14,25 +14,25 @@ import 'package:menfit_app/features/challenges/presentation/widgets/challenge_pr
 import 'package:menfit_app/features/challenges/presentation/widgets/leave_challenge_button.dart';
 import 'package:menfit_app/features/challenges/presentation/widgets/progress_code_sheet.dart';
 
-/// One challenge in full: what it asks, where she is in it, where her
-/// buddy was when she last said, and the two codes that carry those two
+/// One challenge in full: what it asks, where they are in it, where their
+/// buddy was when they last said, and the two codes that carry those two
 /// facts between phones.
 ///
 /// Reached at `/challenges/:challengeId`.
 ///
-/// ## What this screen shows about her, and what it does not
+/// ## What this screen shows about them, and what it does not
 ///
-/// It shows her percentage against her own target. It does **not** show
-/// her adjusted target, it does not show how many of her days were
-/// protected, and — since 2026-09-02 — it does not show her raw work
+/// It shows their percentage against their own target. It does **not** show
+/// their adjusted target, it does not show how many of their days were
+/// protected, and — since 2026-09-02 — it does not show their raw work
 /// either. All three are in `ChallengeSelfProgress` and all three stay
 /// there.
 ///
 /// The third one used to be here, described as an accepted residual.
 /// **That residual is closed, and this paragraph replaces the note that
-/// accepted it.** Raw work alone says nothing; raw work *beside* her
+/// accepted it.** Raw work alone says nothing; raw work *beside* their
 /// percentage, the shared target and the window is four numbers from
-/// which her protected-day count follows exactly:
+/// which their protected-day count follows exactly:
 ///
 /// ```text
 /// protectedDays = windowDays − round(windowDays × (raw ÷ percent) ÷ target)
@@ -40,8 +40,8 @@ import 'package:menfit_app/features/challenges/presentation/widgets/progress_cod
 ///
 /// 42.3 km at 50% of a 100 km target over 30 days resolves to five
 /// protected days and nothing else — a screenshot of this screen, sent to
-/// the one person best placed to read it, would have said when her period
-/// was. Her raw distance still lives in her activity history, where it is
+/// the one person best placed to read it, would have said when their period
+/// was. Their raw distance still lives in their activity history, where it is
 /// one number on a screen that says nothing about a challenge.
 ///
 /// The rule is now mechanical rather than a matter of care on this screen:
@@ -49,7 +49,7 @@ import 'package:menfit_app/features/challenges/presentation/widgets/progress_cod
 /// every challenge surface with a protected-days fixture and fails if any
 /// one of them puts raw work and an adjusted percentage alongside the
 /// nominal target and the window. What is guaranteed *structurally*, by
-/// the encoder's signature, is the other half — that the code she sends
+/// the encoder's signature, is the other half — that the code they send
 /// carries the percentage alone (`domain/challenge_codes.dart`).
 class ChallengeDetailScreen extends ConsumerWidget {
   const ChallengeDetailScreen({required this.challengeId, super.key});
@@ -191,7 +191,7 @@ class _DetailBody extends ConsumerWidget {
     );
   }
 
-  /// The buddy participant when her own progress has not resolved yet —
+  /// The buddy participant when their own progress has not resolved yet —
   /// what the buddy sent does not depend on what the user has done, so it
   /// should not wait on it.
   BuddyParticipant? _buddyOf(Challenge challenge) {

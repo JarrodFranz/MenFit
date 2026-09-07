@@ -7997,7 +7997,7 @@ class NutritionEntry extends DataClass implements Insertable<NutritionEntry> {
   /// "47 g", `1.5` for "1.5 servings".
   ///
   /// Stored alongside [quantityServings] rather than instead of it: the
-  /// diary has to be able to show her back what she entered, while every
+  /// diary has to be able to show them back what they entered, while every
   /// total keeps multiplying by servings. The two are derived from each
   /// other through `features/nutrition/domain/quantity_unit.dart` and
   /// `NutritionEntry.fromFood` is the only place that derivation happens.
@@ -9642,7 +9642,7 @@ class NutritionGoal extends DataClass implements Insertable<NutritionGoal> {
   ///
   /// The grams and percent columns are stored **side by side and
   /// independently**; neither is written from the other. That is what lets
-  /// a user switch representation and back without losing the numbers she
+  /// a user switch representation and back without losing the numbers they
   /// typed, and it keeps derived grams out of the database — they are
   /// recomputed from the current energy target instead of going stale
   /// (`knowledge/architecture/data_architecture.md`'s derived-vs-stored
@@ -13169,8 +13169,8 @@ class ChallengeRow extends DataClass implements Insertable<ChallengeRow> {
   /// identical parameters are still distinct challenges.
   final int salt;
 
-  /// The name the user chose to show her buddy for this challenge. S1 —
-  /// self-chosen and per-challenge, never her profile name by default.
+  /// The name the user chose to show their buddy for this challenge. S1 —
+  /// self-chosen and per-challenge, never their profile name by default.
   final String selfDisplayName;
 
   /// `ChallengeOrigin`'s storage key — `'created'` or `'joined'`. Kept
@@ -13187,19 +13187,19 @@ class ChallengeRow extends DataClass implements Insertable<ChallengeRow> {
   /// importing it would overwrite the buddy snapshot with the user's own
   /// figure (`features/challenges/application/challenge_code_service.dart`).
   ///
-  /// S1, and only barely: it is random noise with no relationship to her
-  /// name, her device or anything she has logged.
+  /// S1, and only barely: it is random noise with no relationship to their
+  /// name, their device or anything they have logged.
   final int authorTag;
 
-  /// The buddy's self-chosen name from her last pasted progress code.
+  /// The buddy's self-chosen name from their last pasted progress code.
   /// Null until one has been pasted; null together with the two columns
   /// below.
   final String? buddyDisplayName;
 
-  /// The buddy's progress against **her own** privately-adjusted target,
+  /// The buddy's progress against **their own** privately-adjusted target,
   /// as a percentage. May exceed 100. This is the only number a progress
-  /// code carries, and it is deliberately not decomposable into what she
-  /// did and what she was asked for.
+  /// code carries, and it is deliberately not decomposable into what they
+  /// did and what they were asked for.
   final double? buddyProgressPercent;
 
   /// ISO-8601 date string — the day the buddy's code was exported for.
@@ -13785,7 +13785,7 @@ class DailyStepTotal extends DataClass implements Insertable<DailyStepTotal> {
   final String day;
 
   /// Steps accrued on [day], as reported by the health platform. Zero is a
-  /// real, honest value (a day she did not carry her phone), which is why a
+  /// real, honest value (a day they did not carry their phone), which is why a
   /// day with no data has **no row** rather than a zero row.
   final int steps;
 

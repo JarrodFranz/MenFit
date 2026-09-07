@@ -62,7 +62,7 @@ int stepsTarget(Ref ref) => defaultDailyStepTarget;
 /// because this is the only asynchronous part of that question and keeping
 /// it separate lets availability stay a plain synchronous value the UI can
 /// switch on. A throwing `hasPermissions()` answers `false`: if the app
-/// cannot establish that it has been granted access to her health data, it
+/// cannot establish that it has been granted access to their health data, it
 /// must not behave as though it has.
 @riverpod
 Future<bool> stepsPermission(Ref ref) async {
@@ -71,7 +71,7 @@ Future<bool> stepsPermission(Ref ref) async {
     // `hasStepsPermission`, never `hasPermissions`: the latter is an OR
     // across steps and the two energy types, so a user who granted only
     // active energy would read as `available` here and then be shown an
-    // empty chart that blames her data rather than the missing grant.
+    // empty chart that blames their data rather than the missing grant.
     return await adapter.hasStepsPermission();
   } on Object catch (_) {
     return false;
@@ -97,8 +97,8 @@ StepsAvailability stepsAvailability(Ref ref) {
   if (!healthPlatformSupported) {
     return StepsAvailability.unsupportedPlatform;
   }
-  // Her stated preference is checked before any permission is, so a user
-  // with the toggle off is never prompted about health access she has
+  // Their stated preference is checked before any permission is, so a user
+  // with the toggle off is never prompted about health access they have
   // already declined at the app level.
   if (!ref.watch(fitnessDeviceSyncControllerProvider)) {
     return StepsAvailability.syncOff;
@@ -119,9 +119,9 @@ StepsAvailability stepsAvailability(Ref ref) {
 /// S2 (`knowledge/engineering/security_and_privacy.md`: health-platform
 /// data). Three rules hold throughout:
 ///
-/// * **Nothing is read unless she asked for it.** Every entry point returns
+/// * **Nothing is read unless they asked for it.** Every entry point returns
 ///   without touching the adapter while the fitness-device sync toggle is
-///   off, which is her explicit per-source permission for this app.
+///   off, which is their explicit per-source permission for this app.
 /// * **No step value is ever logged**, and no platform exception is either —
 ///   a health platform's error text can carry the values themselves.
 /// * **Outcomes are honest.** A missing permission is reported as
@@ -187,13 +187,13 @@ class StepsSync extends _$StepsSync {
   /// has not happened - see the comment in the body.
   Future<void> syncRange(LocalDate start, LocalDate end) async {
     if (state.syncing) return;
-    // Her stated preference, checked before the adapter is even read.
+    // Their stated preference, checked before the adapter is even read.
     if (!ref.read(fitnessDeviceSyncControllerProvider)) return;
 
     // Never ask the platform about a day that has not happened. Callers
     // pass calendar windows ("this week", "this month") whose end is
     // routinely in the future, and a health platform asked for a future
-    // interval may answer 0 rather than refusing - which would store "she
+    // interval may answer 0 rather than refusing - which would store "they
     // took no steps" for days that have not occurred. That is the one thing
     // ADR 013 forbids outright, and clamping here is what makes it
     // impossible rather than merely unlikely.

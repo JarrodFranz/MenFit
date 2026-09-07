@@ -76,7 +76,7 @@ class DriftAwardRepository implements AwardRepository {
           // and nothing throws. `insertOnConflictUpdate` would be wrong
           // here - it keys on the primary key (a fresh UUID every time),
           // so it would not see the duplicate at all, and even if it did,
-          // overwriting would move the moment she earned it.
+          // overwriting would move the moment they earned it.
           mode: InsertMode.insertOrIgnore,
         );
       });

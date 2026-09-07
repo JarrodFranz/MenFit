@@ -26,7 +26,7 @@
 ///
 /// [acquire] and [release] are **reference counted**, not idempotent: the
 /// platform lock is one global and this app can have two sessions running
-/// at once (the GPS recorder keeps going while she opens another hub on top
+/// at once (the GPS recorder keeps going while they open another hub on top
 /// of it), so an implementation counts holders and only lets the screen
 /// sleep once the last one has let go. Each holder must therefore release
 /// exactly as many times as it acquired — a holder that releases twice
@@ -46,7 +46,7 @@ abstract interface class ScreenAwake {
   ///
   /// On the web this needs a secure context (HTTPS, or localhost) and the
   /// browser drops the lock whenever the tab is hidden — it is not restored
-  /// when she comes back, so a web caller has to re-[acquire] on resume.
+  /// when they come back, so a web caller has to re-[acquire] on resume.
   Future<void> acquire();
 
   /// Lets the screen sleep normally again. Safe to call when nothing was

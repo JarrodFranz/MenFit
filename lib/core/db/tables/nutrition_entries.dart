@@ -90,7 +90,7 @@ class NutritionEntries extends Table {
   /// "47 g", `1.5` for "1.5 servings".
   ///
   /// Stored alongside [quantityServings] rather than instead of it: the
-  /// diary has to be able to show her back what she entered, while every
+  /// diary has to be able to show them back what they entered, while every
   /// total keeps multiplying by servings. The two are derived from each
   /// other through `features/nutrition/domain/quantity_unit.dart` and
   /// `NutritionEntry.fromFood` is the only place that derivation happens.

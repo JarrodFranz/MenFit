@@ -78,7 +78,7 @@ class YogaRunnerState {
   final DateTime? startedAt;
 
   /// Time actually spent **holding poses**: transitions, pauses and the
-  /// remainder of a pose she skipped out of are all excluded.
+  /// remainder of a pose they skipped out of are all excluded.
   ///
   /// This is what reaches `Activity.movingTime`, with wall-clock
   /// [elapsedTime] as `elapsedTime` — the same moving/elapsed split a run
@@ -128,9 +128,9 @@ class YogaRunnerState {
 
   /// The pose every surface should name right now.
   ///
-  /// During a transition that is the pose she is moving *into*: [poseIndex]
+  /// During a transition that is the pose they are moving *into*: [poseIndex]
   /// still points at the one that ended, so naming [currentPose] there tells
-  /// her to hold a pose she has already left. The runner screen and the
+  /// them to hold a pose they have already left. The runner screen and the
   /// active-workout banner both read this, so they cannot disagree.
   YogaPose? get displayPose => isTransitioning ? nextPose : currentPose;
 
@@ -462,7 +462,7 @@ class YogaSequenceRunnerController extends _$YogaSequenceRunnerController {
   ///
   /// The unspent remainder of a skipped pose is **not** credited to
   /// [YogaRunnerState.practisedTime] — the point of recording practised
-  /// time is that it is time she practised.
+  /// time is that it is time they practised.
   void skipForward() {
     final current = state;
     if (!current.isActive) return;
@@ -512,7 +512,7 @@ class YogaSequenceRunnerController extends _$YogaSequenceRunnerController {
   /// Saves the practice as a yoga [Activity] and clears the runner.
   ///
   /// `movingTime` is the practised time (holds only), `elapsedTime` the
-  /// wall clock. RPE is left null — she was never asked — and the pose list
+  /// wall clock. RPE is left null — they were never asked — and the pose list
   /// is finally what `MindfulWorkoutDetails.poses` was always for.
   ///
   /// Returns null when there is nothing to save (or a save is already in
@@ -544,7 +544,7 @@ class YogaSequenceRunnerController extends _$YogaSequenceRunnerController {
       // the same trap `MindfulWorkoutDetails.rpe` documents.
       style: sequence.style ?? '',
       focusArea: '',
-      // Only the poses she reached: a practice finished at pose 6 of 8
+      // Only the poses they reached: a practice finished at pose 6 of 8
       // did not practise 8 poses (seen on device - the celebration said
       // so). A transition counts the pose it just left; complete = all.
       poses: sequence.poses
@@ -575,7 +575,7 @@ class YogaSequenceRunnerController extends _$YogaSequenceRunnerController {
       // `userMessageFor`'s, and the activity carries pose names (S1).
       //
       // A save attempted mid-practice leaves it running — the countdown
-      // starts again and the screen stays awake, because she is still on
+      // starts again and the screen stays awake, because they are still on
       // the mat. One attempted at the end has nothing left to count, so the
       // lock goes: the practice is over either way and an unreleased
       // wakelock is a flat battery.

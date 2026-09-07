@@ -29,7 +29,7 @@ abstract class HealthPlatformAdapter {
   /// Separate from [hasPermissions] because that one is an OR across steps
   /// and the two energy types: a user who granted only active energy would
   /// pass it, and the step history would then show an empty chart while the
-  /// app behaved as though her data were simply missing. Every steps-only
+  /// app behaved as though their data were simply missing. Every steps-only
   /// read gates on this instead.
   ///
   /// **iOS can never answer this truthfully.** HealthKit deliberately does

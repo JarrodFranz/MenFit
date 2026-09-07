@@ -13,17 +13,17 @@ const Set<ActivityType> walkingActivityTypes = {
   ActivityType.hike,
 };
 
-/// Whether a single Monday-start week counts, given how far she walked in
+/// Whether a single Monday-start week counts, given how far they walked in
 /// it and how many of its days were protected recovery.
 ///
 /// This is the **cycle-aware fairness rule**, and it is the whole reason
 /// this file exists separately from the rest of the metric layer.
 ///
 /// The plain reading of a weekly badge — "walk 15 km every week" — quietly
-/// punishes a period week, a flare week, or any week she marked as
+/// punishes a period week, a flare week, or any week they marked as
 /// recovery. The app's protected-recovery design says a rest is never a
 /// lapse (`knowledge/product/terminology.md`, `knowledge/domain/mens_health.md`),
-/// so the week's ask is **pro-rated to the days that were actually hers to
+/// so the week's ask is **pro-rated to the days that were actually theirs to
 /// use**:
 ///
 /// * `activeDays = 7 - protectedDays`
@@ -38,17 +38,17 @@ const Set<ActivityType> walkingActivityTypes = {
 ///
 /// **Protection alone lowers the ask — walking on a protected day never
 /// raises it.** [protectedDays] counts every protected day in the week,
-/// whether or not she walked on it, and *all* the metres she walked count
+/// whether or not they walked on it, and *all* the metres they walked count
 /// towards the pro-rated figure wherever in the week they fell. An earlier
-/// draft of this rule deducted only protected days she had *not* walked on,
+/// draft of this rule deducted only protected days they had *not* walked on,
 /// which made walking on a flare day strictly worse than resting: one
 /// kilometre on a protected day turned an unconditional week into a
-/// 2,142.9 m ask. A rule that can punish her for moving on a bad day is
+/// 2,142.9 m ask. A rule that can punish them for moving on a bad day is
 /// exactly the rule protected recovery exists to prevent, so the ask now
-/// depends only on how many days were hers to use.
+/// depends only on how many days were theirs to use.
 ///
 /// The consequence worth stating plainly: adding a walk to a week can only
-/// ever help. Nothing she logs can un-qualify a week that already counted.
+/// ever help. Nothing they log can un-qualify a week that already counted.
 ///
 /// Comparison is `>=`, so a week landing exactly on the (possibly
 /// pro-rated) figure counts.
@@ -66,7 +66,7 @@ bool weeklyWalkingWeekQualifies({
 /// [weeklyWalkingWeekQualifies].
 ///
 /// The week containing [today] is deliberately excluded: an in-progress
-/// week is not a week she fell short in, and judging it would make the
+/// week is not a week they fell short in, and judging it would make the
 /// badge's own progress bar slide backwards every Monday. Weeks need not be
 /// consecutive — this is a tally, never a streak, so a quiet month costs
 /// nothing already earned.

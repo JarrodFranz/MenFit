@@ -3,7 +3,7 @@ import 'package:menfit_app/core/theme/tokens.dart';
 import 'package:menfit_app/features/activity/domain/pace_format.dart';
 import 'package:menfit_app/features/activity/domain/yoga_sequence.dart';
 
-/// What the runner shows before the practice starts: what she is about to
+/// What the runner shows before the practice starts: what they are about to
 /// do, and one button to begin.
 ///
 /// Deliberately a separate view rather than a countdown that starts itself.
@@ -11,12 +11,12 @@ import 'package:menfit_app/features/activity/domain/yoga_sequence.dart';
 /// that counts is the one on the call stack — so the Start tap is not a
 /// nicety here, it is the thing that makes the chime audible at all (see
 /// `AudioCuePlayer.preload`).
-/// The practice that is already running when she opens a *different*
+/// The practice that is already running when they open a *different*
 /// sequence's runner.
 ///
 /// The runner is a single global machine, so starting this sequence ends
-/// that one. That is a decision she has to make, not one a Start button may
-/// make for her — hence two named ways out and no bare Start.
+/// that one. That is a decision they have to make, not one a Start button may
+/// make for them — hence two named ways out and no bare Start.
 @immutable
 class YogaRunnerConflict {
   const YogaRunnerConflict({

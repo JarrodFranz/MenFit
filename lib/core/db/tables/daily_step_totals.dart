@@ -55,7 +55,7 @@ class DailyStepTotals extends Table {
   TextColumn get day => text()();
 
   /// Steps accrued on [day], as reported by the health platform. Zero is a
-  /// real, honest value (a day she did not carry her phone), which is why a
+  /// real, honest value (a day they did not carry their phone), which is why a
   /// day with no data has **no row** rather than a zero row.
   IntColumn get steps => integer()();
 

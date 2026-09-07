@@ -8,7 +8,7 @@ import 'package:menfit_app/features/challenges/presentation/challenges_copy.dart
 /// There is no counterpart banner for "one of you did", and there never
 /// will be — a card that fires when exactly one person finished is a card
 /// whose meaning is "and the other did not". Each participant's own
-/// arrival is said quietly on her own row instead
+/// arrival is said quietly on their own row instead
 /// (`challenges_copy.dart#selfReachedLine` / `#buddyReachedLine`).
 class BothReachedBanner extends StatelessWidget {
   const BothReachedBanner({super.key});

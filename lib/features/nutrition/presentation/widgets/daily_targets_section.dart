@@ -103,8 +103,8 @@ class _DailyTargetsSectionState extends ConsumerState<DailyTargetsSection> {
     // Both derived views — the percent mode's grams lines and the grams
     // mode's computed macro — are functions of these fields *as typed*, so
     // they have to move while the user types rather than only after a save.
-    // Otherwise the number she is choosing between is the one thing the form
-    // won't show her.
+    // Otherwise the number they are choosing between is the one thing the form
+    // won't show them.
     for (final controller in [
       _calories,
       _protein,
@@ -158,7 +158,7 @@ class _DailyTargetsSectionState extends ConsumerState<DailyTargetsSection> {
   Widget build(BuildContext context) {
     final tokens = Theme.of(context).extension<AppTokens>()!;
     // The resolved target stands in as the energy basis when the user has
-    // set no calorie target of her own, so a change to it moves the computed
+    // set no calorie target of their own, so a change to it moves the computed
     // macro. `listen` rather than only `watch` because that move has to
     // write into a text controller, which a build must never do.
     ref.listen<AsyncValue<CalorieTargetOutcome>>(
@@ -347,7 +347,7 @@ class _DailyTargetsSectionState extends ConsumerState<DailyTargetsSection> {
 
   /// Puts the solved gram figure in the free macro's controller, so it is
   /// the same field, the same bounds check and the same save path as a
-  /// number the user typed herself.
+  /// number the user typed themselves.
   ///
   /// Does nothing unless exactly one macro is free and the arithmetic works
   /// out — an over-budget or underdetermined set leaves every field as the
@@ -398,7 +398,7 @@ class _DailyTargetsSectionState extends ConsumerState<DailyTargetsSection> {
   /// field is readable — including blank, which means "no calorie target"
   /// and hands the basis to the estimate. Only an unreadable field falls
   /// back to the saved figure, so what the user sees here is what pressing
-  /// Save would give her.
+  /// Save would give them.
   MacroTargetGramsOutcome _derivedGrams() {
     return deriveMacroTargetGrams(
       calorieTargetKcal: _basisCalorieTargetKcal(),
@@ -431,7 +431,7 @@ class _DailyTargetsSectionState extends ConsumerState<DailyTargetsSection> {
   /// whenever it is readable — including blank, which means "no calorie
   /// target" and hands the basis to the estimate. Only an unreadable field
   /// falls back to the saved figure, so what the user sees is what pressing
-  /// Save would give her.
+  /// Save would give them.
   int? _basisCalorieTargetKcal() {
     final calories = _read(_calories, max: maxCalorieTargetKcal);
     return calories.isValid
@@ -461,7 +461,7 @@ class _DailyTargetsSectionState extends ConsumerState<DailyTargetsSection> {
 
     // Only the visible representation is read, checked and written. The
     // other one's stored numbers stay exactly as they are — a mode the user
-    // isn't looking at is not a form she just submitted.
+    // isn't looking at is not a form they just submitted.
     final macros = _mode == MacroTargetMode.grams
         ? _readValidGrams()
         : _readValidPercentages();

@@ -12,7 +12,7 @@ import 'package:menfit_app/features/activity/domain/activity.dart';
 /// wrong in six different ways before this existed: take the lock when a
 /// session starts (but only if the hub's "Keep screen awake" switch is on
 /// for that type), let go on *every* exit including `ref.onDispose`, and
-/// react while the session is still running if she changes her mind on the
+/// react while the session is still running if they change their mind on the
 /// hub. A lock acquired and not released is a flat battery, so the
 /// interesting part is the release, not the acquire.
 ///

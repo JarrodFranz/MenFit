@@ -23,7 +23,7 @@ enum ChallengeKind {
 
   /// Parses the persisted string form, defaulting to [totalDistance] for
   /// any unrecognised value (an old build meeting a newer row reads it as
-  /// the commonest kind rather than throwing on her challenge list).
+  /// the commonest kind rather than throwing on their challenge list).
   static ChallengeKind fromStorage(String value) {
     return switch (value) {
       'session_count' => ChallengeKind.sessionCount,
@@ -130,38 +130,38 @@ abstract class ChallengeBlueprint with _$ChallengeBlueprint {
 }
 
 /// A challenge as this device holds it: the shared [blueprint] plus the
-/// purely local things — what the user calls herself here, when she picked
-/// it up, and the last thing her buddy told her.
+/// purely local things — what the user calls themselves here, when they picked
+/// it up, and the last thing their buddy told them.
 ///
-/// Her own progress is deliberately **not** a field: it is recomputed from
-/// her activity log every time it is asked for
+/// Their own progress is deliberately **not** a field: it is recomputed from
+/// their activity log every time it is asked for
 /// (`challenge_progress_engine.dart`), so it cannot go stale, and — more
-/// to the point — her privately-adjusted target never has to be written
+/// to the point — their privately-adjusted target never has to be written
 /// down anywhere it could be read out of.
 @freezed
 abstract class Challenge with _$Challenge {
   const factory Challenge({
     required ChallengeBlueprint blueprint,
 
-    /// The name she chose to show her buddy for this challenge. Per
+    /// The name they chose to show their buddy for this challenge. Per
     /// challenge, not per account: the same person may be "Ana" to a
     /// running club and something else to a sister.
     required String selfDisplayName,
     required ChallengeOrigin origin,
 
     /// This device's 32-bit tag for this challenge, drawn at random when
-    /// she created or joined it and stamped into every progress code she
-    /// exports for it.
+    /// they created or joined it and stamped into every progress code they
+    /// export for it.
     ///
     /// Local, not shared identity: the two devices in a challenge hold
     /// **different** tags for the same challenge, which is the entire
-    /// point — a pasted code whose tag equals this one is her own code
-    /// coming back, and importing it would overwrite her buddy's snapshot
-    /// with her own figure
+    /// point — a pasted code whose tag equals this one is their own code
+    /// coming back, and importing it would overwrite their buddy's snapshot
+    /// with their own figure
     /// (`application/challenge_code_service.dart#importProgressCode`).
     ///
-    /// It is random noise: not derived from her name, her device or
-    /// anything she has logged. See the privacy invariant on
+    /// It is random noise: not derived from their name, their device or
+    /// anything they have logged. See the privacy invariant on
     /// `challenge_codes.dart`.
     required int authorTag,
 
@@ -169,8 +169,8 @@ abstract class Challenge with _$Challenge {
     /// metadata, not part of the shared identity.
     required DateTime createdAt,
 
-    /// The buddy's last pasted progress, or null if she has not pasted
-    /// one yet. Null is a completely normal, permanent-if-she-likes state:
+    /// The buddy's last pasted progress, or null if they have not pasted
+    /// one yet. Null is a completely normal, permanent-if-they-likes state:
     /// a challenge works perfectly well with nobody exchanging progress at
     /// all.
     ChallengeBuddySnapshot? buddy,
@@ -188,16 +188,16 @@ abstract class Challenge with _$Challenge {
 ///
 /// Three fields, and there is no fourth: a progress code carries a name, a
 /// percentage and a date, and this type is the whole of what the app knows
-/// about the other person. It cannot say how far she ran, what her target
-/// was, or which of her days were protected — see the privacy invariant on
+/// about the other person. It cannot say how far they ran, what their target
+/// was, or which of their days were protected — see the privacy invariant on
 /// `challenge_codes.dart`.
 @freezed
 abstract class ChallengeBuddySnapshot with _$ChallengeBuddySnapshot {
   const factory ChallengeBuddySnapshot({
-    /// The name she chose for herself.
+    /// The name they chose for themselves.
     required String displayName,
 
-    /// Her progress against her own privately-adjusted target, as a
+    /// Their progress against their own privately-adjusted target, as a
     /// percentage. May exceed 100 — going past your own goal is a thing
     /// that happens, and clamping it would quietly delete the best part.
     required double progressPercent,
@@ -208,6 +208,6 @@ abstract class ChallengeBuddySnapshot with _$ChallengeBuddySnapshot {
 
   const ChallengeBuddySnapshot._();
 
-  /// Whether she reached her own goal as of [asOf].
+  /// Whether they reached their own goal as of [asOf].
   bool get reachedGoal => progressPercent >= 100;
 }

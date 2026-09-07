@@ -169,8 +169,8 @@ class LogFlareButton extends StatelessWidget {
 
 /// Opens the existing retroactive recovery-day dialog on this day.
 ///
-/// The dialog is seeded with [day] rather than today so she does not have
-/// to re-find in a picker the date she has already tapped; the date field
+/// The dialog is seeded with [day] rather than today so they do not have
+/// to re-find in a picker the date they have already tapped; the date field
 /// stays fully editable, and `lastDate: today` still bounds it.
 class MarkRecoveryDayButton extends StatelessWidget {
   const MarkRecoveryDayButton({required this.day, super.key});
@@ -190,7 +190,7 @@ class MarkRecoveryDayButton extends StatelessWidget {
 }
 
 /// One answered score, as `Energy 4 of 5`. Unanswered scores are omitted
-/// entirely rather than shown as a dash: a question she chose to skip is
+/// entirely rather than shown as a dash: a question they chose to skip is
 /// not a gap in the record.
 class _ScoreLine extends StatelessWidget {
   const _ScoreLine({required this.label, required this.value});

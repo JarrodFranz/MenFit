@@ -50,12 +50,12 @@ bool get audioCueSupport {
 /// Whether this platform lowers other apps' audio for the duration of a cue.
 ///
 /// **Android only, and on purpose.** Android's audio focus has an explicit
-/// "transient, may duck" request, so her music dips under the chime and
+/// "transient, may duck" request, so their music dips under the chime and
 /// comes back — the behaviour a cue over a playlist should have.
 ///
 /// iOS has no equivalent that is worth taking: ducking there means an
 /// `AVAudioSession` category change that also overrides the hardware silent
-/// switch and can pause her music outright. ADR 014 chose the quieter
+/// switch and can pause their music outright. ADR 014 chose the quieter
 /// contract instead — `ambient` + `mixWithOthers`, which respects the silent
 /// switch and mixes rather than interrupts. On web and Windows there is no
 /// focus concept exposed at all; the cue simply plays over whatever else is

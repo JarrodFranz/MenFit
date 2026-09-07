@@ -8,7 +8,7 @@ import 'package:freezed_annotation/freezed_annotation.dart' show immutable;
 /// search for "cheese" from Australia was observed (2026-09-03, release
 /// build) returning Bulgarian products with Cyrillic names and Cyrillic
 /// quantities — records that are perfectly good data and completely useless
-/// to the person searching, because she cannot buy them, cannot read them,
+/// to the person searching, because they cannot buy them, cannot read them,
 /// and cannot check the packet against them.
 ///
 /// The fix is a **country filter on the request**, not a filter on the
@@ -64,7 +64,7 @@ enum FoodSearchRegion {
   /// The region a device in [countryCode] should default to, or `null` when
   /// this app has no entry for that country.
   ///
-  /// `null` rather than [anywhere] so callers can tell "she is in a country
+  /// `null` rather than [anywhere] so callers can tell "they are in a country
   /// we cover" from "we have no entry and are falling back", which are
   /// different facts even though they currently produce the same default.
   static FoodSearchRegion? forCountryCode(String? countryCode) {

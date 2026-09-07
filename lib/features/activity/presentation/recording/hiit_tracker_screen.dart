@@ -97,8 +97,8 @@ class _HiitTrackerScreenState extends ConsumerState<HiitTrackerScreen> {
   /// screen.
   ///
   /// This is the one place in the app where a haptic is load-bearing: mid
-  /// burpee she is not looking at the countdown, and "WORK!" rendered in
-  /// 48pt is invisible to her and to anyone using a screen reader. The
+  /// burpee they are not looking at the countdown, and "WORK!" rendered in
+  /// 48pt is invisible to them and to anyone using a screen reader. The
   /// pulse is the signal; the colour change is the redundant channel, not
   /// the other way round. Gated on the Haptic Feedback preference like
   /// every other vibration (see [AccessibilityHaptics]).
@@ -118,7 +118,7 @@ class _HiitTrackerScreenState extends ConsumerState<HiitTrackerScreen> {
       case HiitPhase.rest:
         unawaited(AccessibilityHaptics.mediumImpact(ref));
       // Warm-up is entered by starting the workout, not by a transition
-      // she needs telling about.
+      // they need telling about.
       case HiitPhase.warmup:
         break;
     }

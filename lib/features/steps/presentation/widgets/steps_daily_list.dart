@@ -9,7 +9,7 @@ import 'package:menfit_app/features/steps/presentation/steps_stats.dart';
 /// when the count reached the target.
 ///
 /// A day with no row shows [stepsNoDataRowLabel] and no tick — never a
-/// zero, and never an unticked row that reads as "she didn't reach it".
+/// zero, and never an unticked row that reads as "they didn't reach it".
 /// The tick is accompanied by a semantics label rather than standing on
 /// colour alone.
 ///

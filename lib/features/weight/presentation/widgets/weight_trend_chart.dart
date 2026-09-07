@@ -274,7 +274,7 @@ class WeightTrendChart extends StatelessWidget {
   /// a direction as better (see `weight_copy.dart`, and
   /// `test/features/weight/weight_test_vocabulary.dart`, which gates the
   /// chart's rendered semantics too). A screen-reader user gets the shape
-  /// of the data and draws her own conclusion, exactly as a sighted user
+  /// of the data and draws their own conclusion, exactly as a sighted user
   /// does.
   String _extendedSemanticsLabel(List<WeightTrendPoint> points) {
     final values = [for (final point in points) point.weightKg];

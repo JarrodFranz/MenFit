@@ -24,7 +24,7 @@ String awardTierKey(BadgeTier? tier) => tier?.toStorage() ?? oneOffAwardTierKey;
 ///
 /// Awards are never revoked. Deleting the activity that earned one does not
 /// take the badge away — the moment happened, and un-awarding it would be
-/// the app telling her it had changed its mind about something she did.
+/// the app telling them it had changed its mind about something they did.
 /// (Deleting *all* data does remove them, along with everything else.)
 @freezed
 abstract class BadgeAward with _$BadgeAward {

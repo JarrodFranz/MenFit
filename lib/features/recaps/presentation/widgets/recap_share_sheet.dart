@@ -43,7 +43,7 @@ class _RecapShareSheetState extends ConsumerState<RecapShareSheet> {
   final GlobalKey _cardKey = GlobalKey();
   final GlobalKey _shareButtonKey = GlobalKey();
 
-  /// The card as PNG, captured *before* she taps Share - see the same
+  /// The card as PNG, captured *before* they tap Share - see the same
   /// field on `activity/presentation/widgets/workout_share_dialog.dart`
   /// for why the capture cannot happen inside the tap handler on the web.
   Uint8List? _cardPng;
@@ -241,7 +241,7 @@ class _RecapShareSheetState extends ConsumerState<RecapShareSheet> {
     final topPr = recap.topPrs.isNotEmpty ? recap.topPrs.first : null;
 
     // The boundary is what `captureCardPng` rasterises for the native
-    // share - the preview she is looking at IS the image that gets sent.
+    // share - the preview they are looking at IS the image that gets sent.
     return RepaintBoundary(
       key: _cardKey,
       child: Container(

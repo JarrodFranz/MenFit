@@ -11,7 +11,7 @@ import 'package:menfit_app/features/activity/domain/mindful_styles.dart';
 /// consolidated before (see `MindfulStyles`'s doc comment), and persisted
 /// `style`/`focusArea` values are free-form strings, never validated
 /// against a closed set. Dropping or remapping [currentStyle] here would
-/// silently change what she logged, so a value the offered list doesn't
+/// silently change what they logged, so a value the offered list doesn't
 /// recognise is appended as an extra, already-selected chip instead of
 /// being lost.
 ///
@@ -19,7 +19,7 @@ import 'package:menfit_app/features/activity/domain/mindful_styles.dart';
 /// "no style" is stored as (the yoga sequence runner writes it for a
 /// sequence with no style, and a type change clears it — see
 /// `ManualEntryController.updateActivityType`), and a blank chip is not a
-/// choice she can read or make.
+/// choice they can read or make.
 List<String> mindfulStyleChoices(ActivityType type, String currentStyle) {
   final offered = MindfulStyles.stylesFor(type);
   if (currentStyle.isEmpty || offered.contains(currentStyle)) return offered;
@@ -27,14 +27,14 @@ List<String> mindfulStyleChoices(ActivityType type, String currentStyle) {
 }
 
 /// The mindful style to keep when the entry's activity type changes from
-/// [from] to [to] — [current], or `''` when it belonged to the type she has
+/// [from] to [to] — [current], or `''` when it belonged to the type they have
 /// just left.
 ///
 /// Yoga and Pilates offer different vocabularies, so carrying 'Vinyasa'
-/// into a Pilates entry would show a style she never chose as chosen (the
+/// into a Pilates entry would show a style they never chose as chosen (the
 /// invented-value trap `MindfulWorkoutDetails.rpe` documents). Only a label
 /// the *old* type offered and the new one does not is dropped: a legacy or
-/// free-form value belongs to neither list, is hers, and stays.
+/// free-form value belongs to neither list, is theirs, and stays.
 ///
 /// Focus areas need no equivalent — [MindfulStyles.focusAreas] is one list
 /// shared by both types.

@@ -14,7 +14,7 @@ import 'package:menfit_app/features/insights/presentation/widgets/insight_card.d
 /// space, including its own spacing. Deliberately **no** placeholder card
 /// and **no** "keep logging to unlock this!" prompt — an empty state here
 /// would turn a discovery into a chore and would nag a user for data about
-/// her own body she may have chosen not to log. Most users will see
+/// their own body they may have chosen not to log. Most users will see
 /// nothing here most of the time, and that is the designed outcome, not a
 /// gap to fill.
 ///

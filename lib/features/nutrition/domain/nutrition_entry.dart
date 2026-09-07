@@ -16,8 +16,8 @@ part 'nutrition_entry.freezed.dart';
 /// and meal total are it times [perServing], whatever unit was used to
 /// arrive at it. [quantityAmount] and [quantityUnit] record how the user
 /// *expressed* that quantity ("47 g"), and [servingGrams] is the snapshot
-/// they were measured against. They exist so the diary can show her back
-/// what she entered instead of a serving count she never typed; they change
+/// they were measured against. They exist so the diary can show them back
+/// what they entered instead of a serving count they never typed; they change
 /// nothing about what the entry contributes.
 ///
 /// The three are kept in step by [NutritionEntry.fromFood] and
@@ -183,7 +183,7 @@ abstract class NutritionEntry with _$NutritionEntry {
   /// exactly the same nutrition.
   NutritionFacts get facts => perServing.scaled(quantityServings);
 
-  /// What she logged, as she logged it: `'47 g'`, `'1.5 servings'`.
+  /// What they logged, as they logged it: `'47 g'`, `'1.5 servings'`.
   ///
   /// Lives here rather than in a widget for the same reason [displayName]
   /// does: the diary row and the log dialog must not be able to word the
@@ -192,7 +192,7 @@ abstract class NutritionEntry with _$NutritionEntry {
   /// rather than a symbol.
   String get quantityLabel {
     // Two decimals at most: 47 g of a 30 g serving is 1.5666… servings, and
-    // the reverse trip can land a hair off the number she typed.
+    // the reverse trip can land a hair off the number they typed.
     final rounded = double.parse(quantityAmount.toStringAsFixed(2));
     final text = rounded == rounded.roundToDouble()
         ? rounded.round().toString()

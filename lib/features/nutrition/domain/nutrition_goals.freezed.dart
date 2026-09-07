@@ -31,10 +31,10 @@ mixin _$NutritionGoals {
 /// target, 0-100. `null` means none set.
  double? get carbTargetPercent;/// Daily fat target as a percentage of the day's energy target, 0-100.
 /// `null` means none set.
- double? get fatTargetPercent;/// Which gram targets the user has pinned, so the one she left free can
-/// be worked out from her calorie target
+ double? get fatTargetPercent;/// Which gram targets the user has pinned, so the one they left free can
+/// be worked out from their calorie target
 /// (`domain/macro_targets.dart#solveMacroTargets`). Defaults to
-/// [MacroLocks.none] — nothing is locked until she says so, and nothing
+/// [MacroLocks.none] — nothing is locked until they say so, and nothing
 /// is prefilled.
 ///
 /// Only meaningful in [MacroTargetMode.grams]; a percentage split is
@@ -294,10 +294,10 @@ class _NutritionGoals extends NutritionGoals {
 /// Daily fat target as a percentage of the day's energy target, 0-100.
 /// `null` means none set.
 @override final  double? fatTargetPercent;
-/// Which gram targets the user has pinned, so the one she left free can
-/// be worked out from her calorie target
+/// Which gram targets the user has pinned, so the one they left free can
+/// be worked out from their calorie target
 /// (`domain/macro_targets.dart#solveMacroTargets`). Defaults to
-/// [MacroLocks.none] — nothing is locked until she says so, and nothing
+/// [MacroLocks.none] — nothing is locked until they say so, and nothing
 /// is prefilled.
 ///
 /// Only meaningful in [MacroTargetMode.grams]; a percentage split is

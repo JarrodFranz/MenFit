@@ -8,9 +8,9 @@
 ///
 /// The user's own progress is **derived, never stored**
 /// (`data_architecture.md`'s "Derived vs stored" section): the only thing
-/// this feature persists is the shared challenge definition, the name she
-/// chose, and the last thing her buddy handed over. Her adjusted target —
-/// the one figure that carries any trace of her cycle — exists only inside
+/// this feature persists is the shared challenge definition, the name they
+/// chose, and the last thing their buddy handed over. Their adjusted target —
+/// the one figure that carries any trace of their cycle — exists only inside
 /// [selfProgress]'s return value, and never leaves the device.
 library;
 
@@ -71,7 +71,7 @@ Stream<List<Challenge>> activeChallenges(Ref ref) {
 }
 
 /// Challenges whose window has closed. Kept, not deleted — a finished
-/// challenge is something she did, and the celebration card lives here.
+/// challenge is something they did, and the celebration card lives here.
 @riverpod
 Stream<List<Challenge>> archivedChallenges(Ref ref) {
   final today = ref.watch(challengesTodayProvider);
@@ -81,7 +81,7 @@ Stream<List<Challenge>> archivedChallenges(Ref ref) {
       .map((all) => all.where((c) => !c.isActiveOn(today)).toList());
 }
 
-/// Where the user stands in one challenge, recomputed from her own logs.
+/// Where the user stands in one challenge, recomputed from their own logs.
 ///
 /// Null when there is no such challenge (it was deleted while a screen
 /// held its id).

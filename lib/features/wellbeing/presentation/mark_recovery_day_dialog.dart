@@ -31,9 +31,9 @@ class MarkRecoveryDayDialog extends ConsumerStatefulWidget {
   /// means today, which is where this dialog has always started.
   ///
   /// The wellbeing day sheet passes the day the user is already looking
-  /// at: she has tapped 12 August and asked to mark a recovery day, so
-  /// making her re-find 12 August in a picker that opened on today would
-  /// be asking a question she has already answered. It stays a picker —
+  /// at: they have tapped 12 August and asked to mark a recovery day, so
+  /// making them re-find 12 August in a picker that opened on today would
+  /// be asking a question they have already answered. It stays a picker —
   /// the day is still fully editable from here, and `lastDate: today`
   /// still bounds it.
   final LocalDate? initialDay;

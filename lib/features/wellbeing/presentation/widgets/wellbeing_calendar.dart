@@ -76,7 +76,7 @@ class _WellbeingCalendarState extends ConsumerState<WellbeingCalendar> {
 
     // An empty grid and a grid that could not be read look identical, and
     // for health data that is the wrong thing to let happen: "nothing
-    // logged" is a claim about her records, not about the query.
+    // logged" is a claim about their records, not about the query.
     final failed =
         checkinsAsync.hasError ||
         flaresAsync.hasError ||

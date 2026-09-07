@@ -33,7 +33,7 @@ import 'package:menfit_app/features/achievements/presentation/badge_display.dart
 /// awarded), each surface passing what it knows. The card is therefore
 /// behind the case only in the moments between a rung being crossed and
 /// the detector recording it, which is exactly the "already recorded"
-/// contract above and never a disagreement about a badge she holds.
+/// contract above and never a disagreement about a badge they hold.
 ///
 /// Like the Weight card and unlike the insight and recap cards, it renders
 /// with nothing earned: this is the only place the trophy case can be

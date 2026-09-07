@@ -371,7 +371,7 @@ String _ml(double ml) {
 /// unconditional. It is the record's name in whatever language its
 /// contributor entered, which for a product actually sold in the user's
 /// country is very often exactly right — and dropping a result because its
-/// name is not in her language would hide products she can buy. Locality is
+/// name is not in their language would hide products they can buy. Locality is
 /// handled by the country filter on the request, not by second-guessing the
 /// names that come back (`domain/food_search_region.dart`).
 String? _productName(Map<String, dynamic> product, String languageCode) =>

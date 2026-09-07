@@ -8,10 +8,10 @@ part 'weight_log.freezed.dart';
 /// A closed vocabulary persisted as the storage keys below (see
 /// `core/db/tables/weight_logs.dart`'s `source` column). It exists so the
 /// history can be honest about provenance — a value the user typed, a
-/// value carried over from her profile at migration time, and (later) a
+/// value carried over from their profile at migration time, and (later) a
 /// value a health platform supplied are not the same claim.
 enum WeightLogSource {
-  /// The user entered this weight herself — including via the profile's
+  /// The user entered this weight themselves — including via the profile's
   /// weight field, which writes through to a log.
   manual,
 

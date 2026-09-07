@@ -14,13 +14,13 @@ import 'package:menfit_app/features/challenges/presentation/challenges_copy.dart
 ///
 /// Reached at `/challenges/join`.
 ///
-/// ## The code is decoded as she types
+/// ## The code is decoded as they type
 ///
 /// `decodeChallengeCode` is pure and local (`domain/challenge_codes.dart`)
-/// — no network, no database — so there is no reason to make her press a
-/// button to find out whether the string she pasted is the right one. A
+/// — no network, no database — so there is no reason to make them press a
+/// button to find out whether the string they pasted is the right one. A
 /// good code shows what it describes; a bad one says which of the five
-/// things went wrong, in words that never blame her for what a chat app
+/// things went wrong, in words that never blame them for what a chat app
 /// did to a string in transit
 /// (`challenges_copy.dart#joinCodeRejectionMessage`).
 class JoinChallengeScreen extends ConsumerStatefulWidget {

@@ -9,22 +9,22 @@
 /// isolate the countdown runs on. The setting exists because the tradeoff
 /// is not the same for every activity: a 45-minute yoga practice wants the
 /// screen on, a two-hour ride with the phone in a pocket wants it off, and
-/// only she knows which is which.
+/// only they know which is which.
 ///
 /// **The default is ON for every type**, and a type with nothing stored
 /// reads as ON — see [screenAwakeDefaultEnabled]. Writing a default at
-/// first read would be indistinguishable from a choice she made.
+/// first read would be indistinguishable from a choice they made.
 ///
 /// ## Why this is not user data
 ///
 /// It is a **device preference**, like the food-search region: it describes
-/// this phone's behaviour, not anything about her. Two consequences, both
+/// this phone's behaviour, not anything about them. Two consequences, both
 /// deliberate:
 ///
 /// * it lives in `shared_preferences`, **not** in the database, so
 ///   "Delete my data" does not wipe it — deleting a diary should not turn
 ///   the screen timeout back on mid-training-block;
-/// * it is **not** included in a data export. There is nothing about her in
+/// * it is **not** included in a data export. There is nothing about them in
 ///   it, and an export that carries device settings invites them being
 ///   restored onto a phone they were never chosen for.
 ///

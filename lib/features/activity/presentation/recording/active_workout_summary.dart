@@ -113,7 +113,7 @@ final activeWorkoutSummaryProvider = Provider<ActiveWorkoutSummary?>((ref) {
   final yogaRunnerState = ref.watch(yogaSequenceRunnerControllerProvider);
   final yogaSequence = yogaRunnerState.sequence;
   // `complete` counts here even though it is not `isActive`: a sequence
-  // that ran out while she was on another tab is finished but *not saved*,
+  // that ran out while they were on another tab is finished but *not saved*,
   // and dropping it from the banner would leave the only route back to the
   // Save button a lucky guess.
   final yogaFinished = yogaRunnerState.phase == YogaRunPhase.complete;
@@ -125,7 +125,7 @@ final activeWorkoutSummaryProvider = Provider<ActiveWorkoutSummary?>((ref) {
       keyMetricLabel: yogaFinished
           ? 'Ready to save'
           // `displayPose`, not `currentPose`: mid-transition the banner
-          // must name the pose she is moving into, exactly as the runner
+          // must name the pose they are moving into, exactly as the runner
           // screen does.
           : (yogaRunnerState.displayPose?.displayName ?? ''),
       routePath: '/activity/track/yoga-sequence/${yogaSequence.id}',

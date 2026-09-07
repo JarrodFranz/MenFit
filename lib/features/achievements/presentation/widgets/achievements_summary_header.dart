@@ -5,11 +5,11 @@ import 'package:menfit_app/features/achievements/domain/badge_tier.dart';
 import 'package:menfit_app/features/achievements/presentation/achievements_copy.dart';
 import 'package:menfit_app/features/achievements/presentation/badge_display.dart';
 
-/// The trophy case's header: what she holds, and the highest rung she has
+/// The trophy case's header: what they hold, and the highest rung they have
 /// reached.
 ///
 /// Deliberately **not** "7 of 23 badges (30%)". A completion percentage
-/// turns a case of things she is proud of into a list of things she has
+/// turns a case of things they are proud of into a list of things they have
 /// not done yet, and the one number that would grow fastest is the number
 /// of badges *missing* — which is a number this screen has no business
 /// showing. Counting up, never counting down.

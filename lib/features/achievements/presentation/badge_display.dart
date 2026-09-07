@@ -6,17 +6,17 @@
 /// `domain/badge_progress_engine.dart` answers one question — *what does
 /// the data earn today* — and deliberately never consults persistence. That
 /// keeps it pure, but it is not the question the screen asks. Awards are
-/// **never revoked** (`domain/award_repository.dart`), so a badge she has
+/// **never revoked** (`domain/award_repository.dart`), so a badge they have
 /// been awarded must keep showing as held even when the underlying data
 /// later evaluates lower.
 ///
 /// It can. The cycle-pausing toggle changes which days count as protected,
 /// which changes the pro-rated ask of the walking ladder
 /// (`domain/weekly_walking_rule.dart`); deleting an activity lowers a
-/// lifetime total. Rendering the engine's answer alone would take her
+/// lifetime total. Rendering the engine's answer alone would take their
 /// Silver off the tile while the award row still sat in the database and
 /// the Progress card still counted it — the case and the card disagreeing
-/// about what she owns.
+/// about what they own.
 ///
 /// So the merge lives here, in presentation, and the engine stays
 /// pure-data. This layer is the only place the two are combined, and
@@ -64,8 +64,8 @@ Future<List<BadgeProgress>> badgeDisplayProgress(Ref ref) async {
 ///   on offer is always the one above the higher of the two readings (it
 ///   sits at zero, because the data is behind that rung);
 /// * the **value** is left exactly as the engine computed it, so "88 km so
-///   far" keeps saying what she has actually logged. The badge she was
-///   given is hers; the number underneath it is not retconned to match.
+///   far" keeps saying what they have actually logged. The badge they were
+///   given is theirs; the number underneath it is not retconned to match.
 List<BadgeProgress> displayedBadgeProgress({
   required List<BadgeProgress> progress,
   required List<BadgeAward> awards,

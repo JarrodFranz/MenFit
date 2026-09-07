@@ -11,7 +11,7 @@ import 'package:menfit_app/core/domain/units.dart';
 // 2. The bounds below are fat-finger guards on a text field — a
 //    kilograms-entered-as-pounds mistake, a stray digit — not a statement
 //    about any body. That is why the copy names the storable range rather
-//    than telling the user her value is wrong.
+//    than telling the user their value is wrong.
 // 3. S2 (`knowledge/engineering/security_and_privacy.md`): no message
 //    interpolates a logged weight. The only numbers quoted are the fixed
 //    constants below.
@@ -67,11 +67,11 @@ const String _noteTooLongMessage =
 /// typed" — the caller parses at the input boundary and converts from
 /// pounds itself (`presentation/weight_format.dart`). [unitSystem] governs
 /// only the *wording* of the out-of-range message, so an imperial user is
-/// told the bound in pounds rather than in kilograms she never typed —
+/// told the bound in pounds rather than in kilograms they never typed —
 /// exactly as `profile_validation.dart` does it.
 ///
 /// [rawWeightInput] is the untrimmed text the user typed, used only to
-/// tell "she left it blank" apart from "she typed something that isn't a
+/// tell "they left it blank" apart from "they typed something that isn't a
 /// number". It is never echoed back in a message (S2).
 WeightLogValidation validateWeightLog({
   required LocalDate today,

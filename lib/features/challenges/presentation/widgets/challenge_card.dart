@@ -12,23 +12,23 @@ import 'package:menfit_app/features/challenges/presentation/challenges_copy.dart
 import 'package:menfit_app/features/challenges/presentation/widgets/both_reached_banner.dart';
 import 'package:menfit_app/features/challenges/presentation/widgets/challenge_progress_row.dart';
 
-/// One challenge in the list: what it asks, when it runs, how she is
-/// getting on, and — if a code has been pasted — how her buddy is.
+/// One challenge in the list: what it asks, when it runs, how they are
+/// getting on, and — if a code has been pasted — how their buddy is.
 ///
 /// ## One bar, and the buddy as a sentence
 ///
-/// Her own progress gets the bar. The buddy's figure is a line of text
+/// Their own progress gets the bar. The buddy's figure is a line of text
 /// (`challenges_copy.dart#buddyCardLine`), and the asymmetry is the point:
 /// two bars stacked two spacings apart are a comparison whether or not
-/// anything says so. A reader does not read "48%" and "30%" there, she
-/// reads which one is longer — and the two lengths mean nothing against
+/// anything says so. A reader does not read "48%" and "30%" there, they
+/// read which one is longer — and the two lengths mean nothing against
 /// each other, because each percentage is measured against a target only
 /// its owner knows (`domain/challenge_progress_engine.dart`). The domain
 /// layer cannot express a leader (`domain/challenge_progress.dart`); a
 /// second bar would let the layout express one anyway.
 ///
 /// The detail screen still draws both bars, and that is deliberate: it is
-/// a screen she opens on purpose, the fairness note sits between the two,
+/// a screen they open on purpose, the fairness note sits between the two,
 /// and there is room there for the sentence that explains what the second
 /// number is. A list card is glanced at, and a caption on a glance is a
 /// caption nobody reads.
@@ -126,10 +126,10 @@ class ChallengeCard extends ConsumerWidget {
   }
 }
 
-/// Shown while her own progress is still being computed.
+/// Shown while their own progress is still being computed.
 ///
 /// A blank space rather than a bar at zero: a bar at zero is a claim
-/// about what she has done, and "not counted yet" is not "nothing".
+/// about what they have done, and "not counted yet" is not "nothing".
 class _ProgressPlaceholder extends StatelessWidget {
   const _ProgressPlaceholder();
 

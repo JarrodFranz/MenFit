@@ -21,7 +21,7 @@ class FoodSearchRegionStore {
 
   static const String _regionKey = 'nutrition_food_search_region';
 
-  /// The user's chosen region, or `null` when she has never chosen one.
+  /// The user's chosen region, or `null` when they have never chosen one.
   FoodSearchRegion? readRegion() {
     return FoodSearchRegion.fromStorageValue(
       _preferences.getString(_regionKey),

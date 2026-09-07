@@ -47,7 +47,7 @@ abstract interface class ChallengeRepository {
   /// convention as `activity` and `profile`). This is what makes "join a
   /// challenge you already hold" harmless: the id is derived from the
   /// challenge's own defining bytes, so a second join is the same row,
-  /// and the moment she first picked it up is preserved.
+  /// and the moment they first picked it up is preserved.
   Future<void> saveChallenge(Challenge challenge);
 
   /// Permanently removes the challenge with [id]. A no-op when there is

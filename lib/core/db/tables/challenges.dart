@@ -8,8 +8,8 @@ import 'package:drift/drift.dart';
 ///
 /// **One table, with the buddy snapshot embedded, on purpose.** A v1
 /// challenge has exactly two participants: the user, whose progress is
-/// recomputed live from her own logs and therefore stored nowhere, and one
-/// buddy, whose progress is whatever her last pasted progress code said. A
+/// recomputed live from their own logs and therefore stored nowhere, and one
+/// buddy, whose progress is whatever their last pasted progress code said. A
 /// separate `challenge_buddy_progress` table would be a strictly 1:1
 /// optional child row, replaced wholesale on every import, reachable only
 /// through its parent — a join bought with a foreign key and a second
@@ -35,7 +35,7 @@ import 'package:drift/drift.dart';
 /// **No `deleted_at`/`sync_status`**, for the same reason `water_logs`,
 /// `weight_logs` and `badge_awards` omit them: there is no backend (ADR
 /// 004), and leaving a challenge is a hard delete — a challenge the user
-/// removed must actually be gone, not linger as a hidden row carrying her
+/// removed must actually be gone, not linger as a hidden row carrying their
 /// buddy's name.
 ///
 /// ## Sensitivity
@@ -45,12 +45,12 @@ import 'package:drift/drift.dart';
 /// [buddyProgressPercent] is one number a buddy chose to hand over.
 ///
 /// **Nothing cycle-derived is stored here, and that is structural.** The
-/// user's own target is pro-rated by her protected days at read time
+/// user's own target is pro-rated by their protected days at read time
 /// (`features/challenges/domain/challenge_progress_engine.dart`) and the
 /// adjusted figure is never persisted, never encoded, and never shared —
 /// see the privacy invariant on `challenge_codes.dart`. A row of this
 /// table read by anyone reveals what the challenge asks of *both* people
-/// equally, and how far the buddy said she had got. It cannot reveal a
+/// equally, and how far the buddy said they had got. It cannot reveal a
 /// protected day.
 @DataClassName('ChallengeRow')
 class Challenges extends Table {
@@ -91,8 +91,8 @@ class Challenges extends Table {
   /// identical parameters are still distinct challenges.
   IntColumn get salt => integer()();
 
-  /// The name the user chose to show her buddy for this challenge. S1 —
-  /// self-chosen and per-challenge, never her profile name by default.
+  /// The name the user chose to show their buddy for this challenge. S1 —
+  /// self-chosen and per-challenge, never their profile name by default.
   TextColumn get selfDisplayName => text()();
 
   /// `ChallengeOrigin`'s storage key — `'created'` or `'joined'`. Kept
@@ -109,19 +109,19 @@ class Challenges extends Table {
   /// importing it would overwrite the buddy snapshot with the user's own
   /// figure (`features/challenges/application/challenge_code_service.dart`).
   ///
-  /// S1, and only barely: it is random noise with no relationship to her
-  /// name, her device or anything she has logged.
+  /// S1, and only barely: it is random noise with no relationship to their
+  /// name, their device or anything they have logged.
   IntColumn get authorTag => integer()();
 
-  /// The buddy's self-chosen name from her last pasted progress code.
+  /// The buddy's self-chosen name from their last pasted progress code.
   /// Null until one has been pasted; null together with the two columns
   /// below.
   TextColumn get buddyDisplayName => text().nullable()();
 
-  /// The buddy's progress against **her own** privately-adjusted target,
+  /// The buddy's progress against **their own** privately-adjusted target,
   /// as a percentage. May exceed 100. This is the only number a progress
-  /// code carries, and it is deliberately not decomposable into what she
-  /// did and what she was asked for.
+  /// code carries, and it is deliberately not decomposable into what they
+  /// did and what they were asked for.
   RealColumn get buddyProgressPercent => real().nullable()();
 
   /// ISO-8601 date string — the day the buddy's code was exported for.

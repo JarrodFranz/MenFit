@@ -16,8 +16,8 @@ abstract interface class DataExportSource {
   /// is always read, including ones added after this was written.
   ///
   /// Soft-deleted rows (a non-null `deleted_at`) are included. They are still
-  /// hers, and a copy of her data that quietly omits the parts the app has
-  /// stopped showing her is not a copy of her data.
+  /// theirs, and a copy of their data that quietly omits the parts the app has
+  /// stopped showing them is not a copy of their data.
   ///
   /// Throws `StorageException` if the database cannot be read.
   Future<Map<String, List<Map<String, Object?>>>> readTables({

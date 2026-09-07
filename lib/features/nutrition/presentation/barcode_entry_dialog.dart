@@ -84,7 +84,7 @@ class _BarcodeEntryDialogState extends State<BarcodeEntryDialog> {
             errorText: _error,
           ),
           onSubmitted: (_) => _submit(),
-          // Clearing the message as she types keeps the dialog from arguing
+          // Clearing the message as they type keeps the dialog from arguing
           // with a barcode that is only half entered.
           onChanged: (_) {
             if (_error != null) setState(() => _error = null);

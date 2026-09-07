@@ -47,12 +47,12 @@ List<BadgeProgress> evaluateBadges({
 ///
 /// ## Progress
 ///
-/// A tiered badge's bar runs from the tier she has to the tier she is
+/// A tiered badge's bar runs from the tier they have to the tier they are
 /// working towards: `(value - currentThreshold) / (nextThreshold -
 /// currentThreshold)`, with `currentThreshold = 0` before Bronze. Clamped
 /// to `[0, 1]`, so it is never negative and never overflows — a value
 /// sitting exactly on a threshold reads as that tier earned and `0`
-/// progress towards the next, not as `1` towards a tier she has not got.
+/// progress towards the next, not as `1` towards a tier they have not got.
 ///
 /// A one-off is `1` or `0`. There is no partial credit for a first.
 BadgeProgress evaluateBadge({

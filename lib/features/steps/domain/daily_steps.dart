@@ -25,8 +25,8 @@ class DailySteps {
   /// The user-local calendar day these steps were accrued on.
   final LocalDate day;
 
-  /// Steps accrued on [day]. Zero is a real value — a day she did not carry
-  /// her phone — and is stored as such; a day that was never synced has no
+  /// Steps accrued on [day]. Zero is a real value — a day they did not carry
+  /// their phone — and is stored as such; a day that was never synced has no
   /// [DailySteps] at all rather than a zero one.
   final int steps;
 

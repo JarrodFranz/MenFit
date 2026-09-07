@@ -173,7 +173,7 @@ class FoodFormController extends _$FoodFormController {
 
   /// Takes the barcode field's raw text.
   ///
-  /// Clears [FoodFormState.barcodeError] as she types, so the field stops
+  /// Clears [FoodFormState.barcodeError] as they type, so the field stops
   /// arguing with a barcode that is only half entered — the same rule
   /// `presentation/barcode_entry_dialog.dart` follows.
   void updateBarcode(String value) =>
@@ -224,7 +224,7 @@ class FoodFormController extends _$FoodFormController {
     // `isEmpty` only. An unrecognised *standard* is not an unreadable
     // panel: a tightly framed shot that crops the "Nutrition Information"
     // heading still yields a clean two-column table, and refusing it would
-    // tell the user her perfectly good photo could not be read. The parser
+    // tell the user their perfectly good photo could not be read. The parser
     // already says so through `warnUnknownFormat`, which the review banner
     // renders — a caution to check every value, not a dead end.
     if (label.isEmpty) return LabelScanOutcome.notRecognised;
@@ -407,7 +407,7 @@ class FoodFormController extends _$FoodFormController {
     // exempt: a legacy row saved before check-digit validation existed (or
     // imported some other way) can otherwise never be saved again, because
     // every edit — even one that has nothing to do with the barcode —
-    // re-validates a code that was always going to fail. Anything she
+    // re-validates a code that was always going to fail. Anything they
     // actually typed, including re-entering the same digits by hand, is
     // still validated normally; "unchanged" is byte-identical to
     // [FoodFormSeed.barcode], not merely digit-equivalent.

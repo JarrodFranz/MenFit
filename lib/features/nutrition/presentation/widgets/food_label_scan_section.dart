@@ -82,7 +82,7 @@ class FoodLabelScanSection extends ConsumerWidget {
 ///
 /// Shown for the rest of the form's life once a scan has landed. ADR 012's
 /// review step is not a state the form passes through; it is what these
-/// numbers are, until she saves them as her own.
+/// numbers are, until they save them as their own.
 class LabelScanBanner extends StatelessWidget {
   const LabelScanBanner({required this.warnings, super.key});
 

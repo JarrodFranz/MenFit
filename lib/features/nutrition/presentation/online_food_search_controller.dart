@@ -52,7 +52,7 @@ abstract class OnlineFoodSearchState with _$OnlineFoodSearchState {
 /// online is a button press, and there are two independent reasons, either
 /// of which alone would settle it:
 ///
-/// 1. **Privacy.** The words a person types into a food search are hers, and
+/// 1. **Privacy.** The words a person types into a food search are theirs, and
 ///    ADR 010 makes sending them an explicit act rather than a side-effect
 ///    of typing. This is the first feature in the app to send user-typed
 ///    content off-device at all.

@@ -343,15 +343,15 @@ class _SuggestFlow extends ConsumerWidget {
   }
 }
 
-/// Tells the user, before she picks a start point, that the start point
+/// Tells the user, before they pick a start point, that the start point
 /// leaves the device.
 ///
 /// ADR 009 commits to this: the suggest flow is the app's first feature
 /// that sends location off-device, so the disclosure has to be here, in
 /// plain words, at the moment of the choice — not buried in a policy
-/// document. Names no vendor (that's ours to swap, not hers to reason
+/// document. Names no vendor (that's ours to swap, not theirs to reason
 /// about) and states the two facts that actually bound the exposure: only
-/// the start point goes, and nothing is kept unless she saves the route.
+/// the start point goes, and nothing is kept unless they save the route.
 class _RoutingDisclosure extends StatelessWidget {
   const _RoutingDisclosure();
 

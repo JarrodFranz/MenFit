@@ -30,7 +30,7 @@ import 'package:menfit_app/features/weight/presentation/weight_format.dart';
 /// How the smoothed line moved, said without a verdict.
 ///
 /// "Trending upward"/"downward" describes a line on a chart. There is no
-/// second clause telling her what it means, because the app does not know
+/// second clause telling them what it means, because the app does not know
 /// and it is not the app's to say.
 String weightTrendSentence(WeightTrendDirection direction) =>
     switch (direction) {
@@ -45,7 +45,7 @@ String weightTrendSentence(WeightTrendDirection direction) =>
 /// whole feature exists to be able to say.
 ///
 /// Unit-aware only in the magnitude it names, so an imperial user isn't
-/// told about kilograms she never sees.
+/// told about kilograms they never see.
 String weightFluidNote(UnitSystem unitSystem) =>
     'Readings move from day to day mostly with fluid — water, salt, what '
     "you've eaten and when, sleep, training load. A shift of a "
@@ -68,7 +68,7 @@ const String weightEmptyStateMessage =
 /// chart is currently set to.
 ///
 /// Distinct from [weightEmptyStateMessage] on purpose. Telling a user who
-/// has months of history that she has "no weight readings yet" is simply
+/// has months of history that they have "no weight readings yet" is simply
 /// false, and reading it as an invitation to log one *now* — because the
 /// chart looks empty — is the nudge toward daily weighing this feature is
 /// built to avoid. This sentence says what is actually true (the window is

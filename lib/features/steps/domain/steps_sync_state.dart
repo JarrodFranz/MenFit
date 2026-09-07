@@ -36,8 +36,8 @@ enum StepsAvailability {
   /// says nothing new can be read on this device.
   unsupportedPlatform,
 
-  /// The user's fitness-device sync toggle is off. Her stated preference is
-  /// that this app does not read her health platform, and it is honoured
+  /// The user's fitness-device sync toggle is off. Their stated preference is
+  /// that this app does not read their health platform, and it is honoured
   /// before any permission is even checked.
   syncOff,
 

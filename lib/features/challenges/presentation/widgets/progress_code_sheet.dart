@@ -6,10 +6,10 @@ import 'package:menfit_app/features/challenges/presentation/widgets/challenge_co
 
 /// The sheet that hands over a progress code.
 ///
-/// The **only** surface in this feature where something derived from her
+/// The **only** surface in this feature where something derived from their
 /// own data leaves the device, which is why
 /// [progressCodePrivacyNote] is on it and not tucked into a settings page:
-/// the moment to say what a code contains is the moment before she sends
+/// the moment to say what a code contains is the moment before they send
 /// one.
 ///
 /// The code itself is built by

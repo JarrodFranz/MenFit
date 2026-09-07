@@ -44,8 +44,8 @@ Future<List<Food>> foodSearchResults(Ref ref, String query) {
 /// **Recent** is the shortcut, and it only exists while the search box is
 /// empty: it answers "the same thing again", which is what most logging
 /// actually is, and an alphabetical catalogue answers badly. The moment the
-/// user types she is looking for something specific, so it gets out of the
-/// way rather than sitting above results that ignore her query.
+/// user types they are looking for something specific, so it gets out of the
+/// way rather than sitting above results that ignore their query.
 ///
 /// **Your foods** searches the local catalogue as the user types, exactly as
 /// it always has. **Online results** appear only after an explicit
@@ -56,7 +56,7 @@ Future<List<Food>> foodSearchResults(Ref ref, String query) {
 /// written). A successful log closes this screen too, since the errand it
 /// was opened for is finished. A provider result goes to the review screen
 /// first: provider data is a candidate the user checks, never something the
-/// app accepts on her behalf (ADR 010).
+/// app accepts on their behalf (ADR 010).
 ///
 /// ## Platform honesty
 ///
@@ -333,8 +333,8 @@ class _FoodSearchScreenState extends ConsumerState<FoodSearchScreen> {
   ///
   /// `go`, not `push`: the row lives in the settings shell branch, and the
   /// picker is a modal errand ("add something to breakfast"). Someone who
-  /// has stopped to change where her food database searches has abandoned
-  /// that errand for now, and returning her to a half-finished picker
+  /// has stopped to change where their food database searches has abandoned
+  /// that errand for now, and returning them to a half-finished picker
   /// underneath Settings would be the confusing outcome, not the helpful
   /// one.
   void _changeRegion() => const SettingsRouteData().go(context);

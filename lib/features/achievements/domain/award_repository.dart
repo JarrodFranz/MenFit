@@ -16,7 +16,7 @@ import 'package:menfit_app/features/achievements/domain/badge_award.dart';
 /// S1-tier data (`knowledge/engineering/security_and_privacy.md`): a badge
 /// id and a tier carry no health, cycle or location value in themselves.
 /// They are still never logged — the *set* of badges someone has is a
-/// fingerprint of her logging habits, which is not something to leave in a
+/// fingerprint of their logging habits, which is not something to leave in a
 /// crash report.
 abstract interface class AwardRepository {
   /// Emits every award, newest first, on every change.

@@ -109,7 +109,7 @@ class DailyObservation {
   /// `InsightThresholds.targetMetFraction` of its target. `null` when
   /// either the intake or the target is missing — the day is then dropped
   /// rather than counted as "not met", because an unlogged day is not a
-  /// day she ate nothing.
+  /// day they ate nothing.
   bool? proteinTargetMet(double metFraction) {
     final grams = proteinGrams;
     final target = proteinTargetGrams;
@@ -133,8 +133,8 @@ class DailyObservation {
   /// A day with no qualifying session yields `null`, **never zero**. A
   /// rest day is not a day of zero output; folding rest days in as zeros
   /// would turn every one of these comparisons into a measurement of how
-  /// often she trained rather than of what the session looked like when
-  /// she did.
+  /// often they trained rather than of what the session looked like when
+  /// they did.
   double? metricValue(InsightMetric metric) {
     return switch (metric) {
       InsightMetric.runDistanceMeters => _sumRunDistance(),
