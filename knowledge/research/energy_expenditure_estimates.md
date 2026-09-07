@@ -6,11 +6,16 @@ calculation ships without a documented evidence review. Companion to
 depends on and must not contradict. Presentation constraints are governed by
 the ED-safe stance in `../domain/nutrition.md`. Fork note (2026-09-07): this
 review's body is FemFit-era research into MET-equation sex differences and is
-not currently wired to any shipped feature (see `nutrition.md`'s "no code
-path from an activity energy estimate to `calorie_target.dart`" rule). It is
-left as historical evidence rather than rewritten, since MenFit has no
-activity-energy feature to gate; redo this review for an adult-male
-population before ever wiring one up.*
+**retained for reference only** — it is not currently wired to any shipped
+feature (see `nutrition.md`'s "no code path from an activity energy estimate
+to `calorie_target.dart`" rule), and MenFit has no activity-energy feature to
+gate. The body is left unrewritten rather than adapted; redo this review for
+an adult-male population before ever wiring one up. The cycle-phase remarks
+near the end of this document (§9) are FemFit-era and **do not apply to
+MenFit** — read past them, not around them. MenFit's own energy estimate
+(BMR/TDEE) is documented separately, in
+`knowledge/research/nutrition_energy_estimates.md`; that is the file to read
+for anything MenFit actually ships today.*
 
 ## The claim this review gates
 
