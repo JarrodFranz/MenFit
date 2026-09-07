@@ -28,8 +28,8 @@ duplicate it.
 
 ## Health and safety of the content
 
-This app handles menstrual-cycle, location, body-weight and nutrition data.
+This app handles check-in, flare, location, body-weight and nutrition data.
 `knowledge/engineering/security_and_privacy.md` and
-`knowledge/domain/womens_health.md` are binding, not advisory — in particular,
+`knowledge/domain/mens_health.md` are binding, not advisory — in particular,
 no health calculation ships without a written evidence review, and nutrition
 copy must never shame or frame eating as a budget to spend down.

@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Women-focused running, fitness & nutrition app. Flutter, targeting **iOS + Android + Web + Windows** — never assume a task is mobile-only. Production architecture over quick prototypes unless explicitly asked otherwise.
+Men's strength-first training & nutrition app. Flutter, targeting **iOS + Android + Web + Windows** — never assume a task is mobile-only. Production architecture over quick prototypes unless explicitly asked otherwise.
 
 ## Read before substantial work
 
@@ -25,8 +25,8 @@ Women-focused running, fitness & nutrition app. Flutter, targeting **iOS + Andro
 - Architecture consistency: Riverpod 3 codegen (ADR 001), go_router typed routes (ADR 002), Drift when data lands (ADR 003), freezed (ADR 005). Layer rules in architecture_overview.md — domain/ has no Flutter imports; features depend only on other features' domain/; platform code behind adapters.
 - No giant files/classes/widgets (~300-line splitting instinct). Business logic never in widgets.
 - No new package without the `package-evaluation` workflow; check the rejected list in `knowledge/flutter/package_decisions.md` first.
-- **Privacy is architectural:** user health, cycle, and location data is highly sensitive — see `knowledge/engineering/security_and_privacy.md`. Never log/analytics it. No secrets in the repo, ever (env config: ADR 006).
-- Women's-health features are evidence-gated: `knowledge/domain/womens_health.md` gates claims; no medical advice.
+- **Privacy is architectural:** user health, flare, and location data is highly sensitive — see `knowledge/engineering/security_and_privacy.md`. Never log/analytics it. No secrets in the repo, ever (env config: ADR 006).
+- Men's-health features are evidence-gated: `knowledge/domain/mens_health.md` gates claims; no medical advice.
 - Test meaningful logic; config-only surfaces (manifests/entitlements) get guard tests.
 - **Never scan the filesystem to locate a package** (`find / ...` runs for an hour on Windows). Resolve package paths from `.dart_tool/package_config.json` or `%LOCALAPPDATA%\Pub\Cache\hosted\pub.dev\<package>-<version>\`.
 - Long-running shell loops must emit a heartbeat line per iteration and have an iteration cap — silent infinite waits are forbidden.

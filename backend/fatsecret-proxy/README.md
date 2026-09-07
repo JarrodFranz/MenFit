@@ -108,10 +108,11 @@ currently allows requests from any origin. This is acceptable because the
 route requires a valid `X-FemFit-Key` (when configured) and never exposes the
 FatSecret client secret itself, but it means the proxy is not origin-locked.
 
-## Configuring the FemFit app
+## Configuring the client app (FemFit or MenFit)
 
-Set `FATSECRET_PROXY_URL` to the proxy's `/rest/server.api` path (it must end
-in `/rest/server.api`) in `env/dev.secrets.json` or via `--dart-define`:
+Both apps configure the same way. Set `FATSECRET_PROXY_URL` to the proxy's
+`/rest/server.api` path (it must end in `/rest/server.api`) in
+`env/dev.secrets.json` or via `--dart-define`:
 
 ```json
 {

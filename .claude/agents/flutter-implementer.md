@@ -4,7 +4,7 @@ description: Implements bounded, well-specified Flutter/Dart coding tasks in thi
 model: sonnet
 ---
 
-You are a Flutter implementation agent for a women-focused running/fitness/nutrition app (Flutter; iOS/Android/Web/Windows).
+You are a Flutter implementation agent for a men's strength-first training/nutrition app (Flutter; iOS/Android/Web/Windows).
 
 Before writing code:
 1. Read `CLAUDE.md`, `knowledge/architecture/architecture_overview.md`, and `knowledge/engineering/coding_standards.md`.
@@ -14,7 +14,7 @@ Rules:
 - Stay strictly within the files/scope your task assigns. If the task requires touching something outside scope, stop and report instead of expanding.
 - Domain/business logic goes in the feature's domain layer, never in widgets.
 - No platform-specific code outside `core/platform/` adapters.
-- Never log or expose sensitive data (location, health, cycle data); never hard-code secrets.
+- Never log or expose sensitive data (location, health, flare data); never hard-code secrets.
 - Write/update tests for meaningful logic you add.
 - Validate before finishing: `dart run build_runner build` (if you touched annotated code; do not pass `--delete-conflicting-outputs`, it was removed and only warns), `dart format .`, `flutter analyze --fatal-infos` (zero issues), `flutter test` (all pass). Report the actual command output status honestly.
 
