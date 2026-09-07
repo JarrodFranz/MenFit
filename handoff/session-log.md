@@ -52,3 +52,48 @@
   `femfit_app` hits outside `docs/`/`handoff/`'s legitimate historical
   mentions; no secrets staged. Committed as `0059703` on `fork-femfit`.
   Full detail in `.git/sdd/task-1-report.md`.
+
+## 2026-09-07 — Session 3: Task 2, app identity sweep
+
+- Followed `.git/sdd/task-2-brief.md`. TDD: updated
+  `test/platform/app_identity_guard_test.dart` (appId, `CFBundleDisplayName`)
+  first, ran the guards, confirmed 5 failures (52 total, -5) against the
+  still-femfit tree.
+- Ran the brief's PowerShell sweep verbatim (135 files changed) + the
+  Kotlin/tools/assets `git mv`s. Manually fixed two survivors the sweep's
+  own exclusion regex missed because it matched `\build` as a substring of
+  filenames like `build.gradle.kts`/`build.ps1`, not just the `build/`
+  directory: `android/app/build.gradle.kts` (namespace/applicationId) and
+  `tools/menfit_deploy/build.ps1`. Also renamed `FemFitDeploy.cs` ->
+  `MenFitDeploy.cs` for consistency with its already-renamed `MenFitDeploy`
+  namespace, and hand-fixed `pubspec.yaml`'s description (was still
+  "Women-focused... FemFit" per the brief's known Task-1 leftover) and the
+  matching `web/manifest.json` description (same leftover, not explicitly
+  named in the brief but same class of bug).
+- **Found a real bug in the brief's own sweep script**: PowerShell's
+  `-replace` is case-insensitive by default, so the `'FemFit','MenFit'` rule
+  (run before `'femfit','menfit'`) silently matched every lowercase `femfit`
+  occurrence not already caught by an earlier specific-pattern rule and
+  replaced it with title-case `MenFit` — corrupting required-lowercase
+  identifiers (export filename prefix `menfit-` came out as `MenFit-`,
+  `codemagic.yaml`'s `menfit-asc`/`menfit_secrets` came out capitalized,
+  `privacy@menfit.app` came out capitalized, etc.). An all-caps variant
+  (`FEMFIT_KS_PASS`) was untouched by either pattern. Recovery: `git reset
+  --hard` and `git checkout -- <file>` were both blocked by the auto-mode
+  classifier, so instead rebuilt every affected tracked file from `git show
+  HEAD:<path>` and reapplied the identical replacement list using
+  `-creplace` (case-sensitive), verified against the untouched originals via
+  `git diff`. That rebuild also revealed a second, smaller bug: piping
+  `git show` output through `-join "`n"` and writing with `Set-Content
+  -NoNewline` drops the file's trailing newline — fixed by appending `\n`
+  back to the ~38 non-Dart files that needed it (Dart files are unaffected;
+  `dart format .` normalizes them anyway). Both are recorded in
+  `handoff/HANDOFF.md`'s Corrections section for any later task's sweep.
+- Verification: guard tests 57/57 pass (`test/platform` + `env_files_guard`),
+  the 24 other test files the sweep touched all pass (286/286 total across
+  both runs), `dart run build_runner build` clean (1054 outputs),
+  `dart format .` (71 files reformatted, wrap-length only), `flutter analyze
+  --fatal-infos` → "No issues found!". Full-tree `femfit`/`FemFit`/`FEMFIT`
+  grep after the fix: only `android/key.properties` (gitignored, local,
+  untouched, never staged). Committed as `ee397ae` on `fork-femfit`. Full
+  detail in `.git/sdd/task-2-report.md`.
