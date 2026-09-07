@@ -97,3 +97,65 @@
   grep after the fix: only `android/key.properties` (gitignored, local,
   untouched, never staged). Committed as `ee397ae` on `fork-femfit`. Full
   detail in `.git/sdd/task-2-report.md`.
+
+## 2026-09-07 — Task 3: delete the cycle module and strip the small couplings
+
+- Goal (`.git/sdd/task-3-brief.md`): remove menstrual-cycle tracking from the
+  fork — the `lib/features/cycle/` module, its `CycleRecords` Drift table, the
+  Cycle shell tab, the `cyclePhase*` theme tokens, and the *small* couplings in
+  streaks, home, settings/delete-my-data, watch companion, wearable sync and
+  data export. The *large* couplings (insights, recaps, achievements, activity
+  milestones/share dialog, nutrition micronutrients, weight chart) are Tasks
+  4–7 and were deliberately left failing to compile.
+- Approach that worked, as the brief suggested: `git rm` first, then use
+  `flutter analyze` as the worklist and fix every error outside the Task 4–7
+  module list. Two analyze/build_runner rounds were enough.
+- Signature changes produced: `assembleStreakResult({activities, recoveryDays,
+  flareProtectedDays, today})`, `assembleProtectedDays({recoveryDays,
+  flareProtectedDays, today})`, `TodayProtectionSources({hasExplicitRecoveryDay,
+  hasProtectingFlare, recoveryNote})`, `AppTokens` with no `cyclePhase*`
+  member, `sensitiveHealthTables` (4 tables) in
+  `data_export/domain/data_export_tables.dart`, and a five-branch shell.
+  The palette tuples in `tokens.dart` went 9-element -> 5-element across all
+  ten `switch` arms.
+- Files the brief did not list but Step 8 forced: the six
+  `activity/presentation/recording/*_screen.dart` trackers (they read
+  `cycleRecordsControllerProvider` and passed `phase:` — the parameter is
+  optional on `MilestoneEvaluator`/`WorkoutCelebrationDialog`, so dropping the
+  argument was enough), `wellbeing/presentation/widgets/wellbeing_day_sheet.dart`
+  (a whole `_CycleSection`), `wellbeing/presentation/wellbeing_screen.dart`
+  (metric chips coloured by phase tokens), and
+  `settings/presentation/accessibility_settings_screen.dart` (a live-preview
+  swatch row over `tokens.cyclePhase*`, now Easy/Moderate/Hard/Recovery).
+- Four deliberate deviations, all argued in `.git/sdd/task-3-report.md` §4:
+  (1) `DeleteMyDataService.clearRecapMarkers` was **kept** — monthly recaps
+  survive this task, so their markers are still residue a wipe should clear;
+  only the `cycle:<uuidv7>` rationale in its dartdoc went. (2)
+  `WearableWorkoutDetails.cyclePhase` was removed even though it compiled,
+  because nothing writes it any more and it rendered a "CYCLE PHASE" card —
+  this changes the persisted workout-details JSON shape. (3) the export
+  document's JSON key `includesCycleAndWellbeingData` was renamed to
+  `includesSensitiveHealthData` (fork has no shipped exports). (4)
+  `test/core/adaptive_scaffold_test.dart` keeps a six-entry *synthetic*
+  fixture, renamed `_crowdedDestinations`, because five tabs at 320 dp no
+  longer cross the shrink threshold and cutting it to five would have silently
+  deleted the only coverage of `AppAdaptiveScaffold._compactLabelStyle`.
+- Test edits favoured rewriting over deleting: the retroactive-bridging and
+  covers-today-inclusive provider tests were re-pointed at
+  `markRecoveryDays(from, to)` rather than dropped; the palette contrast and
+  theme-remapping tests were re-pointed at `intensityEasy/Moderate/Hard` and
+  kept their pinned hex values (the old `cyclePhaseMenstrual` happened to
+  equal `intensityHard` in all ten arms). Only genuinely period-specific tests
+  were deleted.
+- Verification (all recorded verbatim in the report): `dart run build_runner
+  build` fails on exactly two files (`nutrition_providers.dart`,
+  `weight_history_providers.dart`, both Task 4–7) and wrote 855 outputs;
+  `dart format .` 0 changed; `flutter analyze --fatal-infos` = 1031 issues
+  (578 errors, 0 warnings), every error inside a Task 4–7 module or cascading
+  from the missing `nutrition_providers.g.dart`. Tests, sequentially, one
+  process at a time: streaks +98 pass, data_export+wearables +69 pass, core
+  +339 pass, architecture +1 pass; home+settings +28 with 8 *load* failures
+  and core+app+accessibility+architecture +363 with 11 *load* failures — all
+  19 are compile cascades through Task 4–7 files, no assertion failures, and
+  no test file was deleted for failing to compile.
+- Committed as `31351c8` (149 files, +512 / -14443).

@@ -4,8 +4,9 @@
 
 ## State
 
-- Branch `fork-femfit`, 4 commits: docs/audit+spec, implementation plan,
-  Task 1 (tree copy + package rename), Task 2 (app identity sweep, `ee397ae`).
+- Branch `fork-femfit`, HEAD `31351c8` (Task 3). Earlier: docs/audit+spec,
+  implementation plan, Task 1 (tree copy + package rename), Task 2 (app
+  identity sweep, `ee397ae`).
   `main` branch also exists but is behind; work is happening on `fork-femfit`
   per the SDD task sequence in `.git/sdd/`.
 - Source app: FemFit at `D:\Documents\Claude\Projects\Female running app`,
@@ -28,25 +29,58 @@
   tests + `flutter analyze --fatal-infos` clean. See **Corrections** below
   for a real bug found and fixed in the brief's own sweep script — read it
   before running any similar find/replace sweep in a later task.
+- **Task 3 done** (`31351c8`, see `.git/sdd/task-3-report.md`): cycle
+  tracking removed — `lib/features/cycle/`, the `CycleRecords` Drift table,
+  the Cycle shell branch (five tabs now: Home, Activity, Nutrition,
+  Wellbeing, Settings), the `cyclePhase*` `AppTokens`, and the small
+  couplings in streaks, home, settings/delete-my-data, watch companion,
+  wearable sync and data export. `assembleStreakResult` /
+  `assembleProtectedDays` / `TodayProtectionSources` no longer take
+  `records`/`pausingEnabled`/`isPeriodProtected`; export's
+  `cycleAndWellbeingTables` is now `sensitiveHealthTables` (4 tables).
+  **The tree does not fully compile**: insights, recaps, achievements,
+  activity milestone/share-dialog, nutrition micronutrient and weight still
+  import `features/cycle`. That is by design — Tasks 4–7 remove them.
 - Firebase: project `menfit-f17b3`, Android app `com.jarrodfranz.menfit`
   registered (app id in `distribution/android.json`, confirmed unchanged by
   the Task 2 sweep), groups `main` and `testers` exist with 0 testers.
 - Not yet pushed to the GitHub remote.
+- Test/analyze status after Task 3 (run 2026-09-07): `flutter analyze
+  --fatal-infos` = 1031 issues (578 errors, 0 warnings, 453 infos), **all
+  inside the Task 4–7 modules or cascading from the missing
+  `nutrition_providers.g.dart`**. Passing: `test/features/streaks` +98,
+  `test/features/data_export` + `test/features/wearables` +69,
+  `test/core` +339, `test/architecture` +1, `test/features/home` +
+  `test/features/settings` +28 (8 load failures), `test/core` + `test/app` +
+  `test/accessibility` + `test/architecture` +363 (11 load failures). Every
+  failure is a compile-load cascade, not an assertion failure. The whole
+  suite cannot be run yet.
 
 ## In flight
 
-- Nothing mid-task. Task 2 is complete and committed. 12 more tasks remain
+- Nothing mid-task. Task 3 is complete and committed, but it deliberately
+  leaves the tree non-compiling until Tasks 4–7 land. 11 more tasks remain
   per the implementation plan (`docs/superpowers/plans/2026-09-07-menfit-fork.md`)
   and the SDD briefs under `.git/sdd/`.
 
 ## Next
 
-1. Task 3 onward per the plan/SDD briefs: delete the cycle module, reset the
-   Drift schema, Forge theme, Recovery/Train renames, nutrition male values,
-   docs rewrite (Task 13).
-2. Keep running `flutter analyze --fatal-infos` after each task — see Traps
+1. Tasks 4–7 (insights, recaps/achievements, activity milestones + share
+   dialog, nutrition micronutrients + weight chart) — they are what makes the
+   tree compile again. Doing them in brief order matters less than doing
+   `nutrition_providers.dart` early: while its `.g.dart` is missing, ~200
+   analyzer errors appear in nutrition/home/progress/settings files that have
+   no cycle coupling of their own and are NOT extra scope.
+2. Then Task 8 (Drift schema reset — it replaces `app_database.dart`'s
+   migration wholesale; Task 3 only removed the `from < 3` branch), Task 9
+   (Wellbeing → Recovery rename), Forge theme, nutrition male values, docs
+   rewrite (Task 13).
+3. After Tasks 4–7: re-run `flutter test test/app` and
+   `flutter test test/accessibility` first — those files already expect five
+   destinations but could not be executed in Task 3.
+4. Keep running `flutter analyze --fatal-infos` after each task — see Traps
    below for rename-fallout gotchas that cost time in Tasks 1 and 2.
-3. Owner: add Firebase testers, create upload keystore, Codemagic iOS app,
+5. Owner: add Firebase testers, create upload keystore, Codemagic iOS app,
    push to the GitHub remote once ready.
 
 ## Open questions
@@ -57,6 +91,19 @@
 
 ## Traps
 
+- `lib/app/router/routes.dart` still imports
+  `features/recaps/domain/cycle_recap.dart` and `routes.g.dart` line 369 casts
+  `state.extra as CycleRecap?`. Whoever removes or renames `CycleRecap` must
+  fix routes.dart **and** re-run `dart run build_runner build`.
+- `test/core/adaptive_scaffold_test.dart` deliberately keeps a **six**-entry
+  synthetic destination fixture (`_crowdedDestinations`) even though the shell
+  has five: at five tabs, 320/5 = 64 dp is above the 62 dp comfort threshold
+  and `AppAdaptiveScaffold._compactLabelStyle`'s shrink path would never run,
+  so trimming it to five silently deletes that coverage. The shipped-list
+  mirror is `adaptive_scaffold_real_font_test.dart`, which IS five.
+- `StrengthCycles`/`strength_cycles` (training mesocycles) and `RecoveryDays`
+  are not cycle tracking — keep them. "Period" inside `ProgressPeriod` /
+  `RecapPeriod` means a date range, also keep.
 - FemFit rules carry over: only ONE `flutter test` at a time (deadlocks);
   never `find /` on this Windows machine; Avast TLS interception affects
   Android builds (see FemFit `knowledge/troubleshooting/android_build.md`).
@@ -83,6 +130,20 @@
 
 ## Corrections
 
+- **2026-09-07 (Task 3):** the Task 3 brief said "Wellbeing renamed in Task 5"
+  — that rename is actually **Task 9**. The Wellbeing tab was left as-is
+  (label `'Wellbeing'`) in Task 3.
+- **2026-09-07 (Task 3):** a large block of analyzer errors in
+  `lib/features/nutrition/presentation/*`, `lib/features/home/presentation/
+  widgets/{macros_today_card,water_quick_add_card}.dart`,
+  `lib/features/progress/presentation/progress_screen.dart`,
+  `lib/features/settings/{settings_providers.dart,presentation/widgets/
+  food_search_region_tile.dart}` and their tests is **not** cycle coupling.
+  `riverpod_generator` fails on `nutrition_providers.dart` (it imports
+  `features/cycle`), so `nutrition_providers.g.dart` does not exist and every
+  provider it declares reads as undefined/`dynamic` downstream. Fixing the
+  one import in `nutrition_providers.dart` clears all of them at once. Do not
+  treat them as extra work.
 - **2026-09-07 (Task 2 review):** the identity sweep must NOT rename the
   FatSecret proxy backend or the `X-FemFit-Key` header. The proxy VM is
   shared infrastructure in FemFit's GCP project `femfit-5e600`
