@@ -159,3 +159,48 @@
   19 are compile cascades through Task 4–7 files, no assertion failures, and
   no test file was deleted for failing to compile.
 - Committed as `31351c8` (149 files, +512 / -14443).
+
+## 2026-09-08 — Task 4: insights without cycle phase
+
+- Implemented `.git/sdd/task-4-brief.md`: removed every cycle-phase concept
+  from `lib/features/insights/**`. Deleted `cycle_phase_evaluator.dart` +
+  its test. Stripped `cyclePhase`/`hasTrackedPhase` from `DailyObservation`,
+  the `cyclePhase` param from `compareGroups`, the `cyclePhaseEvaluator`
+  wiring from `InsightEngine`, `minCliffsDeltaCyclePhase` from
+  `InsightThresholds`, the two `InsightKind` values and two `InsightGroup`
+  values (plus the `PersonalInsight.cyclePhase` field) from
+  `personal_insight.dart`, `phaseByDay` from
+  `insight_observation_mapper.dart`'s `buildDailyObservations`, the cycle
+  branches of `insight_sentence.dart`'s `_groupPhrase`/`_phraseFor`, and the
+  `phaseByDay`/`cycleRepositoryProvider` construction in
+  `insights_providers.dart`. Also fixed `presentation/widgets/insight_card.dart`
+  (not in the brief's file list but needed — its icon switch matched the two
+  removed `InsightKind` values).
+- Two brief/codebase mismatches, both resolved by following the actual code:
+  the getter was named `hasTrackedPhase`, not `hasCyclePhase`; `DailyObservation`
+  is a plain class, not `@freezed`.
+- Tests: edited `insight_fixtures.dart`, `insight_engine_test.dart`,
+  `insight_observation_mapper_test.dart`, `insight_sentence_test.dart` to drop
+  `cyclePhase:`/`phaseByDay:`/`phase:` args. Deleted exactly 3 tests in
+  `insight_sentence_test.dart` whose sole subject was cycle-phase phrasing
+  (`_phraseFor` no longer exists); trimmed the cycle entries out of the
+  "never states a cause..." test rather than deleting it.
+- Regenerated `insights_providers.g.dart` via `dart run build_runner build`
+  (confirmed cycle-free); `dart format` 0 changed; `flutter analyze
+  --fatal-infos` clean for `test/features/insights/**`, and for
+  `lib/features/insights/**` the only remaining issues are the documented
+  `nutrition_providers.dart` cascade inside `insights_providers.dart` lines
+  60-90 (6 errors, 4 infos/warnings) — Task 7's job, not worked around.
+- `flutter test test/features/insights` as one invocation: 84 passed, 3
+  files failed to *load* (`group_comparison_test.dart`,
+  `insight_discovery_section_test.dart`,
+  `insight_observations_provider_test.dart`). Investigated and found
+  `flutter test` shares one compile kernel across every file in the
+  invocation, so the 2 files that genuinely import the broken
+  `insights_providers.dart` poison the whole batch. Verified
+  `group_comparison_test.dart` passes 18/18 alone, and verified all 8
+  non-poisoned files together pass 84/84 ("All tests passed!") — recorded as
+  a new Trap in HANDOFF.md so the next task doesn't misdiagnose a directory
+  load-failure list.
+- Committed as `11cfa9d` (16 files, +34 / -469). Full detail in
+  `.git/sdd/task-4-report.md`.

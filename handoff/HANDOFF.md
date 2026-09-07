@@ -1,12 +1,12 @@
 # Handoff — MenFit (men's training + nutrition app)
 
-*Live state. Rewritten and pruned on every material change. Last updated 2026-09-07.*
+*Live state. Rewritten and pruned on every material change. Last updated 2026-09-08.*
 
 ## State
 
-- Branch `fork-femfit`, HEAD `31351c8` (Task 3). Earlier: docs/audit+spec,
+- Branch `fork-femfit`, HEAD `11cfa9d` (Task 4). Earlier: docs/audit+spec,
   implementation plan, Task 1 (tree copy + package rename), Task 2 (app
-  identity sweep, `ee397ae`).
+  identity sweep, `ee397ae`), Task 3 (cycle removal, `31351c8`).
   `main` branch also exists but is behind; work is happening on `fork-femfit`
   per the SDD task sequence in `.git/sdd/`.
 - Source app: FemFit at `D:\Documents\Claude\Projects\Female running app`,
@@ -41,6 +41,24 @@
   **The tree does not fully compile**: insights, recaps, achievements,
   activity milestone/share-dialog, nutrition micronutrient and weight still
   import `features/cycle`. That is by design — Tasks 4–7 remove them.
+- **Task 4 done** (`11cfa9d`, see `.git/sdd/task-4-report.md`): every
+  cycle-phase concept removed from `lib/features/insights/**` —
+  `CyclePhaseEvaluator` deleted, `DailyObservation.cyclePhase`/
+  `hasTrackedPhase` gone, `InsightKind.cyclePhaseExertion/cyclePhaseOutput`
+  and `InsightGroup.cyclePhaseFocus/otherCyclePhases` gone,
+  `InsightThresholds.minCliffsDeltaCyclePhase` gone, `phaseByDay` plumbing
+  removed from `insight_observation_mapper.dart` and
+  `insights_providers.dart` (including the `cycleRepositoryProvider` read).
+  Protein/wellbeing(sleep+energy)/hydration evaluators and their tests
+  untouched, all passing. `insights_providers.dart` itself still cannot
+  compile — it imports `nutrition_providers.dart`, which still imports the
+  deleted `features/cycle/` (Task 7's job); this is the same documented
+  cascade as Task 3 left, not new. `zero` analyzer issues in
+  `test/features/insights/**`; the only `lib/features/insights/**` issues
+  are the 6 errors + 4 infos/warnings inside `insights_providers.dart` lines
+  60-90 from that cascade. See Traps for why `flutter test
+  test/features/insights` (the whole directory) reports 3 files failing to
+  load even though only 2 of them touch the broken import.
 - Firebase: project `menfit-f17b3`, Android app `com.jarrodfranz.menfit`
   registered (app id in `distribution/android.json`, confirmed unchanged by
   the Task 2 sweep), groups `main` and `testers` exist with 0 testers.
@@ -58,19 +76,22 @@
 
 ## In flight
 
-- Nothing mid-task. Task 3 is complete and committed, but it deliberately
-  leaves the tree non-compiling until Tasks 4–7 land. 11 more tasks remain
-  per the implementation plan (`docs/superpowers/plans/2026-09-07-menfit-fork.md`)
+- Nothing mid-task. Task 4 is complete and committed, but it deliberately
+  leaves the tree non-compiling until Tasks 5–7 land (nutrition still
+  imports the deleted `features/cycle/`). 10 more tasks remain per the
+  implementation plan (`docs/superpowers/plans/2026-09-07-menfit-fork.md`)
   and the SDD briefs under `.git/sdd/`.
 
 ## Next
 
-1. Tasks 4–7 (insights, recaps/achievements, activity milestones + share
-   dialog, nutrition micronutrients + weight chart) — they are what makes the
-   tree compile again. Doing them in brief order matters less than doing
-   `nutrition_providers.dart` early: while its `.g.dart` is missing, ~200
-   analyzer errors appear in nutrition/home/progress/settings files that have
-   no cycle coupling of their own and are NOT extra scope.
+1. Tasks 5–7 (recaps/achievements, activity milestones + share dialog,
+   nutrition micronutrients + weight chart) — they are what makes the tree
+   compile again. Doing them in brief order matters less than doing
+   `nutrition_providers.dart` early (part of Task 7): while its `.g.dart` is
+   missing, analyzer errors cascade into every feature that reads a
+   nutrition provider (insights, home, progress, settings) even though
+   those features have no cycle coupling of their own and are NOT extra
+   scope for whoever fixes them.
 2. Then Task 8 (Drift schema reset — it replaces `app_database.dart`'s
    migration wholesale; Task 3 only removed the `from < 3` branch), Task 9
    (Wellbeing → Recovery rename), Forge theme, nutrition male values, docs
@@ -120,6 +141,21 @@
   about MenFit itself. Always diff/review `git status` after a sweep like
   that and revert any hit inside `docs/`/`handoff/` that describes FemFit
   historically rather than needing an actual rename.
+- **`flutter test <directory>` compiles every file it targets as one shared
+  kernel.** In Task 4, `flutter test test/features/insights` reported 3
+  files "failing to load" — `group_comparison_test.dart`,
+  `insight_discovery_section_test.dart`,
+  `insight_observations_provider_test.dart` — but only the latter two
+  actually import the broken `insights_providers.dart` (→
+  `nutrition_providers.dart` → deleted `features/cycle/`) chain.
+  `group_comparison_test.dart` has zero nutrition/cycle dependency and
+  passes 18/18 when run alone (`flutter test
+  test/features/insights/group_comparison_test.dart`), but fails to load
+  when run in the same invocation as a poisoned file. **When a directory
+  run reports load failures, always re-run the suspect files individually
+  before concluding a given file is actually broken** — list every clean
+  file explicitly (space-separated paths) in one `flutter test` invocation
+  to get a true pass count for "everything not touching the known cascade."
 - `dart fix --apply` can silently modify `pubspec.yaml` as a side effect
   (it added `wakelock_plus_platform_interface: any` as a dev dependency to
   resolve an unrelated `depend_on_referenced_packages`/`unnecessary_ignore`
