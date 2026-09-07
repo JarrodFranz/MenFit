@@ -492,7 +492,7 @@ void main() {
         // their device, the creator's on theirs, and neither ever sees the
         // other's until a code arrives.
         final challenge = await joinedChallenge();
-        final herDevice = ChallengeCodeService(
+        final buddyDevice = ChallengeCodeService(
           repository,
           clock: () => createdAt,
           generateSalt: () => 0x5BE30C8A,
@@ -500,7 +500,7 @@ void main() {
         );
 
         final result = await service.importProgressCode(
-          herDevice.progressCodeFor(
+          buddyDevice.progressCodeFor(
             challenge.copyWith(
               selfDisplayName: 'Alex',
               authorTag: buddyAuthorTag,
