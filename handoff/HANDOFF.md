@@ -1,6 +1,6 @@
 # Handoff — MenFit (men's training + nutrition app)
 
-*Live state. Rewritten and pruned on every material change. Last updated 2026-09-08 (Task 13).*
+*Live state. Rewritten and pruned on every material change. Last updated 2026-09-08 (final review fixes).*
 
 ## State
 
@@ -13,9 +13,16 @@
   card; Forge theme (seed `0xFFD84A1B`); male Mifflin constant and adult-male
   reference intakes; Drift schema reset to v1; placeholder Forge assets;
   knowledge base rewritten (`knowledge/domain/mens_health.md`, ADR 017).
-- **Validation (2026-09-08, run centrally):** `dart format` 0 changed;
-  `flutter analyze --fatal-infos` No issues found; `flutter test`
-  **3,495 passed, 0 failed** (1m50s).
+- **Final whole-branch review fixes landed (2026-09-08):** commits `998c308`
+  (strength-first Train tab + hub routing + web identity guard) and `3466e5e`
+  (stale defaults/docs/citations + build number). Full report:
+  `.git/sdd/final-fix-report.md`.
+- **Validation (2026-09-08, run centrally at `3466e5e`):**
+  `dart run build_runner build` wrote 1212 outputs; `dart format .` 0 changed;
+  `flutter analyze --fatal-infos` **No issues found!**; `flutter test`
+  **3,509 passed, 0 failed** (1m54s, one process).
+- `pubspec.yaml` is now **0.1.0+2** — the next tester build gets a fresh build
+  number; 0.1.0 (1) is already on Firebase App Distribution.
 - **First tester build shipped (2026-09-08):** `scripts/distribute_android.ps1`
   built `app-release.apk` (122.7 MB, staging env + secrets overlay) and
   uploaded release **0.1.0 (1)** to Firebase App Distribution, project
@@ -29,13 +36,14 @@
 
 ## In flight
 
-- Final whole-branch review (opus agent) running; then merge `fork-femfit`
-  into `main` and push to `https://github.com/JarrodFranz/MenFit`.
+- Nothing. The final whole-branch review's findings are all fixed, committed
+  and validated. `fork-femfit` is ready to merge.
 
 ## Next
 
-1. Act on the final review's Important findings (if any), re-run the
-   validation sequence, merge to `main`, push.
+1. Merge `fork-femfit` into `main` and push to
+   `https://github.com/JarrodFranz/MenFit`. Nothing is pushed yet — both
+   review-fix commits are local only.
 2. Owner: add tester emails to Firebase groups `main`/`testers`
    (`firebase appdistribution:testers:add <email> --project menfit-f17b3 --group-alias main`),
    back up the keystore + password, set up Codemagic/Apple for iOS.
@@ -73,6 +81,11 @@
 - `StrengthCycles`/`strength_cycles` (training mesocycles) and `RecoveryDays`
   are not cycle tracking — keep them. "Period" inside `ProgressPeriod` /
   `RecapPeriod` means a date range, also keep.
+- **`flutter test` writes nothing to a redirected stdout until it exits**, so
+  a piped/backgrounded run looks hung at 0 bytes for its whole duration. The
+  first post-fix full run took 29 minutes (cold kernel compile) before
+  printing anything; the second took 1m54s. Do not kill a silent run and do
+  not start a second one to "check" — poll the process, not the log.
 - FemFit rules carry over: only ONE `flutter test` at a time (deadlocks);
   never `find /` on this Windows machine; Avast TLS interception affects
   Android builds (see FemFit `knowledge/troubleshooting/android_build.md`).
@@ -114,6 +127,18 @@
 
 ## Corrections
 
+- **2026-09-08 (final review):** `lib/core/db/tables/weight_logs.dart`'s
+  dartdoc claimed "the migration seeds one row from the profile so the
+  history starts non-empty". **That has never been true** — v1 `createAll`
+  seeds nothing, so a fresh install has an empty weight history until the
+  user logs a weight. The dartdoc now says so. (Separately, the S2/S3 tier
+  mismatch flagged in Task 13's log entry was already resolved in `313a48c`.)
+- **2026-09-08 (final review):** `ActivityType.fromStorage` is **not** a safe
+  parser for the `/activity/hub/:type` route — its `run` fallback is correct
+  for persisted rows and wrong for URLs, and it silently landed a
+  strength-first app on the Run hub. Route parsing now goes through
+  `hubTypeFromRoute()` in `lib/features/activity/domain/activity.dart`, which
+  defaults to `strength`. Do not "unify" the two.
 - **2026-09-08 (Task 14 prep):** robocopy in Task 1 leaked FemFit's gitignored
   `android/key.properties` (pointing at `%USERPROFILE%\femfit-signing\`) into
   the MenFit tree. It was never committed, but a release build would have
