@@ -18,8 +18,8 @@ import 'package:menfit_app/features/insights/domain/personal_insight.dart';
 ///    causation ([PersonalInsight] has no free text at all), and this
 ///    layer must not reintroduce it in prose.
 /// 2. **It never advises.** No "try", no "aim for", no "should". A
-///    training or nutrition recommendation tied to any of these signals —
-///    cycle phase above all — needs a documented evidence review first
+///    training or nutrition recommendation tied to any of these signals
+///    needs a documented evidence review first
 ///    (`knowledge/domain/mens_health.md` rule 2).
 /// 3. **It never generalises past them.** Every phrase is second-person and
 ///    about their own logs. Nothing here may say what other men, or
