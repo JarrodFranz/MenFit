@@ -1,0 +1,7 @@
+{
+  "_comment": "Firebase App Distribution settings read by scripts/distribute_android.ps1 and tools/menfit_deploy. Nothing here is secret: the app id is the public Firebase identifier of the Android app (Firebase console > Project settings > Your apps > App ID). Auth comes from `firebase login`, never from this file. testerGroups = comma-separated group ALIASES that always receive a build; optionalTesterGroups = aliases added only when the GUI's 'also send to' checkbox is ticked (or passed via -Groups). Firebase project: menfit-f17b3 (project number 717515032244).",
+  "firebaseAppId": "1:717515032244:android:8e561294083fcbfa5ef9e1",
+  "testerGroups": "main",
+  "optionalTesterGroups": "testers",
+  "env": "staging"
+}
