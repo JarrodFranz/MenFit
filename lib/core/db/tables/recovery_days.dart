@@ -11,9 +11,9 @@ import 'package:drift/drift.dart';
 /// itself (`features/streaks/streaks_providers.dart#streakResultProvider`
 /// remains a pure recompute with no cache table). This table is a
 /// different thing: it's the user's own explicit record of "I chose this
-/// day as recovery," exactly analogous to `cycle_records.dart`'s
-/// `CycleRecords` (also a user-logged fact the streak engine joins against
-/// at query time, not a derived cache) or `daily_checkins.dart`. It lives
+/// day as recovery," exactly analogous to `daily_checkins.dart`'s
+/// `DailyCheckins` (also a user-logged fact the streak engine joins against
+/// at query time, not a derived cache). It lives
 /// under `features/streaks/` — the first `data/` layer that feature has —
 /// because "mark a recovery day" is a streaks-feature action (surfaced from
 /// the home streak card and the wellbeing check-in flow's recovery
@@ -27,8 +27,8 @@ import 'package:drift/drift.dart';
 /// record per calendar day.
 ///
 /// Health-adjacent data (same S2/S3-flavoured handling as
-/// `cycle_records.dart`/`daily_checkins.dart` — never logged, hard-deleted
-/// rather than soft-deleted, wiped first in the "Delete my data" flow): see
+/// `daily_checkins.dart` — never logged, hard-deleted rather than
+/// soft-deleted, wiped first in the "Delete my data" flow): see
 /// `features/streaks/data/drift_recovery_repository.dart`.
 @TableIndex(name: 'idx_recovery_days_day', columns: {#day}, unique: true)
 class RecoveryDays extends Table {
@@ -53,7 +53,7 @@ class RecoveryDays extends Table {
   /// UTC milliseconds since epoch; null while the row is live. Kept for
   /// column-shape consistency with other tables, but
   /// `DriftRecoveryRepository.unmarkRecoveryDay` hard-deletes instead (same
-  /// reasoning as `cycle_records.dart#deletedAt`) — should always read
+  /// reasoning as `daily_checkins.dart#deletedAt`) — should always read
   /// `null`.
   IntColumn get deletedAt => integer().nullable()();
 

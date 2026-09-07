@@ -5,7 +5,7 @@ import 'package:menfit_app/features/data_export/domain/data_export_tables.dart';
 
 /// Every table in `AppDatabase` has to have had its sensitivity decided:
 /// either it goes into a whole-app export by default, or it is one of the
-/// S3-tier tables in `cycleAndWellbeingTables` that only go in when the user
+/// S3-tier tables in `sensitiveHealthTables` that only go in when the user
 /// ticks the box.
 ///
 /// **The list below is the enforcement mechanism, not test data.** The
@@ -20,7 +20,7 @@ void main() {
   /// Tables that go into every export. Reviewed as S0-S2 (activities and
   /// routes are location data, nutrition/weight/steps are body and health
   /// data, the rest is profile and self-authored training content) — all of
-  /// it hers, and none of it in the reproductive-health tier that makes a
+  /// it the user's, and none of it in the health check-in tier that makes a
   /// file dangerous to hand to someone else.
   const exportedByDefault = <String>{
     'user_profiles',
@@ -52,7 +52,7 @@ void main() {
         .where((name) => !name.startsWith('sqlite_'))
         .toSet();
 
-    final classified = exportedByDefault.union(cycleAndWellbeingTables);
+    final classified = exportedByDefault.union(sensitiveHealthTables);
 
     final unclassified = allTables.difference(classified);
     expect(
@@ -61,10 +61,10 @@ void main() {
       reason:
           'These tables exist in AppDatabase but nobody has decided whether '
           'they belong in a data export: $unclassified. The exporter will '
-          'include them by default. Decide: if the table holds cycle, '
-          'check-in, flare or recovery data (S3 in '
+          'include them by default. Decide: if the table holds check-in, '
+          'flare or recovery data (S3 in '
           'knowledge/engineering/security_and_privacy.md), add it to '
-          "cycleAndWellbeingTables in the feature's "
+          "sensitiveHealthTables in the feature's "
           'domain/data_export_tables.dart so it is only exported on opt-in; '
           "otherwise add it to this test's exportedByDefault list to record "
           'that the decision was made.',
@@ -82,16 +82,15 @@ void main() {
   });
 
   test('the two groups do not overlap', () {
-    expect(exportedByDefault.intersection(cycleAndWellbeingTables), isEmpty);
+    expect(exportedByDefault.intersection(sensitiveHealthTables), isEmpty);
   });
 
-  test('the S3 opt-in set is exactly the five the delete flow wipes first', () {
-    // Pinned rather than derived: `DeleteMyDataService.run()` deletes cycle,
+  test('the S3 opt-in set is exactly the four the delete flow wipes first', () {
+    // Pinned rather than derived: `DeleteMyDataService.run()` deletes
     // wellbeing (check-ins, flares, events) and recovery days first as the most
     // sensitive tier, and export must draw its opt-in line in the same
     // place. If one of these moves, both flows should move together.
-    expect(cycleAndWellbeingTables, {
-      'cycle_records',
+    expect(sensitiveHealthTables, {
       'daily_checkins',
       'flare_events',
       'recovery_days',

@@ -13,7 +13,6 @@ sealed class WatchMessage {
       'command' => WatchCommand.fromJson(json),
       'telemetry' => WatchTelemetry.fromJson(json),
       'wrist_workout' => WatchWristWorkout.fromJson(json),
-      'cycle_context' => WatchCycleContext.fromJson(json),
       _ => null,
     };
   }
@@ -194,38 +193,5 @@ class WatchWristWorkout extends WatchMessage {
     if (avgCadence != null) 'avgCadence': avgCadence,
     'source': source,
     'samples': samples.map((s) => s.toJson()).toList(),
-  };
-}
-
-/// Menstrual cycle context synced from MenFit phone app to the watch face/companion.
-class WatchCycleContext extends WatchMessage {
-  const WatchCycleContext({
-    required this.phaseName,
-    required this.cycleDayNumber,
-    required this.daysUntilNextPeriod,
-    this.advice,
-  });
-
-  factory WatchCycleContext.fromJson(Map<String, dynamic> json) {
-    return WatchCycleContext(
-      phaseName: json['phaseName'] as String? ?? 'None',
-      cycleDayNumber: (json['cycleDayNumber'] as num?)?.toInt() ?? 1,
-      daysUntilNextPeriod: (json['daysUntilNextPeriod'] as num?)?.toInt() ?? 0,
-      advice: json['advice'] as String?,
-    );
-  }
-
-  final String phaseName;
-  final int cycleDayNumber;
-  final int daysUntilNextPeriod;
-  final String? advice;
-
-  @override
-  Map<String, dynamic> toJson() => {
-    'type': 'cycle_context',
-    'phaseName': phaseName,
-    'cycleDayNumber': cycleDayNumber,
-    'daysUntilNextPeriod': daysUntilNextPeriod,
-    if (advice != null) 'advice': advice,
   };
 }

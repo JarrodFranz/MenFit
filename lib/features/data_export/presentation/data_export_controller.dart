@@ -82,7 +82,7 @@ class DataExportController extends _$DataExportController {
 
   /// Builds the export and offers it to the user to save.
   ///
-  /// [includeCycleAndWellbeing] is the answer she gave the notice dialog and
+  /// [includeSensitiveHealth] is the answer she gave the notice dialog and
   /// has no default — a caller has to have asked before it can call this.
   ///
   /// [saver] defaults to the real `file_picker` save dialog; tests pass their
@@ -96,7 +96,7 @@ class DataExportController extends _$DataExportController {
   /// show a SnackBar without re-reading a notifier that may already have been
   /// disposed with its screen.
   Future<DataExportState> export({
-    required bool includeCycleAndWellbeing,
+    required bool includeSensitiveHealth,
     DataExportFileSaver? saver,
   }) async {
     // A second tap while the first export is still reading is ignored
@@ -111,7 +111,7 @@ class DataExportController extends _$DataExportController {
     try {
       final service = ref.read(dataExportServiceProvider);
       final result = await service.export(
-        includeCycleAndWellbeing: includeCycleAndWellbeing,
+        includeSensitiveHealth: includeSensitiveHealth,
       );
 
       final DataExportState next;

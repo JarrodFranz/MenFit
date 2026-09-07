@@ -16,11 +16,10 @@ import 'harness/a11y_scenarios.dart';
 /// measure >= 48dp on both axes with the preference on.
 ///
 /// Scope note — the reference surface is 411dp wide (Pixel 6 Pro, the
-/// device the audit reproduced on). The cycle calendar's 7-column month
+/// device the audit reproduced on). The wellbeing calendar's 7-column month
 /// grid cannot reach 48dp *wide* cells below ~400dp of screen width; that
-/// is arithmetic, not a fixable layout (see `a11y_touch_target_geometry`
-/// note in `cycle_calendar_view.dart`). Narrow-width behaviour is asserted
-/// separately and honestly below.
+/// is arithmetic, not a fixable layout (see `core/widgets/month_calendar.dart`).
+/// Narrow-width behaviour is asserted separately and honestly below.
 ///
 /// Re-run with:
 /// `flutter test test/accessibility/a11y_large_touch_targets_test.dart`
@@ -35,7 +34,6 @@ void main() {
     A11yScreen(name: 'Progress', location: (_) => '/home/progress'),
     A11yScreen(name: 'Activity', location: (_) => '/activity'),
     A11yScreen(name: 'Nutrition', location: (_) => '/nutrition'),
-    A11yScreen(name: 'Cycle', location: (_) => '/cycle'),
     A11yScreen(name: 'Wellbeing', location: (_) => '/wellbeing'),
     A11yScreen(name: 'Settings', location: (_) => '/settings'),
     A11yScreen(

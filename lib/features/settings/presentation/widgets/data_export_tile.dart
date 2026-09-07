@@ -16,8 +16,8 @@ import 'package:menfit_app/features/data_export/data_export_widgets.dart';
 /// permits one feature to know about another's presentation layer.
 ///
 /// The notice comes first and gates everything: no bytes are read out of the
-/// database until she has said yes and said whether cycle and wellbeing data
-/// is in it.
+/// database until the user has said yes and said whether health check-in
+/// data is in it.
 class DataExportTile extends ConsumerWidget {
   const DataExportTile({super.key});
 
@@ -36,7 +36,7 @@ class DataExportTile extends ConsumerWidget {
       leading: const Icon(Icons.download_outlined),
       title: const Text('Export my data'),
       // Honest about what it does: the notice dialog is where "everything
-      // you've logged" gets spelled out, including the cycle/wellbeing
+      // you've logged" gets spelled out, including the health check-in
       // opt-in this tile cannot promise either way.
       subtitle: Text(
         inProgress
@@ -61,7 +61,7 @@ class DataExportTile extends ConsumerWidget {
     final result = await ref
         .read(dataExportControllerProvider.notifier)
         .export(
-          includeCycleAndWellbeing: choice.includeCycleAndWellbeing,
+          includeSensitiveHealth: choice.includeSensitiveHealth,
         );
 
     final message = switch (result) {

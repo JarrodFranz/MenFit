@@ -111,34 +111,23 @@ void main() {
             updatedAt: now,
           ),
         );
-
-    await sourceDb
-        .into(sourceDb.cycleRecords)
-        .insert(
-          db.CycleRecordsCompanion.insert(
-            id: 'cycle-1',
-            periodStartDay: '2026-09-01',
-            createdAt: now,
-            updatedAt: now,
-          ),
-        );
   }
 
   group('DriftDataImporter', () {
     test('round-trips all tables and rows faithfully', () async {
       await seedSourceDb();
 
-      final tables = await exporter.readTables(includeCycleAndWellbeing: true);
+      final tables = await exporter.readTables(includeSensitiveHealth: true);
       final document = DataExportDocument(
         schemaVersion: exporter.schemaVersion,
         exportedAt: DateTime.utc(2026, 9, 4, 10),
-        includesCycleAndWellbeingData: true,
+        includesSensitiveHealthData: true,
         tables: tables,
       );
 
       final summary = await importer.importDocument(document);
 
-      expect(summary.rowCount, 6);
+      expect(summary.rowCount, 5);
       expect(summary.tableCount, tables.length);
 
       // Verify records in targetDb
@@ -163,10 +152,6 @@ void main() {
       final weights = await targetDb.select(targetDb.weightLogs).get();
       expect(weights.length, 1);
       expect(weights.first.weightKg, 64.2);
-
-      final cycles = await targetDb.select(targetDb.cycleRecords).get();
-      expect(cycles.length, 1);
-      expect(cycles.first.periodStartDay, '2026-09-01');
     });
 
     test('replaces existing rows in imported tables cleanly', () async {
@@ -186,7 +171,7 @@ void main() {
       final document = DataExportDocument(
         schemaVersion: 24,
         exportedAt: DateTime.utc(2026, 9, 4),
-        includesCycleAndWellbeingData: false,
+        includesSensitiveHealthData: false,
         tables: {
           'weight_logs': [
             {
@@ -212,7 +197,7 @@ void main() {
       final document = DataExportDocument(
         schemaVersion: 24,
         exportedAt: DateTime.utc(2026, 9, 4),
-        includesCycleAndWellbeingData: false,
+        includesSensitiveHealthData: false,
         tables: {
           'future_table': [
             {'id': 'future-1', 'title': 'Future thing'},

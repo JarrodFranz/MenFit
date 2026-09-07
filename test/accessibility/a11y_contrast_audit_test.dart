@@ -126,16 +126,12 @@ void main() {
 
           // The app's own semantic tokens. Each is used two ways: as label
           // text over a 15-18% tint of itself (see
-          // `record_screen.dart`'s warning banner and `cycle_screen.dart`'s
-          // phase chips), and as a solid fill that must be distinguishable
+          // `record_screen.dart`'s warning banner and the workout-intensity
+          // chips), and as a solid fill that must be distinguishable
           // from the surface behind it (3:1, the WCAG non-text threshold).
           final semantic = <String, Color>{
             'success': tokens.success,
             'warning': tokens.warning,
-            'cyclePhaseMenstrual': tokens.cyclePhaseMenstrual,
-            'cyclePhaseFollicular': tokens.cyclePhaseFollicular,
-            'cyclePhaseOvulatory': tokens.cyclePhaseOvulatory,
-            'cyclePhaseLuteal': tokens.cyclePhaseLuteal,
             'intensityEasy': tokens.intensityEasy,
             'intensityModerate': tokens.intensityModerate,
             'intensityHard': tokens.intensityHard,
@@ -161,19 +157,21 @@ void main() {
           }
 
           // Colour alone must never be the only difference between two
-          // meanings. Phase colours that collapse into each other under a
-          // simulation are a real failure of the mode's purpose, so the
+          // meanings. Intensity colours that collapse into each other under
+          // a simulation are a real failure of the mode's purpose, so the
           // pairwise separation is measured too — 1.2:1 is a deliberately
           // low bar: below it the two are visually the same swatch.
-          final phases = {
-            'menstrual': tokens.cyclePhaseMenstrual,
-            'follicular': tokens.cyclePhaseFollicular,
-            'ovulatory': tokens.cyclePhaseOvulatory,
-            'luteal': tokens.cyclePhaseLuteal,
+          final intensities = {
+            'easy': tokens.intensityEasy,
+            'moderate': tokens.intensityModerate,
+            'hard': tokens.intensityHard,
           }.entries.toList();
-          for (var i = 0; i < phases.length; i++) {
-            for (var j = i + 1; j < phases.length; j++) {
-              final ratio = _contrast(phases[i].value, phases[j].value);
+          for (var i = 0; i < intensities.length; i++) {
+            for (var j = i + 1; j < intensities.length; j++) {
+              final ratio = _contrast(
+                intensities[i].value,
+                intensities[j].value,
+              );
               if (ratio >= 1.2) continue;
               report.add(
                 A11yFinding(
@@ -182,9 +180,10 @@ void main() {
                   issue: A11yIssue.contrast,
                   severity: A11ySeverity.medium,
                   detail:
-                      'cycle phases "${phases[i].key}" and "${phases[j].key}" '
-                      'are near-indistinguishable by luminance — the legend '
-                      'and any icon/label cue carry the whole meaning',
+                      'workout intensities "${intensities[i].key}" and '
+                      '"${intensities[j].key}" are near-indistinguishable by '
+                      'luminance — the legend and any icon/label cue carry '
+                      'the whole meaning',
                   measurement: '${ratio.toStringAsFixed(2)}:1',
                 ),
               );

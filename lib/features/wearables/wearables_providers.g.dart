@@ -104,7 +104,7 @@ final class WearableWorkoutSyncServiceProvider
 }
 
 String _$wearableWorkoutSyncServiceHash() =>
-    r'3549d331f061e0ee32cfc1b3c4a41f39cc5687f0';
+    r'b71131ef233b2c2a659c319fd6b2100932b12b37';
 
 @ProviderFor(WearablesController)
 final wearablesControllerProvider = WearablesControllerProvider._();
@@ -139,7 +139,7 @@ final class WearablesControllerProvider
 }
 
 String _$wearablesControllerHash() =>
-    r'4d5b25b2790bac313eb4d2952d334d8fbcba7742';
+    r'8ea1278e506fbb4f7ec8d3078f1bb0b5c9dfc42d';
 
 abstract class _$WearablesController extends $Notifier<WearablesState> {
   WearablesState build();

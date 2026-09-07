@@ -143,7 +143,7 @@ class _MenFitSplashScreenState extends State<MenFitSplashScreen>
 
                     // Tagline
                     const Text(
-                      'Empowering Every Stride & Cycle',
+                      'Train Strong. Recover Smarter.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 15,

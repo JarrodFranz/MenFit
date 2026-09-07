@@ -8,7 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:menfit_app/core/theme/app_theme.dart';
 import 'package:menfit_app/core/widgets/adaptive_scaffold.dart';
 
-/// Does the six-destination bottom bar actually fit on a phone?
+/// Does the five-destination bottom bar actually fit on a phone?
 ///
 /// Ordinary widget tests cannot answer this. They run with
 /// `--use-test-fonts`, whose glyphs are fixed-width boxes about one em
@@ -52,11 +52,6 @@ void main() {
       icon: Icons.restaurant_outlined,
       selectedIcon: Icons.restaurant,
       label: 'Nutrition',
-    ),
-    AdaptiveDestination(
-      icon: Icons.favorite_outline,
-      selectedIcon: Icons.favorite,
-      label: 'Cycle',
     ),
     AdaptiveDestination(
       icon: Icons.spa_outlined,
@@ -123,13 +118,13 @@ void main() {
           '"$label" wraps at this width. Material\'s bottom-bar label has '
           'no ellipsis and no hyphenation, so a wrap breaks the word '
           'mid-way ("Wellb / eing"). Either the label shrink in '
-          'AppAdaptiveScaffold needs to go further, or six tabs is one too '
-          'many for this width and Settings should move to an app-bar '
+          'AppAdaptiveScaffold needs to go further, or five tabs is one '
+          'too many for this width and Settings should move to an app-bar '
           'action.',
     );
   }
 
-  testWidgets('six labels fit on one line at 375dp (small phone)', (
+  testWidgets('five labels fit on one line at 375dp (small phone)', (
     tester,
   ) async {
     await pumpAt(tester, const Size(375, 812));
@@ -138,7 +133,7 @@ void main() {
     }
   });
 
-  testWidgets('six labels fit on one line at 320dp (smallest supported)', (
+  testWidgets('five labels fit on one line at 320dp (smallest supported)', (
     tester,
   ) async {
     await pumpAt(tester, const Size(320, 640));
@@ -147,7 +142,7 @@ void main() {
     }
   });
 
-  testWidgets('six labels fit on one line at 412dp (large phone)', (
+  testWidgets('five labels fit on one line at 412dp (large phone)', (
     tester,
   ) async {
     await pumpAt(tester, const Size(412, 915));

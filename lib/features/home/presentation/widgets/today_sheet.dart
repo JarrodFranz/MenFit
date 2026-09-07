@@ -108,7 +108,6 @@ class _SourcesList extends StatelessWidget {
       if (sources.hasExplicitRecoveryDay)
         _ExplicitRecoverySourceTile(note: sources.recoveryNote),
       if (sources.hasProtectingFlare) const _FlareSourceTile(),
-      if (sources.isPeriodProtected) const _PeriodSourceTile(),
     ];
 
     return Column(
@@ -270,33 +269,6 @@ class _FlareSourceTile extends StatelessWidget {
           const WellbeingRouteData().go(context);
         },
         child: const Text('View in Wellbeing'),
-      ),
-    );
-  }
-}
-
-/// The period-day source — only shown when both the streak-pausing
-/// preference is on AND today itself falls within a logged period
-/// (`streaks/domain/today_protection_sources.dart`).
-class _PeriodSourceTile extends StatelessWidget {
-  const _PeriodSourceTile();
-
-  @override
-  Widget build(BuildContext context) {
-    return _SourceCard(
-      icon: Icons.favorite_outline,
-      title: 'Period day — counted as recovery (your setting)',
-      action: TextButton(
-        style: TextButton.styleFrom(
-          padding: EdgeInsets.zero,
-          minimumSize: Size.zero,
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        ),
-        onPressed: () {
-          Navigator.of(context).pop();
-          const CycleRouteData().go(context);
-        },
-        child: const Text('Cycle settings'),
       ),
     );
   }

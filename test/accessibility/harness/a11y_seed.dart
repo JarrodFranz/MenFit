@@ -8,8 +8,6 @@ import 'package:menfit_app/features/activity/data/drift_activity_repository.dart
 import 'package:menfit_app/features/activity/domain/activity.dart';
 import 'package:menfit_app/features/challenges/data/drift_challenge_repository.dart';
 import 'package:menfit_app/features/challenges/domain/challenge.dart';
-import 'package:menfit_app/features/cycle/data/drift_cycle_repository.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_record.dart';
 import 'package:menfit_app/features/nutrition/data/drift_nutrition_repository.dart';
 import 'package:menfit_app/features/nutrition/data/drift_water_repository.dart';
 import 'package:menfit_app/features/nutrition/domain/food.dart';
@@ -154,16 +152,6 @@ Future<SeededIds> seedRealisticData(
   ]) {
     await activities.saveActivity(activity);
   }
-
-  await DriftCycleRepository(database, preferences).saveRecord(
-    CycleRecord(
-      id: 'seed-cycle',
-      periodStart: today.addDays(-9),
-      periodEnd: today.addDays(-5),
-      createdAt: stamp,
-      updatedAt: stamp,
-    ),
-  );
 
   await DriftWellbeingRepository(database).saveCheckin(
     DailyCheckin(

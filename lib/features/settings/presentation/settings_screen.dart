@@ -158,10 +158,10 @@ class SettingsScreen extends ConsumerWidget {
               margin: EdgeInsets.zero,
               child: SwitchListTile(
                 secondary: const Icon(Icons.auto_awesome_outlined),
-                title: const Text('Automatic Cycle & Monthly Recaps'),
+                title: const Text('Automatic monthly recaps'),
                 subtitle: const Text(
                   'Show an interactive story summary at the end of each '
-                  'cycle and month',
+                  'month',
                 ),
                 value: ref.watch(showAutomaticRecapsControllerProvider),
                 onChanged: (enabled) async {
@@ -243,8 +243,8 @@ class SettingsScreen extends ConsumerWidget {
                     ),
                     title: const Text('Local & Private Data'),
                     subtitle: const Text(
-                      'Your health, activity, and cycle data is stored '
-                      'privately on this device.',
+                      'Your health and activity data is stored privately '
+                      'on this device.',
                     ),
                   ),
                   const Divider(height: 1),
@@ -309,9 +309,9 @@ class SettingsScreen extends ConsumerWidget {
         content: const Text(
           'This permanently deletes everything stored on this device: '
           'your profile (name, unit system, weekly goal), your logged '
-          'activities and GPS routes, your saved routes, your logged '
-          'cycle/period data, your check-ins and symptoms/flare-ups, your '
-          'marked recovery days, your food diary (logged entries, saved '
+          'activities and GPS routes, your saved routes, your check-ins '
+          'and symptoms/flare-ups, your marked recovery days, your food '
+          'diary (logged entries, saved '
           'foods, and nutrition targets), your weight history, your synced '
           'step history, your earned achievements, your buddy challenges, '
           'and your app preferences (theme). This cannot be undone.',

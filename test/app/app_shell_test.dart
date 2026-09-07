@@ -16,7 +16,7 @@ void main() {
   });
 
   testWidgets(
-    'app pumps, shows the home screen and all 6 destinations, and '
+    'app pumps, shows the home screen and all 5 destinations, and '
     'navigating to Settings shows the theme selector',
     (tester) async {
       // Force a compact width so navigation renders as a bottom
@@ -43,9 +43,9 @@ void main() {
       // Home screen is visible by default.
       expect(find.text('Welcome back'), findsOneWidget);
 
-      // All 6 shell destinations are present in the bottom NavigationBar.
-      // (Scoped to the NavigationBar because some labels, e.g. "Nutrition"
-      // and "Cycle", also appear as home-screen dashboard card titles.)
+      // All 5 shell destinations are present in the bottom NavigationBar.
+      // (Scoped to the NavigationBar because some labels, e.g. "Nutrition",
+      // also appear as home-screen dashboard card titles.)
       final navigationBar = find.byType(NavigationBar);
       expect(navigationBar, findsOneWidget);
 
@@ -53,7 +53,6 @@ void main() {
         'Home',
         'Activity',
         'Nutrition',
-        'Cycle',
         'Wellbeing',
         'Settings',
       ]) {
@@ -84,7 +83,7 @@ void main() {
   );
 
   testWidgets(
-    'shell renders all 6 destination labels with no overflow at compact '
+    'shell renders all 5 destination labels with no overflow at compact '
     '(375x812) and expanded (1200x900) window sizes',
     (tester) async {
       SharedPreferences.setMockInitialValues({'onboarding_complete': true});
@@ -96,7 +95,6 @@ void main() {
         'Home',
         'Activity',
         'Nutrition',
-        'Cycle',
         'Wellbeing',
         'Settings',
       ];
@@ -120,7 +118,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Compact: a 375dp-wide phone, six destinations in a bottom
+      // Compact: a 375dp-wide phone, five destinations in a bottom
       // NavigationBar - the tight end of the supported range.
       expect(tester.takeException(), isNull);
 

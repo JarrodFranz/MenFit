@@ -85,17 +85,7 @@ void main() {
         );
   }
 
-  Future<void> seedCycleAndWellbeing() async {
-    await database
-        .into(database.cycleRecords)
-        .insert(
-          db.CycleRecordsCompanion.insert(
-            id: 'cycle-1',
-            periodStartDay: '2026-01-01',
-            createdAt: now,
-            updatedAt: now,
-          ),
-        );
+  Future<void> seedSensitiveHealth() async {
     await database
         .into(database.dailyCheckins)
         .insert(
@@ -135,12 +125,12 @@ void main() {
       await seedNonSensitive();
 
       final tables = await exporter.readTables(
-        includeCycleAndWellbeing: false,
+        includeSensitiveHealth: false,
       );
 
       final expected = database.allTables
           .map((t) => t.actualTableName)
-          .where((name) => !cycleAndWellbeingTables.contains(name))
+          .where((name) => !sensitiveHealthTables.contains(name))
           .toSet();
       expect(tables.keys.toSet(), expected);
       // An empty table is present as an empty list, not absent: "you have
@@ -153,7 +143,7 @@ void main() {
       await seedNonSensitive();
 
       final tables = await exporter.readTables(
-        includeCycleAndWellbeing: false,
+        includeSensitiveHealth: false,
       );
 
       final activity = tables['activities']!.single;
@@ -167,15 +157,15 @@ void main() {
   });
 
   group('the S3 opt-in', () {
-    test('leaves the four cycle/wellbeing tables out by default', () async {
+    test('leaves the four health check-in tables out by default', () async {
       await seedNonSensitive();
-      await seedCycleAndWellbeing();
+      await seedSensitiveHealth();
 
       final tables = await exporter.readTables(
-        includeCycleAndWellbeing: false,
+        includeSensitiveHealth: false,
       );
 
-      for (final name in cycleAndWellbeingTables) {
+      for (final name in sensitiveHealthTables) {
         expect(
           tables.containsKey(name),
           isFalse,
@@ -187,34 +177,33 @@ void main() {
     });
 
     test('their rows are nowhere in the bytes either', () async {
-      await seedCycleAndWellbeing();
+      await seedSensitiveHealth();
 
       final service = DataExportService(
         source: exporter,
         clock: () => DateTime.utc(2026, 9, 4),
       );
-      final result = await service.export(includeCycleAndWellbeing: false);
+      final result = await service.export(includeSensitiveHealth: false);
       final text = utf8.decode((result as DataExported).bytes);
 
       // Not just the table keys: the row ids seeded above must not appear
       // anywhere in the file, including inside some other table's column.
-      for (final name in cycleAndWellbeingTables) {
+      for (final name in sensitiveHealthTables) {
         expect(text, isNot(contains(name)));
       }
-      for (final id in ['cycle-1', 'checkin-1', 'flare-1', 'recovery-1']) {
+      for (final id in ['checkin-1', 'flare-1', 'recovery-1']) {
         expect(text, isNot(contains(id)));
       }
-      expect(text, contains('"includesCycleAndWellbeingData": false'));
+      expect(text, contains('"includesSensitiveHealthData": false'));
     });
 
-    test('includes all four when she opts in', () async {
+    test('includes all four when the user opts in', () async {
       await seedNonSensitive();
-      await seedCycleAndWellbeing();
+      await seedSensitiveHealth();
 
-      final tables = await exporter.readTables(includeCycleAndWellbeing: true);
+      final tables = await exporter.readTables(includeSensitiveHealth: true);
 
-      expect(tables.keys.toSet(), containsAll(cycleAndWellbeingTables));
-      expect(tables['cycle_records']!.single['id'], 'cycle-1');
+      expect(tables.keys.toSet(), containsAll(sensitiveHealthTables));
       expect(tables['daily_checkins']!.single['id'], 'checkin-1');
       expect(tables['flare_events']!.single['id'], 'flare-1');
       expect(tables['recovery_days']!.single['id'], 'recovery-1');
@@ -244,7 +233,7 @@ void main() {
           ),
         );
 
-    final tables = await exporter.readTables(includeCycleAndWellbeing: false);
+    final tables = await exporter.readTables(includeSensitiveHealth: false);
 
     final activity = tables['activities']!.single;
     expect(activity['id'], 'activity-deleted');
@@ -269,7 +258,7 @@ void main() {
 
       Object? thrown;
       try {
-        await doomedExporter.readTables(includeCycleAndWellbeing: false);
+        await doomedExporter.readTables(includeSensitiveHealth: false);
       } on Object catch (error) {
         thrown = error;
       }
@@ -311,7 +300,7 @@ void main() {
         clock: () => DateTime.utc(2026, 9, 4, 12),
       );
 
-      final result = await service.export(includeCycleAndWellbeing: false);
+      final result = await service.export(includeSensitiveHealth: false);
 
       expect(result, isA<DataExported>());
       final exported = result as DataExported;

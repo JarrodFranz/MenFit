@@ -19,7 +19,7 @@ import 'package:menfit_app/features/wellbeing/presentation/widgets/flare_dialog_
 /// All the field logic lives in `presentation/flare_controller.dart`'s
 /// [FlareController] (a family provider keyed by [existing]) — this widget
 /// stays a plain [ConsumerWidget], same shape as
-/// `features/cycle/presentation/widgets/period_entry_dialog.dart`.
+/// `features/streaks/` recovery-day prompts.
 ///
 /// The already-marked recovery days are read here and handed to
 /// [FlareController.save] rather than watched by the controller: they are

@@ -24,9 +24,8 @@ import 'harness/a11y_seed.dart';
 ///
 /// What each description *says* is pinned deterministically elsewhere, on
 /// the widgets themselves and on the pure functions that build the
-/// sentences — `test/features/cycle/cycle_day_semantics_test.dart`,
-/// `test/features/cycle/cycle_calendar_semantics_test.dart`,
-/// `test/features/progress/weekly_distance_semantics_test.dart` and
+/// sentences — `test/features/progress/weekly_distance_semantics_test.dart`
+/// and
 /// `test/features/weight/weight_trend_chart_semantics_test.dart`. This file
 /// deliberately asserts only what those cannot: that the preference
 /// reaches them at all.
@@ -111,12 +110,5 @@ void main() {
     location: (_) => '/weight',
     pattern: RegExp('readings. from .* to '),
     what: 'weight trend chart',
-  );
-
-  expectDescribedOnlyWhenOn(
-    name: 'Cycle',
-    location: (_) => '/cycle',
-    pattern: RegExp(r'Estimated \w+ phase'),
-    what: 'calendar days',
   );
 }

@@ -11,8 +11,8 @@ abstract interface class DataExportSource {
 
   /// Every table, keyed by SQL table name, each row a JSON-safe map.
   ///
-  /// Tables in `domain/data_export_tables.dart`'s `cycleAndWellbeingTables`
-  /// are read only when [includeCycleAndWellbeing] is true; every other table
+  /// Tables in `domain/data_export_tables.dart`'s `sensitiveHealthTables`
+  /// are read only when [includeSensitiveHealth] is true; every other table
   /// is always read, including ones added after this was written.
   ///
   /// Soft-deleted rows (a non-null `deleted_at`) are included. They are still
@@ -21,6 +21,6 @@ abstract interface class DataExportSource {
   ///
   /// Throws `StorageException` if the database cannot be read.
   Future<Map<String, List<Map<String, Object?>>>> readTables({
-    required bool includeCycleAndWellbeing,
+    required bool includeSensitiveHealth,
   });
 }

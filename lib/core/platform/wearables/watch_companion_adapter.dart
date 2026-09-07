@@ -36,9 +36,6 @@ abstract class WatchCompanionAdapter {
   /// Sends a command to the watch (e.g. start/pause/stop workout).
   Future<bool> sendCommand(WatchCommand command);
 
-  /// Transmits current menstrual cycle phase context to the watch display.
-  Future<bool> sendCycleContext(WatchCycleContext context);
-
   /// Stream of incoming messages (telemetry, wrist workouts) from the watch.
   Stream<WatchMessage> get messageStream;
 

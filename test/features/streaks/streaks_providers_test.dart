@@ -9,8 +9,6 @@ import 'package:menfit_app/core/db/app_database_provider.dart';
 import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/features/activity/activity_providers.dart';
 import 'package:menfit_app/features/activity/domain/activity.dart';
-import 'package:menfit_app/features/cycle/cycle_providers.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_record.dart';
 import 'package:menfit_app/features/streaks/domain/streak_engine.dart';
 import 'package:menfit_app/features/streaks/streaks_providers.dart';
 import 'package:menfit_app/features/wellbeing/domain/flare_event.dart';
@@ -45,20 +43,6 @@ void main() {
     );
   }
 
-  CycleRecord periodRecord({
-    required LocalDate start,
-    LocalDate? end,
-    String id = 'period-1',
-  }) {
-    return CycleRecord(
-      id: id,
-      periodStart: start,
-      periodEnd: end,
-      createdAt: DateTime.utc(2026),
-      updatedAt: DateTime.utc(2026),
-    );
-  }
-
   FlareEvent flare({
     required LocalDate day,
     required FlareImpact impact,
@@ -80,8 +64,8 @@ void main() {
   /// after triggering a write - Drift's `.watch()` streams (which back
   /// every repository stream `streakResultProvider` combines) notify
   /// watchers asynchronously after a write completes, not synchronously as
-  /// part of it (same reasoning as `cycle_repository_test.dart`'s
-  /// `expectLater(... emitsThrough(...))` pattern, adapted here since a
+  /// part of it (the same `expectLater(... emitsThrough(...))` reasoning the
+  /// repository tests use, adapted here since a
   /// Riverpod `StreamProvider` in this Riverpod version has no `.stream`
   /// accessor to hand to `expectLater` directly).
   Future<StreakResult> waitFor(bool Function(StreakResult) predicate) async {
@@ -156,47 +140,11 @@ void main() {
   );
 
   test(
-    'toggling streak pausing on then off changes the result for the same '
-    'underlying data (S1-2: pausing now defaults OFF, so this test turns '
-    'it on explicitly first)',
+    'marking recovery days retroactively bridges a previously broken '
+    'streak (the signature scenario)',
     () async {
       final activityRepository = container.read(activityRepositoryProvider);
-      final cycleRepository = container.read(cycleRepositoryProvider);
-
-      // Satisfied 5 days ago, a 4-day logged period right after it, then
-      // satisfied again today - the same bridging shape as
-      // `streak_assembly_test.dart`.
-      await activityRepository.saveActivity(
-        activity(day: today.addDays(-5), id: 'old'),
-      );
-      await activityRepository.saveActivity(activity(day: today, id: 'new'));
-      await cycleRepository.saveRecord(
-        periodRecord(start: today.addDays(-4), end: today.addDays(-1)),
-      );
-
-      // Pausing defaults to OFF (see
-      // `CycleRepository.watchStreakPausingEnabled` doc) - the period gap
-      // should currently be breaking the streak.
-      final beforeEnabling = await waitFor((r) => r.currentStreak == 1);
-      expect(beforeEnabling.currentStreak, 1);
-
-      await cycleRepository.setStreakPausingEnabled(enabled: true);
-      final withPausing = await waitFor((r) => r.currentStreak == 2);
-      expect(withPausing.currentStreak, 2);
-
-      await cycleRepository.setStreakPausingEnabled(enabled: false);
-      final withoutPausing = await waitFor((r) => r.currentStreak == 1);
-      expect(withoutPausing.currentStreak, 1);
-    },
-  );
-
-  test(
-    'adding a retroactive cycle record bridges a previously broken streak '
-    '(the signature scenario)',
-    () async {
-      final activityRepository = container.read(activityRepositoryProvider);
-      final cycleRepository = container.read(cycleRepositoryProvider);
-      await cycleRepository.setStreakPausingEnabled(enabled: true);
+      final recoveryRepository = container.read(recoveryRepositoryProvider);
 
       // Satisfied 5 days ago, nothing logged for the 4 days after that,
       // satisfied again today - a plain gap, streak currently broken.
@@ -208,9 +156,10 @@ void main() {
       final before = await waitFor((r) => r.currentStreak == 1);
       expect(before.currentStreak, 1); // the gap 1-4 days ago broke it
 
-      // Log the period *after the fact*, covering exactly the gap.
-      await cycleRepository.saveRecord(
-        periodRecord(start: today.addDays(-4), end: today.addDays(-1)),
+      // Mark the gap as recovery *after the fact*, covering it exactly.
+      await recoveryRepository.markRecoveryDays(
+        today.addDays(-4),
+        today.addDays(-1),
       );
 
       final after = await waitFor((r) => r.currentStreak == 2);
@@ -289,22 +238,19 @@ void main() {
   );
 
   test(
-    'B5: an ongoing period (no end yet) covering today, with pausing on, '
-    'keeps today protected and preserves the streak through the real '
-    'provider chain - guards an off-by-one in the ongoing-period-to-today '
-    'cap that would silently kill the protected card',
+    'B5: a multi-day recovery range covering today keeps today protected '
+    'and preserves the streak through the real provider chain - guards an '
+    'off-by-one at the today end of the range that would silently kill the '
+    'protected card',
     () async {
       final activityRepository = container.read(activityRepositoryProvider);
-      final cycleRepository = container.read(cycleRepositoryProvider);
-      await cycleRepository.setStreakPausingEnabled(enabled: true);
+      final recoveryRepository = container.read(recoveryRepositoryProvider);
 
       await activityRepository.saveActivity(
         activity(day: today.addDays(-5), id: 'old'),
       );
-      // No `end` - still ongoing as of today.
-      await cycleRepository.saveRecord(
-        periodRecord(start: today.addDays(-4)),
-      );
+      // The range runs up to and including today.
+      await recoveryRepository.markRecoveryDays(today.addDays(-4), today);
 
       final result = await waitFor(
         (r) =>

@@ -36,12 +36,12 @@ $MicronutrientAdequacyItemCopyWith<MicronutrientAdequacyItem> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MicronutrientAdequacyItem&&(identical(other.type, type) || other.type == type)&&(identical(other.loggedAmount, loggedAmount) || other.loggedAmount == loggedAmount)&&(identical(other.dailyReference, dailyReference) || other.dailyReference == dailyReference)&&(identical(other.isPartial, isPartial) || other.isPartial == isPartial)&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.statusMessage, statusMessage) || other.statusMessage == statusMessage)&&(identical(other.cyclePhase, cyclePhase) || other.cyclePhase == cyclePhase));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MicronutrientAdequacyItem&&(identical(other.type, type) || other.type == type)&&(identical(other.loggedAmount, loggedAmount) || other.loggedAmount == loggedAmount)&&(identical(other.dailyReference, dailyReference) || other.dailyReference == dailyReference)&&(identical(other.isPartial, isPartial) || other.isPartial == isPartial)&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.statusMessage, statusMessage) || other.statusMessage == statusMessage)&&const DeepCollectionEquality().equals(other.cyclePhase, cyclePhase));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,type,loggedAmount,dailyReference,isPartial,progress,statusMessage,cyclePhase);
+int get hashCode => Object.hash(runtimeType,type,loggedAmount,dailyReference,isPartial,progress,statusMessage,const DeepCollectionEquality().hash(cyclePhase));
 
 @override
 String toString() {
@@ -254,12 +254,12 @@ _$MicronutrientAdequacyItemCopyWith<_MicronutrientAdequacyItem> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MicronutrientAdequacyItem&&(identical(other.type, type) || other.type == type)&&(identical(other.loggedAmount, loggedAmount) || other.loggedAmount == loggedAmount)&&(identical(other.dailyReference, dailyReference) || other.dailyReference == dailyReference)&&(identical(other.isPartial, isPartial) || other.isPartial == isPartial)&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.statusMessage, statusMessage) || other.statusMessage == statusMessage)&&(identical(other.cyclePhase, cyclePhase) || other.cyclePhase == cyclePhase));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MicronutrientAdequacyItem&&(identical(other.type, type) || other.type == type)&&(identical(other.loggedAmount, loggedAmount) || other.loggedAmount == loggedAmount)&&(identical(other.dailyReference, dailyReference) || other.dailyReference == dailyReference)&&(identical(other.isPartial, isPartial) || other.isPartial == isPartial)&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.statusMessage, statusMessage) || other.statusMessage == statusMessage)&&const DeepCollectionEquality().equals(other.cyclePhase, cyclePhase));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,type,loggedAmount,dailyReference,isPartial,progress,statusMessage,cyclePhase);
+int get hashCode => Object.hash(runtimeType,type,loggedAmount,dailyReference,isPartial,progress,statusMessage,const DeepCollectionEquality().hash(cyclePhase));
 
 @override
 String toString() {

@@ -3,7 +3,6 @@ import 'package:menfit_app/features/activity/domain/activity_repository.dart';
 import 'package:menfit_app/features/activity/domain/strength_routine_repository.dart';
 import 'package:menfit_app/features/activity/domain/yoga_sequence_repository.dart';
 import 'package:menfit_app/features/challenges/domain/challenge_repository.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_repository.dart';
 import 'package:menfit_app/features/nutrition/domain/nutrition_repository.dart';
 import 'package:menfit_app/features/nutrition/domain/water_repository.dart';
 import 'package:menfit_app/features/profile/domain/profile_repository.dart';
@@ -27,7 +26,7 @@ import 'package:menfit_app/features/wellbeing/domain/wellbeing_repository.dart';
 /// `features/challenges/application/challenge_code_service.dart`).
 ///
 /// **Ordering matters and is documented at each call, not just here:**
-/// S3-tier data (cycle, wellbeing, recovery days) goes first per
+/// S3-tier data (wellbeing, recovery days) goes first per
 /// `knowledge/engineering/security_and_privacy.md`, then other
 /// health/location-adjacent data, then everything else.
 ///
@@ -41,12 +40,12 @@ import 'package:menfit_app/features/wellbeing/domain/wellbeing_repository.dart';
 /// ## Which preference keys this *does* clear, and why the rest stay
 ///
 /// Two SharedPreferences keys are cleared here even though they are not
-/// table rows, because they are **residue of her data rather than
-/// configuration of her device**:
+/// table rows, because they are **residue of the user's data rather than
+/// configuration of their device**:
 ///
-/// * the recap-shown markers, which store a `cycle:<uuidv7>` whose id
-///   embeds the timestamp the cycle record was created — a readable trace
-///   of when a period was logged, outliving the S3 table it came from;
+/// * the recap-shown markers, which record which date ranges the app has
+///   already recapped — a readable trace of when the user was logging,
+///   outliving the tables it was derived from;
 /// * the online-lookup notice acknowledgement, which is a consent that
 ///   belongs to the person who gave it, not to the handset.
 ///
@@ -57,7 +56,6 @@ import 'package:menfit_app/features/wellbeing/domain/wellbeing_repository.dart';
 /// small act of hostility towards the person most likely to need them.
 class DeleteMyDataService {
   const DeleteMyDataService({
-    required this.cycleRepository,
     required this.wellbeingRepository,
     required this.recoveryRepository,
     required this.activityRepository,
@@ -76,7 +74,6 @@ class DeleteMyDataService {
     required this.clearOnlineLookupNotice,
   });
 
-  final CycleRepository cycleRepository;
   final WellbeingRepository wellbeingRepository;
   final RecoveryRepository recoveryRepository;
   final ActivityRepository activityRepository;
@@ -107,21 +104,12 @@ class DeleteMyDataService {
   /// throws (each repository already wraps its own failure in a
   /// `StorageException`) — the caller decides how to surface that.
   Future<void> run() async {
-    // Cycle and wellbeing (check-ins/flares) data are S3-tier (most
-    // sensitive) - delete them first (see
+    // Wellbeing (check-ins/flares) data is S3-tier (most sensitive) -
+    // delete it first (see
     // knowledge/engineering/security_and_privacy.md: "Full export and
     // deletion must work for this data category first"). Recovery days
     // are health-adjacent for the same reason - deleted alongside them,
     // still ahead of the less sensitive activities/profile/preferences.
-    // The streak-pausing preference is cleared in the same breath as
-    // cycle data, since `DriftCycleRepository` owns that SharedPreferences
-    // key too (B1/F4: see
-    // `domain/cycle_repository.dart#clearStreakPausingPreference`) - an
-    // absent key both resets streak pausing to its default AND stops a
-    // stale persisted value from permanently blocking F4's grandfathering
-    // re-seed for a later, unrelated install on the same device.
-    await cycleRepository.deleteAllData();
-    await cycleRepository.clearStreakPausingPreference();
     await wellbeingRepository.deleteAllData();
     await recoveryRepository.deleteAllData();
     // Activities (and their GPS samples) are location data - also
@@ -131,11 +119,11 @@ class DeleteMyDataService {
     // Saved routes carry start points that are typically home-adjacent -
     // S2-tier location data, wiped in the same breath as activities.
     await routeRepository.deleteAllData();
-    // Yoga sequences and strength routines/cycles are self-authored
+    // Yoga sequences and strength routines/mesocycles are self-authored
     // training content (S1) rather than a health measurement, but they
-    // are still hers - hard-deleted with the activities they were built
-    // to accompany, soft-deleted rows included, since a hidden row is not
-    // a deleted one.
+    // are still the user's - hard-deleted with the activities they were
+    // built to accompany, soft-deleted rows included, since a hidden row
+    // is not a deleted one.
     await yogaSequenceRepository.deleteAllData();
     await strengthRoutineRepository.deleteAllData();
     // The food diary is S2-tier too (nutrition logs, and targets derived
@@ -154,17 +142,18 @@ class DeleteMyDataService {
     // Step history synced from Health Connect / Apple Health is S2-tier
     // health-platform data, wiped with the rest of that tier. Note the
     // limit of what this can promise: the health platform keeps its own
-    // copy, which only she can delete there - this removes what *this
-    // app* stored, which is all this app is able to remove.
+    // copy, which only the user can delete there - this removes what
+    // *this app* stored, which is all this app is able to remove.
     await stepsRepository.deleteAllData();
     // Earned badges are S1 in themselves, but the *set* of them is a
-    // fingerprint of everything above: which cycles she logged, how
-    // often she checked in. Wiped with the data they were derived from,
+    // fingerprint of everything above: what the user trained, how
+    // often they checked in. Wiped with the data they were derived from,
     // and genuinely - an award is a row, not a soft-delete flag.
     await awardRepository.deleteAllData();
-    // Buddy challenges carry two self-chosen display names (hers and her
-    // buddy's) and one shared percentage - S1 personal data, and a record
-    // of who she trains with besides. Hard-deleted with the rest, no
+    // Buddy challenges carry two self-chosen display names (the user's
+    // and their buddy's) and one shared percentage - S1 personal data, and
+    // a record of who they train with besides. Hard-deleted with the rest,
+    // no
     // soft-delete flag to hide behind.
     await challengeRepository.deleteAllData();
     await profileRepository.deleteAllData();

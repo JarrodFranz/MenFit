@@ -5,20 +5,17 @@ import 'package:menfit_app/core/domain/local_date.dart';
 ///
 /// The grid encodes what is logged as three small glyphs. None of that
 /// survives being read out, so a day carrying anything has to say so in
-/// words — the same problem, and the same shape of answer, as
-/// `features/cycle/presentation/cycle_day_semantics.dart`.
+/// words.
 ///
-/// Two differences from the cycle version, both deliberate:
+/// Two properties of this label are deliberate:
 ///
-/// - It is **not** gated behind the Enhanced Semantics preference. The
-///   cycle label is a long sentence about an estimated phase and its
-///   confidence, read on all 42 cells; this one is at most three short
-///   clauses and only days that actually carry something get one at all
-///   (see [wellbeingDaySemanticLabel] returning `null`), so there is no
-///   verbosity to protect anyone from.
+/// - It is **not** gated behind the Enhanced Semantics preference. It is at
+///   most three short clauses, and only days that actually carry something
+///   get one at all (see [wellbeingDaySemanticLabel] returning `null`), so
+///   there is no verbosity to protect anyone from.
 /// - Everything it states is a **fact the user logged**, never an
 ///   estimate, so nothing here is hedged or carries a confidence — and
-///   nothing interprets what was logged (`knowledge/domain/womens_health.md`).
+///   nothing interprets what was logged.
 ///
 /// Pure and free of Flutter so it can be unit-tested as text, which is the
 /// only form it is ever consumed in.

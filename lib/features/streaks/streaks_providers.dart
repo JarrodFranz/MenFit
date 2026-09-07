@@ -4,7 +4,6 @@ import 'package:menfit_app/core/db/app_database_provider.dart';
 import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/core/utils/combine_latest.dart';
 import 'package:menfit_app/features/activity/activity_providers.dart';
-import 'package:menfit_app/features/cycle/cycle_providers.dart';
 import 'package:menfit_app/features/streaks/data/drift_recovery_repository.dart';
 import 'package:menfit_app/features/streaks/domain/recovery_day_entry.dart';
 import 'package:menfit_app/features/streaks/domain/recovery_repository.dart';
@@ -104,9 +103,8 @@ RecoveryRepository recoveryRepository(Ref ref) {
 
 /// Recomputes a [StreakResult] on every change to activities, recovery
 /// days, protecting flare days (F1: unwindowed — see
-/// `WellbeingRepository.watchProtectingFlareDays`'s dartdoc), cycle
-/// records, the streak-pausing preference, or the local calendar day
-/// rolling over. Watches `activity`'s, `cycle`'s, and `wellbeing`'s
+/// `WellbeingRepository.watchProtectingFlareDays`'s dartdoc), or the local
+/// calendar day rolling over. Watches `activity`'s and `wellbeing`'s
 /// composition surfaces (never their `data/` — ADR 007) plus this
 /// feature's own [recoveryRepositoryProvider].
 ///
@@ -131,31 +129,25 @@ Stream<StreakResult> streakResult(Ref ref) {
   final activityRepository = ref.watch(activityRepositoryProvider);
   final recoveryRepository = ref.watch(recoveryRepositoryProvider);
   final wellbeingRepository = ref.watch(wellbeingRepositoryProvider);
-  final cycleRepository = ref.watch(cycleRepositoryProvider);
   // Dependency-only watch: the emitted LocalDate itself isn't needed here
   // (LocalDate.today() below reads it fresh regardless) - this exists
   // purely so a local-midnight tick rebuilds this provider. See the
   // dartdoc above.
   ref.watch(localDayProvider);
 
-  return combineLatest5(
+  return combineLatest3(
     activityRepository.watchActivities(),
     recoveryRepository.watchRecoveryDays(),
     // F1: unwindowed (see the provider's own dartdoc), unlike the plain
     // `watchRecentFlares` the wellbeing history screen uses - flare-based
     // streak protection must never expire.
     wellbeingRepository.watchProtectingFlareDays(),
-    cycleRepository.watchRecords(),
-    cycleRepository.watchStreakPausingEnabled(),
-    (activities, recoveryDays, flareProtectedDays, records, pausingEnabled) =>
-        assembleStreakResult(
-          activities: activities,
-          recoveryDays: recoveryDays,
-          flareProtectedDays: flareProtectedDays,
-          records: records,
-          pausingEnabled: pausingEnabled,
-          today: LocalDate.today(),
-        ),
+    (activities, recoveryDays, flareProtectedDays) => assembleStreakResult(
+      activities: activities,
+      recoveryDays: recoveryDays,
+      flareProtectedDays: flareProtectedDays,
+      today: LocalDate.today(),
+    ),
   );
 }
 
@@ -174,17 +166,16 @@ Stream<List<RecoveryDayEntry>> recoveryDayEntries(Ref ref) {
 
 /// Every day the streak engine treats as protected recovery, as of today —
 /// `domain/streak_assembly.dart`'s [assembleProtectedDays] over the same
-/// three sources [streakResult] folds into its own `protectedDays`.
+/// two sources [streakResult] folds into its own `protectedDays`.
 ///
 /// Exposed on the composition surface (ADR 007) because "was this day
 /// protected" is a question other features legitimately have to ask:
-/// `achievements` needs it so a period week cannot void a week of its
-/// cycle-aware consistency ladder
+/// `achievements` needs it so a recovery week cannot void a week of its
+/// consistency ladder
 /// (`features/achievements/domain/weekly_walking_rule.dart`). Handing over
 /// the answer rather than the sources is the point — a second feature
-/// re-deriving "protected" from recovery days, flares and the pausing
-/// toggle would be a second definition, and the two would eventually
-/// disagree.
+/// re-deriving "protected" from recovery days and flares would be a second
+/// definition, and the two would eventually disagree.
 ///
 /// Same midnight-rollover handling as [streakResult]: a dependency-only
 /// watch on [localDayProvider] forces a full resubscribe at local midnight,
@@ -193,22 +184,16 @@ Stream<List<RecoveryDayEntry>> recoveryDayEntries(Ref ref) {
 Stream<Set<LocalDate>> protectedDays(Ref ref) {
   final recoveryRepository = ref.watch(recoveryRepositoryProvider);
   final wellbeingRepository = ref.watch(wellbeingRepositoryProvider);
-  final cycleRepository = ref.watch(cycleRepositoryProvider);
   ref.watch(localDayProvider);
 
-  return combineLatest4(
+  return combineLatest2(
     recoveryRepository.watchRecoveryDays(),
     wellbeingRepository.watchProtectingFlareDays(),
-    cycleRepository.watchRecords(),
-    cycleRepository.watchStreakPausingEnabled(),
-    (recoveryDays, flareProtectedDays, records, pausingEnabled) =>
-        assembleProtectedDays(
-          recoveryDays: recoveryDays,
-          flareProtectedDays: flareProtectedDays,
-          records: records,
-          pausingEnabled: pausingEnabled,
-          today: LocalDate.today(),
-        ),
+    (recoveryDays, flareProtectedDays) => assembleProtectedDays(
+      recoveryDays: recoveryDays,
+      flareProtectedDays: flareProtectedDays,
+      today: LocalDate.today(),
+    ),
   );
 }
 
@@ -230,21 +215,15 @@ Stream<Set<LocalDate>> protectedDays(Ref ref) {
 Stream<TodayProtectionSources> todayProtectionSources(Ref ref) {
   final recoveryRepository = ref.watch(recoveryRepositoryProvider);
   final wellbeingRepository = ref.watch(wellbeingRepositoryProvider);
-  final cycleRepository = ref.watch(cycleRepositoryProvider);
   ref.watch(localDayProvider);
 
-  return combineLatest4(
+  return combineLatest2(
     recoveryRepository.watchRecoveryDayEntries(),
     wellbeingRepository.watchProtectingFlareDays(),
-    cycleRepository.watchRecords(),
-    cycleRepository.watchStreakPausingEnabled(),
-    (entries, flareProtectedDays, records, pausingEnabled) =>
-        assembleTodayProtectionSources(
-          recoveryDayEntries: entries,
-          flareProtectedDays: flareProtectedDays,
-          records: records,
-          pausingEnabled: pausingEnabled,
-          today: LocalDate.today(),
-        ),
+    (entries, flareProtectedDays) => assembleTodayProtectionSources(
+      recoveryDayEntries: entries,
+      flareProtectedDays: flareProtectedDays,
+      today: LocalDate.today(),
+    ),
   );
 }

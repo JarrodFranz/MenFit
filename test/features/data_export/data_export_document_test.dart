@@ -8,13 +8,13 @@ import 'package:menfit_app/features/data_export/domain/data_export_document.dart
 DataExportDocument _document({
   int schemaVersion = 24,
   DateTime? exportedAt,
-  bool includesCycleAndWellbeingData = false,
+  bool includesSensitiveHealthData = false,
   Map<String, List<Map<String, Object?>>>? tables,
 }) {
   return DataExportDocument(
     schemaVersion: schemaVersion,
     exportedAt: exportedAt ?? DateTime.utc(2026, 9, 4, 10, 30),
-    includesCycleAndWellbeingData: includesCycleAndWellbeingData,
+    includesSensitiveHealthData: includesSensitiveHealthData,
     tables:
         tables ??
         {
@@ -49,16 +49,16 @@ void main() {
     });
 
     test(
-      'says whether cycle and wellbeing data is in it, both ways round',
+      'says whether health check-in data is in it, both ways round',
       () {
         expect(
-          _document().toJson()['includesCycleAndWellbeingData'],
+          _document().toJson()['includesSensitiveHealthData'],
           isFalse,
         );
         expect(
           _document(
-            includesCycleAndWellbeingData: true,
-          ).toJson()['includesCycleAndWellbeingData'],
+            includesSensitiveHealthData: true,
+          ).toJson()['includesSensitiveHealthData'],
           isTrue,
         );
       },
@@ -184,7 +184,7 @@ void main() {
   group('deserialisation', () {
     test('round-trips through toJson -> fromJson losslessly', () {
       final original = _document(
-        includesCycleAndWellbeingData: true,
+        includesSensitiveHealthData: true,
         tables: {
           'activities': [
             {'id': 'act-1', 'title': 'Morning Run', 'distance_meters': 5000.0},
@@ -196,8 +196,8 @@ void main() {
       expect(decoded.schemaVersion, original.schemaVersion);
       expect(decoded.exportedAt, original.exportedAt);
       expect(
-        decoded.includesCycleAndWellbeingData,
-        original.includesCycleAndWellbeingData,
+        decoded.includesSensitiveHealthData,
+        original.includesSensitiveHealthData,
       );
       expect(decoded.tables.length, 1);
       expect(decoded.tables['activities']!.first['title'], 'Morning Run');

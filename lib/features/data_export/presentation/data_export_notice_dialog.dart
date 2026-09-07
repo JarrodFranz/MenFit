@@ -2,15 +2,16 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:menfit_app/core/theme/tokens.dart';
 
-/// What the user decided in [DataExportNoticeDialog]. Returned only when she
+/// What the user decided in [DataExportNoticeDialog]. Returned only when they
 /// chose to go ahead — declining is `null`, not a choice with a `false` in
 /// it, so a caller cannot accidentally export by forgetting to check a flag.
 class DataExportChoice {
-  const DataExportChoice({required this.includeCycleAndWellbeing});
+  const DataExportChoice({required this.includeSensitiveHealth});
 
-  /// Whether period records, check-ins, flare-ups and recovery days go into
-  /// the file. Default off; only ever true because she ticked the box.
-  final bool includeCycleAndWellbeing;
+  /// Whether check-ins, flare-ups, wellbeing events and recovery days go
+  /// into the file. Default off; only ever true because the user ticked the
+  /// box.
+  final bool includeSensitiveHealth;
 }
 
 /// Shown every time, before an export is built.
@@ -28,16 +29,17 @@ class DataExportChoice {
 /// her — that entries she deleted are still in there until they are purged.
 /// The voice is the app's: plain, unalarming, and not selling her a yes.
 ///
-/// ## Why cycle and wellbeing data is a checkbox, and defaults to off
+/// ## Why health check-in data is a checkbox, and defaults to off
 ///
 /// Everything else in the file is a run, a meal, a weight. The four S3 tables
-/// are period records, daily check-ins, flare-ups and recovery days, and a
-/// file containing those is a different object to hand to a coach, a
-/// clinician, or a cloud drive (`knowledge/engineering/security_and_privacy.md`
-/// — reproductive data is the tier whose strongest protection is not being
-/// somewhere in readable form at all). Off by default because the safe
-/// version of this file is the common case, and because an opt-out she has to
-/// notice is not a decision she made.
+/// are daily check-ins, symptom flare-ups, wellbeing events and recovery
+/// days, and a file containing those is a different object to hand to a
+/// coach, a clinician, or a cloud drive
+/// (`knowledge/engineering/security_and_privacy.md` — health data is the tier
+/// whose strongest protection is not being somewhere in readable form at
+/// all). Off by default because the safe version of this file is the common
+/// case, and because an opt-out the user has to notice is not a decision they
+/// made.
 class DataExportNoticeDialog extends StatefulWidget {
   const DataExportNoticeDialog({super.key});
 
@@ -56,7 +58,7 @@ class DataExportNoticeDialog extends StatefulWidget {
 }
 
 class _DataExportNoticeDialogState extends State<DataExportNoticeDialog> {
-  bool _includeCycleAndWellbeing = false;
+  bool _includeSensitiveHealth = false;
 
   @override
   Widget build(BuildContext context) {
@@ -106,18 +108,17 @@ class _DataExportNoticeDialogState extends State<DataExportNoticeDialog> {
               ),
               SizedBox(height: tokens.spacingMd),
               CheckboxListTile(
-                key: const Key('dataExportIncludeCycleAndWellbeing'),
-                value: _includeCycleAndWellbeing,
+                key: const Key('dataExportIncludeSensitiveHealth'),
+                value: _includeSensitiveHealth,
                 onChanged: (value) => setState(() {
-                  _includeCycleAndWellbeing = value ?? false;
+                  _includeSensitiveHealth = value ?? false;
                 }),
                 contentPadding: EdgeInsets.zero,
                 controlAffinity: ListTileControlAffinity.leading,
-                title: const Text('Include cycle and wellbeing data'),
+                title: const Text('Include health check-in data'),
                 subtitle: Text(
-                  'Period records, daily check-ins, flare-ups and recovery '
-                  'days. Left out unless you ask for them, so the file is '
-                  'safer to share.',
+                  'Daily check-ins, flare-ups and recovery days. Left out '
+                  'unless you ask for them, so the file is safer to share.',
                   style: textTheme.bodySmall,
                 ),
               ),
@@ -135,7 +136,7 @@ class _DataExportNoticeDialogState extends State<DataExportNoticeDialog> {
           key: const Key('dataExportNoticeAccept'),
           onPressed: () => Navigator.of(context).pop(
             DataExportChoice(
-              includeCycleAndWellbeing: _includeCycleAndWellbeing,
+              includeSensitiveHealth: _includeSensitiveHealth,
             ),
           ),
           child: const Text('Choose where to save'),

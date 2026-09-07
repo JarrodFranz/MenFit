@@ -4,15 +4,14 @@
 /// Pure Dart, no Flutter, no clock - the caller passes `today` so the
 /// rollover is testable.
 ///
-/// **Deliberately says nothing about the cycle.** The home dashboard has
-/// never named a cycle phase, and the recovery banner above this card is
-/// explicitly reason-silent
+/// **Deliberately says nothing about why today is protected.** The
+/// recovery banner above this card is explicitly reason-silent
 /// (`features/home/presentation/widgets/streak_card.dart`'s S1-2 ruling:
 /// protection is multi-source, and naming the source on an always-visible
 /// surface both implies a reason on sight and leaks it to anyone glancing
-/// at the screen). Adding a phase label here would undo that ruling on the
+/// at the screen). Naming a source label here would undo that ruling on the
 /// same screen it was made for, so `isRecoveryDay` counts **explicit
-/// recovery days only** - never a period day, never a flare.
+/// recovery days only** - never a flare.
 library;
 
 import 'package:menfit_app/core/domain/local_date.dart';

@@ -11,9 +11,9 @@ import 'package:menfit_app/features/home/presentation/widgets/home_card.dart';
 /// the three facts already has a card or a prompt above it that owns the
 /// action.
 ///
-/// **No cycle phase appears here.** The reasoning is in
+/// **No protection source is named here.** The reasoning is in
 /// `domain/home_today_overview.dart`; in short, the recovery banner on this
-/// same screen is deliberately reason-silent, and naming a phase in the
+/// same screen is deliberately reason-silent, and naming a source in the
 /// card underneath it would undo that ruling.
 class TodayOverviewCard extends ConsumerWidget {
   const TodayOverviewCard({super.key});

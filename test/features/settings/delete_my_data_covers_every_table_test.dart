@@ -75,16 +75,6 @@ void main() {
                 longitude: -0.1,
               ),
             ),
-        database.cycleRecords.actualTableName: () => database
-            .into(database.cycleRecords)
-            .insert(
-              db.CycleRecordsCompanion.insert(
-                id: 'cycle-1',
-                periodStartDay: '2026-01-01',
-                createdAt: now,
-                updatedAt: now,
-              ),
-            ),
         database.dailyCheckins.actualTableName: () => database
             .into(database.dailyCheckins)
             .insert(

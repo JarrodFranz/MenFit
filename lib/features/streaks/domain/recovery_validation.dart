@@ -2,9 +2,9 @@ import 'package:menfit_app/core/domain/local_date.dart';
 
 /// Result of validating a recovery day being marked.
 ///
-/// A typed result value, not an exception at this layer — same convention
-/// as `features/cycle/domain/cycle_validation.dart`'s
-/// `CycleRecordValidation`. `data/drift_recovery_repository.dart` is the
+/// A typed result value, not an exception at this layer — the same
+/// convention the rest of the app's `domain/` validators follow.
+/// `data/drift_recovery_repository.dart` is the
 /// only current caller (there is no dedicated form/controller for marking a
 /// recovery day — it's a one-tap action from the streak card or the
 /// wellbeing check-in flow's recovery prompt), so it wraps a failing

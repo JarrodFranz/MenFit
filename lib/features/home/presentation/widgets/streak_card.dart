@@ -244,19 +244,17 @@ class _ActiveStreakCard extends ConsumerWidget {
 
 /// Protected-recovery-today state: [StreakResult.todayStatus] is
 /// [DayStatus.protectedRecovery], so today doesn't count against the
-/// streak — see `knowledge/domain/womens_health.md`'s "Streak pausing"
-/// section and `knowledge/product/terminology.md` ("paused"/"protected",
-/// never "frozen"/"excused"/"failed").
+/// streak — see `knowledge/product/terminology.md`
+/// ("paused"/"protected", never "frozen"/"excused"/"failed").
 ///
 /// RULING (S1-2, resolving the "shoulder-surfing" product note from
-/// `stage1_audit.md`): always renders with a neutral primary tint, never
-/// [AppTokens.cyclePhaseMenstrual] — protection is now multi-source
-/// (explicit recovery day, flare impact, *or* a logged period day), so a
-/// period-coloured card would incorrectly imply the reason on sight, and
-/// would leak "this is a period day" to anyone glancing at the user's
-/// screen even when the real reason was a flare or a voluntary recovery
-/// day. The card is deliberately source-agnostic — it never says *why*
-/// today is protected, only that it is.
+/// `stage1_audit.md`): always renders with a neutral primary tint, never a
+/// source-specific colour — protection is multi-source (an explicit
+/// recovery day *or* a flare impact), so a source-coloured card would
+/// incorrectly imply the reason on sight, and would leak health data to
+/// anyone glancing at the user's screen. The card is deliberately
+/// source-agnostic — it never says *why* today is protected, only that it
+/// is.
 ///
 /// RULING (S1-3): tappable, unlike every other streak-card state — tapping
 /// opens [TodaySheet], which *does* break down the source(s) by name. This

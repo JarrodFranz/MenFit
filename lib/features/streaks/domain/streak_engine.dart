@@ -114,9 +114,9 @@ _DayState _stateOf(
 ///    [DayStatus.protectedRecovery] is only ever produced when the caller
 ///    actually populated [protectedDays] for today —
 ///    `domain/streak_assembly.dart` assembles that set from every
-///    protection source (explicit recovery days, flare impact, and
-///    opt-in logged period days), so "today is protected" falls out of
-///    this precondition rather than needing a separate flag here.
+///    protection source (explicit recovery days and flare impact), so
+///    "today is protected" falls out of this precondition rather than
+///    needing a separate flag here.
 ///    [StreakResult.todaySatisfied] is true iff [today] is in
 ///    [activeDays].
 /// 6. Retroactivity needs no special handling: this is a pure recompute

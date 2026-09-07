@@ -17,9 +17,11 @@ const List<AdaptiveDestination> _destinations = [
   ),
 ];
 
-/// Six long single-word labels — the shape that wraps mid-word on a
-/// phone-width [NavigationBar] (see `AppAdaptiveScaffold._compactLabelStyle`).
-const List<AdaptiveDestination> _sixLongDestinations = [
+/// Six long single-word labels — a deliberately crowded, synthetic bar
+/// (the shipped shell has five), kept at six because that is the shape that
+/// wraps mid-word on a phone-width [NavigationBar] and so is the only thing
+/// that exercises `AppAdaptiveScaffold._compactLabelStyle`'s shrink path.
+const List<AdaptiveDestination> _crowdedDestinations = [
   AdaptiveDestination(
     icon: Icons.home_outlined,
     selectedIcon: Icons.home,
@@ -36,9 +38,9 @@ const List<AdaptiveDestination> _sixLongDestinations = [
     label: 'Nutrition',
   ),
   AdaptiveDestination(
-    icon: Icons.favorite_outline,
-    selectedIcon: Icons.favorite,
-    label: 'Cycle',
+    icon: Icons.insights_outlined,
+    selectedIcon: Icons.insights,
+    label: 'Progress',
   ),
   AdaptiveDestination(
     icon: Icons.spa_outlined,
@@ -121,17 +123,18 @@ void main() {
   testWidgets('crowded bar shrinks the label style on a small phone', (
     tester,
   ) async {
-    // 320dp is where six destinations genuinely stop fitting at full size -
-    // see the real-font measurements in
-    // `adaptive_scaffold_real_font_test.dart`. At 375dp they fit, and this
-    // scaffold deliberately leaves the style alone there.
+    // 320dp with six destinations is where labels genuinely stop fitting at
+    // full size - see the real-font measurements in
+    // `adaptive_scaffold_real_font_test.dart`. The shipped five-tab bar has
+    // more room than this; the synthetic six-tab fixture is what forces the
+    // shrink path to run at all.
     tester.view
       ..physicalSize = const Size(320, 640)
       ..devicePixelRatio = 1;
 
     await tester.pumpWidget(
       MaterialApp.router(
-        routerConfig: _buildTestRouter(destinations: _sixLongDestinations),
+        routerConfig: _buildTestRouter(destinations: _crowdedDestinations),
       ),
     );
     await tester.pumpAndSettle();

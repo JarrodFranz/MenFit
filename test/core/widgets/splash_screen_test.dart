@@ -24,7 +24,7 @@ void main() {
       // Initial frame
       await tester.pump();
       expect(find.text('MenFit'), findsOneWidget);
-      expect(find.text('Empowering Every Stride & Cycle'), findsOneWidget);
+      expect(find.text('Train Strong. Recover Smarter.'), findsOneWidget);
       expect(isLoaded, isFalse);
 
       // Advance past duration

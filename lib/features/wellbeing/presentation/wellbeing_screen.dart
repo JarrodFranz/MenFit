@@ -325,7 +325,7 @@ class _RangeSummaryCard extends StatelessWidget {
                       icon: Icons.bolt,
                       label: 'Energy',
                       value: '${avgEnergy.toStringAsFixed(1)}/5',
-                      color: tokens.cyclePhaseOvulatory,
+                      color: tokens.success,
                     ),
                   if (avgSleep != null)
                     _MetricChip(
@@ -339,21 +339,21 @@ class _RangeSummaryCard extends StatelessWidget {
                       icon: Icons.fitness_center_outlined,
                       label: 'Soreness',
                       value: '${avgSoreness.toStringAsFixed(1)}/5',
-                      color: tokens.cyclePhaseFollicular,
+                      color: tokens.intensityModerate,
                     ),
                   if (avgPain != null)
                     _MetricChip(
                       icon: Icons.healing_outlined,
                       label: 'Pain',
                       value: '${avgPain.toStringAsFixed(1)}/5',
-                      color: tokens.cyclePhaseMenstrual,
+                      color: tokens.intensityHard,
                     ),
                   if (avgStress != null)
                     _MetricChip(
                       icon: Icons.psychology_outlined,
                       label: 'Stress',
                       value: '${avgStress.toStringAsFixed(1)}/5',
-                      color: tokens.cyclePhaseLuteal,
+                      color: tokens.warning,
                     ),
                 ],
               ),

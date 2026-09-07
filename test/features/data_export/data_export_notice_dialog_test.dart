@@ -36,11 +36,11 @@ void main() {
     };
   }
 
-  testWidgets('the cycle and wellbeing checkbox starts off', (tester) async {
+  testWidgets('the health check-in checkbox starts off', (tester) async {
     await open(tester);
 
     final checkbox = tester.widget<CheckboxListTile>(
-      find.byKey(const Key('dataExportIncludeCycleAndWellbeing')),
+      find.byKey(const Key('dataExportIncludeSensitiveHealth')),
     );
     expect(checkbox.value, isFalse);
   });
@@ -60,14 +60,14 @@ void main() {
     expect(await result(), isNull);
   });
 
-  testWidgets('accepting without ticking excludes cycle data', (tester) async {
+  testWidgets('accepting without ticking excludes health data', (tester) async {
     final result = await open(tester);
 
     await tester.tap(find.byKey(const Key('dataExportNoticeAccept')));
     final choice = await result();
 
     expect(choice, isNotNull);
-    expect(choice!.includeCycleAndWellbeing, isFalse);
+    expect(choice!.includeSensitiveHealth, isFalse);
   });
 
   testWidgets('ticking the box then accepting includes it', (tester) async {
@@ -76,17 +76,17 @@ void main() {
     // The dialog body scrolls; on a 600dp-tall surface the checkbox sits
     // below the fold, and a tap on an off-screen widget is a silent no-op.
     await tester.ensureVisible(
-      find.byKey(const Key('dataExportIncludeCycleAndWellbeing')),
+      find.byKey(const Key('dataExportIncludeSensitiveHealth')),
     );
     await tester.pumpAndSettle();
     await tester.tap(
-      find.byKey(const Key('dataExportIncludeCycleAndWellbeing')),
+      find.byKey(const Key('dataExportIncludeSensitiveHealth')),
     );
     await tester.pump();
     expect(
       tester
           .widget<CheckboxListTile>(
-            find.byKey(const Key('dataExportIncludeCycleAndWellbeing')),
+            find.byKey(const Key('dataExportIncludeSensitiveHealth')),
           )
           .value,
       isTrue,
@@ -95,7 +95,7 @@ void main() {
     await tester.tap(find.byKey(const Key('dataExportNoticeAccept')));
     final choice = await result();
 
-    expect(choice!.includeCycleAndWellbeing, isTrue);
+    expect(choice!.includeSensitiveHealth, isTrue);
   });
 
   testWidgets('the copy makes the four promises it has to', (tester) async {
@@ -114,8 +114,9 @@ void main() {
     expect(body, contains('Nothing is sent'));
     // The surprising part: soft-deleted rows are in there.
     expect(body, contains('deleted'));
-    // The opt-in names what it covers, in her words rather than table names.
-    expect(body, contains('Period records'));
-    expect(body, isNot(contains('cycle_records')));
+    // The opt-in names what it covers, in the user's words rather than
+    // table names.
+    expect(body, contains('Daily check-ins'));
+    expect(body, isNot(contains('daily_checkins')));
   });
 }

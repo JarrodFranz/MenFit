@@ -22,8 +22,6 @@ import 'package:menfit_app/features/activity/domain/yoga_sequence.dart';
 import 'package:menfit_app/features/challenges/data/drift_challenge_repository.dart';
 import 'package:menfit_app/features/challenges/domain/challenge.dart';
 import 'package:menfit_app/features/challenges/domain/challenge_codes.dart';
-import 'package:menfit_app/features/cycle/data/drift_cycle_repository.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_record.dart';
 import 'package:menfit_app/features/nutrition/data/drift_nutrition_goals_repository.dart';
 import 'package:menfit_app/features/nutrition/data/drift_nutrition_repository.dart';
 import 'package:menfit_app/features/nutrition/data/drift_water_repository.dart';
@@ -65,17 +63,9 @@ void main() {
       SharedPreferences.setMockInitialValues({
         'onboarding_complete': true,
         'theme_mode': 'dark',
-        // B1/F4: the streak-pausing toggle must also be cleared (not just
-        // set to `false`) as part of this flow - seeded explicitly on so
-        // the test can tell "cleared" apart from "already happened to be
-        // false".
-        'cycle_pause_streaks': true,
-        // Residue of her data rather than device configuration, and so
-        // wiped: a recap marker stores `cycle:<uuidv7>`, whose id embeds
-        // the moment that cycle record was created - a readable timestamp
-        // of when a period was logged, outliving the S3 row it came from.
-        'recaps_last_shown_cycle_key':
-            'cycle:0192f3c1-4a2b-7c3d-8e4f-5a6b7c8d9e0f',
+        // Residue of the user's data rather than device configuration, and
+        // so wiped: a recap marker records which date ranges the app has
+        // already recapped, outliving the rows it was derived from.
         'recaps_last_shown_month_key': 'month:2026-08',
         // A consent belongs to the person who gave it, not to the handset:
         // a wiped app going back to onboarding shows the notice again.
@@ -103,20 +93,10 @@ void main() {
         ),
       );
 
-      // Seed a cycle record - S3-tier data that "Delete my data" must also
-      // wipe (knowledge/engineering/security_and_privacy.md: "Full export
-      // and deletion must work for this data category first").
-      await DriftCycleRepository(database, prefs).saveRecord(
-        CycleRecord(
-          id: EntityId.generate(),
-          periodStart: LocalDate(2026, 1, 1),
-          periodEnd: LocalDate(2026, 1, 5),
-          createdAt: now,
-          updatedAt: now,
-        ),
-      );
-
-      // Seed a check-in and a flare - also S3-tier, also wiped first.
+      // Seed a check-in and a flare - S3-tier data that "Delete my data"
+      // must wipe first (knowledge/engineering/security_and_privacy.md:
+      // "Full export and deletion must work for this data category
+      // first").
       final wellbeingRepository = DriftWellbeingRepository(database);
       await wellbeingRepository.saveCheckin(
         DailyCheckin(
@@ -399,11 +379,6 @@ void main() {
         reason: 'the dialog body should say what is being deleted',
       );
       expect(
-        find.textContaining('cycle'),
-        findsWidgets,
-        reason: 'the dialog body should mention cycle/period data too',
-      );
-      expect(
         find.textContaining('check-ins'),
         findsWidgets,
         reason:
@@ -461,9 +436,8 @@ void main() {
       expect(rows, isEmpty);
       expect(prefs.getBool('onboarding_complete'), isNot(true));
       expect(prefs.getString('theme_mode'), isNull);
-      // Both recap markers and the online-lookup acknowledgement go with
+      // The recap markers and the online-lookup acknowledgement go with
       // the rows they are residue of.
-      expect(prefs.containsKey('recaps_last_shown_cycle_key'), isFalse);
       expect(prefs.containsKey('recaps_last_shown_month_key'), isFalse);
       expect(
         prefs.containsKey('nutrition_online_lookup_notice_seen'),
@@ -478,14 +452,6 @@ void main() {
       expect(prefs.getBool('accessibility_high_contrast'), isTrue);
       expect(prefs.getString('nutrition_food_search_region'), 'uk');
       expect(prefs.getBool('screen_awake_run'), isFalse);
-      // B1/F4: the streak-pausing key is cleared entirely (absent), not
-      // merely set back to false - see
-      // `CycleRepository.clearStreakPausingPreference`'s dartdoc.
-      expect(prefs.containsKey('cycle_pause_streaks'), isFalse);
-
-      final cycleRows = await database.select(database.cycleRecords).get();
-      expect(cycleRows, isEmpty);
-
       final checkinRows = await database.select(database.dailyCheckins).get();
       expect(checkinRows, isEmpty);
       final flareRows = await database.select(database.flareEvents).get();

@@ -4,7 +4,8 @@ import 'package:menfit_app/features/wellbeing/domain/flare_event.dart';
 /// Result of validating a daily check-in being logged or edited.
 ///
 /// A typed result value, not an exception — same convention as
-/// `features/cycle/domain/cycle_validation.dart`'s `CycleRecordValidation`.
+/// `features/streaks/domain/recovery_validation.dart`'s
+/// `RecoveryDayValidation`.
 class CheckinValidation {
   const CheckinValidation({
     this.dayError,

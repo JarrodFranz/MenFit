@@ -153,7 +153,6 @@ void main() {
       const details = WearableWorkoutDetails(
         wearableSource: 'Garmin Forerunner 265',
         externalId: 'garmin-run-456',
-        cyclePhase: 'Follicular',
         caloriesBurnedKcal: 420,
         avgCadence: 172,
         maxHeartRate: 182,
@@ -161,7 +160,6 @@ void main() {
 
       expect(details.wearableSource, 'Garmin Forerunner 265');
       expect(details.externalId, 'garmin-run-456');
-      expect(details.cyclePhase, 'Follicular');
       expect(details.caloriesBurnedKcal, 420.0);
       expect(details.avgCadence, 172);
       expect(details.maxHeartRate, 182);
@@ -172,7 +170,6 @@ void main() {
       expect(decoded, isNotNull);
       expect(decoded!.wearableSource, 'Garmin Forerunner 265');
       expect(decoded.externalId, 'garmin-run-456');
-      expect(decoded.cyclePhase, 'Follicular');
       expect(decoded.caloriesBurnedKcal, 420.0);
       expect(decoded.avgCadence, 172);
       expect(decoded.maxHeartRate, 182);

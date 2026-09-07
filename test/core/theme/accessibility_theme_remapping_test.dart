@@ -79,10 +79,9 @@ void main() {
 
       expect(tokens.success, const Color(0xFF0D5A34));
       expect(tokens.warning, const Color(0xFF78350F));
-      expect(tokens.cyclePhaseMenstrual, const Color(0xFF881337));
-      expect(tokens.cyclePhaseFollicular, const Color(0xFF9A3412));
-      expect(tokens.cyclePhaseOvulatory, const Color(0xFF115E59));
-      expect(tokens.cyclePhaseLuteal, const Color(0xFF581C87));
+      expect(tokens.intensityEasy, const Color(0xFF0D5A34));
+      expect(tokens.intensityModerate, const Color(0xFF78350F));
+      expect(tokens.intensityHard, const Color(0xFF881337));
     });
 
     test('dark theme high contrast switches to AAA compliant bright tones', () {
@@ -91,10 +90,9 @@ void main() {
 
       expect(tokens.success, const Color(0xFF6EE7B7));
       expect(tokens.warning, const Color(0xFFFDE047));
-      expect(tokens.cyclePhaseMenstrual, const Color(0xFFFDA4AF));
-      expect(tokens.cyclePhaseFollicular, const Color(0xFFFDBA74));
-      expect(tokens.cyclePhaseOvulatory, const Color(0xFF5EEAD4));
-      expect(tokens.cyclePhaseLuteal, const Color(0xFFD8B4FE));
+      expect(tokens.intensityEasy, const Color(0xFF6EE7B7));
+      expect(tokens.intensityModerate, const Color(0xFFFDE047));
+      expect(tokens.intensityHard, const Color(0xFFFDA4AF));
     });
 
     test('monochromacy high contrast uses pure black/white anchors', () {
@@ -106,9 +104,9 @@ void main() {
       final darkTokens = AppTokens.dark(prefs);
 
       expect(lightTokens.success, const Color(0xFF000000));
-      expect(lightTokens.cyclePhaseMenstrual, const Color(0xFF000000));
+      expect(lightTokens.intensityHard, const Color(0xFF000000));
       expect(darkTokens.success, const Color(0xFFFFFFFF));
-      expect(darkTokens.cyclePhaseMenstrual, const Color(0xFFFFFFFF));
+      expect(darkTokens.intensityHard, const Color(0xFFFFFFFF));
     });
   });
 }

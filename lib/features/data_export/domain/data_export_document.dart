@@ -73,7 +73,7 @@ class DataExportDocument {
   const DataExportDocument({
     required this.schemaVersion,
     required this.exportedAt,
-    required this.includesCycleAndWellbeingData,
+    required this.includesSensitiveHealthData,
     required this.tables,
   });
 
@@ -125,8 +125,7 @@ class DataExportDocument {
     return DataExportDocument(
       schemaVersion: schema,
       exportedAt: exportedAt,
-      includesCycleAndWellbeingData:
-          json['includesCycleAndWellbeingData'] == true,
+      includesSensitiveHealthData: json['includesSensitiveHealthData'] == true,
       tables: tables,
     );
   }
@@ -145,14 +144,14 @@ class DataExportDocument {
   /// against each other.
   final DateTime exportedAt;
 
-  /// Whether the S3-tier tables in `cycleAndWellbeingTables` are included.
+  /// Whether the S3-tier tables in `sensitiveHealthTables` are included.
   ///
   /// Stated in the file itself rather than left to be inferred from the
   /// presence of the keys: absent-because-she-said-no and
   /// absent-because-she-logged-none are different facts, and a person
   /// deciding whether a file is safe to hand to someone should not have to
   /// tell them apart by squinting at it.
-  final bool includesCycleAndWellbeingData;
+  final bool includesSensitiveHealthData;
 
   /// SQL table name -> that table's rows, each row a Drift `toJson()` map.
   final Map<String, List<Map<String, Object?>>> tables;
@@ -178,7 +177,7 @@ class DataExportDocument {
     'appVersion': dataExportAppVersion,
     'schemaVersion': schemaVersion,
     'exportedAt': exportedAt.toUtc().toIso8601String(),
-    'includesCycleAndWellbeingData': includesCycleAndWellbeingData,
+    'includesSensitiveHealthData': includesSensitiveHealthData,
     'tables': tables,
   };
 

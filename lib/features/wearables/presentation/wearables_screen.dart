@@ -130,8 +130,7 @@ class WearablesScreen extends ConsumerWidget {
             SizedBox(height: tokens.spacingSm),
             Text(
               'Outdoor runs, rides, and workouts from your Garmin watch are '
-              'automatically ingested into MenFit with your biological '
-              'cycle phase.',
+              'automatically ingested into MenFit.',
               style: textTheme.bodyMedium,
             ),
             SizedBox(height: tokens.spacingMd),
@@ -284,31 +283,6 @@ class WearablesScreen extends ConsumerWidget {
             Row(
               children: [
                 Expanded(
-                  child: OutlinedButton.icon(
-                    icon: const Icon(Icons.favorite_outline, size: 16),
-                    label: const Text('Send Cycle Phase'),
-                    onPressed: () async {
-                      final ok = await ref
-                          .read(wearablesControllerProvider.notifier)
-                          .sendCycleContextToWatch();
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              ok
-                                  ? "Today's cycle phase sent to your watch!"
-                                  : 'Watch companion was not reached. '
-                                        'Open watch app to sync.',
-                            ),
-                            duration: const Duration(seconds: 3),
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                ),
-                SizedBox(width: tokens.spacingSm),
-                Expanded(
                   child: FilledButton.tonalIcon(
                     icon: const Icon(Icons.download_outlined, size: 16),
                     label: const Text('Sync Wrist Workouts'),
@@ -402,25 +376,6 @@ class WearablesScreen extends ConsumerWidget {
                     color: colorScheme.onSurfaceVariant,
                   ),
                 ),
-                trailing: details.cyclePhase != null
-                    ? Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: tokens.spacingSm,
-                          vertical: tokens.spacingXs,
-                        ),
-                        decoration: BoxDecoration(
-                          color: colorScheme.secondaryContainer,
-                          borderRadius: BorderRadius.circular(tokens.radiusSm),
-                        ),
-                        child: Text(
-                          details.cyclePhase!,
-                          style: textTheme.labelSmall?.copyWith(
-                            color: colorScheme.onSecondaryContainer,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      )
-                    : null,
               ),
             );
           }).toList(),

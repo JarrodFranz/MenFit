@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:menfit_app/app/router/routes.dart';
-import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/core/theme/card_shape.dart';
 import 'package:menfit_app/core/widgets/app_bottom_sheet.dart';
 import 'package:menfit_app/features/accessibility/presentation/accessibility_haptics.dart';
@@ -14,8 +13,6 @@ import 'package:menfit_app/features/activity/domain/strength_session_duration.da
 import 'package:menfit_app/features/activity/domain/workout_details.dart';
 import 'package:menfit_app/features/activity/presentation/recording/strength_tracker_controller.dart';
 import 'package:menfit_app/features/activity/presentation/widgets/workout_celebration_dialog.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
-import 'package:menfit_app/features/cycle/presentation/cycle_records_controller.dart';
 
 const List<String> _kStandardExercises = [
   'Barbell Squat',
@@ -154,17 +151,6 @@ class _StrengthTrackerScreenState extends ConsumerState<StrengthTrackerScreen> {
     final exercises = state.exercises;
     final totalVol = state.totalVolumeKg;
     final controller = ref.read(strengthTrackerControllerProvider.notifier);
-    final cycleRecords =
-        ref.read(cycleRecordsControllerProvider).value ?? const [];
-    final today = LocalDate.today();
-    final cyclePhase = cycleRecords.isEmpty
-        ? CyclePhase.none
-        : CyclePredictionEngine()
-              .analyze(
-                records: cycleRecords,
-                today: today,
-              )
-              .currentPhase;
 
     final activity = await controller.finishWorkout(
       elapsedOverride: elapsedOverride,
@@ -175,13 +161,11 @@ class _StrengthTrackerScreenState extends ConsumerState<StrengthTrackerScreen> {
         newActivity: activity,
         exercises: exercises,
         priorMaxWeights: priorMaxWeights,
-        phase: cyclePhase,
       );
       await WorkoutCelebrationDialog.show(
         context,
         activity: activity,
         milestones: milestones,
-        phase: cyclePhase,
         primaryMetricLabel: 'Volume',
         primaryMetricValue: '${totalVol.toStringAsFixed(0)} kg',
         onViewDetails: () {

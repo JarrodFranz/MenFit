@@ -18,7 +18,6 @@ import 'package:menfit_app/features/challenges/presentation/challenge_detail_scr
 import 'package:menfit_app/features/challenges/presentation/challenges_screen.dart';
 import 'package:menfit_app/features/challenges/presentation/create_challenge_screen.dart';
 import 'package:menfit_app/features/challenges/presentation/join_challenge_screen.dart';
-import 'package:menfit_app/features/cycle/presentation/cycle_screen.dart';
 import 'package:menfit_app/features/home/presentation/home_screen.dart';
 import 'package:menfit_app/features/nutrition/domain/meal_type.dart';
 import 'package:menfit_app/features/nutrition/presentation/food_form_screen.dart';
@@ -416,8 +415,8 @@ class ChallengeDetailRouteData extends GoRouteData
   }
 }
 
-/// The single typed route table for the app: a six-tab
-/// [StatefulShellRoute] (Home, Activity, Nutrition, Cycle, Wellbeing,
+/// The single typed route table for the app: a five-tab
+/// [StatefulShellRoute] (Home, Activity, Nutrition, Wellbeing,
 /// Settings), each branch holding exactly one top-level route.
 @TypedStatefulShellRoute<AppShellRouteData>(
   branches: [
@@ -468,9 +467,6 @@ class ChallengeDetailRouteData extends GoRouteData
         ),
       ],
     ),
-    TypedStatefulShellBranch<CycleBranchData>(
-      routes: [TypedGoRoute<CycleRouteData>(path: '/cycle')],
-    ),
     TypedStatefulShellBranch<WellbeingBranchData>(
       routes: [TypedGoRoute<WellbeingRouteData>(path: '/wellbeing')],
     ),
@@ -507,11 +503,6 @@ class AppShellRouteData extends StatefulShellRouteData {
       icon: Icons.restaurant_outlined,
       selectedIcon: Icons.restaurant,
       label: 'Nutrition',
-    ),
-    AdaptiveDestination(
-      icon: Icons.favorite_outline,
-      selectedIcon: Icons.favorite,
-      label: 'Cycle',
     ),
     AdaptiveDestination(
       icon: Icons.spa_outlined,
@@ -742,19 +733,6 @@ LocalDate parseDiaryDay(String? value) {
     return parsed.isAfter(today) ? today : parsed;
   } on FormatException {
     return today;
-  }
-}
-
-class CycleBranchData extends StatefulShellBranchData {
-  const CycleBranchData();
-}
-
-class CycleRouteData extends GoRouteData with $CycleRouteData {
-  const CycleRouteData();
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return const CycleScreen();
   }
 }
 

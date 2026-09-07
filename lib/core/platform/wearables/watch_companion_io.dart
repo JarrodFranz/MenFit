@@ -84,22 +84,6 @@ class IoWatchCompanionAdapter implements WatchCompanionAdapter {
   }
 
   @override
-  Future<bool> sendCycleContext(WatchCycleContext context) async {
-    if (!Platform.isAndroid && !Platform.isIOS) return false;
-    try {
-      final success = await _channel.invokeMethod<bool>(
-        'sendCycleContext',
-        context.toJson(),
-      );
-      return success ?? false;
-    } on MissingPluginException {
-      return false;
-    } on Object catch (_) {
-      return false;
-    }
-  }
-
-  @override
   Stream<WatchMessage> get messageStream => _messageController.stream;
 
   @override

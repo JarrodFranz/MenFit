@@ -1,13 +1,11 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:menfit_app/core/domain/local_date.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_record.dart';
-import 'package:menfit_app/features/cycle/domain/period_days.dart';
 import 'package:menfit_app/features/streaks/domain/recovery_day_entry.dart';
 
 part 'today_protection_sources.freezed.dart';
 
 /// Which of today's independent protection sources
-/// (`domain/streak_assembly.dart`'s three-source union) are currently
+/// (`domain/streak_assembly.dart`'s two-source union) are currently
 /// active — the per-source breakdown `StreakResult.todayStatus`
 /// deliberately doesn't expose (`home/presentation/widgets/streak_card.dart`
 /// 's `_ProtectedStreakCard` dartdoc: the card stays source-agnostic on
@@ -23,7 +21,6 @@ abstract class TodayProtectionSources with _$TodayProtectionSources {
   const factory TodayProtectionSources({
     required bool hasExplicitRecoveryDay,
     required bool hasProtectingFlare,
-    required bool isPeriodProtected,
 
     /// The note attached when marking today via `hasExplicitRecoveryDay`,
     /// if any. Always `null` when `hasExplicitRecoveryDay` is `false`.
@@ -38,8 +35,7 @@ abstract class TodayProtectionSources with _$TodayProtectionSources {
   /// same one `domain/streak_assembly.dart#assembleStreakResult` folds into
   /// its `protectedDays` set), so a sheet built from this stays consistent
   /// with the streak card without needing to also watch `StreakResult`.
-  bool get hasAnySource =>
-      hasExplicitRecoveryDay || hasProtectingFlare || isPeriodProtected;
+  bool get hasAnySource => hasExplicitRecoveryDay || hasProtectingFlare;
 }
 
 /// Assembles [TodayProtectionSources] for [today] from the same per-source
@@ -53,8 +49,6 @@ abstract class TodayProtectionSources with _$TodayProtectionSources {
 TodayProtectionSources assembleTodayProtectionSources({
   required List<RecoveryDayEntry> recoveryDayEntries,
   required Set<LocalDate> flareProtectedDays,
-  required List<CycleRecord> records,
-  required bool pausingEnabled,
   required LocalDate today,
 }) {
   RecoveryDayEntry? todayEntry;
@@ -69,6 +63,5 @@ TodayProtectionSources assembleTodayProtectionSources({
     hasExplicitRecoveryDay: todayEntry != null,
     recoveryNote: todayEntry?.note,
     hasProtectingFlare: flareProtectedDays.contains(today),
-    isPeriodProtected: pausingEnabled && isPeriodDay(today, records, today),
   );
 }

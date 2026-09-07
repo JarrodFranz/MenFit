@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:menfit_app/app/router/routes.dart';
-import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/core/errors/error_messages.dart';
 import 'package:menfit_app/features/accessibility/presentation/accessibility_controller.dart';
 import 'package:menfit_app/features/accessibility/presentation/accessibility_haptics.dart';
@@ -17,8 +16,6 @@ import 'package:menfit_app/features/activity/presentation/recording/yoga_runner/
 import 'package:menfit_app/features/activity/presentation/recording/yoga_runner/yoga_runner_prestart_view.dart';
 import 'package:menfit_app/features/activity/presentation/recording/yoga_sequence_runner_controller.dart';
 import 'package:menfit_app/features/activity/presentation/widgets/workout_celebration_dialog.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
-import 'package:menfit_app/features/cycle/presentation/cycle_records_controller.dart';
 
 /// Runs one saved yoga sequence, pose by pose, with a cue at every
 /// boundary (ADR 014).
@@ -167,13 +164,6 @@ class _YogaSequenceRunnerScreenState
   Future<void> _save() async {
     final state = ref.read(yogaSequenceRunnerControllerProvider);
     final poseCount = state.poseCount;
-    final cycleRecords =
-        ref.read(cycleRecordsControllerProvider).value ?? const [];
-    final cyclePhase = cycleRecords.isEmpty
-        ? CyclePhase.none
-        : CyclePredictionEngine()
-              .analyze(records: cycleRecords, today: LocalDate.today())
-              .currentPhase;
 
     final Activity? activity;
     try {
@@ -203,13 +193,11 @@ class _YogaSequenceRunnerScreenState
     final milestones = const MilestoneEvaluator().evaluateGenericMilestones(
       newActivity: saved,
       customSubtitle: '$poseCount poses practised 🧘‍♀️',
-      phase: cyclePhase,
     );
     await WorkoutCelebrationDialog.show(
       context,
       activity: saved,
       milestones: milestones,
-      phase: cyclePhase,
       primaryMetricLabel: 'Poses',
       primaryMetricValue: '$poseCount',
       onViewDetails: () => ActivityDetailRouteData(saved.id).go(context),

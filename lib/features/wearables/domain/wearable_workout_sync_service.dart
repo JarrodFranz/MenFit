@@ -1,5 +1,4 @@
 import 'package:menfit_app/core/domain/entity_id.dart';
-import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/core/platform/health/health_platform_adapter.dart';
 import 'package:menfit_app/core/platform/health/health_workout_session.dart';
 import 'package:menfit_app/core/platform/wearables/watch_companion_adapter.dart';
@@ -8,9 +7,6 @@ import 'package:menfit_app/features/activity/domain/activity.dart';
 import 'package:menfit_app/features/activity/domain/activity_repository.dart';
 import 'package:menfit_app/features/activity/domain/activity_sample.dart';
 import 'package:menfit_app/features/activity/domain/workout_details.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_record.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_repository.dart';
 
 /// The result of a wearable synchronization run.
 class WearableSyncResult {
@@ -38,33 +34,26 @@ class WearableSyncResult {
 }
 
 /// Service orchestrating the auto-sync and ingestion of workouts from external
-/// wearables (Garmin Connect, Apple Watch, WearOS) with menstrual
-/// cycle-phase tagging.
+/// wearables (Garmin Connect, Apple Watch, WearOS).
 class WearableWorkoutSyncService {
   WearableWorkoutSyncService({
     required this.healthAdapter,
     required this.watchAdapter,
     required this.activityRepository,
-    required this.cycleRepository,
-    CyclePredictionEngine? predictionEngine,
-  }) : predictionEngine = predictionEngine ?? CyclePredictionEngine();
+  });
 
   final HealthPlatformAdapter healthAdapter;
   final WatchCompanionAdapter watchAdapter;
   final ActivityRepository activityRepository;
-  final CycleRepository cycleRepository;
-  final CyclePredictionEngine predictionEngine;
 
   /// Syncs completed workouts from Health Connect / Apple Health and connected
-  /// watch companions, tagging each with the hormonal cycle phase.
+  /// watch companions.
   Future<WearableSyncResult> syncAll({DateTime? since}) async {
     try {
       final now = DateTime.now().toUtc();
       final startTime = since ?? now.subtract(const Duration(days: 30));
 
       final existingActivities = await activityRepository.getActivities();
-      final cycleRecords = await cycleRepository.getRecords();
-      final today = LocalDate.today();
 
       // Collect external IDs and timestamps of already imported activities
       final knownExternalIds = <String>{};
@@ -95,16 +84,7 @@ class WearableWorkoutSyncService {
           continue;
         }
 
-        final cyclePhase = _resolveCyclePhase(
-          session.startedAt,
-          cycleRecords,
-          today,
-        );
-        final activity = _createActivityFromHealthSession(
-          session,
-          cyclePhase,
-          now,
-        );
+        final activity = _createActivityFromHealthSession(session, now);
 
         await activityRepository.saveActivity(activity);
         knownExternalIds.add(session.externalId);
@@ -124,14 +104,8 @@ class WearableWorkoutSyncService {
           continue;
         }
 
-        final cyclePhase = _resolveCyclePhase(
-          wristWorkout.startedAt,
-          cycleRecords,
-          today,
-        );
         final (activity, samples) = _createActivityFromWristWorkout(
           wristWorkout,
-          cyclePhase,
           now,
         );
 
@@ -201,27 +175,8 @@ class WearableWorkoutSyncService {
     return false;
   }
 
-  String? _resolveCyclePhase(
-    DateTime startedAt,
-    List<CycleRecord> cycleRecords,
-    LocalDate today,
-  ) {
-    try {
-      final date = LocalDate.fromDateTime(startedAt);
-      final status = predictionEngine.getDayStatus(
-        date: date,
-        records: cycleRecords,
-        today: today,
-      );
-      return status.phase != CyclePhase.none ? status.phase.label : null;
-    } on Object catch (_) {
-      return null;
-    }
-  }
-
   Activity _createActivityFromHealthSession(
     HealthWorkoutSession session,
-    String? cyclePhase,
     DateTime now,
   ) {
     final activityId = EntityId.generate();
@@ -234,7 +189,6 @@ class WearableWorkoutSyncService {
     final details = WearableWorkoutDetails(
       wearableSource: sourceLabel,
       externalId: session.externalId,
-      cyclePhase: cyclePhase,
       caloriesBurnedKcal: session.totalEnergyKcal,
     );
 
@@ -256,14 +210,12 @@ class WearableWorkoutSyncService {
 
   (Activity, List<ActivitySample>) _createActivityFromWristWorkout(
     WatchWristWorkout workout,
-    String? cyclePhase,
     DateTime now,
   ) {
     final activityId = EntityId.generate();
     final details = WearableWorkoutDetails(
       wearableSource: workout.source,
       externalId: workout.externalId,
-      cyclePhase: cyclePhase,
       caloriesBurnedKcal: workout.caloriesBurnedKcal,
       avgCadence: workout.avgCadence,
     );

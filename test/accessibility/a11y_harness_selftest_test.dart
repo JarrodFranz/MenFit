@@ -199,7 +199,7 @@ void main() {
       isNotEmpty,
       reason:
           'The mid-word wrap check missed a planted wrap. This is the check '
-          'that catches the six-tab NavigationBar label problem.',
+          'that catches the multi-tab NavigationBar label problem.',
     );
   });
 

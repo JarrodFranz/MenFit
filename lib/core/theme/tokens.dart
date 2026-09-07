@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:menfit_app/features/accessibility/domain/accessibility_preferences.dart';
 
 /// Design-system spacing and radius scale, plus semantic colors that don't
-/// map onto Material's [ColorScheme] roles (cycle phases, workout
-/// intensity, success/warning). Access via `Theme.of(context).extension<AppTokens>()!`.
+/// map onto Material's [ColorScheme] roles (workout intensity,
+/// success/warning). Access via `Theme.of(context).extension<AppTokens>()!`.
 @immutable
 class AppTokens extends ThemeExtension<AppTokens> {
   const AppTokens({
@@ -18,10 +18,6 @@ class AppTokens extends ThemeExtension<AppTokens> {
     required this.contentMaxWidth,
     required this.success,
     required this.warning,
-    required this.cyclePhaseMenstrual,
-    required this.cyclePhaseFollicular,
-    required this.cyclePhaseOvulatory,
-    required this.cyclePhaseLuteal,
     required this.intensityEasy,
     required this.intensityModerate,
     required this.intensityHard,
@@ -48,10 +44,6 @@ class AppTokens extends ThemeExtension<AppTokens> {
     final (
       success,
       warning,
-      menstrual,
-      follicular,
-      ovulatory,
-      luteal,
       intensityEasy,
       intensityModerate,
       intensityHard,
@@ -66,18 +58,6 @@ class AppTokens extends ThemeExtension<AppTokens> {
                 isDark
                     ? const Color(0xFFFFF066)
                     : const Color(0xFF7A3E00), // Amber
-                isDark
-                    ? const Color(0xFFFFA07A)
-                    : const Color(0xFF8F3000), // Vermilion
-                isDark
-                    ? const Color(0xFF70C9FF)
-                    : const Color(0xFF004D7A), // Sky Blue
-                isDark
-                    ? const Color(0xFF5CE6BA)
-                    : const Color(0xFF005C42), // Bluish Green
-                isDark
-                    ? const Color(0xFFFFA8DC)
-                    : const Color(0xFF6B2D54), // Reddish Purple
                 isDark ? const Color(0xFF70C9FF) : const Color(0xFF004D7A),
                 isDark ? const Color(0xFFFFF066) : const Color(0xFF7A3E00),
                 isDark ? const Color(0xFFFFA07A) : const Color(0xFF8F3000),
@@ -86,14 +66,6 @@ class AppTokens extends ThemeExtension<AppTokens> {
                 // Okabe-Ito accessible palette (avoids red/green confusion)
                 isDark ? const Color(0xFF56B4E9) : const Color(0xFF0072B2),
                 isDark ? const Color(0xFFF0E442) : const Color(0xFFE69F00),
-                isDark ? const Color(0xFFFF7F50) : const Color(0xFFD55E00),
-                isDark ? const Color(0xFF56B4E9) : const Color(0xFF0072B2),
-                isDark
-                    ? const Color(0xFF48CAE4)
-                    : const Color(0xFF009E73), // Bluish Green
-                isDark
-                    ? const Color(0xFFDDA0DD)
-                    : const Color(0xFFCC79A7), // Reddish Purple
                 isDark ? const Color(0xFF56B4E9) : const Color(0xFF0072B2),
                 isDark ? const Color(0xFFF0E442) : const Color(0xFFE69F00),
                 isDark ? const Color(0xFFFF7F50) : const Color(0xFFD55E00),
@@ -108,18 +80,6 @@ class AppTokens extends ThemeExtension<AppTokens> {
                 isDark
                     ? const Color(0xFFFFA085)
                     : const Color(0xFF8F1D1D), // Coral
-                isDark
-                    ? const Color(0xFFFF6B82)
-                    : const Color(0xFF880018), // Crimson
-                isDark
-                    ? const Color(0xFF5EEAD4)
-                    : const Color(0xFF00574D), // Teal
-                isDark
-                    ? const Color(0xFF38BDF8)
-                    : const Color(0xFF004E5C), // Dark Cyan
-                isDark
-                    ? const Color(0xFFF472B6)
-                    : const Color(0xFF660058), // Magenta
                 isDark ? const Color(0xFF5EEAD4) : const Color(0xFF00574D),
                 isDark ? const Color(0xFFFFA085) : const Color(0xFF8F1D1D),
                 isDark ? const Color(0xFFFF6B82) : const Color(0xFF880018),
@@ -129,10 +89,6 @@ class AppTokens extends ThemeExtension<AppTokens> {
                     ? const Color(0xFF52B788)
                     : const Color(0xFF009E73), // Mint Green
                 isDark ? const Color(0xFFFFA07A) : const Color(0xFFFF6B6B),
-                isDark ? const Color(0xFFEF233C) : const Color(0xFFD90429),
-                isDark ? const Color(0xFF02C39A) : const Color(0xFF00A896),
-                isDark ? const Color(0xFF00A8E8) : const Color(0xFF028090),
-                isDark ? const Color(0xFFC77DFF) : const Color(0xFFB5179E),
                 isDark ? const Color(0xFF02C39A) : const Color(0xFF00A896),
                 isDark ? const Color(0xFFFFA07A) : const Color(0xFFFF6B6B),
                 isDark ? const Color(0xFFEF233C) : const Color(0xFFD90429),
@@ -143,10 +99,6 @@ class AppTokens extends ThemeExtension<AppTokens> {
                 // Maximum-contrast grayscale (pure black/white anchors)
                 isDark ? const Color(0xFFFFFFFF) : const Color(0xFF000000),
                 isDark ? const Color(0xFFEEEEEE) : const Color(0xFF222222),
-                isDark ? const Color(0xFFFFFFFF) : const Color(0xFF000000),
-                isDark ? const Color(0xFFDDDDDD) : const Color(0xFF333333),
-                isDark ? const Color(0xFFCCCCCC) : const Color(0xFF444444),
-                isDark ? const Color(0xFFFFFFFF) : const Color(0xFF111111),
                 isDark ? const Color(0xFFCCCCCC) : const Color(0xFF444444),
                 isDark ? const Color(0xFFEEEEEE) : const Color(0xFF222222),
                 isDark ? const Color(0xFFFFFFFF) : const Color(0xFF000000),
@@ -154,10 +106,6 @@ class AppTokens extends ThemeExtension<AppTokens> {
             : (
                 isDark ? const Color(0xFFFFFFFF) : const Color(0xFF111111),
                 isDark ? const Color(0xFFDDDDDD) : const Color(0xFF444444),
-                isDark ? const Color(0xFFFFFFFF) : const Color(0xFF111111),
-                isDark ? const Color(0xFFCCCCCC) : const Color(0xFF444444),
-                isDark ? const Color(0xFFAAAAAA) : const Color(0xFF666666),
-                isDark ? const Color(0xFF888888) : const Color(0xFF888888),
                 isDark ? const Color(0xFFAAAAAA) : const Color(0xFF777777),
                 isDark ? const Color(0xFFCCCCCC) : const Color(0xFF444444),
                 isDark ? const Color(0xFFFFFFFF) : const Color(0xFF111111),
@@ -169,10 +117,6 @@ class AppTokens extends ThemeExtension<AppTokens> {
                       // High-contrast luminous dark-mode tokens (WCAG AAA)
                       const Color(0xFF6EE7B7), // Bright mint
                       const Color(0xFFFDE047), // Bright yellow
-                      const Color(0xFFFDA4AF), // Bright rose
-                      const Color(0xFFFDBA74), // Bright orange
-                      const Color(0xFF5EEAD4), // Bright teal
-                      const Color(0xFFD8B4FE), // Bright lavender
                       const Color(0xFF6EE7B7),
                       const Color(0xFFFDE047),
                       const Color(0xFFFDA4AF),
@@ -181,10 +125,6 @@ class AppTokens extends ThemeExtension<AppTokens> {
                       // High-contrast deep light-mode tokens (WCAG AAA)
                       const Color(0xFF0D5A34), // Deep forest green
                       const Color(0xFF78350F), // Deep warm amber
-                      const Color(0xFF881337), // Deep crimson
-                      const Color(0xFF9A3412), // Deep rust orange
-                      const Color(0xFF115E59), // Deep teal
-                      const Color(0xFF581C87), // Deep plum purple
                       const Color(0xFF0D5A34),
                       const Color(0xFF78350F),
                       const Color(0xFF881337),
@@ -193,10 +133,6 @@ class AppTokens extends ThemeExtension<AppTokens> {
                   ? (
                       const Color(0xFF6FBF97),
                       const Color(0xFFE0B25E),
-                      const Color(0xFFE68A9C),
-                      const Color(0xFFE8B067),
-                      const Color(0xFF7FC6B6),
-                      const Color(0xFFA79BD1),
                       const Color(0xFF7FC69A),
                       const Color(0xFFE8B067),
                       const Color(0xFFE68A9C),
@@ -204,10 +140,6 @@ class AppTokens extends ThemeExtension<AppTokens> {
                   : (
                       const Color(0xFF1B8755),
                       const Color(0xFFD97706),
-                      const Color(0xFFD64D6E),
-                      const Color(0xFFD97706),
-                      const Color(0xFF0D9488),
-                      const Color(0xFF8F4C86),
                       const Color(0xFF1B8755),
                       const Color(0xFFD97706),
                       const Color(0xFFD64D6E),
@@ -226,10 +158,6 @@ class AppTokens extends ThemeExtension<AppTokens> {
       contentMaxWidth: 560,
       success: success,
       warning: warning,
-      cyclePhaseMenstrual: menstrual,
-      cyclePhaseFollicular: follicular,
-      cyclePhaseOvulatory: ovulatory,
-      cyclePhaseLuteal: luteal,
       intensityEasy: intensityEasy,
       intensityModerate: intensityModerate,
       intensityHard: intensityHard,
@@ -257,12 +185,6 @@ class AppTokens extends ThemeExtension<AppTokens> {
   final Color success;
   final Color warning;
 
-  // Menstrual cycle phase colors.
-  final Color cyclePhaseMenstrual;
-  final Color cyclePhaseFollicular;
-  final Color cyclePhaseOvulatory;
-  final Color cyclePhaseLuteal;
-
   // Workout intensity colors.
   final Color intensityEasy;
   final Color intensityModerate;
@@ -281,10 +203,6 @@ class AppTokens extends ThemeExtension<AppTokens> {
     double? contentMaxWidth,
     Color? success,
     Color? warning,
-    Color? cyclePhaseMenstrual,
-    Color? cyclePhaseFollicular,
-    Color? cyclePhaseOvulatory,
-    Color? cyclePhaseLuteal,
     Color? intensityEasy,
     Color? intensityModerate,
     Color? intensityHard,
@@ -301,10 +219,6 @@ class AppTokens extends ThemeExtension<AppTokens> {
       contentMaxWidth: contentMaxWidth ?? this.contentMaxWidth,
       success: success ?? this.success,
       warning: warning ?? this.warning,
-      cyclePhaseMenstrual: cyclePhaseMenstrual ?? this.cyclePhaseMenstrual,
-      cyclePhaseFollicular: cyclePhaseFollicular ?? this.cyclePhaseFollicular,
-      cyclePhaseOvulatory: cyclePhaseOvulatory ?? this.cyclePhaseOvulatory,
-      cyclePhaseLuteal: cyclePhaseLuteal ?? this.cyclePhaseLuteal,
       intensityEasy: intensityEasy ?? this.intensityEasy,
       intensityModerate: intensityModerate ?? this.intensityModerate,
       intensityHard: intensityHard ?? this.intensityHard,
@@ -332,18 +246,6 @@ class AppTokens extends ThemeExtension<AppTokens> {
       ),
       success: Color.lerp(success, other.success, t) ?? success,
       warning: Color.lerp(warning, other.warning, t) ?? warning,
-      cyclePhaseMenstrual:
-          Color.lerp(cyclePhaseMenstrual, other.cyclePhaseMenstrual, t) ??
-          cyclePhaseMenstrual,
-      cyclePhaseFollicular:
-          Color.lerp(cyclePhaseFollicular, other.cyclePhaseFollicular, t) ??
-          cyclePhaseFollicular,
-      cyclePhaseOvulatory:
-          Color.lerp(cyclePhaseOvulatory, other.cyclePhaseOvulatory, t) ??
-          cyclePhaseOvulatory,
-      cyclePhaseLuteal:
-          Color.lerp(cyclePhaseLuteal, other.cyclePhaseLuteal, t) ??
-          cyclePhaseLuteal,
       intensityEasy:
           Color.lerp(intensityEasy, other.intensityEasy, t) ?? intensityEasy,
       intensityModerate:

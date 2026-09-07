@@ -7,7 +7,7 @@ import 'package:menfit_app/features/wellbeing/domain/wellbeing_event.dart';
 ///
 /// S3-tier data (`knowledge/engineering/security_and_privacy.md`): never
 /// logged, never denormalised into other tables — same handling as
-/// `features/cycle/domain/cycle_repository.dart`.
+/// `features/streaks/domain/recovery_repository.dart`.
 abstract interface class WellbeingRepository {
   /// Emits the check-in logged for [day], or `null` if none exists, on
   /// every change.
@@ -59,7 +59,7 @@ abstract interface class WellbeingRepository {
 
   /// Permanently (hard-)deletes the check-in with [id] — not a soft
   /// delete, same S3 reasoning as
-  /// `features/cycle/domain/cycle_repository.dart#deleteRecord`.
+  /// `features/streaks/domain/recovery_repository.dart#unmarkRecoveryDay`.
   Future<void> deleteCheckin(String id);
 
   /// Emits every flare **overlapping** the [days]-day window ending at

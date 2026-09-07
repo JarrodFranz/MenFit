@@ -3,15 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:menfit_app/app/router/routes.dart';
-import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/features/accessibility/presentation/accessibility_haptics.dart';
 import 'package:menfit_app/features/activity/domain/milestone_evaluator.dart';
 import 'package:menfit_app/features/activity/domain/pace_format.dart';
 import 'package:menfit_app/features/activity/domain/session_duration.dart';
 import 'package:menfit_app/features/activity/presentation/recording/swim_tracker_controller.dart';
 import 'package:menfit_app/features/activity/presentation/widgets/workout_celebration_dialog.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
-import 'package:menfit_app/features/cycle/presentation/cycle_records_controller.dart';
 
 /// Interactive swimming workout tracker with large lap tally controls and
 /// pool math.
@@ -122,17 +119,6 @@ class _SwimTrackerScreenState extends ConsumerState<SwimTrackerScreen> {
     final laps = state.laps;
     final dist = state.totalDistanceMeters;
     final controller = ref.read(swimTrackerControllerProvider.notifier);
-    final cycleRecords =
-        ref.read(cycleRecordsControllerProvider).value ?? const [];
-    final today = LocalDate.today();
-    final cyclePhase = cycleRecords.isEmpty
-        ? CyclePhase.none
-        : CyclePredictionEngine()
-              .analyze(
-                records: cycleRecords,
-                today: today,
-              )
-              .currentPhase;
 
     final activity = await controller.finishWorkout(
       elapsedOverride: elapsedOverride,
@@ -143,13 +129,11 @@ class _SwimTrackerScreenState extends ConsumerState<SwimTrackerScreen> {
         newActivity: activity,
         customSubtitle:
             '$laps laps completed (${dist.toStringAsFixed(0)} m) 🏊‍♀️',
-        phase: cyclePhase,
       );
       await WorkoutCelebrationDialog.show(
         context,
         activity: activity,
         milestones: milestones,
-        phase: cyclePhase,
         primaryMetricLabel: 'Laps',
         primaryMetricValue: '$laps laps',
         onViewDetails: () {

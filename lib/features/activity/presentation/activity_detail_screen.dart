@@ -309,15 +309,6 @@ class _WorkoutDetailsSection extends StatelessWidget {
                 value: details.wearableSource,
               ),
             ),
-            if (details.cyclePhase != null) ...[
-              SizedBox(width: tokens.spacingSm),
-              Expanded(
-                child: _DetailStatCard(
-                  label: 'CYCLE PHASE',
-                  value: details.cyclePhase!,
-                ),
-              ),
-            ],
             if (details.avgCadence != null) ...[
               SizedBox(width: tokens.spacingSm),
               Expanded(

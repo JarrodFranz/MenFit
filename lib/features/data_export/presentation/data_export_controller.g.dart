@@ -84,7 +84,7 @@ final class DataExportControllerProvider
 }
 
 String _$dataExportControllerHash() =>
-    r'237686d8e572b6759180089c16240aa4c87ba070';
+    r'39cb1839003608e3f456d780390662d5ee0ff359';
 
 /// Wires [DataExportService] (which produces bytes and never touches a file
 /// picker) to the platform save dialog.

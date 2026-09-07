@@ -1,33 +1,18 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:menfit_app/core/domain/local_date.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_record.dart';
 import 'package:menfit_app/features/streaks/domain/recovery_day_entry.dart';
 import 'package:menfit_app/features/streaks/domain/today_protection_sources.dart';
 
 void main() {
   final today = LocalDate(2026, 8, 26);
 
-  CycleRecord record({required LocalDate start, LocalDate? end}) {
-    return CycleRecord(
-      id: 'r1',
-      periodStart: start,
-      periodEnd: end,
-      createdAt: DateTime.utc(2026),
-      updatedAt: DateTime.utc(2026),
-    );
-  }
-
   TodayProtectionSources assemble({
     List<RecoveryDayEntry> recoveryDayEntries = const [],
     Set<LocalDate> flareProtectedDays = const {},
-    List<CycleRecord> records = const [],
-    bool pausingEnabled = false,
   }) {
     return assembleTodayProtectionSources(
       recoveryDayEntries: recoveryDayEntries,
       flareProtectedDays: flareProtectedDays,
-      records: records,
-      pausingEnabled: pausingEnabled,
       today: today,
     );
   }
@@ -38,7 +23,6 @@ void main() {
     expect(result.hasExplicitRecoveryDay, isFalse);
     expect(result.recoveryNote, isNull);
     expect(result.hasProtectingFlare, isFalse);
-    expect(result.isPeriodProtected, isFalse);
   });
 
   test(
@@ -85,35 +69,26 @@ void main() {
   });
 
   test(
-    'a logged period covering today only counts when pausing is enabled',
+    'a protecting flare on a DIFFERENT day does not protect today',
     () {
-      final withoutPausing = assemble(records: [record(start: today)]);
-      expect(withoutPausing.isPeriodProtected, isFalse);
-      expect(withoutPausing.hasAnySource, isFalse);
-
-      final withPausing = assemble(
-        records: [record(start: today)],
-        pausingEnabled: true,
-      );
-      expect(withPausing.isPeriodProtected, isTrue);
-      expect(withPausing.hasAnySource, isTrue);
+      final result = assemble(flareProtectedDays: {today.addDays(-1)});
+      expect(result.hasProtectingFlare, isFalse);
+      expect(result.hasAnySource, isFalse);
     },
   );
 
   test(
-    'all three sources active at once are all reported independently - '
-    'this is exactly the multi-source case the Today sheet lists',
+    'both sources active at once are reported independently - this is '
+    'exactly the multi-source case the Today sheet lists',
     () {
       final result = assemble(
         recoveryDayEntries: [RecoveryDayEntry(day: today, note: 'Note')],
         flareProtectedDays: {today},
-        records: [record(start: today)],
-        pausingEnabled: true,
       );
       expect(result.hasExplicitRecoveryDay, isTrue);
       expect(result.recoveryNote, 'Note');
       expect(result.hasProtectingFlare, isTrue);
-      expect(result.isPeriodProtected, isTrue);
+      expect(result.hasAnySource, isTrue);
     },
   );
 }

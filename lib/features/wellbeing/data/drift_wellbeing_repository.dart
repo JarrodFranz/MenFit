@@ -16,7 +16,7 @@ import 'package:menfit_app/features/wellbeing/domain/wellbeing_repository.dart';
 /// `DailyCheckin`/`FlareEvent`, so this file imports `app_database.dart`
 /// with the `db` prefix throughout to keep them distinct from the freezed
 /// domain entities of the same name (same convention as
-/// `features/cycle/data/drift_cycle_repository.dart`).
+/// `features/streaks/data/drift_recovery_repository.dart`).
 ///
 /// The provider for this repository lives in `../wellbeing_providers.dart`
 /// (ADR 007), not here.
@@ -200,7 +200,7 @@ class DriftWellbeingRepository implements WellbeingRepository {
   @override
   Future<void> deleteCheckin(String id) async {
     // Hard delete, not soft — same S3 reasoning as
-    // `DriftCycleRepository.deleteRecord`.
+    // `DriftRecoveryRepository.unmarkRecoveryDay`.
     try {
       await _db.transaction(() async {
         await (_db.delete(

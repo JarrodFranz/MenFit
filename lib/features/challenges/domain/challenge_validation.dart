@@ -32,7 +32,7 @@ const int minSessionTargetUnits = 1;
 const int maxSessionTargetUnits = 500;
 
 // Copy note: no message here interpolates a date, a body metric, or
-// anything cycle-derived (same S3 habit as
+// anything health-derived (same S3 habit as
 // `core/domain/local_date.dart#parse`). The numbers below are fixed
 // constants, not user data.
 const String _windowEndBeforeStartMessage =
@@ -55,8 +55,9 @@ const String _displayNameTooLongMessage =
 
 /// Typed per-field validation result — same convention as
 /// `features/streaks/domain/recovery_validation.dart` and
-/// `features/cycle/domain/cycle_validation.dart`: an expected outcome is a
-/// value, not an exception (`knowledge/engineering/error_handling.md`).
+/// `features/wellbeing/domain/wellbeing_validation.dart`: an expected
+/// outcome is a value, not an exception
+/// (`knowledge/engineering/error_handling.md`).
 class ChallengeValidation {
   const ChallengeValidation({
     this.windowError,

@@ -4,13 +4,13 @@ import 'package:menfit_app/features/streaks/domain/recovery_day_entry.dart';
 /// Persistence for user-logged protected recovery days — an explicit
 /// voluntary act of declaring a day as recovery
 /// (`knowledge/product/terminology.md`'s "Protected Recovery": "requires no
-/// proof"), independent of any flare or period. One of three protection
-/// sources the streak engine unions together — see
-/// `domain/streak_assembly.dart`'s dartdoc.
+/// proof"), independent of any flare. One of two protection sources the
+/// streak engine unions together — see `domain/streak_assembly.dart`'s
+/// dartdoc.
 ///
-/// Health-adjacent data, same handling as
-/// `features/cycle/domain/cycle_repository.dart`: never logged, hard
-/// deleted (not soft), wiped first in the "Delete my data" flow.
+/// Health-adjacent data, same handling as the wellbeing check-in tables:
+/// never logged, hard deleted (not soft), wiped first in the "Delete my
+/// data" flow.
 abstract interface class RecoveryRepository {
   /// Emits every non-deleted recovery day, as a set of calendar days, on
   /// every change. The streak engine's only need — see

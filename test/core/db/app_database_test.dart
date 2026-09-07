@@ -78,7 +78,6 @@ Future<void> reshapeActivitiesToPreV15(AppDatabase database) async {
 Future<void> dropAllTablesToPreV2(AppDatabase database) async {
   await database.customStatement('DROP TABLE activities');
   await database.customStatement('DROP TABLE activity_samples');
-  await database.customStatement('DROP TABLE cycle_records');
   await database.customStatement('DROP TABLE daily_checkins');
   await database.customStatement('DROP TABLE flare_events');
   await database.customStatement('DROP TABLE recovery_days');
@@ -587,15 +586,14 @@ void main() {
         // created every table up front - a fresh install never exercises
         // `onUpgrade` at all. To exercise the migration path itself for a
         // device genuinely upgrading from v1, drop every table added since
-        // v1 (activities/activity_samples from v2, cycle_records from v3,
+        // v1 (activities/activity_samples from v2,
         // daily_checkins/flare_events from v5, recovery_days from v6 - a
         // real v1 install has none of them) so the database is shaped like
         // a real v1 install, then invoke the production
         // `migration.onUpgrade` callback directly with the real target
         // version (7) - drift always upgrades a device straight to the
         // current schemaVersion in one call, never stepwise, so `to` here
-        // must match, or the `if (from < 3)` branch would otherwise try to
-        // recreate a `cycle_records` table this test never dropped.
+        // must match.
         //
         // (A full "open at v1, then reopen the same connection at v7"
         // lifecycle test would additionally prove drift's version
@@ -607,7 +605,6 @@ void main() {
         // the part actually at risk of being wrong.)
         await database.customStatement('DROP TABLE activities');
         await database.customStatement('DROP TABLE activity_samples');
-        await database.customStatement('DROP TABLE cycle_records');
         await database.customStatement('DROP TABLE daily_checkins');
         await database.customStatement('DROP TABLE flare_events');
         await database.customStatement('DROP TABLE recovery_days');
@@ -721,141 +718,6 @@ void main() {
         expect(profileRow.heightCm, 170);
         expect(profileRow.weightKg, isNull);
         expect(profileRow.trainingDays, 'mon,wed,fri');
-      },
-    );
-  });
-
-  group('v3 schema (CycleRecords)', () {
-    test('a fresh database opens with the table usable', () async {
-      expect(database.schemaVersion, 25);
-      // Any query succeeding proves the table (created via `onCreate` ->
-      // `createAll()` on a fresh database) exists and is queryable.
-      expect(await database.select(database.cycleRecords).get(), isEmpty);
-    });
-
-    test('inserting and reading a CycleRecords row round-trips', () async {
-      final id = EntityId.generate();
-      final now = DateTime.now().toUtc().millisecondsSinceEpoch;
-
-      await database
-          .into(database.cycleRecords)
-          .insert(
-            CycleRecordsCompanion.insert(
-              id: id,
-              periodStartDay: '2026-08-20',
-              createdAt: now,
-              updatedAt: now,
-            ),
-          );
-
-      final rows = await database.select(database.cycleRecords).get();
-      expect(rows, hasLength(1));
-      final row = rows.single;
-      expect(row.id, id);
-      expect(row.periodStartDay, '2026-08-20');
-      expect(row.periodEndDay, isNull);
-      expect(row.deletedAt, isNull);
-      expect(row.syncStatus, 'local');
-    });
-
-    test(
-      'a v2-shaped database (cycle_records missing) is upgraded by the '
-      'real v2->v8 migration step: the table and its index exist afterwards',
-      () async {
-        // Same technique as the v1->v2 migration test above: drop the
-        // v3-only table (and the v5-/v6-only tables) so the database is
-        // shaped like a real v2 install. `activity_samples` must *also* be
-        // reshaped back to its pre-v4 (no `is_paused`) form here: a real v2
-        // device upgrades straight to the current schemaVersion (7) in one
-        // call, so this test's `from` (2) legitimately triggers the
-        // `from < 3` (cycle_records), `from < 4 && from >= 2` (is_paused),
-        // `from < 5` (daily_checkins/flare_events), `from < 6`
-        // (recovery_days), and `from < 7` (user_profiles S1-3 columns)
-        // branches together - if `activity_samples` were left at this
-        // fixture's already-v4 shape (`AppDatabase.forTesting` created it
-        // via `onCreate` with `is_paused` baked in), the `addColumn` step
-        // would fail with a duplicate-column error. `user_profiles` needs
-        // the same reshaping, for the same reason - see the v1->v7 test's
-        // comment above for the full explanation.
-        await database.customStatement('DROP TABLE cycle_records');
-        await database.customStatement('DROP TABLE daily_checkins');
-        await database.customStatement('DROP TABLE flare_events');
-        await database.customStatement('DROP TABLE recovery_days');
-        await database.customStatement('DROP TABLE routes');
-        await reshapeActivitiesToPreV8(database);
-        await database.customStatement('DROP TABLE activity_samples');
-        await database.customStatement('''
-          CREATE TABLE activity_samples (
-            id TEXT NOT NULL PRIMARY KEY,
-            activity_id TEXT NOT NULL REFERENCES activities (id),
-            timestamp_ms INTEGER NOT NULL,
-            latitude REAL NOT NULL,
-            longitude REAL NOT NULL,
-            elevation_meters REAL,
-            horizontal_accuracy_meters REAL,
-            heart_rate INTEGER
-          )
-        ''');
-        await database.customStatement('DROP TABLE user_profiles');
-        await database.customStatement('''
-          CREATE TABLE user_profiles (
-            id TEXT NOT NULL PRIMARY KEY,
-            display_name TEXT NOT NULL,
-            unit_system TEXT NOT NULL,
-            weekly_activity_goal INTEGER,
-            created_at INTEGER NOT NULL,
-            updated_at INTEGER NOT NULL,
-            deleted_at INTEGER,
-            sync_status TEXT NOT NULL DEFAULT 'local'
-          )
-        ''');
-
-        await dropNutritionTablesToPreV11(database);
-
-        final migrator = Migrator(database);
-        await database.migration.onUpgrade(migrator, 2, 10);
-
-        expect(await database.select(database.cycleRecords).get(), isEmpty);
-        expect(await database.select(database.userProfiles).get(), isEmpty);
-
-        final indexNames = await database
-            .customSelect("SELECT name FROM sqlite_master WHERE type = 'index'")
-            .map((row) => row.read<String>('name'))
-            .get();
-        expect(indexNames, contains('idx_cycle_records_period_start_day'));
-
-        // The `is_paused` column must now exist and default to `false`.
-        final id = EntityId.generate();
-        final now = DateTime.now().toUtc().millisecondsSinceEpoch;
-        await database
-            .into(database.activities)
-            .insert(
-              ActivitiesCompanion.insert(
-                id: id,
-                activityType: 'run',
-                title: 'Run',
-                startedAt: now,
-                movingTimeMs: 0,
-                elapsedTimeMs: 0,
-                distanceMeters: 0,
-                source: 'recorded',
-                createdAt: now,
-                updatedAt: now,
-              ),
-            );
-        await database
-            .into(database.activitySamples)
-            .insert(
-              ActivitySamplesCompanion.insert(
-                id: EntityId.generate(),
-                activityId: id,
-                timestampMs: now,
-                latitude: 51.5,
-                longitude: -0.12,
-              ),
-            );
-        final row = await database.select(database.activitySamples).getSingle();
-        expect(row.isPaused, isFalse);
       },
     );
   });
@@ -1162,7 +1024,7 @@ void main() {
       () async {
         // Same technique as the earlier migration tests: drop the v5-only
         // tables and the v6-only table so the database is shaped like a
-        // real v4 install (activities/activity_samples/cycle_records
+        // real v4 install (activities/activity_samples
         // already have their final v4 shape from `AppDatabase.forTesting`'s
         // `onCreate`, so no other reshaping is needed for a `from` of 4) -
         // except `user_profiles`, which must be reshaped back to its v1

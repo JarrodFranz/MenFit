@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$TodayProtectionSources {
 
- bool get hasExplicitRecoveryDay; bool get hasProtectingFlare; bool get isPeriodProtected;/// The note attached when marking today via `hasExplicitRecoveryDay`,
+ bool get hasExplicitRecoveryDay; bool get hasProtectingFlare;/// The note attached when marking today via `hasExplicitRecoveryDay`,
 /// if any. Always `null` when `hasExplicitRecoveryDay` is `false`.
  String? get recoveryNote;
 /// Create a copy of TodayProtectionSources
@@ -28,16 +28,16 @@ $TodayProtectionSourcesCopyWith<TodayProtectionSources> get copyWith => _$TodayP
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TodayProtectionSources&&(identical(other.hasExplicitRecoveryDay, hasExplicitRecoveryDay) || other.hasExplicitRecoveryDay == hasExplicitRecoveryDay)&&(identical(other.hasProtectingFlare, hasProtectingFlare) || other.hasProtectingFlare == hasProtectingFlare)&&(identical(other.isPeriodProtected, isPeriodProtected) || other.isPeriodProtected == isPeriodProtected)&&(identical(other.recoveryNote, recoveryNote) || other.recoveryNote == recoveryNote));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TodayProtectionSources&&(identical(other.hasExplicitRecoveryDay, hasExplicitRecoveryDay) || other.hasExplicitRecoveryDay == hasExplicitRecoveryDay)&&(identical(other.hasProtectingFlare, hasProtectingFlare) || other.hasProtectingFlare == hasProtectingFlare)&&(identical(other.recoveryNote, recoveryNote) || other.recoveryNote == recoveryNote));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,hasExplicitRecoveryDay,hasProtectingFlare,isPeriodProtected,recoveryNote);
+int get hashCode => Object.hash(runtimeType,hasExplicitRecoveryDay,hasProtectingFlare,recoveryNote);
 
 @override
 String toString() {
-  return 'TodayProtectionSources(hasExplicitRecoveryDay: $hasExplicitRecoveryDay, hasProtectingFlare: $hasProtectingFlare, isPeriodProtected: $isPeriodProtected, recoveryNote: $recoveryNote)';
+  return 'TodayProtectionSources(hasExplicitRecoveryDay: $hasExplicitRecoveryDay, hasProtectingFlare: $hasProtectingFlare, recoveryNote: $recoveryNote)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $TodayProtectionSourcesCopyWith<$Res>  {
   factory $TodayProtectionSourcesCopyWith(TodayProtectionSources value, $Res Function(TodayProtectionSources) _then) = _$TodayProtectionSourcesCopyWithImpl;
 @useResult
 $Res call({
- bool hasExplicitRecoveryDay, bool hasProtectingFlare, bool isPeriodProtected, String? recoveryNote
+ bool hasExplicitRecoveryDay, bool hasProtectingFlare, String? recoveryNote
 });
 
 
@@ -65,11 +65,10 @@ class _$TodayProtectionSourcesCopyWithImpl<$Res>
 
 /// Create a copy of TodayProtectionSources
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? hasExplicitRecoveryDay = null,Object? hasProtectingFlare = null,Object? isPeriodProtected = null,Object? recoveryNote = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? hasExplicitRecoveryDay = null,Object? hasProtectingFlare = null,Object? recoveryNote = freezed,}) {
   return _then(TodayProtectionSources(
 hasExplicitRecoveryDay: null == hasExplicitRecoveryDay ? _self.hasExplicitRecoveryDay : hasExplicitRecoveryDay // ignore: cast_nullable_to_non_nullable
 as bool,hasProtectingFlare: null == hasProtectingFlare ? _self.hasProtectingFlare : hasProtectingFlare // ignore: cast_nullable_to_non_nullable
-as bool,isPeriodProtected: null == isPeriodProtected ? _self.isPeriodProtected : isPeriodProtected // ignore: cast_nullable_to_non_nullable
 as bool,recoveryNote: freezed == recoveryNote ? _self.recoveryNote : recoveryNote // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -156,10 +155,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool hasExplicitRecoveryDay,  bool hasProtectingFlare,  bool isPeriodProtected,  String? recoveryNote)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool hasExplicitRecoveryDay,  bool hasProtectingFlare,  String? recoveryNote)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TodayProtectionSources() when $default != null:
-return $default(_that.hasExplicitRecoveryDay,_that.hasProtectingFlare,_that.isPeriodProtected,_that.recoveryNote);case _:
+return $default(_that.hasExplicitRecoveryDay,_that.hasProtectingFlare,_that.recoveryNote);case _:
   return orElse();
 
 }
@@ -177,10 +176,10 @@ return $default(_that.hasExplicitRecoveryDay,_that.hasProtectingFlare,_that.isPe
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool hasExplicitRecoveryDay,  bool hasProtectingFlare,  bool isPeriodProtected,  String? recoveryNote)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool hasExplicitRecoveryDay,  bool hasProtectingFlare,  String? recoveryNote)  $default,) {final _that = this;
 switch (_that) {
 case _TodayProtectionSources():
-return $default(_that.hasExplicitRecoveryDay,_that.hasProtectingFlare,_that.isPeriodProtected,_that.recoveryNote);case _:
+return $default(_that.hasExplicitRecoveryDay,_that.hasProtectingFlare,_that.recoveryNote);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -197,10 +196,10 @@ return $default(_that.hasExplicitRecoveryDay,_that.hasProtectingFlare,_that.isPe
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool hasExplicitRecoveryDay,  bool hasProtectingFlare,  bool isPeriodProtected,  String? recoveryNote)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool hasExplicitRecoveryDay,  bool hasProtectingFlare,  String? recoveryNote)?  $default,) {final _that = this;
 switch (_that) {
 case _TodayProtectionSources() when $default != null:
-return $default(_that.hasExplicitRecoveryDay,_that.hasProtectingFlare,_that.isPeriodProtected,_that.recoveryNote);case _:
+return $default(_that.hasExplicitRecoveryDay,_that.hasProtectingFlare,_that.recoveryNote);case _:
   return null;
 
 }
@@ -212,12 +211,11 @@ return $default(_that.hasExplicitRecoveryDay,_that.hasProtectingFlare,_that.isPe
 
 
 class _TodayProtectionSources extends TodayProtectionSources {
-  const _TodayProtectionSources({required this.hasExplicitRecoveryDay, required this.hasProtectingFlare, required this.isPeriodProtected, this.recoveryNote}): super._();
+  const _TodayProtectionSources({required this.hasExplicitRecoveryDay, required this.hasProtectingFlare, this.recoveryNote}): super._();
   
 
 @override final  bool hasExplicitRecoveryDay;
 @override final  bool hasProtectingFlare;
-@override final  bool isPeriodProtected;
 /// The note attached when marking today via `hasExplicitRecoveryDay`,
 /// if any. Always `null` when `hasExplicitRecoveryDay` is `false`.
 @override final  String? recoveryNote;
@@ -232,16 +230,16 @@ _$TodayProtectionSourcesCopyWith<_TodayProtectionSources> get copyWith => __$Tod
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TodayProtectionSources&&(identical(other.hasExplicitRecoveryDay, hasExplicitRecoveryDay) || other.hasExplicitRecoveryDay == hasExplicitRecoveryDay)&&(identical(other.hasProtectingFlare, hasProtectingFlare) || other.hasProtectingFlare == hasProtectingFlare)&&(identical(other.isPeriodProtected, isPeriodProtected) || other.isPeriodProtected == isPeriodProtected)&&(identical(other.recoveryNote, recoveryNote) || other.recoveryNote == recoveryNote));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TodayProtectionSources&&(identical(other.hasExplicitRecoveryDay, hasExplicitRecoveryDay) || other.hasExplicitRecoveryDay == hasExplicitRecoveryDay)&&(identical(other.hasProtectingFlare, hasProtectingFlare) || other.hasProtectingFlare == hasProtectingFlare)&&(identical(other.recoveryNote, recoveryNote) || other.recoveryNote == recoveryNote));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,hasExplicitRecoveryDay,hasProtectingFlare,isPeriodProtected,recoveryNote);
+int get hashCode => Object.hash(runtimeType,hasExplicitRecoveryDay,hasProtectingFlare,recoveryNote);
 
 @override
 String toString() {
-  return 'TodayProtectionSources(hasExplicitRecoveryDay: $hasExplicitRecoveryDay, hasProtectingFlare: $hasProtectingFlare, isPeriodProtected: $isPeriodProtected, recoveryNote: $recoveryNote)';
+  return 'TodayProtectionSources(hasExplicitRecoveryDay: $hasExplicitRecoveryDay, hasProtectingFlare: $hasProtectingFlare, recoveryNote: $recoveryNote)';
 }
 
 
@@ -252,7 +250,7 @@ abstract mixin class _$TodayProtectionSourcesCopyWith<$Res> implements $TodayPro
   factory _$TodayProtectionSourcesCopyWith(_TodayProtectionSources value, $Res Function(_TodayProtectionSources) _then) = __$TodayProtectionSourcesCopyWithImpl;
 @override @useResult
 $Res call({
- bool hasExplicitRecoveryDay, bool hasProtectingFlare, bool isPeriodProtected, String? recoveryNote
+ bool hasExplicitRecoveryDay, bool hasProtectingFlare, String? recoveryNote
 });
 
 
@@ -269,11 +267,10 @@ class __$TodayProtectionSourcesCopyWithImpl<$Res>
 
 /// Create a copy of TodayProtectionSources
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? hasExplicitRecoveryDay = null,Object? hasProtectingFlare = null,Object? isPeriodProtected = null,Object? recoveryNote = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? hasExplicitRecoveryDay = null,Object? hasProtectingFlare = null,Object? recoveryNote = freezed,}) {
   return _then(_TodayProtectionSources(
 hasExplicitRecoveryDay: null == hasExplicitRecoveryDay ? _self.hasExplicitRecoveryDay : hasExplicitRecoveryDay // ignore: cast_nullable_to_non_nullable
 as bool,hasProtectingFlare: null == hasProtectingFlare ? _self.hasProtectingFlare : hasProtectingFlare // ignore: cast_nullable_to_non_nullable
-as bool,isPeriodProtected: null == isPeriodProtected ? _self.isPeriodProtected : isPeriodProtected // ignore: cast_nullable_to_non_nullable
 as bool,recoveryNote: freezed == recoveryNote ? _self.recoveryNote : recoveryNote // ignore: cast_nullable_to_non_nullable
 as String?,
   ));

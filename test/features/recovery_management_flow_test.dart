@@ -10,8 +10,6 @@ import 'package:menfit_app/core/domain/entity_id.dart';
 import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/features/activity/data/drift_activity_repository.dart';
 import 'package:menfit_app/features/activity/domain/activity.dart';
-import 'package:menfit_app/features/cycle/data/drift_cycle_repository.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_record.dart';
 import 'package:menfit_app/features/streaks/data/drift_recovery_repository.dart';
 import 'package:menfit_app/features/wellbeing/data/drift_wellbeing_repository.dart';
 import 'package:menfit_app/features/wellbeing/domain/flare_event.dart';
@@ -105,8 +103,8 @@ void main() {
   }
 
   /// Taps a bottom-nav destination by [label] - scoped to [NavigationBar]
-  /// specifically, since some destination labels (e.g. "Cycle") also
-  /// appear as a dashboard placeholder card's title on the Home screen.
+  /// specifically, since some destination labels (e.g. "Nutrition") also
+  /// appear as a dashboard card's title on the Home screen.
   Future<void> tapNavDestination(WidgetTester tester, String label) async {
     await tester.tap(
       find.descendant(
@@ -165,9 +163,8 @@ void main() {
         findsOneWidget,
       );
       expect(find.text('Remove recovery day'), findsOneWidget);
-      // Only the one active source - no flare/period copy.
+      // Only the one active source - no flare copy.
       expect(find.text('You logged a flare-up today'), findsNothing);
-      expect(find.textContaining('Period day'), findsNothing);
 
       await tester.ensureVisible(find.text('Remove recovery day'));
       await tester.tap(find.text('Remove recovery day'));
@@ -247,82 +244,6 @@ void main() {
       // still protected, not "make today a recovery day" again.
       expect(find.text('Recovery day'), findsOneWidget);
       expect(find.text('Make today a recovery day'), findsNothing);
-
-      semanticsHandle.dispose();
-      await flushTimers(tester);
-    },
-  );
-
-  testWidgets(
-    'the period-source row only appears in the Today sheet once the '
-    'streak-pausing toggle is on AND today falls within a logged period',
-    (tester) async {
-      final semanticsHandle = tester.ensureSemantics();
-      final database = await pumpApp(tester);
-      final today = LocalDate.today();
-
-      // Drift-backed writes are visible to the app's own watchers
-      // regardless of which repository instance performs them (the shared
-      // `database` connection is what Drift's reactivity is keyed on), so
-      // seeding via a throwaway repository here is fine. The
-      // streak-pausing preference is NOT Drift-backed though (see
-      // `DriftCycleRepository`'s per-instance `_streakPausingController`
-      // dartdoc) - toggling it must go through the app's own UI below,
-      // not a second repository instance, or the app's live subscription
-      // never hears about the change.
-      final now = DateTime.now().toUtc();
-      await DriftCycleRepository(
-        database,
-        await SharedPreferences.getInstance(),
-      ).saveRecord(
-        CycleRecord(
-          id: EntityId.generate(),
-          periodStart: today,
-          createdAt: now,
-          updatedAt: now,
-        ),
-      );
-      // Also mark an explicit recovery day so the card is protected and
-      // tappable regardless of the pausing toggle's state.
-      await DriftRecoveryRepository(database).markRecoveryDay(today);
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.text('Recovery day'));
-      await tester.pumpAndSettle();
-
-      // Pausing is off by default (S1-2) - a period is logged, but it
-      // must NOT show as a protection source yet.
-      expect(find.textContaining('Period day'), findsNothing);
-
-      await tester.ensureVisible(find.text('Remove recovery day'));
-      await tester.tap(find.text('Remove recovery day'));
-      await settleRealAsync(tester);
-      // Sheet closed (nothing protects today with pausing still off).
-      expect(find.text('Make today a recovery day'), findsOneWidget);
-
-      // Enable pausing through the real Cycle tab UI - the same real
-      // provider-backed repository instance the rest of the app watches.
-      await tapNavDestination(tester, 'Cycle');
-      await tester.tap(find.byTooltip('Cycle Options'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Settings and FAQs'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Treat period days as recovery days'));
-      await settleRealAsync(tester);
-      await tester.tapAt(const Offset(10, 10));
-      await tester.pumpAndSettle();
-      await tapNavDestination(tester, 'Home');
-
-      // Now protected via the period alone - card is tappable again.
-      expect(find.text('Recovery day'), findsOneWidget);
-      await tester.tap(find.text('Recovery day'));
-      await tester.pumpAndSettle();
-
-      expect(
-        find.text('Period day — counted as recovery (your setting)'),
-        findsOneWidget,
-      );
-      expect(find.text('Cycle settings'), findsOneWidget);
 
       semanticsHandle.dispose();
       await flushTimers(tester);

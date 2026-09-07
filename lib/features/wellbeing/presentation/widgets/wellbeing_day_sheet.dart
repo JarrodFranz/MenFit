@@ -4,9 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/core/theme/tokens.dart';
 import 'package:menfit_app/core/widgets/app_bottom_sheet.dart';
-import 'package:menfit_app/features/cycle/cycle_providers.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_record.dart';
 import 'package:menfit_app/features/streaks/domain/recovery_day_entry.dart';
 import 'package:menfit_app/features/streaks/streaks_providers.dart';
 import 'package:menfit_app/features/wellbeing/domain/daily_checkin.dart';
@@ -73,15 +70,6 @@ class WellbeingDaySheet extends ConsumerWidget {
         ? const AsyncValue<List<WellbeingEvent>>.data(<WellbeingEvent>[])
         : ref.watch(eventsOnDayProvider(day));
 
-    final cycleRecords =
-        ref.watch(cycleRecordsControllerProvider).value ??
-        const <CycleRecord>[];
-    final cycleStatus = CyclePredictionEngine().getDayStatus(
-      date: day,
-      records: cycleRecords,
-      today: LocalDate.today(),
-    );
-
     // Same reasoning as the calendar's: for health data, a failed read
     // must not be shown as "nothing logged".
     final failed =
@@ -132,8 +120,6 @@ class WellbeingDaySheet extends ConsumerWidget {
                   const WellbeingLoadFailure(text: "Couldn't load this day."),
                   SizedBox(height: tokens.spacingMd),
                 ],
-                _CycleSection(day: day, status: cycleStatus),
-                SizedBox(height: tokens.spacingLg),
                 CheckinSection(day: day, checkin: checkin),
                 SizedBox(height: tokens.spacingLg),
                 _FlareSection(day: day, flares: flares),
@@ -239,102 +225,6 @@ class _RecoverySection extends StatelessWidget {
               if (navigator.canPop()) navigator.pop();
             },
           ),
-      ],
-    );
-  }
-}
-
-class _CycleSection extends StatelessWidget {
-  const _CycleSection({required this.day, required this.status});
-
-  final LocalDate day;
-  final DayCycleStatus status;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final tokens = theme.extension<AppTokens>()!;
-    final isDark = theme.brightness == Brightness.dark;
-
-    final (color, title, desc) = switch (status.phase) {
-      CyclePhase.menstrual => (
-        tokens.cyclePhaseMenstrual,
-        status.cycleDayNumber != null
-            ? 'Menstrual Phase · Day ${status.cycleDayNumber}'
-            : 'Menstrual Phase',
-        status.isLoggedPeriod
-            ? 'Logged period day'
-            : status.phase.plainDescription,
-      ),
-      CyclePhase.follicular => (
-        tokens.cyclePhaseFollicular,
-        status.cycleDayNumber != null
-            ? 'Follicular Phase · Day ${status.cycleDayNumber}'
-            : 'Follicular Phase',
-        status.phase.plainDescription,
-      ),
-      CyclePhase.ovulatory => (
-        tokens.cyclePhaseOvulatory,
-        status.cycleDayNumber != null
-            ? 'Ovulatory Window · Day ${status.cycleDayNumber}'
-            : 'Ovulatory Window',
-        status.phase.plainDescription,
-      ),
-      CyclePhase.luteal => (
-        tokens.cyclePhaseLuteal,
-        status.cycleDayNumber != null
-            ? 'Luteal Phase · Day ${status.cycleDayNumber}'
-            : 'Luteal Phase',
-        status.phase.plainDescription,
-      ),
-      _ => (
-        theme.colorScheme.outline,
-        'Cycle Tracking',
-        'No cycle phase calculated for this day.',
-      ),
-    };
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const SectionHeading(label: 'Cycle context'),
-        SizedBox(height: tokens.spacingSm),
-        Container(
-          padding: EdgeInsets.all(tokens.spacingMd),
-          decoration: BoxDecoration(
-            color: isDark
-                ? color.withValues(alpha: 0.15)
-                : color.withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(tokens.radiusMd),
-            border: Border.all(
-              color: color.withValues(alpha: isDark ? 0.4 : 0.25),
-            ),
-          ),
-          child: Row(
-            children: [
-              Icon(Icons.calendar_today_outlined, color: color, size: 20),
-              SizedBox(width: tokens.spacingSm),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: color,
-                      ),
-                    ),
-                    Text(
-                      desc,
-                      style: theme.textTheme.bodySmall,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
       ],
     );
   }

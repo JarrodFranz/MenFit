@@ -13,8 +13,8 @@ import 'package:menfit_app/features/streaks/domain/recovery_validation.dart';
 ///
 /// The generated Drift row class for that table is also named
 /// `RecoveryDay`, so this file imports `app_database.dart` with the `db`
-/// prefix throughout — same convention as
-/// `features/cycle/data/drift_cycle_repository.dart`.
+/// prefix throughout — the same convention every repository whose row
+/// class collides with its domain type follows.
 ///
 /// The provider for this repository lives in `../streaks_providers.dart`
 /// (ADR 007), not here.
@@ -154,9 +154,9 @@ class DriftRecoveryRepository implements RecoveryRepository {
 
   @override
   Future<void> unmarkRecoveryDays(LocalDate from, LocalDate to) async {
-    // Hard delete, not soft - same reasoning as
-    // `DriftCycleRepository.deleteRecord` for this health-adjacent data
-    // class: this app has no multi-device sync yet, so ADR 004's
+    // Hard delete, not soft - the standing reasoning for this
+    // health-adjacent data class: this app has no multi-device sync yet, so
+    // ADR 004's
     // soft-delete convention (which exists to support sync tombstones)
     // doesn't apply, and a "deleted" recovery day that's still forensically
     // recoverable on-device contradicts the "Undo" affordance's implicit

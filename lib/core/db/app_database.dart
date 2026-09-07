@@ -4,7 +4,6 @@ import 'package:menfit_app/core/db/tables/activities.dart';
 import 'package:menfit_app/core/db/tables/activity_samples.dart';
 import 'package:menfit_app/core/db/tables/badge_awards.dart';
 import 'package:menfit_app/core/db/tables/challenges.dart';
-import 'package:menfit_app/core/db/tables/cycle_records.dart';
 import 'package:menfit_app/core/db/tables/daily_checkins.dart';
 import 'package:menfit_app/core/db/tables/daily_step_totals.dart';
 import 'package:menfit_app/core/db/tables/flare_events.dart';
@@ -35,7 +34,6 @@ part 'app_database.g.dart';
     UserProfiles,
     Activities,
     ActivitySamples,
-    CycleRecords,
     DailyCheckins,
     FlareEvents,
     RecoveryDays,
@@ -70,8 +68,7 @@ class AppDatabase extends _$AppDatabase {
 
   /// v1 -> v2 (Phase C wave 1): adds `activities` and `activity_samples`
   /// (see `core/db/tables/activities.dart`, `activity_samples.dart`).
-  /// v2 -> v3 (Phase D wave 1): adds `cycle_records` (see
-  /// `core/db/tables/cycle_records.dart`). v3 -> v4 (Phase E wave 1): adds
+  /// v3 -> v4 (Phase E wave 1): adds
   /// `activity_samples.is_paused` (see `activity_samples.dart`). v4 -> v5
   /// (S1-1): adds `daily_checkins` and `flare_events` (see
   /// `daily_checkins.dart`, `flare_events.dart`). v5 -> v6 (S1-2): adds
@@ -486,10 +483,6 @@ class AppDatabase extends _$AppDatabase {
         await m.createTable(activitySamples);
         await m.createIndex(idxActivitiesStartedAt);
         await m.createIndex(idxActivitySamplesActivityIdTimestampMs);
-      }
-      if (from < 3) {
-        await m.createTable(cycleRecords);
-        await m.createIndex(idxCycleRecordsPeriodStartDay);
       }
       if (from < 4 && from >= 2) {
         await m.addColumn(activitySamples, activitySamples.isPaused);

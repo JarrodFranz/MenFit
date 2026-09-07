@@ -4,7 +4,7 @@ import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/core/theme/app_theme.dart';
 import 'package:menfit_app/core/widgets/month_calendar.dart';
 
-/// The month grid both the cycle and wellbeing calendars are built on.
+/// The month grid the wellbeing calendar is built on.
 ///
 /// Everything asserted here is behaviour the cycle calendar had before the
 /// grid was extracted into `core/widgets/`, plus the forward cap the

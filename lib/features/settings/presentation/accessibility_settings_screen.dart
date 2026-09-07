@@ -356,7 +356,7 @@ class _LivePreviewCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Next cycle prediction: 28-day regular rhythm',
+                    'Next session: 45-minute moderate strength block',
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: colorScheme.onSurfaceVariant,
                     ),
@@ -367,7 +367,7 @@ class _LivePreviewCard extends StatelessWidget {
             SizedBox(height: tokens.spacingSm),
             // Color palette swatches
             Text(
-              'Colorblind-Safe Phase Indicators:',
+              'Colorblind-Safe Intensity Indicators:',
               style: theme.textTheme.labelSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: colorScheme.onSurfaceVariant,
@@ -379,24 +379,24 @@ class _LivePreviewCard extends StatelessWidget {
               runSpacing: 6,
               children: [
                 _SwatchChip(
-                  label: 'Period',
-                  icon: Icons.favorite,
-                  color: tokens.cyclePhaseMenstrual,
+                  label: 'Easy',
+                  icon: Icons.self_improvement_outlined,
+                  color: tokens.intensityEasy,
                 ),
                 _SwatchChip(
-                  label: 'Follicular',
-                  icon: Icons.wb_sunny_outlined,
-                  color: tokens.cyclePhaseFollicular,
+                  label: 'Moderate',
+                  icon: Icons.directions_run_outlined,
+                  color: tokens.intensityModerate,
                 ),
                 _SwatchChip(
-                  label: 'Ovulation',
-                  icon: Icons.egg_outlined,
-                  color: tokens.cyclePhaseOvulatory,
+                  label: 'Hard',
+                  icon: Icons.local_fire_department_outlined,
+                  color: tokens.intensityHard,
                 ),
                 _SwatchChip(
-                  label: 'Luteal',
-                  icon: Icons.nights_stay_outlined,
-                  color: tokens.cyclePhaseLuteal,
+                  label: 'Recovery',
+                  icon: Icons.bedtime_outlined,
+                  color: tokens.success,
                 ),
               ],
             ),

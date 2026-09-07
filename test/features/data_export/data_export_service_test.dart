@@ -13,7 +13,7 @@ class _FixedSource implements DataExportSource {
 
   @override
   Future<Map<String, List<Map<String, Object?>>>> readTables({
-    required bool includeCycleAndWellbeing,
+    required bool includeSensitiveHealth,
   }) async => {
     'weight_logs': [
       {'id': 'weight-1', 'weight_kg': 63.2},
@@ -35,7 +35,7 @@ void main() {
           encode: (_) async => encoded,
         );
 
-        final result = await service.export(includeCycleAndWellbeing: false);
+        final result = await service.export(includeSensitiveHealth: false);
 
         expect(
           identical((result as DataExported).bytes, encoded),
@@ -58,12 +58,12 @@ void main() {
         },
       );
 
-      await service.export(includeCycleAndWellbeing: true);
+      await service.export(includeSensitiveHealth: true);
 
       expect(seen, isNotNull);
       expect(seen!['format'], 'menfit-export');
       expect(seen!['schemaVersion'], 24);
-      expect(seen!['includesCycleAndWellbeingData'], isTrue);
+      expect(seen!['includesSensitiveHealthData'], isTrue);
       expect(seen!['tables'], isA<Map<String, Object?>>());
     });
 
@@ -75,7 +75,7 @@ void main() {
       );
 
       final result =
-          await service.export(includeCycleAndWellbeing: false) as DataExported;
+          await service.export(includeSensitiveHealth: false) as DataExported;
 
       expect(result.filename, 'menfit-export-2026-09-04.json');
       expect(result.summary.tableCount, 1);
@@ -88,7 +88,7 @@ void main() {
       final document = DataExportDocument(
         schemaVersion: 24,
         exportedAt: DateTime.utc(2026, 9, 4, 12),
-        includesCycleAndWellbeingData: false,
+        includesSensitiveHealthData: false,
         tables: const {
           'weight_logs': [
             {'id': 'weight-1', 'weight_kg': 63.2},

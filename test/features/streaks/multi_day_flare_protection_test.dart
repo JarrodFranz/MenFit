@@ -70,8 +70,6 @@ void main() {
       activities: activities,
       recoveryDays: const {},
       flareProtectedDays: await wellbeing.watchProtectingFlareDays().first,
-      records: const [],
-      pausingEnabled: false,
       today: today,
     );
   }

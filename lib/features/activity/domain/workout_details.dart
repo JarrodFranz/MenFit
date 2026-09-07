@@ -409,7 +409,6 @@ class WearableWorkoutDetails extends WorkoutDetails {
   const WearableWorkoutDetails({
     required this.wearableSource,
     this.externalId,
-    this.cyclePhase,
     this.caloriesBurnedKcal,
     this.avgCadence,
     this.maxHeartRate,
@@ -421,7 +420,6 @@ class WearableWorkoutDetails extends WorkoutDetails {
     return WearableWorkoutDetails(
       wearableSource: json['wearableSource'] as String? ?? 'Garmin Connect',
       externalId: json['externalId'] as String?,
-      cyclePhase: json['cyclePhase'] as String?,
       caloriesBurnedKcal: (json['caloriesBurnedKcal'] as num?)?.toDouble(),
       avgCadence: (json['avgCadence'] as num?)?.toInt(),
       maxHeartRate: (json['maxHeartRate'] as num?)?.toInt(),
@@ -432,7 +430,6 @@ class WearableWorkoutDetails extends WorkoutDetails {
 
   final String wearableSource;
   final String? externalId;
-  final String? cyclePhase;
   final double? caloriesBurnedKcal;
   final int? avgCadence;
   final int? maxHeartRate;
@@ -444,7 +441,6 @@ class WearableWorkoutDetails extends WorkoutDetails {
     'type': 'wearable',
     'wearableSource': wearableSource,
     if (externalId != null) 'externalId': externalId,
-    if (cyclePhase != null) 'cyclePhase': cyclePhase,
     if (caloriesBurnedKcal != null) 'caloriesBurnedKcal': caloriesBurnedKcal,
     if (avgCadence != null) 'avgCadence': avgCadence,
     if (maxHeartRate != null) 'maxHeartRate': maxHeartRate,

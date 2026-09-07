@@ -26,9 +26,9 @@ class _FakeSource implements DataExportSource {
 
   @override
   Future<Map<String, List<Map<String, Object?>>>> readTables({
-    required bool includeCycleAndWellbeing,
+    required bool includeSensitiveHealth,
   }) async {
-    askedForCycleAndWellbeing = includeCycleAndWellbeing;
+    askedForCycleAndWellbeing = includeSensitiveHealth;
     // Deliberately untyped: the controller catches `on Object`, and the
     // point of these tests is that anything at all coming out of the
     // layers below turns into a static user message.
@@ -38,9 +38,9 @@ class _FakeSource implements DataExportSource {
       'weight_logs': [
         {'id': 'weight-1', 'weight_kg': 63.2},
       ],
-      if (includeCycleAndWellbeing)
-        'cycle_records': [
-          {'id': 'cycle-1'},
+      if (includeSensitiveHealth)
+        'daily_checkins': [
+          {'id': 'checkin-1'},
         ],
     };
   }
@@ -119,7 +119,7 @@ void main() {
     final saver = _RecordingSaver(location: Uri.parse('file:///out.json'));
 
     final state = await controller().export(
-      includeCycleAndWellbeing: false,
+      includeSensitiveHealth: false,
       saver: saver.save,
     );
 
@@ -139,7 +139,7 @@ void main() {
       final saver = _RecordingSaver(location: Uri.parse('file:///out.json'));
 
       await controller().export(
-        includeCycleAndWellbeing: false,
+        includeSensitiveHealth: false,
         saver: saver.save,
       );
 
@@ -155,14 +155,14 @@ void main() {
   test('the checkbox answer reaches the source, both ways round', () async {
     build();
     await controller().export(
-      includeCycleAndWellbeing: false,
+      includeSensitiveHealth: false,
       saver: _RecordingSaver(location: Uri.parse('file:///a.json')).save,
     );
     expect(source.askedForCycleAndWellbeing, isFalse);
 
     build();
     await controller().export(
-      includeCycleAndWellbeing: true,
+      includeSensitiveHealth: true,
       saver: _RecordingSaver(location: Uri.parse('file:///b.json')).save,
     );
     expect(source.askedForCycleAndWellbeing, isTrue);
@@ -173,7 +173,7 @@ void main() {
     final saver = _RecordingSaver();
 
     final state = await controller().export(
-      includeCycleAndWellbeing: false,
+      includeSensitiveHealth: false,
       saver: saver.save,
     );
 
@@ -190,7 +190,7 @@ void main() {
       );
 
       final state = await controller().export(
-        includeCycleAndWellbeing: false,
+        includeSensitiveHealth: false,
         saver: saver.save,
       );
 
@@ -210,7 +210,7 @@ void main() {
     final saver = _RecordingSaver(location: Uri.parse('file:///out.json'));
 
     final state = await controller().export(
-      includeCycleAndWellbeing: false,
+      includeSensitiveHealth: false,
       saver: saver.save,
     );
 
@@ -234,7 +234,7 @@ void main() {
       var calls = 0;
 
       final first = controller().export(
-        includeCycleAndWellbeing: false,
+        includeSensitiveHealth: false,
         saver: ({required fileName, required bytes, required mimeType}) {
           calls++;
           return gate.future;
@@ -250,7 +250,7 @@ void main() {
       // A second tap while the first is still going is ignored, not queued:
       // two whole-database reads racing each other, and two save dialogs, is
       // nobody's idea of an export.
-      final second = await controller().export(includeCycleAndWellbeing: false);
+      final second = await controller().export(includeSensitiveHealth: false);
       expect(second, isA<DataExportInProgress>());
       expect(calls, 1);
 
@@ -272,7 +272,7 @@ void main() {
         ),
       );
 
-      final state = await controller().export(includeCycleAndWellbeing: false);
+      final state = await controller().export(includeSensitiveHealth: false);
 
       expect(
         (state as DataExportFailed).userMessage,

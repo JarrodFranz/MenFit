@@ -21,9 +21,6 @@ class StubWatchCompanionAdapter implements WatchCompanionAdapter {
   Future<bool> sendCommand(WatchCommand command) async => false;
 
   @override
-  Future<bool> sendCycleContext(WatchCycleContext context) async => false;
-
-  @override
   Stream<WatchMessage> get messageStream => const Stream.empty();
 
   @override

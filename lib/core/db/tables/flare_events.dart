@@ -59,7 +59,7 @@ class FlareEvents extends Table {
   /// UTC milliseconds since epoch; null while the row is live. Kept for
   /// column-shape consistency with other tables, but
   /// `DriftWellbeingRepository.deleteFlare` hard-deletes instead (S3, same
-  /// reasoning as `cycle_records.dart#deletedAt`) — should always read
+  /// reasoning as `daily_checkins.dart#deletedAt`) — should always read
   /// `null`.
   IntColumn get deletedAt => integer().nullable()();
 

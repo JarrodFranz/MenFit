@@ -9,8 +9,8 @@ void main() {
       final lightTokens = AppTokens.light();
       final darkTokens = AppTokens.dark();
 
-      expect(lightTokens.cyclePhaseMenstrual, equals(const Color(0xFFD64D6E)));
-      expect(darkTokens.cyclePhaseMenstrual, equals(const Color(0xFFE68A9C)));
+      expect(lightTokens.intensityHard, equals(const Color(0xFFD64D6E)));
+      expect(darkTokens.intensityHard, equals(const Color(0xFFE68A9C)));
       expect(lightTokens.success, equals(const Color(0xFF1B8755)));
     });
 
@@ -21,20 +21,19 @@ void main() {
         ),
       );
 
-      // In Okabe-Ito, menstrual is vermilion (#D55E00) and success is
-      // blue (#0072B2)
-      expect(tokens.cyclePhaseMenstrual, equals(const Color(0xFFD55E00)));
+      // In Okabe-Ito, the hardest intensity is vermilion (#D55E00) and
+      // success is blue (#0072B2)
+      expect(tokens.intensityHard, equals(const Color(0xFFD55E00)));
       expect(tokens.success, equals(const Color(0xFF0072B2)));
       expect(tokens.warning, equals(const Color(0xFFE69F00)));
-      // Distinct hues for all 4 phases
+      // Distinct hues across all 3 workout intensities
       expect(
         {
-          tokens.cyclePhaseMenstrual,
-          tokens.cyclePhaseFollicular,
-          tokens.cyclePhaseOvulatory,
-          tokens.cyclePhaseLuteal,
+          tokens.intensityEasy,
+          tokens.intensityModerate,
+          tokens.intensityHard,
         }.length,
-        equals(4),
+        equals(3),
       );
     });
 
@@ -45,16 +44,15 @@ void main() {
         ),
       );
 
-      expect(tokens.cyclePhaseMenstrual, equals(const Color(0xFFD90429)));
-      expect(tokens.cyclePhaseFollicular, equals(const Color(0xFF00A896)));
+      expect(tokens.intensityHard, equals(const Color(0xFFD90429)));
+      expect(tokens.intensityEasy, equals(const Color(0xFF00A896)));
       expect(
         {
-          tokens.cyclePhaseMenstrual,
-          tokens.cyclePhaseFollicular,
-          tokens.cyclePhaseOvulatory,
-          tokens.cyclePhaseLuteal,
+          tokens.intensityEasy,
+          tokens.intensityModerate,
+          tokens.intensityHard,
         }.length,
-        equals(4),
+        equals(3),
       );
     });
 
@@ -65,10 +63,9 @@ void main() {
         ),
       );
 
-      expect(tokens.cyclePhaseMenstrual, equals(const Color(0xFF111111)));
-      expect(tokens.cyclePhaseFollicular, equals(const Color(0xFF444444)));
-      expect(tokens.cyclePhaseOvulatory, equals(const Color(0xFF666666)));
-      expect(tokens.cyclePhaseLuteal, equals(const Color(0xFF888888)));
+      expect(tokens.intensityHard, equals(const Color(0xFF111111)));
+      expect(tokens.intensityModerate, equals(const Color(0xFF444444)));
+      expect(tokens.intensityEasy, equals(const Color(0xFF777777)));
     });
 
     test('high contrast sets tighter corner radiuses', () {

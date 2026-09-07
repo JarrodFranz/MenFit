@@ -32,7 +32,7 @@ void main() {
     final doc = DataExportDocument(
       schemaVersion: 24,
       exportedAt: DateTime.utc(2026, 9, 4),
-      includesCycleAndWellbeingData: false,
+      includesSensitiveHealthData: false,
       tables: {
         'weight_logs': [
           {'id': 'w-1', 'weight_kg': 60.0},

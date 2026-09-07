@@ -1,7 +1,6 @@
 import 'package:menfit_app/features/achievements/achievements_providers.dart';
 import 'package:menfit_app/features/activity/activity_providers.dart';
 import 'package:menfit_app/features/challenges/challenges_providers.dart';
-import 'package:menfit_app/features/cycle/cycle_providers.dart';
 import 'package:menfit_app/features/nutrition/nutrition_providers.dart';
 import 'package:menfit_app/features/profile/profile_providers.dart';
 import 'package:menfit_app/features/recaps/recaps_providers.dart';
@@ -23,7 +22,6 @@ part 'settings_providers.g.dart';
 @Riverpod(keepAlive: true)
 DeleteMyDataService deleteMyDataService(Ref ref) {
   return DeleteMyDataService(
-    cycleRepository: ref.watch(cycleRepositoryProvider),
     wellbeingRepository: ref.watch(wellbeingRepositoryProvider),
     recoveryRepository: ref.watch(recoveryRepositoryProvider),
     activityRepository: ref.watch(activityRepositoryProvider),

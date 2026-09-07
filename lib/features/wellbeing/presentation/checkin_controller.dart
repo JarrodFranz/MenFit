@@ -14,7 +14,7 @@ part 'checkin_controller.g.dart';
 /// In-progress state of the check-in sheet.
 ///
 /// Validation is surfaced as typed state fields (`*Error`), not exceptions —
-/// same convention as `features/cycle/presentation/period_entry_controller.dart`.
+/// same convention as the other per-form controllers in this app.
 @freezed
 abstract class CheckinFormState with _$CheckinFormState {
   const factory CheckinFormState({

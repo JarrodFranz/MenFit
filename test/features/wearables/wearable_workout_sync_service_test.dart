@@ -1,56 +1,17 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/core/platform/health/health_workout_session.dart';
 import 'package:menfit_app/core/platform/wearables/watch_companion_adapter.dart';
 import 'package:menfit_app/core/platform/wearables/watch_companion_protocol.dart';
 import 'package:menfit_app/features/activity/domain/activity.dart';
 import 'package:menfit_app/features/activity/domain/workout_details.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_record.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_repository.dart';
 import 'package:menfit_app/features/wearables/domain/wearable_workout_sync_service.dart';
 
 import '../activity/fake_activity_repository.dart';
 import '../steps/fake_health_platform_adapter.dart';
 
-class FakeCycleRepository implements CycleRepository {
-  List<CycleRecord> records = [];
-
-  @override
-  Future<List<CycleRecord>> getRecords() async => List.of(records);
-
-  @override
-  Stream<List<CycleRecord>> watchRecords() => Stream.value(records);
-
-  @override
-  Future<void> saveRecord(CycleRecord record) async => records.add(record);
-
-  @override
-  Future<void> saveRecords(List<CycleRecord> newRecords) async =>
-      records.addAll(newRecords);
-
-  @override
-  Future<void> deleteRecord(String id) async =>
-      records.removeWhere((r) => r.id == id);
-
-  @override
-  Stream<bool> watchStreakPausingEnabled() => Stream.value(true);
-
-  @override
-  Future<void> clearStreakPausingPreference() async {}
-
-  @override
-  Future<void> deleteAllData() async {
-    records.clear();
-  }
-
-  @override
-  Future<void> setStreakPausingEnabled({required bool enabled}) async {}
-}
-
 class FakeWatchCompanionAdapter implements WatchCompanionAdapter {
   List<WatchWristWorkout> wristWorkouts = [];
   WatchCompanionInfo? companionInfo;
-  WatchCycleContext? lastSentCycleContext;
 
   @override
   Future<bool> isSupported() async => true;
@@ -60,12 +21,6 @@ class FakeWatchCompanionAdapter implements WatchCompanionAdapter {
 
   @override
   Future<bool> sendCommand(WatchCommand command) async => true;
-
-  @override
-  Future<bool> sendCycleContext(WatchCycleContext context) async {
-    lastSentCycleContext = context;
-    return true;
-  }
 
   @override
   Stream<WatchMessage> get messageStream => const Stream.empty();
@@ -79,40 +34,23 @@ void main() {
   late FakeHealthPlatformAdapter healthAdapter;
   late FakeWatchCompanionAdapter watchAdapter;
   late FakeActivityRepository activityRepo;
-  late FakeCycleRepository cycleRepo;
   late WearableWorkoutSyncService service;
 
   setUp(() {
     healthAdapter = FakeHealthPlatformAdapter();
     watchAdapter = FakeWatchCompanionAdapter();
     activityRepo = FakeActivityRepository();
-    cycleRepo = FakeCycleRepository();
     service = WearableWorkoutSyncService(
       healthAdapter: healthAdapter,
       watchAdapter: watchAdapter,
       activityRepository: activityRepo,
-      cycleRepository: cycleRepo,
     );
   });
 
   group('WearableWorkoutSyncService', () {
     test(
-      'syncs completed workout from Garmin Connect and tags cycle phase',
+      'syncs a completed workout from Garmin Connect into an activity',
       () async {
-        // Setup a logged cycle so the user has an active cycle phase
-        // Period started 7 days ago -> currently in Follicular phase
-        final today = LocalDate.today();
-        final periodStart = today.addDays(-7);
-        cycleRepo.records.add(
-          CycleRecord(
-            id: 'cycle-1',
-            periodStart: periodStart,
-            periodEnd: periodStart.addDays(4),
-            createdAt: DateTime.now().toUtc(),
-            updatedAt: DateTime.now().toUtc(),
-          ),
-        );
-
         final workoutStart = DateTime.now().toUtc().subtract(
           const Duration(hours: 2),
         );
@@ -151,7 +89,6 @@ void main() {
         final details = saved.workoutDetails! as WearableWorkoutDetails;
         expect(details.wearableSource, 'Garmin Connect');
         expect(details.externalId, 'garmin-outdoor-run-001');
-        expect(details.cyclePhase, 'Follicular');
         expect(details.caloriesBurnedKcal, 480.0);
       },
     );

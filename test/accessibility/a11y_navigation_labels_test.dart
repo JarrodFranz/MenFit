@@ -8,7 +8,7 @@ import 'harness/a11y_checks.dart';
 import 'harness/a11y_driver.dart';
 import 'harness/a11y_findings.dart';
 
-/// The six-tab bottom bar, at the widths and text scales it actually
+/// The five-tab bottom bar, at the widths and text scales it actually
 /// breaks at.
 ///
 /// 98 of the audit's distinct mid-word wraps traced to this one widget:
@@ -49,11 +49,6 @@ void main() {
       icon: Icons.restaurant_outlined,
       selectedIcon: Icons.restaurant,
       label: 'Nutrition',
-    ),
-    AdaptiveDestination(
-      icon: Icons.favorite_outline,
-      selectedIcon: Icons.favorite,
-      label: 'Cycle',
     ),
     AdaptiveDestination(
       icon: Icons.spa_outlined,
@@ -157,7 +152,7 @@ void main() {
       labelBehavior(tester),
       NavigationDestinationLabelBehavior.alwaysShow,
       reason:
-          'Six labels fit comfortably on a reference phone at the default '
+          'Five labels fit comfortably on a reference phone at the default '
           'text size. Hiding them here would be a regression, not a fix.',
     );
     for (final destination in destinations) {

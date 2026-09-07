@@ -15,9 +15,9 @@ import 'package:drift/drift.dart';
 /// relational join table isn't warranted yet; there are no per-symptom
 /// queries today. Revisit if that changes.
 ///
-/// S3-tier data (`knowledge/engineering/security_and_privacy.md`): same
-/// handling as `cycle_records.dart` — never logged, hard-deleted (not
-/// soft), wiped first in the "Delete my data" flow.
+/// S3-tier data (`knowledge/engineering/security_and_privacy.md`): never
+/// logged, hard-deleted (not soft), wiped first in the "Delete my data"
+/// flow.
 @TableIndex(name: 'idx_daily_checkins_day', columns: {#day}, unique: true)
 class DailyCheckins extends Table {
   /// Client-generated UUIDv7.
@@ -54,9 +54,9 @@ class DailyCheckins extends Table {
 
   /// UTC milliseconds since epoch; null while the row is live. Kept for
   /// column-shape consistency with other tables, but
-  /// `DriftWellbeingRepository.deleteCheckin` hard-deletes instead (S3, same
-  /// reasoning as `cycle_records.dart#deletedAt`) — should always read
-  /// `null`.
+  /// `DriftWellbeingRepository.deleteCheckin` hard-deletes instead (S3: a
+  /// "deleted" health row that is still forensically recoverable on-device
+  /// is not deleted) — should always read `null`.
   IntColumn get deletedAt => integer().nullable()();
 
   /// One of `'local'`, `'pending'`, `'synced'` (outbox/sync status; see ADR

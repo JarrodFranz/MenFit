@@ -96,27 +96,5 @@ void main() {
       expect(parsed.samples.length, 2);
       expect(parsed.samples.first.heartRate, 145);
     });
-
-    test('WatchCycleContext serialization round-trip', () {
-      const context = WatchCycleContext(
-        phaseName: 'Follicular',
-        cycleDayNumber: 8,
-        daysUntilNextPeriod: 20,
-        advice: 'Energy begins rising as estrogen increases.',
-      );
-
-      final json = context.toJson();
-      expect(json['type'], 'cycle_context');
-      expect(json['phaseName'], 'Follicular');
-      expect(json['cycleDayNumber'], 8);
-      expect(json['daysUntilNextPeriod'], 20);
-
-      final parsed = WatchMessage.fromJson(json) as WatchCycleContext?;
-      expect(parsed, isNotNull);
-      expect(parsed!.phaseName, 'Follicular');
-      expect(parsed.cycleDayNumber, 8);
-      expect(parsed.daysUntilNextPeriod, 20);
-      expect(parsed.advice, contains('estrogen'));
-    });
   });
 }

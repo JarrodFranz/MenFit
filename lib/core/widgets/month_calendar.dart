@@ -43,7 +43,7 @@ typedef MonthCalendarCellBuilder = MonthCalendarCell Function(
   MonthCalendarDay day,
 );
 
-/// The month grid shared by the cycle and wellbeing calendars: a
+/// The month grid the wellbeing calendar is built on: a
 /// month/year header with previous/next arrows and a jump-to-today button,
 /// a weekday header row, and a six-row (or five-row) grid of tappable day
 /// cells with horizontal-swipe month navigation.

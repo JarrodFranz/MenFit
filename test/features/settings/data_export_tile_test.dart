@@ -24,11 +24,11 @@ class _StubController extends DataExportController {
 
   @override
   Future<DataExportState> export({
-    required bool includeCycleAndWellbeing,
+    required bool includeSensitiveHealth,
     DataExportFileSaver? saver,
   }) async {
     calls++;
-    askedForCycleAndWellbeing = includeCycleAndWellbeing;
+    askedForCycleAndWellbeing = includeSensitiveHealth;
     state = const DataExportInProgress();
     final result = await gate.future;
     state = result;
@@ -167,11 +167,11 @@ void main() {
     await tester.tap(find.text('Export my data'));
     await tester.pumpAndSettle();
     await tester.ensureVisible(
-      find.byKey(const Key('dataExportIncludeCycleAndWellbeing')),
+      find.byKey(const Key('dataExportIncludeSensitiveHealth')),
     );
     await tester.pumpAndSettle();
     await tester.tap(
-      find.byKey(const Key('dataExportIncludeCycleAndWellbeing')),
+      find.byKey(const Key('dataExportIncludeSensitiveHealth')),
     );
     await tester.pump();
     await tester.tap(find.byKey(const Key('dataExportNoticeAccept')));

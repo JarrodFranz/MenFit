@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:menfit_app/app/router/routes.dart';
-import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/core/domain/units.dart';
 import 'package:menfit_app/core/platform/location/location_adapter.dart';
 import 'package:menfit_app/core/platform/location/location_providers.dart';
@@ -18,8 +17,6 @@ import 'package:menfit_app/features/activity/presentation/recording/audio_cues_s
 import 'package:menfit_app/features/activity/presentation/recording/recording_controller.dart';
 import 'package:menfit_app/features/activity/presentation/widgets/live_recording_map.dart';
 import 'package:menfit_app/features/activity/presentation/widgets/workout_celebration_dialog.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
-import 'package:menfit_app/features/cycle/presentation/cycle_records_controller.dart';
 import 'package:menfit_app/features/routes/domain/elevation_format.dart';
 import 'package:menfit_app/features/routes/domain/saved_route.dart';
 import 'package:menfit_app/features/routes/routes_providers.dart';
@@ -113,17 +110,6 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
         final activityId = next.savedActivityId!;
         final activityRepo = ref.read(activityRepositoryProvider);
         final priorRecords = ref.read(personalRecordsProvider).value;
-        final cycleRecords =
-            ref.read(cycleRecordsControllerProvider).value ?? const [];
-        final today = LocalDate.today();
-        final cyclePhase = cycleRecords.isEmpty
-            ? CyclePhase.none
-            : CyclePredictionEngine()
-                  .analyze(
-                    records: cycleRecords,
-                    today: today,
-                  )
-                  .currentPhase;
 
         unawaited(() async {
           final activity = await activityRepo.getActivity(activityId);
@@ -132,13 +118,11 @@ class _RecordScreenState extends ConsumerState<RecordScreen> {
                 .evaluateCardioMilestones(
                   newActivity: activity,
                   priorRecords: priorRecords,
-                  phase: cyclePhase,
                 );
             await WorkoutCelebrationDialog.show(
               context,
               activity: activity,
               milestones: milestones,
-              phase: cyclePhase,
               onViewDetails: () {
                 ActivityDetailRouteData(activityId).go(context);
               },

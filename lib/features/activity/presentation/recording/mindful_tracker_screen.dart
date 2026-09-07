@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:menfit_app/app/router/routes.dart';
-import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/core/utils/text_measure.dart';
 import 'package:menfit_app/features/activity/domain/activity.dart';
 import 'package:menfit_app/features/activity/domain/milestone_evaluator.dart';
@@ -12,8 +11,6 @@ import 'package:menfit_app/features/activity/domain/pace_format.dart';
 import 'package:menfit_app/features/activity/domain/session_duration.dart';
 import 'package:menfit_app/features/activity/presentation/recording/mindful_tracker_controller.dart';
 import 'package:menfit_app/features/activity/presentation/widgets/workout_celebration_dialog.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
-import 'package:menfit_app/features/cycle/presentation/cycle_records_controller.dart';
 
 /// Mindful session tracker tailored for Yoga and Pilates.
 ///
@@ -141,17 +138,6 @@ class _MindfulTrackerScreenState extends ConsumerState<MindfulTrackerScreen> {
 
     final controller = ref.read(mindfulTrackerControllerProvider.notifier)
       ..setNotes(_notesController.text.trim());
-    final cycleRecords =
-        ref.read(cycleRecordsControllerProvider).value ?? const [];
-    final today = LocalDate.today();
-    final cyclePhase = cycleRecords.isEmpty
-        ? CyclePhase.none
-        : CyclePredictionEngine()
-              .analyze(
-                records: cycleRecords,
-                today: today,
-              )
-              .currentPhase;
 
     final activity = await controller.finishSession(
       elapsedOverride: elapsedOverride,
@@ -161,13 +147,11 @@ class _MindfulTrackerScreenState extends ConsumerState<MindfulTrackerScreen> {
       final milestones = const MilestoneEvaluator().evaluateGenericMilestones(
         newActivity: activity,
         customSubtitle: '$style $typeLabel session completed 🧘‍♀️',
-        phase: cyclePhase,
       );
       await WorkoutCelebrationDialog.show(
         context,
         activity: activity,
         milestones: milestones,
-        phase: cyclePhase,
         primaryMetricLabel: 'Style',
         primaryMetricValue: style,
         onViewDetails: () {

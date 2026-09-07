@@ -32,7 +32,7 @@ class DataImportNoticeDialog extends StatelessWidget {
       16,
     );
     final summary = document.summary;
-    final hasCycle = document.includesCycleAndWellbeingData;
+    final hasHealthCheckins = document.includesSensitiveHealthData;
 
     return AlertDialog(
       key: const Key('dataImportNoticeDialog'),
@@ -67,8 +67,8 @@ class DataImportNoticeDialog extends StatelessWidget {
                     ),
                     SizedBox(height: tokens.spacingXs),
                     _InfoRow(
-                      label: 'Cycle & Wellbeing',
-                      value: hasCycle ? 'Included' : 'Not included',
+                      label: 'Health check-ins',
+                      value: hasHealthCheckins ? 'Included' : 'Not included',
                     ),
                   ],
                 ),

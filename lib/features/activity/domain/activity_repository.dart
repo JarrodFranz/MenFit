@@ -114,8 +114,7 @@ abstract interface class ActivityRepository {
   /// [deleteActivity], this is a hard delete even though normal single-
   /// activity deletion is soft (ADR 004): "Delete my data" must leave
   /// nothing forensically recoverable, the same reasoning
-  /// `features/cycle/data/drift_cycle_repository.dart#deleteAllData` and
-  /// every other feature's `deleteAllData` already apply. Activities carry
+  /// every other feature's `deleteAllData` already applies. Activities carry
   /// GPS routes — location data is S3-tier
   /// (`knowledge/engineering/security_and_privacy.md`) even though this
   /// repository's day-to-day deletes are soft; the full-wipe flow doesn't

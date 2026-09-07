@@ -6,7 +6,6 @@ import 'package:menfit_app/core/platform/wearables/ble_heart_rate_adapter.dart';
 import 'package:menfit_app/core/platform/wearables/ble_heart_rate_parser.dart';
 import 'package:menfit_app/core/theme/app_theme.dart';
 import 'package:menfit_app/features/activity/activity_providers.dart';
-import 'package:menfit_app/features/cycle/cycle_providers.dart';
 import 'package:menfit_app/features/wearables/ble_providers.dart';
 import 'package:menfit_app/features/wearables/presentation/wearables_screen.dart';
 import 'package:menfit_app/features/wearables/wearables_providers.dart';
@@ -27,7 +26,6 @@ void main() {
 
     final fakeActivityRepo = FakeActivityRepository();
     final fakeWatchAdapter = FakeWatchCompanionAdapter();
-    final fakeCycleRepo = FakeCycleRepository();
     final fakeHealthAdapter = FakeHealthPlatformAdapter();
     final fakeBleAdapter = FakeBleHeartRateAdapter();
 
@@ -36,7 +34,6 @@ void main() {
         overrides: [
           activityRepositoryProvider.overrideWithValue(fakeActivityRepo),
           watchCompanionAdapterProvider.overrideWithValue(fakeWatchAdapter),
-          cycleRepositoryProvider.overrideWithValue(fakeCycleRepo),
           healthPlatformAdapterProvider.overrideWithValue(fakeHealthAdapter),
           bleHeartRateAdapterProvider.overrideWithValue(fakeBleAdapter),
         ],
@@ -56,7 +53,6 @@ void main() {
 
     // Verify Companion Card
     expect(find.text('Watch Companion App'), findsOneWidget);
-    expect(find.text('Send Cycle Phase'), findsOneWidget);
     expect(find.text('Sync Wrist Workouts'), findsOneWidget);
 
     // Verify BLE Card
@@ -89,7 +85,6 @@ void main() {
 
     final fakeActivityRepo = FakeActivityRepository();
     final fakeWatchAdapter = FakeWatchCompanionAdapter();
-    final fakeCycleRepo = FakeCycleRepository();
     final fakeHealthAdapter = FakeHealthPlatformAdapter();
     final fakeBleAdapter = FakeBleHeartRateAdapter();
 
@@ -98,7 +93,6 @@ void main() {
         overrides: [
           activityRepositoryProvider.overrideWithValue(fakeActivityRepo),
           watchCompanionAdapterProvider.overrideWithValue(fakeWatchAdapter),
-          cycleRepositoryProvider.overrideWithValue(fakeCycleRepo),
           healthPlatformAdapterProvider.overrideWithValue(fakeHealthAdapter),
           bleHeartRateAdapterProvider.overrideWithValue(fakeBleAdapter),
         ],

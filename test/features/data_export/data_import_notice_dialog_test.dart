@@ -8,7 +8,7 @@ void main() {
   final testDocument = DataExportDocument(
     schemaVersion: 24,
     exportedAt: DateTime.utc(2026, 9, 4, 12),
-    includesCycleAndWellbeingData: true,
+    includesSensitiveHealthData: true,
     tables: {
       'weight_logs': [
         {'id': 'w-1', 'weight_kg': 60.0},
@@ -67,7 +67,7 @@ void main() {
     );
     expect(find.text('Total records'), findsOneWidget);
     expect(find.text('2'), findsOneWidget);
-    expect(find.text('Cycle & Wellbeing'), findsOneWidget);
+    expect(find.text('Health check-ins'), findsOneWidget);
     expect(find.text('Included'), findsOneWidget);
   });
 

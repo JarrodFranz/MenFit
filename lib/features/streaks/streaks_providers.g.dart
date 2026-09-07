@@ -183,9 +183,8 @@ String _$recoveryRepositoryHash() =>
 
 /// Recomputes a [StreakResult] on every change to activities, recovery
 /// days, protecting flare days (F1: unwindowed — see
-/// `WellbeingRepository.watchProtectingFlareDays`'s dartdoc), cycle
-/// records, the streak-pausing preference, or the local calendar day
-/// rolling over. Watches `activity`'s, `cycle`'s, and `wellbeing`'s
+/// `WellbeingRepository.watchProtectingFlareDays`'s dartdoc), or the local
+/// calendar day rolling over. Watches `activity`'s and `wellbeing`'s
 /// composition surfaces (never their `data/` — ADR 007) plus this
 /// feature's own [recoveryRepositoryProvider].
 ///
@@ -211,9 +210,8 @@ final streakResultProvider = StreakResultProvider._();
 
 /// Recomputes a [StreakResult] on every change to activities, recovery
 /// days, protecting flare days (F1: unwindowed — see
-/// `WellbeingRepository.watchProtectingFlareDays`'s dartdoc), cycle
-/// records, the streak-pausing preference, or the local calendar day
-/// rolling over. Watches `activity`'s, `cycle`'s, and `wellbeing`'s
+/// `WellbeingRepository.watchProtectingFlareDays`'s dartdoc), or the local
+/// calendar day rolling over. Watches `activity`'s and `wellbeing`'s
 /// composition surfaces (never their `data/` — ADR 007) plus this
 /// feature's own [recoveryRepositoryProvider].
 ///
@@ -244,9 +242,8 @@ final class StreakResultProvider
     with $FutureModifier<StreakResult>, $StreamProvider<StreakResult> {
   /// Recomputes a [StreakResult] on every change to activities, recovery
   /// days, protecting flare days (F1: unwindowed — see
-  /// `WellbeingRepository.watchProtectingFlareDays`'s dartdoc), cycle
-  /// records, the streak-pausing preference, or the local calendar day
-  /// rolling over. Watches `activity`'s, `cycle`'s, and `wellbeing`'s
+  /// `WellbeingRepository.watchProtectingFlareDays`'s dartdoc), or the local
+  /// calendar day rolling over. Watches `activity`'s and `wellbeing`'s
   /// composition surfaces (never their `data/` — ADR 007) plus this
   /// feature's own [recoveryRepositoryProvider].
   ///
@@ -292,7 +289,7 @@ final class StreakResultProvider
   }
 }
 
-String _$streakResultHash() => r'fa4f6006be5648ad0e420da75f772f3cb5cd7c4c';
+String _$streakResultHash() => r'11bff57565cd27b27cce453360193d17d1c360d7';
 
 /// Watches every logged recovery day as full records (day + note),
 /// unwindowed — a thin pass-through onto
@@ -361,17 +358,16 @@ String _$recoveryDayEntriesHash() =>
 
 /// Every day the streak engine treats as protected recovery, as of today —
 /// `domain/streak_assembly.dart`'s [assembleProtectedDays] over the same
-/// three sources [streakResult] folds into its own `protectedDays`.
+/// two sources [streakResult] folds into its own `protectedDays`.
 ///
 /// Exposed on the composition surface (ADR 007) because "was this day
 /// protected" is a question other features legitimately have to ask:
-/// `achievements` needs it so a period week cannot void a week of its
-/// cycle-aware consistency ladder
+/// `achievements` needs it so a recovery week cannot void a week of its
+/// consistency ladder
 /// (`features/achievements/domain/weekly_walking_rule.dart`). Handing over
 /// the answer rather than the sources is the point — a second feature
-/// re-deriving "protected" from recovery days, flares and the pausing
-/// toggle would be a second definition, and the two would eventually
-/// disagree.
+/// re-deriving "protected" from recovery days and flares would be a second
+/// definition, and the two would eventually disagree.
 ///
 /// Same midnight-rollover handling as [streakResult]: a dependency-only
 /// watch on [localDayProvider] forces a full resubscribe at local midnight,
@@ -382,17 +378,16 @@ final protectedDaysProvider = ProtectedDaysProvider._();
 
 /// Every day the streak engine treats as protected recovery, as of today —
 /// `domain/streak_assembly.dart`'s [assembleProtectedDays] over the same
-/// three sources [streakResult] folds into its own `protectedDays`.
+/// two sources [streakResult] folds into its own `protectedDays`.
 ///
 /// Exposed on the composition surface (ADR 007) because "was this day
 /// protected" is a question other features legitimately have to ask:
-/// `achievements` needs it so a period week cannot void a week of its
-/// cycle-aware consistency ladder
+/// `achievements` needs it so a recovery week cannot void a week of its
+/// consistency ladder
 /// (`features/achievements/domain/weekly_walking_rule.dart`). Handing over
 /// the answer rather than the sources is the point — a second feature
-/// re-deriving "protected" from recovery days, flares and the pausing
-/// toggle would be a second definition, and the two would eventually
-/// disagree.
+/// re-deriving "protected" from recovery days and flares would be a second
+/// definition, and the two would eventually disagree.
 ///
 /// Same midnight-rollover handling as [streakResult]: a dependency-only
 /// watch on [localDayProvider] forces a full resubscribe at local midnight,
@@ -408,17 +403,16 @@ final class ProtectedDaysProvider
     with $FutureModifier<Set<LocalDate>>, $StreamProvider<Set<LocalDate>> {
   /// Every day the streak engine treats as protected recovery, as of today —
   /// `domain/streak_assembly.dart`'s [assembleProtectedDays] over the same
-  /// three sources [streakResult] folds into its own `protectedDays`.
+  /// two sources [streakResult] folds into its own `protectedDays`.
   ///
   /// Exposed on the composition surface (ADR 007) because "was this day
   /// protected" is a question other features legitimately have to ask:
-  /// `achievements` needs it so a period week cannot void a week of its
-  /// cycle-aware consistency ladder
+  /// `achievements` needs it so a recovery week cannot void a week of its
+  /// consistency ladder
   /// (`features/achievements/domain/weekly_walking_rule.dart`). Handing over
   /// the answer rather than the sources is the point — a second feature
-  /// re-deriving "protected" from recovery days, flares and the pausing
-  /// toggle would be a second definition, and the two would eventually
-  /// disagree.
+  /// re-deriving "protected" from recovery days and flares would be a second
+  /// definition, and the two would eventually disagree.
   ///
   /// Same midnight-rollover handling as [streakResult]: a dependency-only
   /// watch on [localDayProvider] forces a full resubscribe at local midnight,
@@ -449,7 +443,7 @@ final class ProtectedDaysProvider
   }
 }
 
-String _$protectedDaysHash() => r'7bfb7fdbc1855fd1f5af3cfd887a8988bda41788';
+String _$protectedDaysHash() => r'd021cd32907a945535d926fa5cda1b92e7f9700b';
 
 /// The per-source breakdown of what's protecting *today* specifically —
 /// `domain/today_protection_sources.dart`'s [TodayProtectionSources],
@@ -535,4 +529,4 @@ final class TodayProtectionSourcesProvider
 }
 
 String _$todayProtectionSourcesHash() =>
-    r'f7ea07fc233d7ed050cf1d1127bc370c9f9f1fa5';
+    r'aecec189bd5f5f10afd8c19f8867c0d9222ffa54';

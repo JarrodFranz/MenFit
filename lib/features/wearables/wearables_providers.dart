@@ -1,12 +1,8 @@
 import 'dart:async';
 
-import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/core/platform/health/health_providers.dart';
 import 'package:menfit_app/core/platform/wearables/watch_companion_adapter.dart';
-import 'package:menfit_app/core/platform/wearables/watch_companion_protocol.dart';
 import 'package:menfit_app/features/activity/activity_providers.dart';
-import 'package:menfit_app/features/cycle/cycle_providers.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
 import 'package:menfit_app/features/wearables/domain/wearable_workout_sync_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -23,7 +19,6 @@ WearableWorkoutSyncService wearableWorkoutSyncService(Ref ref) {
     healthAdapter: ref.watch(healthPlatformAdapterProvider),
     watchAdapter: ref.watch(watchCompanionAdapterProvider),
     activityRepository: ref.watch(activityRepositoryProvider),
-    cycleRepository: ref.watch(cycleRepositoryProvider),
   );
 }
 
@@ -94,35 +89,6 @@ class WearablesController extends _$WearablesController {
         syncedAt: DateTime.now().toUtc(),
         errorMessage: e.toString(),
       );
-    }
-  }
-
-  /// Sends the user's current menstrual cycle phase to the connected watch.
-  Future<bool> sendCycleContextToWatch() async {
-    try {
-      final cycleRepo = ref.read(cycleRepositoryProvider);
-      final records = await cycleRepo.getRecords();
-      final today = LocalDate.today();
-      final engine = CyclePredictionEngine();
-
-      final status = engine.getDayStatus(
-        date: today,
-        records: records,
-        today: today,
-      );
-      final summary = engine.analyze(records: records, today: today);
-
-      final context = WatchCycleContext(
-        phaseName: status.phase.label,
-        cycleDayNumber: summary.currentCycleDay ?? 1,
-        daysUntilNextPeriod: summary.daysUntilNextPeriod,
-        advice: status.phase.plainDescription,
-      );
-
-      final watchAdapter = ref.read(watchCompanionAdapterProvider);
-      return await watchAdapter.sendCycleContext(context);
-    } on Object catch (_) {
-      return false;
     }
   }
 }

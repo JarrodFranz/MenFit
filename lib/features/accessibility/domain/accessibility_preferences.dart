@@ -54,7 +54,7 @@ class AccessibilityPreferences {
   final ColorBlindnessMode colorBlindness;
 
   /// Whether high contrast (near-black text roles, 1.5px borders) is
-  /// enabled. Not a WCAG AAA claim: `AppTokens` (cycle phase, intensity,
+  /// enabled. Not a WCAG AAA claim: `AppTokens` (workout intensity,
   /// success/warning) are untouched by it — see
   /// `knowledge/engineering/accessibility.md`.
   final bool highContrast;
@@ -74,10 +74,10 @@ class AccessibilityPreferences {
   ///
   /// Applied through the theme (`core/theme/app_theme.dart`), so it covers
   /// buttons, chips, switches, checkboxes, radios and icon buttons at once.
-  /// The one thing it cannot reach is the cycle calendar's seven-column
-  /// month grid below roughly 400 dp of usable width, where a 48 dp-wide
-  /// cell does not fit on the screen at all — see
-  /// `features/cycle/presentation/widgets/cycle_calendar_view.dart`.
+  /// The one thing it cannot reach is the wellbeing calendar's
+  /// seven-column month grid below roughly 400 dp of usable width, where a
+  /// 48 dp-wide cell does not fit on the screen at all — see
+  /// `core/widgets/month_calendar.dart`.
   final bool largeTouchTargets;
 
   /// Whether tactile haptic vibrations should trigger on timer intervals

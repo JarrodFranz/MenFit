@@ -33,14 +33,14 @@ class DriftDataExporter implements DataExportSource {
 
   @override
   Future<Map<String, List<Map<String, Object?>>>> readTables({
-    required bool includeCycleAndWellbeing,
+    required bool includeSensitiveHealth,
   }) async {
     try {
       final exported = <String, List<Map<String, Object?>>>{};
       for (final table in _db.allTables) {
         final name = table.actualTableName;
-        final isOptIn = cycleAndWellbeingTables.contains(name);
-        if (isOptIn && !includeCycleAndWellbeing) {
+        final isOptIn = sensitiveHealthTables.contains(name);
+        if (isOptIn && !includeSensitiveHealth) {
           continue;
         }
         // A raw `SELECT *`, not the generated data class: the export is
@@ -60,8 +60,8 @@ class DriftDataExporter implements DataExportSource {
       return exported;
     } on Object catch (error, stackTrace) {
       // Static message, no table name and no row content: an exception
-      // message can reach a log, and this one is built while holding cycle
-      // and location data (security_and_privacy.md rule 3).
+      // message can reach a log, and this one is built while holding
+      // health and location data (security_and_privacy.md rule 3).
       throw StorageException(
         message: 'Failed to read local data for export',
         // Its own key rather than the default `error.storage`: nothing was

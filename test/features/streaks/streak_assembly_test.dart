@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/features/activity/domain/activity.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_record.dart';
 import 'package:menfit_app/features/streaks/domain/streak_assembly.dart';
 import 'package:menfit_app/features/streaks/domain/streak_engine.dart';
 
@@ -23,34 +22,16 @@ void main() {
     );
   }
 
-  CycleRecord record({
-    required LocalDate start,
-    LocalDate? end,
-    String id = 'r1',
-  }) {
-    return CycleRecord(
-      id: id,
-      periodStart: start,
-      periodEnd: end,
-      createdAt: DateTime.utc(2026),
-      updatedAt: DateTime.utc(2026),
-    );
-  }
-
   StreakResult assemble({
     List<Activity> activities = const [],
     Set<LocalDate> recoveryDays = const {},
     Set<LocalDate> flareProtectedDays = const {},
-    List<CycleRecord> records = const [],
-    bool pausingEnabled = true,
     LocalDate? asOf,
   }) {
     return assembleStreakResult(
       activities: activities,
       recoveryDays: recoveryDays,
       flareProtectedDays: flareProtectedDays,
-      records: records,
-      pausingEnabled: pausingEnabled,
       today: asOf ?? today,
     );
   }
@@ -82,73 +63,20 @@ void main() {
     },
   );
 
-  test(
-    'pausingEnabled toggles whether a logged period bridges or breaks the '
-    'streak',
-    () {
-      // Satisfied 5 days ago, a 4-day logged period immediately after it
-      // (days -4..-1), satisfied again today. With pausing on, the period
-      // bridges the two satisfied days into one streak; with it off, the
-      // same days are plain unsatisfied gaps that break the streak.
-      final activities = [
-        activity(startedAt: today.addDays(-5).toLocalNoonDateTime()),
-        activity(startedAt: today.toLocalNoonDateTime(), id: 'a2'),
-      ];
-      final records = [
-        record(start: today.addDays(-4), end: today.addDays(-1)),
-      ];
-
-      final withPausing = assemble(activities: activities, records: records);
-      final withoutPausing = assemble(
-        activities: activities,
-        records: records,
-        pausingEnabled: false,
-      );
-
-      expect(withPausing.currentStreak, 2); // today + day -5, bridged
-      expect(withoutPausing.currentStreak, 1); // just today; day -1 breaks it
-    },
-  );
-
-  test(
-    'B5: an ongoing period (null end) covering today keeps today protected '
-    'and preserves the streak through the real assembly chain - guards an '
-    'off-by-one in the ongoing-period-to-today cap that would silently '
-    'kill the protected card',
-    () {
-      // Satisfied 5 days ago, then an ongoing period (no end logged yet)
-      // starting 4 days ago - it must cover every day from its start
-      // through *today inclusive*, bridging the streak and marking today
-      // protected.
-      final activities = [
-        activity(startedAt: today.addDays(-5).toLocalNoonDateTime()),
-      ];
-      final records = [record(start: today.addDays(-4))]; // periodEnd: null
-
-      final result = assemble(activities: activities, records: records);
-
-      expect(result.todayStatus, DayStatus.protectedRecovery);
-      expect(result.currentStreak, 1); // day -5, bridged all the way through
-    },
-  );
-
-  test('earliest range spans activities, period records, and flares', () {
+  test('earliest range spans activities, recovery days and flares', () {
     final oldActivityDay = today.addDays(-10);
     final activities = [
       activity(startedAt: oldActivityDay.toLocalNoonDateTime()),
       activity(startedAt: today.toLocalNoonDateTime(), id: 'a2'),
     ];
-    final oldPeriodStart = today.addDays(-20);
-    final records = [
-      record(start: oldPeriodStart, end: today.addDays(-19)),
-    ];
+    final olderRecoveryDay = {today.addDays(-20)};
     final olderFlareDay = {today.addDays(-25)};
 
     // Should not throw and should reflect today's satisfied activity even
-    // though the period and the flare both predate every activity.
+    // though the recovery day and the flare both predate every activity.
     final result = assemble(
       activities: activities,
-      records: records,
+      recoveryDays: olderRecoveryDay,
       flareProtectedDays: olderFlareDay,
     );
     expect(result.todaySatisfied, isTrue);
@@ -168,14 +96,13 @@ void main() {
       expect(result.currentStreak, 2);
     });
 
-    test('recovery-day protection applies even when pausing is disabled', () {
+    test('a recovery day protects independently of any flare', () {
       final result = assemble(
         activities: [
           activity(startedAt: today.addDays(-2).toLocalNoonDateTime()),
           activity(startedAt: today.toLocalNoonDateTime(), id: 'a2'),
         ],
         recoveryDays: {today.addDays(-1)},
-        pausingEnabled: false,
       );
       expect(result.currentStreak, 2);
     });
@@ -260,56 +187,9 @@ void main() {
           ],
           recoveryDays: {doubleCoveredDay},
           flareProtectedDays: {doubleCoveredDay},
-          records: [record(start: doubleCoveredDay, end: doubleCoveredDay)],
         );
         expect(result.todaySatisfied, isTrue);
         expect(result.currentStreak, 2); // both days count as satisfied
-      },
-    );
-  });
-
-  group('toggle off: period days stop protecting, flare days still do', () {
-    // Same shape for both cases: satisfied two days ago, a single day gap
-    // (day -1), satisfied today.
-    List<Activity> gapActivities() => [
-      activity(startedAt: today.addDays(-2).toLocalNoonDateTime()),
-      activity(startedAt: today.toLocalNoonDateTime(), id: 'a2'),
-    ];
-
-    test(
-      'with pausing disabled, a period-covered gap day is NOT protected - '
-      'it still breaks the streak',
-      () {
-        final withPausing = assemble(
-          activities: gapActivities(),
-          records: [
-            record(start: today.addDays(-1), end: today.addDays(-1)),
-          ],
-        );
-        final withoutPausing = assemble(
-          activities: gapActivities(),
-          records: [
-            record(start: today.addDays(-1), end: today.addDays(-1)),
-          ],
-          pausingEnabled: false,
-        );
-
-        expect(withPausing.currentStreak, 2); // bridged via the period day
-        expect(withoutPausing.currentStreak, 1); // today only; the gap broke it
-      },
-    );
-
-    test(
-      'with pausing disabled, a flare-covered gap day IS still protected - '
-      'flare protection is independent of the period toggle',
-      () {
-        final withoutPausing = assemble(
-          activities: gapActivities(),
-          flareProtectedDays: {today.addDays(-1)},
-          pausingEnabled: false,
-        );
-
-        expect(withoutPausing.currentStreak, 2); // still bridged via the flare
       },
     );
   });

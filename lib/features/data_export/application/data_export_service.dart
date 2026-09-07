@@ -44,22 +44,22 @@ class DataExportService {
   final DateTime Function() clock;
   final DataExportEncoder encode;
 
-  /// Builds the export. [includeCycleAndWellbeing] carries the user's answer
+  /// Builds the export. [includeSensitiveHealth] carries the user's answer
   /// to the notice dialog's checkbox all the way down to which tables are
   /// read — the flag is never defaulted to true anywhere on this path.
   ///
   /// Throws `StorageException` if the database cannot be read.
   Future<DataExportResult> export({
-    required bool includeCycleAndWellbeing,
+    required bool includeSensitiveHealth,
   }) async {
     final tables = await source.readTables(
-      includeCycleAndWellbeing: includeCycleAndWellbeing,
+      includeSensitiveHealth: includeSensitiveHealth,
     );
 
     final document = DataExportDocument(
       schemaVersion: source.schemaVersion,
       exportedAt: clock().toUtc(),
-      includesCycleAndWellbeingData: includeCycleAndWellbeing,
+      includesSensitiveHealthData: includeSensitiveHealth,
       tables: tables,
     );
 

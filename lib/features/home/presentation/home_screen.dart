@@ -21,7 +21,7 @@ import 'package:menfit_app/features/wellbeing/wellbeing_widgets.dart';
 /// "Home dashboard shipped rules"): steps, water, macros, this week's
 /// volume, the most recent badge, and a plain "today" summary — the numbers
 /// a user opens the app to glance at. It deliberately no longer carries
-/// launcher tiles for Nutrition, Cycle, Progress, the strength tracker or
+/// launcher tiles for Nutrition, Progress, the strength tracker or
 /// GPS recording: every one of those is a nav-bar destination or one tap
 /// inside a card here, and a tile that duplicates a tab is a second, worse
 /// route to the same place.
@@ -31,8 +31,8 @@ import 'package:menfit_app/features/wellbeing/wellbeing_widgets.dart';
 /// today is protected, opens the Today sheet), and [CheckinCard] removes
 /// itself once today's check-in is logged or dismissed.
 ///
-/// Nothing on this screen names a cycle phase — see
-/// `domain/home_today_overview.dart` for the ruling that binds it.
+/// See `domain/home_today_overview.dart` for the ruling that binds what
+/// this screen may and may not say about a user's health data.
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -79,9 +79,8 @@ class HomeScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Decides whether a "Your Cycle in Motion" recap is
-                      // due and, if so, navigates to it - renders nothing
-                      // itself.
+                      // Decides whether a monthly recap is due and, if so,
+                      // navigates to it - renders nothing itself.
                       const RecapTriggerListener(),
                       const HomeWelcomeHeader(),
                       SizedBox(height: tokens.spacingMd),

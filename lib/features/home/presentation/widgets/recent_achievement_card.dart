@@ -17,10 +17,10 @@ import 'package:menfit_app/features/home/presentation/widgets/home_card.dart';
 ///
 /// Reads `badgeAwardsProvider` — the persisted awards alone — and
 /// deliberately **not** `badgeDisplayProgress`: that walks the user's
-/// entire history of activities, check-ins, water days and cycle records to
-/// work out what the data currently earns, which is a price the trophy case
-/// pays because it is showing the whole case. This card names one badge she
-/// has already been given, and an award is the one part of achievements
+/// entire history of activities, check-ins and water days to work out what
+/// the data currently earns, which is a price the trophy case pays because
+/// it is showing the whole case. This card names one badge the user has
+/// already been given, and an award is the one part of achievements
 /// that is stored precisely because it cannot be recomputed
 /// (`achievements_providers.dart`).
 ///
