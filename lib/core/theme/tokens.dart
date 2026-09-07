@@ -73,7 +73,7 @@ class AppTokens extends ThemeExtension<AppTokens> {
       ColorBlindnessMode.tritanopia =>
         isHc
             ? (
-                // High-contrast teal/crimson/orchid palette (avoids blue/yellow)
+                // High-contrast teal/coral/crimson palette (avoids blue/yellow)
                 isDark
                     ? const Color(0xFF5CE6BA)
                     : const Color(0xFF005C42), // Mint Green

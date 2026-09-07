@@ -65,8 +65,8 @@ class WelcomeStep extends StatelessWidget {
             ),
             SizedBox(height: tokens.spacingMd),
             Text(
-              'A running, fitness, and nutrition companion built around how '
-              "women's bodies actually train, recover, and change.",
+              'A training and nutrition companion built around how men '
+              'actually train, recover and progress.',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
           ],
@@ -528,7 +528,8 @@ class PrivacyStep extends StatelessWidget {
 
   static const List<String> _bullets = [
     'Your data stays on this device unless you choose to sync it.',
-    'Health and cycle data never leave your device without explicit consent.',
+    'Health and location data never leave your device without explicit '
+        'consent.',
     'You can delete your data at any time.',
   ];
 

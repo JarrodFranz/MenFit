@@ -72,7 +72,7 @@ class _RecapStoryScreenState extends ConsumerState<RecapStoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final style = ShareCardStyle.forTheme(ShareCardTheme.signatureOrchid);
+    final style = ShareCardStyle.forTheme(ShareCardTheme.forgeDark);
     final isLastSlide = _index == _slides.length - 1;
 
     return Scaffold(

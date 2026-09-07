@@ -9,7 +9,7 @@ import 'package:menfit_app/core/theme/tokens.dart';
 ///
 /// Text defaults to white — the story background is always a dark
 /// gradient (`RecapStoryScreen` uses
-/// `core/widgets/share_card_style.dart`'s `ShareCardTheme.signatureOrchid`,
+/// `core/widgets/share_card_style.dart`'s `ShareCardTheme.forgeDark`,
 /// the same immersive chrome Wave 2's share card and celebration dialog
 /// already use for this kind of surface, rather than the app's normal
 /// Material surface colors).

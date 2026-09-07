@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:menfit_app/core/theme/tokens.dart';
 import 'package:menfit_app/features/accessibility/domain/accessibility_preferences.dart';
 
-/// Builds the app's light and dark [ThemeData], seeded from an empowering
-/// lilac/orchid plum tone matching the brand runner crest. Deliberately avoids
-/// stereotypical aesthetics in favor of a polished, neutral Material 3 palette.
+/// Builds the app's light and dark [ThemeData], seeded from Forge burnt
+/// orange on charcoal — the brand's strength-first accent. Deliberately
+/// restrained: one warm accent over neutral Material 3 surfaces.
 abstract final class AppTheme {
-  static const Color _seed = Color(0xFF8F4C86);
+  static const Color _seed = Color(0xFFD84A1B);
 
   /// The bundled variable font used for all app text (see `assets/fonts/`).
   static const String fontFamily = 'Inter';
@@ -72,7 +72,7 @@ abstract final class AppTheme {
   /// Returns the theme seed color appropriate for [mode].
   ///
   /// For [ColorBlindnessMode.monochromacy], an achromatic slate gray seed is
-  /// used to eliminate purple/orchid tints across Material 3 surfaces.
+  /// used to eliminate coloured tints across Material 3 surfaces.
   /// For [ColorBlindnessMode.protanopia] and [ColorBlindnessMode.deuteranopia],
   /// the universally accessible Okabe-Ito blue seed (0xFF0072B2) is used.
   /// For [ColorBlindnessMode.tritanopia], an accessible dark cyan/teal seed
@@ -93,8 +93,8 @@ abstract final class AppTheme {
         accessibility.colorBlindness == ColorBlindnessMode.monochromacy;
     final seedScheme = ColorScheme.fromSeed(seedColor: seed);
 
-    // Provide crisp, high-contrast surfaces without muddy grey-plum or
-    // glaring pink tint.
+    // Provide crisp, high-contrast surfaces without a muddy grey or
+    // glaring tint pulled from the accent.
     final colorScheme = seedScheme.copyWith(
       primary: isMonochrome
           ? (accessibility.highContrast
@@ -116,7 +116,7 @@ abstract final class AppTheme {
       onSecondary: isMonochrome ? const Color(0xFFFFFFFF) : null,
       secondaryContainer: isMonochrome ? const Color(0xFFE8E8E8) : null,
       onSecondaryContainer: isMonochrome ? const Color(0xFF000000) : null,
-      surface: const Color(0xFFFFFFFF),
+      surface: const Color(0xFFFAF8F5),
       onSurface: accessibility.highContrast
           ? const Color(0xFF000000)
           : const Color(0xFF1E1A20),
@@ -145,7 +145,7 @@ abstract final class AppTheme {
       colorScheme: colorScheme,
       scaffoldBackgroundColor: accessibility.highContrast
           ? const Color(0xFFFFFFFF)
-          : const Color(0xFFF7F6F9),
+          : const Color(0xFFFAF8F5),
       fontFamily: fontFamily,
       cardTheme: CardThemeData(
         color: Colors.white,
@@ -164,7 +164,7 @@ abstract final class AppTheme {
       appBarTheme: AppBarTheme(
         backgroundColor: accessibility.highContrast
             ? const Color(0xFFFFFFFF)
-            : const Color(0xFFF7F6F9),
+            : const Color(0xFFFAF8F5),
         foregroundColor: accessibility.highContrast
             ? const Color(0xFF000000)
             : const Color(0xFF1E1A20),
@@ -237,7 +237,9 @@ abstract final class AppTheme {
       onSecondaryContainer: isMonochrome ? const Color(0xFFFFFFFF) : null,
       surface: accessibility.highContrast
           ? const Color(0xFF000000)
-          : (isMonochrome ? const Color(0xFF141414) : null),
+          : (isMonochrome
+                ? const Color(0xFF141414)
+                : const Color(0xFF121212)),
       onSurface: accessibility.highContrast
           ? const Color(0xFFFFFFFF)
           : (isMonochrome ? const Color(0xFFEEEEEE) : null),

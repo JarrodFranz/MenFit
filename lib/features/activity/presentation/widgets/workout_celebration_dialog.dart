@@ -146,7 +146,7 @@ class _WorkoutCelebrationDialogState
                   gradient: LinearGradient(
                     colors: hasPr
                         ? [const Color(0xFFFFB703), const Color(0xFFFB8500)]
-                        : [const Color(0xFF8F4C86), const Color(0xFFC77DFF)],
+                        : [const Color(0xFFD84A1B), const Color(0xFFFF8A5B)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -155,7 +155,7 @@ class _WorkoutCelebrationDialogState
                       color:
                           (hasPr
                                   ? const Color(0xFFFFB703)
-                                  : const Color(0xFF8F4C86))
+                                  : const Color(0xFFD84A1B))
                               .withValues(alpha: 0.35),
                       blurRadius: 16,
                       spreadRadius: 2,

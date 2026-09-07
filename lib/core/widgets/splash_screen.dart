@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 /// Full-screen branding and splash screen for MenFit.
 ///
-/// Features the signature deep plum / berry gradient, radiant luminous
-/// athletic running emblem, and brand typography.
+/// Features the signature Forge charcoal / ember gradient, a glowing
+/// brand emblem, and brand typography.
 class MenFitSplashScreen extends StatefulWidget {
   const MenFitSplashScreen({
     this.onLoaded,
@@ -72,9 +72,9 @@ class _MenFitSplashScreenState extends State<MenFitSplashScreen>
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFF5A2A5E), // Empowering Orchid Plum
-              Color(0xFF331436), // Deep Orchid
-              Color(0xFF19091B), // Dark Midnight Orchid
+              Color(0xFF4A1C0A), // Forge Ember
+              Color(0xFF241511), // Deep Char
+              Color(0xFF121212), // Charcoal
             ],
             stops: [0.0, 0.55, 1.0],
           ),
@@ -96,7 +96,7 @@ class _MenFitSplashScreenState extends State<MenFitSplashScreen>
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFFD4A1E7).withValues(
+                            color: const Color(0xFFFF6D3A).withValues(
                               alpha: 0.50,
                             ),
                             blurRadius: 36,
@@ -110,7 +110,7 @@ class _MenFitSplashScreenState extends State<MenFitSplashScreen>
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) =>
                               const ColoredBox(
-                                color: Color(0xFF8F4C86),
+                                color: Color(0xFFD84A1B),
                                 child: Icon(
                                   Icons.directions_run,
                                   size: 72,
@@ -132,7 +132,7 @@ class _MenFitSplashScreenState extends State<MenFitSplashScreen>
                         color: Colors.white,
                         shadows: [
                           Shadow(
-                            color: Color(0x80D4A1E7),
+                            color: Color(0x80FF6D3A),
                             blurRadius: 18,
                             offset: Offset(0, 4),
                           ),
@@ -149,7 +149,7 @@ class _MenFitSplashScreenState extends State<MenFitSplashScreen>
                         fontSize: 15,
                         fontWeight: FontWeight.w400,
                         letterSpacing: 0.4,
-                        color: Color(0xFFE2CCE0),
+                        color: Color(0xFFE8DBD2),
                       ),
                     ),
                   ],

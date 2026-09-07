@@ -60,7 +60,7 @@ class WorkoutShareDialog extends ConsumerStatefulWidget {
 
 class _WorkoutShareDialogState extends ConsumerState<WorkoutShareDialog> {
   ShareCardRatio _ratio = ShareCardRatio.story;
-  ShareCardTheme _theme = ShareCardTheme.signatureOrchid;
+  ShareCardTheme _theme = ShareCardTheme.forgeDark;
 
   final GlobalKey _cardKey = GlobalKey();
   final GlobalKey _shareButtonKey = GlobalKey();
@@ -219,16 +219,16 @@ class _WorkoutShareDialogState extends ConsumerState<WorkoutShareDialog> {
                     SegmentedButton<ShareCardTheme>(
                       segments: const [
                         ButtonSegment(
-                          value: ShareCardTheme.signatureOrchid,
-                          label: Text('Orchid'),
+                          value: ShareCardTheme.forgeDark,
+                          label: Text('Dark'),
                         ),
                         ButtonSegment(
-                          value: ShareCardTheme.obsidianDark,
-                          label: Text('Obsidian'),
-                        ),
-                        ButtonSegment(
-                          value: ShareCardTheme.cleanLight,
+                          value: ShareCardTheme.forgeLight,
                           label: Text('Light'),
+                        ),
+                        ButtonSegment(
+                          value: ShareCardTheme.clean,
+                          label: Text('Clean'),
                         ),
                       ],
                       selected: {_theme},
@@ -484,7 +484,7 @@ class _WorkoutShareDialogState extends ConsumerState<WorkoutShareDialog> {
 
             // Bottom Tagline
             Text(
-              'Tuned to her rhythm · MenFit',
+              'Built for the work · MenFit',
               style: TextStyle(
                 color: subtextColor,
                 fontSize: 8,
@@ -609,7 +609,7 @@ class _WorkoutShareDialogState extends ConsumerState<WorkoutShareDialog> {
         '$distText'
         '$metricText'
         '$prText\n'
-        '#MenFit #WomensFitness';
+        '#MenFit #StrengthTraining';
   }
 
   String _formatDuration(Duration duration) {

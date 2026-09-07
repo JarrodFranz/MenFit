@@ -181,7 +181,7 @@ class _CelebrationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isStory = ratio == ShareCardRatio.story;
-    final style = ShareCardStyle.forTheme(ShareCardTheme.signatureOrchid);
+    final style = ShareCardStyle.forTheme(ShareCardTheme.forgeDark);
     final blueprint = source.blueprint;
 
     return Container(

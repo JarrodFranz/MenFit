@@ -20,14 +20,15 @@ enum ShareCardRatio {
 
 /// Visual theme presets for a shareable achievement card.
 enum ShareCardTheme {
-  /// Signature deep orchid/plum gradient with radiant lilac accents.
-  signatureOrchid,
+  /// Signature Forge card: charcoal ground with a burnt-orange accent.
+  forgeDark,
 
-  /// High-contrast obsidian dark with gold PR accents.
-  obsidianDark,
+  /// Forge in daylight: warm off-white ground with a burnt-orange accent.
+  forgeLight,
 
-  /// Clean, modern crisp light card with soft floral accents.
-  cleanLight,
+  /// Neutral white card with a near-black accent, for feeds that already
+  /// carry a lot of colour.
+  clean,
 }
 
 /// The resolved colors/decoration for one [ShareCardTheme] — extracted
@@ -45,30 +46,29 @@ class ShareCardStyle {
 
   factory ShareCardStyle.forTheme(ShareCardTheme theme) {
     final backgroundDecoration = switch (theme) {
-      ShareCardTheme.signatureOrchid => const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF4A1A4E), Color(0xFF1E0A21)],
-        ),
+      ShareCardTheme.forgeDark => const BoxDecoration(
+        color: Color(0xFF121212),
       ),
-      ShareCardTheme.obsidianDark => const BoxDecoration(
-        color: Color(0xFF121216),
+      ShareCardTheme.forgeLight => BoxDecoration(
+        color: const Color(0xFFFAF8F5),
+        border: Border.all(color: const Color(0xFFE4DED6), width: 1.5),
       ),
-      ShareCardTheme.cleanLight => BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: const Color(0xFFE2DCE6), width: 1.5),
+      ShareCardTheme.clean => BoxDecoration(
+        color: const Color(0xFFFFFFFF),
+        border: Border.all(color: const Color(0xFFE3E3E3), width: 1.5),
       ),
     };
 
-    final isLight = theme == ShareCardTheme.cleanLight;
-    final textColor = isLight ? const Color(0xFF1E1622) : Colors.white;
+    final isLight = theme != ShareCardTheme.forgeDark;
+    final textColor = isLight ? const Color(0xFF1B1B1B) : Colors.white;
     final subtextColor = isLight
-        ? const Color(0xFF6B5E70)
+        ? const Color(0xFF605C57)
         : Colors.white.withValues(alpha: 0.75);
-    final accentColor = isLight
-        ? const Color(0xFF8F4C86)
-        : const Color(0xFFE879F9);
+    final accentColor = switch (theme) {
+      ShareCardTheme.forgeDark => const Color(0xFFFF6D3A),
+      ShareCardTheme.forgeLight => const Color(0xFFD84A1B),
+      ShareCardTheme.clean => const Color(0xFF1B1B1B),
+    };
 
     return ShareCardStyle(
       backgroundDecoration: backgroundDecoration,

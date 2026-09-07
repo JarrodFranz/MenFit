@@ -151,8 +151,8 @@ void main() {
     await tester.pumpAndSettle();
     await settleCardCapture(tester);
 
-    // Switch theme to Obsidian Dark
-    await tester.tap(find.text('Obsidian'));
+    // Switch theme to Forge Light
+    await tester.tap(find.text('Light'));
     await tester.pumpAndSettle();
     await settleCardCapture(tester);
 

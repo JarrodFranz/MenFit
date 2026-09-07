@@ -38,7 +38,7 @@ class RecapShareSheet extends ConsumerStatefulWidget {
 
 class _RecapShareSheetState extends ConsumerState<RecapShareSheet> {
   ShareCardRatio _ratio = ShareCardRatio.story;
-  ShareCardTheme _theme = ShareCardTheme.signatureOrchid;
+  ShareCardTheme _theme = ShareCardTheme.forgeDark;
 
   final GlobalKey _cardKey = GlobalKey();
   final GlobalKey _shareButtonKey = GlobalKey();
@@ -175,16 +175,16 @@ class _RecapShareSheetState extends ConsumerState<RecapShareSheet> {
                     SegmentedButton<ShareCardTheme>(
                       segments: const [
                         ButtonSegment(
-                          value: ShareCardTheme.signatureOrchid,
-                          label: Text('Orchid'),
+                          value: ShareCardTheme.forgeDark,
+                          label: Text('Dark'),
                         ),
                         ButtonSegment(
-                          value: ShareCardTheme.obsidianDark,
-                          label: Text('Obsidian'),
-                        ),
-                        ButtonSegment(
-                          value: ShareCardTheme.cleanLight,
+                          value: ShareCardTheme.forgeLight,
                           label: Text('Light'),
+                        ),
+                        ButtonSegment(
+                          value: ShareCardTheme.clean,
+                          label: Text('Clean'),
                         ),
                       ],
                       selected: {_theme},
@@ -342,7 +342,7 @@ class _RecapShareSheetState extends ConsumerState<RecapShareSheet> {
             ],
             const Spacer(),
             Text(
-              'Tuned to her rhythm · MenFit',
+              'Built for the work · MenFit',
               style: TextStyle(
                 color: style.subtextColor,
                 fontSize: 8,

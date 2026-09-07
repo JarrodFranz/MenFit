@@ -25,7 +25,7 @@ void main() {
       );
       expect(
         AppTheme.seedFor(ColorBlindnessMode.none),
-        const Color(0xFF8F4C86),
+        const Color(0xFFD84A1B),
       );
     });
 
@@ -35,7 +35,7 @@ void main() {
       );
       final theme = AppTheme.light(prefs);
 
-      // Primary is charcoal/black, not orchid plum.
+      // Primary is charcoal/black, not Forge orange.
       expect(theme.colorScheme.primary, const Color(0xFF222222));
       expect(theme.colorScheme.surfaceTint, Colors.transparent);
       expect(

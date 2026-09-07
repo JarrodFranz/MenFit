@@ -426,7 +426,7 @@ const String celebrationSystemShareLabel = 'Share card text';
 
 const String celebrationCopiedMessage = 'Copied, ready to send.';
 
-const String celebrationCardFooter = 'Tuned to her rhythm · MenFit';
+const String celebrationCardFooter = 'Built for the work · MenFit';
 
 /// `'Alex & Sam'` — two names, joined by an ampersand and nothing that
 /// puts one of them first in any sense that means anything. The user's
