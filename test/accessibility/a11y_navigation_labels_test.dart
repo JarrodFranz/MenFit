@@ -51,9 +51,9 @@ void main() {
       label: 'Nutrition',
     ),
     AdaptiveDestination(
-      icon: Icons.spa_outlined,
-      selectedIcon: Icons.spa,
-      label: 'Wellbeing',
+      icon: Icons.self_improvement_outlined,
+      selectedIcon: Icons.self_improvement,
+      label: 'Recovery',
     ),
     AdaptiveDestination(
       icon: Icons.settings_outlined,
@@ -163,25 +163,24 @@ void main() {
     semantics.dispose();
   });
 
-  testWidgets('360dp at 130%: labels hide, and nothing wraps mid-word', (
+  testWidgets('356dp at 130%: labels hide, and nothing wraps mid-word', (
     tester,
   ) async {
     final semantics = tester.ensureSemantics();
-    await pumpShell(tester, width: 360, textScale: 1.3);
+    await pumpShell(tester, width: 356, textScale: 1.3);
 
     expect(
       labelBehavior(tester),
       NavigationDestinationLabelBehavior.alwaysHide,
       reason:
-          '360dp / 72dp per cell is the measured first failure point for '
-          "MenFit's five destinations: at 130% \"Nutrition\" no longer fits "
-          'a cell, and Material would break it mid-word rather than '
-          'ellipsise it. (FemFit measured 68dp per cell across six '
-          'destinations; five destinations give each cell more room, so '
-          'the boundary sits at a narrower shell width than before.)',
+          '356dp / 71dp per cell is the measured first failure point for '
+          "MenFit's five destinations (Wellbeing renamed to Recovery moved "
+          'this by a few dp from the previous 360dp measurement): at 130% '
+          '"Nutrition" no longer fits a cell, and Material would break it '
+          'mid-word rather than ellipsise it.',
     );
     expect(
-      wrapFindings(tester, '360dp/130%'),
+      wrapFindings(tester, '356dp/130%'),
       isEmpty,
       reason:
           'The whole point of the icon-only fallback is that no word is '

@@ -10,8 +10,8 @@ import 'package:menfit_app/core/db/app_database_provider.dart';
 import 'package:menfit_app/features/wellbeing/presentation/wellbeing_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Covers the promotion of Wellbeing from a nested `/home/wellbeing` route
-/// to its own top-level `/wellbeing` branch (see `routes.dart`).
+/// Covers the promotion of Recovery from a nested `/home/wellbeing` route
+/// to its own top-level `/recovery` branch (see `routes.dart`).
 void main() {
   tearDown(() {
     final binding = TestWidgetsFlutterBinding.instance;
@@ -53,17 +53,17 @@ void main() {
     await tester.pump(const Duration(milliseconds: 1));
   }
 
-  testWidgets('/wellbeing resolves to WellbeingScreen', (tester) async {
+  testWidgets('/recovery resolves to WellbeingScreen', (tester) async {
     final container = await pumpApp(tester);
 
-    container.read(routerProvider).go('/wellbeing');
+    container.read(routerProvider).go('/recovery');
     await tester.pumpAndSettle();
 
     expect(find.byType(WellbeingScreen), findsOneWidget);
     expect(
       find.descendant(
         of: find.byType(AppBar),
-        matching: find.text('Wellbeing'),
+        matching: find.text('Recovery'),
       ),
       findsOneWidget,
     );
@@ -72,7 +72,7 @@ void main() {
   });
 
   testWidgets(
-    'selecting Wellbeing from another tab switches branches instead of '
+    'selecting Recovery from another tab switches branches instead of '
     'stacking onto that tab',
     (tester) async {
       await pumpApp(tester);
@@ -86,12 +86,12 @@ void main() {
       await tester.tap(
         find.descendant(
           of: navigationBar,
-          matching: find.text('Wellbeing'),
+          matching: find.text('Recovery'),
         ),
       );
       await tester.pumpAndSettle();
 
-      // Landed on the Wellbeing screen, still inside the shell chrome.
+      // Landed on the Recovery screen, still inside the shell chrome.
       expect(find.byType(WellbeingScreen), findsOneWidget);
       expect(find.byType(NavigationBar), findsOneWidget);
 

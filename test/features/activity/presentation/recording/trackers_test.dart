@@ -644,7 +644,7 @@ void main() {
               home: const Scaffold(
                 body: Column(
                   children: [
-                    Text('Wellbeing Screen'),
+                    Text('Recovery Screen'),
                     ActiveWorkoutBanner(),
                   ],
                 ),

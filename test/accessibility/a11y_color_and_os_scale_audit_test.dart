@@ -26,7 +26,7 @@ void main() {
   final colourHeavy = <A11yScreen>[
     A11yScreen(name: 'Achievements', location: (_) => '/achievements'),
     A11yScreen(name: 'Progress', location: (_) => '/home/progress'),
-    A11yScreen(name: 'Wellbeing', location: (_) => '/wellbeing'),
+    A11yScreen(name: 'Recovery', location: (_) => '/recovery'),
     A11yScreen(name: 'Nutrition', location: (_) => '/nutrition'),
   ];
 

@@ -85,7 +85,7 @@ void main() {
     await tester.tap(
       find.descendant(
         of: find.byType(NavigationBar),
-        matching: find.text('Wellbeing'),
+        matching: find.text('Recovery'),
       ),
     );
     await tester.pumpAndSettle();

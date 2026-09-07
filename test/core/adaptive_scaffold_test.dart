@@ -43,9 +43,9 @@ const List<AdaptiveDestination> _crowdedDestinations = [
     label: 'Progress',
   ),
   AdaptiveDestination(
-    icon: Icons.spa_outlined,
-    selectedIcon: Icons.spa,
-    label: 'Wellbeing',
+    icon: Icons.self_improvement_outlined,
+    selectedIcon: Icons.self_improvement,
+    label: 'Recovery',
   ),
   AdaptiveDestination(
     icon: Icons.settings_outlined,
@@ -144,7 +144,7 @@ void main() {
     final paragraph = tester.renderObject<RenderParagraph>(
       find.descendant(
         of: find.byType(NavigationBar),
-        matching: find.text('Wellbeing'),
+        matching: find.text('Recovery'),
       ),
     );
     // 320 / 6 = 53.3dp per cell, below the 62dp comfort threshold.

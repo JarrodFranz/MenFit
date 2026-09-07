@@ -30,7 +30,7 @@ import 'package:menfit_app/features/weight/weight_widgets.dart';
 /// - Nutrition: Calorie totals & daily averages, macro breakdown, and logging
 ///   consistency.
 /// - Activity & Exercise: Distance, moving time, workout counts, weekly trends.
-/// - Wellbeing & Streaks: Streak consistency, check-in frequency, flare counts.
+/// - Recovery & Streaks: Streak consistency, check-in frequency, flare counts.
 /// - Weight & Steps: Slots ready for Waves 2 & 4.
 /// - Personal Records: Best times and distances.
 ///
@@ -185,7 +185,7 @@ class ProgressScreen extends ConsumerWidget {
                   ),
                   SizedBox(height: tokens.spacingMd),
 
-                  // Wellbeing & Streaks Card
+                  // Recovery & Streaks Card
                   ProgressWellbeingCard(
                     streak: streakResult,
                     checkins: checkinsAsync.value ?? const [],

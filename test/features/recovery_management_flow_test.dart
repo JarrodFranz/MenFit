@@ -225,7 +225,7 @@ void main() {
         findsOneWidget,
       );
       expect(find.text('You logged a flare-up today'), findsOneWidget);
-      expect(find.text('View in Wellbeing'), findsOneWidget);
+      expect(find.text('View in Recovery'), findsOneWidget);
 
       await tester.ensureVisible(find.text('Remove recovery day'));
       await tester.tap(find.text('Remove recovery day'));

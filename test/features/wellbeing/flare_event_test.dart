@@ -3,7 +3,7 @@ import 'package:menfit_app/features/wellbeing/domain/flare_event.dart';
 import 'package:menfit_app/features/wellbeing/domain/symptom_type.dart';
 
 void main() {
-  test('FlareCategory values are the men\'s-app set', () {
+  test("FlareCategory values are the men's-app set", () {
     expect(FlareCategory.values, [
       FlareCategory.injury,
       FlareCategory.illness,
@@ -22,7 +22,10 @@ void main() {
   });
 
   test('SymptomType has no pelvicPain and cramping reads as muscle cramps', () {
-    expect(SymptomType.values.map((s) => s.name), isNot(contains('pelvicPain')));
+    expect(
+      SymptomType.values.map((s) => s.name),
+      isNot(contains('pelvicPain')),
+    );
     expect(SymptomType.cramping.label, 'Muscle cramps');
     expect(SymptomType.fromStorage('pelvicPain'), SymptomType.other);
   });

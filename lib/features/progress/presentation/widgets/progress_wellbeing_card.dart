@@ -6,7 +6,7 @@ import 'package:menfit_app/features/streaks/domain/streak_engine.dart';
 import 'package:menfit_app/features/wellbeing/domain/daily_checkin.dart';
 import 'package:menfit_app/features/wellbeing/domain/flare_event.dart';
 
-/// Wellbeing and streak consistency card for the Progress dashboard.
+/// Recovery and streak consistency card for the Progress dashboard.
 class ProgressWellbeingCard extends StatelessWidget {
   const ProgressWellbeingCard({
     required this.streak,
@@ -62,7 +62,7 @@ class ProgressWellbeingCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // The title is `Expanded` rather than sized by its own text:
-            // "Wellbeing & Consistency" is 23 characters of `titleMedium`
+            // "Recovery & Consistency" is 22 characters of `titleMedium`
             // bold, which overflowed a 320dp card to the right by 59px the
             // moment the text scaled. Given room to wrap it costs a line
             // instead.
@@ -70,7 +70,7 @@ class ProgressWellbeingCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'Wellbeing & Consistency',
+                    'Recovery & Consistency',
                     style: textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),

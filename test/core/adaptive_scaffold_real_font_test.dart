@@ -54,9 +54,9 @@ void main() {
       label: 'Nutrition',
     ),
     AdaptiveDestination(
-      icon: Icons.spa_outlined,
-      selectedIcon: Icons.spa,
-      label: 'Wellbeing',
+      icon: Icons.self_improvement_outlined,
+      selectedIcon: Icons.self_improvement,
+      label: 'Recovery',
     ),
     AdaptiveDestination(
       icon: Icons.settings_outlined,

@@ -17,7 +17,7 @@ import 'package:menfit_app/features/wellbeing/presentation/widgets/history_tiles
 import 'package:menfit_app/features/wellbeing/presentation/widgets/wellbeing_calendar.dart';
 import 'package:menfit_app/features/wellbeing/presentation/widgets/wellbeing_glyphs.dart';
 
-/// `/wellbeing` — the last 30 days of check-ins, flare-ups, and recovery
+/// `/recovery` — the last 30 days of check-ins, flare-ups, and recovery
 /// days, interleaved by day (newest first). Logging a flare-up is this
 /// tab's primary action (the floating button); marking recovery days is the
 /// app-bar action. Tapping a check-in or flare row re-opens the same
@@ -50,7 +50,7 @@ class WellbeingScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Wellbeing'),
+        title: const Text('Recovery'),
         actions: [
           IconButton(
             key: const Key('wellbeingLogCheckinAction'),

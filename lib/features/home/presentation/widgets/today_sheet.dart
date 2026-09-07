@@ -268,7 +268,7 @@ class _FlareSourceTile extends StatelessWidget {
           Navigator.of(context).pop();
           const WellbeingRouteData().go(context);
         },
-        child: const Text('View in Wellbeing'),
+        child: const Text('View in Recovery'),
       ),
     );
   }

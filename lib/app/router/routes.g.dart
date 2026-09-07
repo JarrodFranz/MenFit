@@ -669,7 +669,7 @@ RouteBase get $appShellRouteData => StatefulShellRouteData.$route(
     StatefulShellBranchData.$branch(
       routes: [
         GoRouteData.$route(
-          path: '/wellbeing',
+          path: '/recovery',
           hasOverriddenOnExit: false,
           factory: $WellbeingRouteData._fromState,
         ),
@@ -1010,7 +1010,7 @@ mixin $WellbeingRouteData on GoRouteData {
       const WellbeingRouteData();
 
   @override
-  String get location => GoRouteData.$location('/wellbeing');
+  String get location => GoRouteData.$location('/recovery');
 
   @override
   void go(BuildContext context) => context.go(location);

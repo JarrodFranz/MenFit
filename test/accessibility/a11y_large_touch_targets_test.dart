@@ -34,7 +34,7 @@ void main() {
     A11yScreen(name: 'Progress', location: (_) => '/home/progress'),
     A11yScreen(name: 'Activity', location: (_) => '/activity'),
     A11yScreen(name: 'Nutrition', location: (_) => '/nutrition'),
-    A11yScreen(name: 'Wellbeing', location: (_) => '/wellbeing'),
+    A11yScreen(name: 'Recovery', location: (_) => '/recovery'),
     A11yScreen(name: 'Settings', location: (_) => '/settings'),
     A11yScreen(
       name: 'Accessibility settings',

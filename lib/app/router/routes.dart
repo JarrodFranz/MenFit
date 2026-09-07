@@ -414,7 +414,7 @@ class ChallengeDetailRouteData extends GoRouteData
 }
 
 /// The single typed route table for the app: a five-tab
-/// [StatefulShellRoute] (Home, Activity, Nutrition, Wellbeing,
+/// [StatefulShellRoute] (Home, Activity, Nutrition, Recovery,
 /// Settings), each branch holding exactly one top-level route.
 @TypedStatefulShellRoute<AppShellRouteData>(
   branches: [
@@ -466,7 +466,7 @@ class ChallengeDetailRouteData extends GoRouteData
       ],
     ),
     TypedStatefulShellBranch<WellbeingBranchData>(
-      routes: [TypedGoRoute<WellbeingRouteData>(path: '/wellbeing')],
+      routes: [TypedGoRoute<WellbeingRouteData>(path: '/recovery')],
     ),
     TypedStatefulShellBranch<SettingsBranchData>(
       routes: [
@@ -503,9 +503,9 @@ class AppShellRouteData extends StatefulShellRouteData {
       label: 'Nutrition',
     ),
     AdaptiveDestination(
-      icon: Icons.spa_outlined,
-      selectedIcon: Icons.spa,
-      label: 'Wellbeing',
+      icon: Icons.self_improvement_outlined,
+      selectedIcon: Icons.self_improvement,
+      label: 'Recovery',
     ),
     AdaptiveDestination(
       icon: Icons.settings_outlined,
@@ -738,7 +738,7 @@ class WellbeingBranchData extends StatefulShellBranchData {
   const WellbeingBranchData();
 }
 
-/// `/wellbeing` - the check-in/flare history screen. Its own top-level
+/// `/recovery` - the check-in/flare history screen. Its own top-level
 /// branch (promoted from the nested `/home/wellbeing` route) so it gets a
 /// dedicated tab and back-stack, rather than living on top of Home's.
 class WellbeingRouteData extends GoRouteData with $WellbeingRouteData {

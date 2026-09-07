@@ -61,8 +61,8 @@ class AppAdaptiveScaffold extends StatelessWidget {
   ///
   /// Material sizes bottom-bar labels for 3-5 destinations. Past that each
   /// cell narrows until a single-word label wraps *mid-word* - Material's
-  /// label widget has no ellipsis and no hyphenation, so "Wellbeing"
-  /// renders as "Wellb / eing". Shrinking the style keeps them on one line.
+  /// label widget has no ellipsis and no hyphenation, so "Nutrition"
+  /// renders as "Nutri / tion". Shrinking the style keeps them on one line.
   /// The rail has room to spare and is deliberately left alone.
   ///
   /// This scales the *base* size only - the user's own text-scale setting

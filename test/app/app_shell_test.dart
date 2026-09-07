@@ -53,7 +53,7 @@ void main() {
         'Home',
         'Activity',
         'Nutrition',
-        'Wellbeing',
+        'Recovery',
         'Settings',
       ]) {
         expect(
@@ -95,7 +95,7 @@ void main() {
         'Home',
         'Activity',
         'Nutrition',
-        'Wellbeing',
+        'Recovery',
         'Settings',
       ];
 
