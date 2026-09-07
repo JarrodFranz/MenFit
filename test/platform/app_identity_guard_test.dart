@@ -263,6 +263,31 @@ void main() {
     });
   });
 
+  group('web/', () {
+    // The web shell is the one surface no Dart test renders, so a stale
+    // FemFit string here survives every widget test and ships to whoever
+    // opens the PWA. `web/manifest.json` is what an installed home-screen
+    // icon is named from.
+    const forkLeftovers = ['women', 'femfit'];
+
+    for (final path in const ['web/index.html', 'web/manifest.json']) {
+      test('$path names MenFit and carries no FemFit copy', () {
+        final file = File(path);
+        expect(file.existsSync(), isTrue);
+        final source = file.readAsStringSync();
+        expect(source, contains('MenFit'));
+        final lowered = source.toLowerCase();
+        for (final needle in forkLeftovers) {
+          expect(
+            lowered,
+            isNot(contains(needle)),
+            reason: '$path still carries the forked-from copy "$needle".',
+          );
+        }
+      });
+    }
+  });
+
   group('distribution/android.json', () {
     test('holds only the public Firebase app id and tester groups', () {
       final file = File('distribution/android.json');

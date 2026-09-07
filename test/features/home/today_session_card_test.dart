@@ -69,4 +69,27 @@ void main() {
     expect(find.text('Day 1 of 2'), findsOneWidget);
     expect(find.text('Start workout'), findsOneWidget);
   });
+
+  testWidgets('a failing cycle stream still offers Start a routine', (
+    tester,
+  ) async {
+    // The card used to render `SizedBox.shrink()` on error, leaving a
+    // titled card over blank space - a dead end the user can neither act on
+    // nor diagnose. A repository failure now degrades to the no-cycle
+    // state, which is the one useful thing to offer either way.
+    await tester.pumpWidget(
+      host([
+        activeStrengthCycleProvider.overrideWith(
+          (ref) => Stream<StrengthCycle?>.error(
+            StateError('routine repository unavailable'),
+          ),
+        ),
+      ]),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text("Today's session"), findsOneWidget);
+    expect(find.text('No routine running'), findsOneWidget);
+    expect(find.widgetWithText(FilledButton, 'Start a routine'), findsOne);
+  });
 }

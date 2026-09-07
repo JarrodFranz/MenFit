@@ -591,7 +591,7 @@ class ExerciseHubRouteData extends GoRouteData with $ExerciseHubRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return ExerciseHubScreen(
-      type: ActivityType.fromStorage(type),
+      type: hubTypeFromRoute(type),
     );
   }
 }

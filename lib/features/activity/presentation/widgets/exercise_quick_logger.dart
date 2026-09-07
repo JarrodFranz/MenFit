@@ -5,14 +5,19 @@ import 'package:menfit_app/app/router/routes.dart';
 import 'package:menfit_app/core/platform/location/location_adapter.dart';
 import 'package:menfit_app/core/theme/tokens.dart';
 import 'package:menfit_app/features/activity/domain/activity.dart';
+import 'package:menfit_app/features/activity/presentation/widgets/activity_primary_actions.dart';
 
-/// Top section of the Activity tab: one tile per exercise type, each opening
-/// that type's hub directly, with Record and Log Previous underneath.
+/// Top section of the Train tab: one tile per exercise type, each opening
+/// that type's hub directly, with the tab's actions underneath.
 ///
 /// The tiles used to open a per-type options sheet (hub / live tracker /
 /// route / manual entry). Every one of those launchers already exists inside
 /// the hub itself, so the sheet was a whole extra tap between the user and
 /// the screen they were heading for; the tile now goes straight there.
+///
+/// Strength leads the row rather than sitting fifth where the enum happens
+/// to declare it — the same ordering the type filter chips below use. The
+/// action block underneath lives in [ActivityPrimaryActions].
 class ExerciseQuickLogger extends StatelessWidget {
   const ExerciseQuickLogger({
     required this.capabilities,
@@ -49,53 +54,15 @@ class ExerciseQuickLogger extends StatelessWidget {
           height: tileHeight,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
-            itemCount: ActivityType.values.length,
+            itemCount: _hubOrder.length,
             separatorBuilder: (context, index) =>
                 SizedBox(width: tokens.spacingSm),
-            itemBuilder: (context, index) {
-              final type = ActivityType.values[index];
-              return _ExerciseHubTile(type: type, width: tileWidth);
-            },
+            itemBuilder: (context, index) =>
+                _ExerciseHubTile(type: _hubOrder[index], width: tileWidth),
           ),
         ),
         SizedBox(height: tokens.spacingMd),
-        Row(
-          children: [
-            if (capabilities.canRecordActivities) ...[
-              Expanded(
-                child: FilledButton.icon(
-                  onPressed: () => const ActivityRecordRouteData().go(context),
-                  icon: const Icon(Icons.play_arrow),
-                  label: const Text('Record'),
-                ),
-              ),
-              SizedBox(width: tokens.spacingSm),
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () => const ActivityLogRouteData().go(context),
-                  icon: const Icon(Icons.edit_note_outlined),
-                  label: const Text('Log Previous'),
-                ),
-              ),
-            ] else ...[
-              Expanded(
-                child: FilledButton.icon(
-                  onPressed: () => const ActivityLogRouteData().go(context),
-                  icon: const Icon(Icons.add),
-                  label: const Text('Log activity'),
-                ),
-              ),
-              SizedBox(width: tokens.spacingSm),
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () => const ActivityRoutesRouteData().go(context),
-                  icon: const Icon(Icons.route_outlined, size: 18),
-                  label: const Text('Routes'),
-                ),
-              ),
-            ],
-          ],
-        ),
+        ActivityPrimaryActions(capabilities: capabilities),
         if (!capabilities.canRecordActivities &&
             capabilities.reason != null) ...[
           SizedBox(height: tokens.spacingSm),
@@ -110,6 +77,15 @@ class ExerciseQuickLogger extends StatelessWidget {
     );
   }
 }
+
+/// Hub tiles in product order: strength first, then everything else in
+/// declaration order. Mirrors the type filter chips in `activity_screen.dart`
+/// — the first thing the Train tab offers is what the app is about, not
+/// whichever type the enum happens to list first.
+final List<ActivityType> _hubOrder = [
+  ActivityType.strength,
+  ...ActivityType.values.where((t) => t != ActivityType.strength),
+];
 
 class _ExerciseHubTile extends StatelessWidget {
   const _ExerciseHubTile({required this.type, required this.width});

@@ -2,6 +2,7 @@ import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:menfit_app/app/app.dart';
 import 'package:menfit_app/core/config/shared_preferences_provider.dart';
 import 'package:menfit_app/core/db/app_database.dart' as db;
@@ -34,9 +35,10 @@ class _FakeLocationAdapter implements LocationAdapter {
   Future<LocationFix> getCurrentPosition() => throw UnimplementedError();
 }
 
-/// The Activity tab's restructured top section: type tiles that open the
-/// matching hub in one tap, with Record and Log Previous underneath and no
-/// floating Record button duplicating them.
+/// The Train tab's restructured top section: type tiles that open the
+/// matching hub in one tap, with the strength primary action and the
+/// demoted GPS/manual launchers underneath, and no floating Record button
+/// duplicating them.
 void main() {
   tearDown(() {
     final binding = TestWidgetsFlutterBinding.instance;
@@ -132,12 +134,19 @@ void main() {
   });
 
   testWidgets(
-    'Record and Log Previous sit under the hubs, with no floating Record',
+    'the strength action leads, with GPS demoted and nothing floating',
     (tester) async {
       await pumpActivityTab(tester);
 
       expect(find.text('Exercise Hubs'), findsWidgets);
-      expect(find.text('Record'), findsOneWidget);
+      // No cycle in a fresh in-memory database, so the strength primary
+      // action is the routine picker - and it is the tab's only filled
+      // button. GPS recording is still on screen, just outlined.
+      expect(find.widgetWithText(FilledButton, 'Start a routine'), findsOne);
+      expect(
+        find.widgetWithText(OutlinedButton, 'Record GPS activity'),
+        findsOne,
+      );
       expect(find.text('Log Previous'), findsOneWidget);
 
       // The old "Focused Tools" card strip is gone, and with it the second
@@ -166,7 +175,8 @@ void main() {
       await pumpActivityScreen(tester, surface: const Size(320, 800));
 
       expect(find.text('Exercise Hubs'), findsOneWidget);
-      expect(find.text('Record'), findsOneWidget);
+      expect(find.text('Start a routine'), findsOneWidget);
+      expect(find.text('Record GPS activity'), findsOneWidget);
       expect(find.text('Log Previous'), findsOneWidget);
     } finally {
       FlutterError.onError = previousOnError;
@@ -176,9 +186,28 @@ void main() {
       errors.map((e) => e.exceptionAsString()).toList(),
       isEmpty,
       reason:
-          'the Exercise Hubs row and the Record / Log Previous pair must lay '
-          'out at the narrowest supported width and the largest text scale',
+          'the Exercise Hubs row and the action block must lay out at the '
+          'narrowest supported width and the largest text scale',
     );
+
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump(const Duration(milliseconds: 1));
+  });
+
+  testWidgets('an unparseable hub type lands on Strength, not Run', (
+    tester,
+  ) async {
+    // `ActivityType.fromStorage` falls back to `run`, which is right for a
+    // persisted row and wrong for a URL: a hub route this build cannot
+    // parse must not quietly hand a strength-first app its Run hub.
+    await pumpActivityTab(tester);
+
+    final context = tester.element(find.byType(NavigationBar));
+    GoRouter.of(context).go('/activity/hub/nonsense');
+    await tester.pumpAndSettle();
+
+    expect(find.text('Strength Hub'), findsOneWidget);
+    expect(find.text('Run Hub'), findsNothing);
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(const Duration(milliseconds: 1));

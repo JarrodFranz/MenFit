@@ -155,7 +155,7 @@ void main() {
   }
 
   testWidgets(
-    'Activity screen shows Record when capable',
+    'Activity screen shows the GPS recording action when capable',
     (tester) async {
       final locationAdapter = _FakeLocationAdapter();
       final database = db.AppDatabase.forTesting(NativeDatabase.memory());
@@ -168,7 +168,7 @@ void main() {
         database: database,
       );
 
-      expect(find.text('Record'), findsOneWidget);
+      expect(find.text('Record GPS activity'), findsOneWidget);
       expect(find.text('Log Previous'), findsOneWidget);
 
       await tester.pumpWidget(const SizedBox.shrink());
@@ -177,7 +177,8 @@ void main() {
   );
 
   testWidgets(
-    'Activity screen hides Record and shows a capability hint when not capable',
+    'Activity screen hides GPS recording and shows a capability hint when '
+    'not capable',
     (tester) async {
       final locationAdapter = _FakeLocationAdapter(
         capabilities: const LocationCapabilities(
@@ -195,7 +196,7 @@ void main() {
         database: database,
       );
 
-      expect(find.text('Record'), findsNothing);
+      expect(find.text('Record GPS activity'), findsNothing);
       expect(find.text('Log activity'), findsOneWidget);
       expect(find.text('Recording works on your phone.'), findsOneWidget);
 
@@ -219,7 +220,7 @@ void main() {
         database: database,
       );
 
-      await tester.tap(find.text('Record'));
+      await tester.tap(find.text('Record GPS activity'));
       await tester.pumpAndSettle();
 
       // Pre-start view: explainer + Start recording.
@@ -349,7 +350,7 @@ void main() {
         ],
       );
 
-      await tester.tap(find.text('Record'));
+      await tester.tap(find.text('Record GPS activity'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('Start recording'));
       // Same rationale as the flow test above: a real 1s ticker is now

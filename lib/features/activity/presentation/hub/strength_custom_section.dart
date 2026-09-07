@@ -2,12 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:menfit_app/app/router/routes.dart';
 import 'package:menfit_app/core/theme/card_shape.dart';
 import 'package:menfit_app/core/theme/tokens.dart';
 import 'package:menfit_app/features/activity/activity_providers.dart';
 import 'package:menfit_app/features/activity/presentation/recording/strength_cycle_launcher_sheet.dart';
-import 'package:menfit_app/features/activity/presentation/recording/strength_tracker_controller.dart';
+import 'package:menfit_app/features/activity/presentation/strength/start_strength_cycle.dart';
 import 'package:menfit_app/features/activity/presentation/strength/strength_routine_editor_sheet.dart';
 
 /// Custom tools for Strength: Training Cycles & Saved Day Routines.
@@ -159,26 +158,11 @@ class StrengthCustomSection extends ConsumerWidget {
                       children: [
                         Expanded(
                           child: FilledButton.icon(
-                            onPressed: () async {
-                              if (nextDay != null) {
-                                await ref
-                                    .read(
-                                      strengthTrackerControllerProvider
-                                          .notifier,
-                                    )
-                                    .startWorkout(
-                                      routine: nextDay,
-                                      cycleId: activeCycle.id,
-                                    );
-                                if (context.mounted) {
-                                  unawaited(
-                                    const StrengthTrackerRouteData().push<void>(
-                                      context,
-                                    ),
-                                  );
-                                }
-                              }
-                            },
+                            onPressed: () => startActiveStrengthCycle(
+                              ref,
+                              context,
+                              activeCycle,
+                            ),
                             icon: const Icon(Icons.play_arrow),
                             label: Text('Start ${nextDay?.name ?? "Workout"}'),
                           ),

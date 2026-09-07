@@ -63,6 +63,22 @@ enum ActivityType {
   };
 }
 
+/// Parses the `:type` segment of `/activity/hub/:type`, defaulting to
+/// [ActivityType.strength] for anything unrecognised.
+///
+/// Deliberately *not* [ActivityType.fromStorage], which defaults to
+/// [ActivityType.run] and must keep doing so: it reads persisted rows,
+/// where an unknown value is most likely a run written by another build.
+/// A hub URL that does not parse is a navigation bug instead, and MenFit
+/// is strength-first — silently landing on the Run hub would contradict
+/// the product rather than degrade gracefully.
+ActivityType hubTypeFromRoute(String raw) {
+  for (final type in ActivityType.values) {
+    if (type.toStorage() == raw) return type;
+  }
+  return ActivityType.strength;
+}
+
 /// Where an activity's data came from. `manual` activities have no
 /// `ActivitySample`s; `recorded` ones do (GPS recording arrives in wave
 /// C3) — presentation code uses this to decide whether to show a route

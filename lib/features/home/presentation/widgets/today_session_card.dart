@@ -1,12 +1,10 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:menfit_app/app/router/routes.dart';
 import 'package:menfit_app/core/theme/tokens.dart';
 import 'package:menfit_app/features/activity/activity_providers.dart';
 import 'package:menfit_app/features/activity/domain/strength_routine.dart';
-import 'package:menfit_app/features/activity/presentation/recording/strength_tracker_controller.dart';
+import 'package:menfit_app/features/activity/presentation/strength/start_strength_cycle.dart';
 import 'package:menfit_app/features/home/presentation/widgets/home_card.dart';
 
 /// The first card on Home: what to lift today.
@@ -20,14 +18,17 @@ import 'package:menfit_app/features/home/presentation/widgets/home_card.dart';
 /// * an active cycle — names it, counts the day the way the Strength Hub
 ///   counts it, and starts that day's routine.
 ///
-/// The start path is deliberately **the same two calls the Strength Hub
-/// makes** (`presentation/hub/strength_custom_section.dart`): prime
-/// `strengthTrackerControllerProvider` with the routine and cycle id, then
-/// push [StrengthTrackerRouteData]. Pushing the route alone would open the
+/// The start path is [startActiveStrengthCycle], shared with the Strength
+/// Hub and the Train tab so all three prime
+/// `strengthTrackerControllerProvider` before pushing
+/// [StrengthTrackerRouteData] — pushing the route alone would open the
 /// tracker with whatever session was last in the controller.
 ///
-/// Loading and error render the card chrome only — a dashboard card that
-/// vanishes and reappears makes the whole column jump.
+/// Loading renders the card chrome only — a dashboard card that vanishes
+/// and reappears makes the whole column jump. **Error renders the no-cycle
+/// state**, not an empty card: if the routine repository fails there is
+/// still exactly one useful thing to offer, and a card that shows a title
+/// over blank space is a dead end the user cannot act on or diagnose.
 class TodaySessionCard extends ConsumerWidget {
   const TodaySessionCard({super.key});
 
@@ -42,7 +43,7 @@ class TodaySessionCard extends ConsumerWidget {
         data: (cycle) =>
             cycle == null ? const _NoCycle() : _ActiveCycle(cycle: cycle),
         loading: () => const SizedBox.shrink(),
-        error: (_, _) => const SizedBox.shrink(),
+        error: (_, _) => const _NoCycle(),
       ),
     );
   }
@@ -112,23 +113,10 @@ class _ActiveCycle extends ConsumerWidget {
         FilledButton(
           onPressed: nextDay == null
               ? null
-              : () => _start(context, ref, nextDay),
+              : () => startActiveStrengthCycle(ref, context, cycle),
           child: const Text('Start workout'),
         ),
       ],
     );
-  }
-
-  Future<void> _start(
-    BuildContext context,
-    WidgetRef ref,
-    StrengthDayRoutine routine,
-  ) async {
-    await ref
-        .read(strengthTrackerControllerProvider.notifier)
-        .startWorkout(routine: routine, cycleId: cycle.id);
-    if (context.mounted) {
-      unawaited(const StrengthTrackerRouteData().push<void>(context));
-    }
   }
 }
