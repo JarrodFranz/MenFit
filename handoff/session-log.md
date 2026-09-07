@@ -416,3 +416,7 @@ cost an hour is in `handoff/HANDOFF.md`'s Traps and Corrections.*
 - Commits: `998c308` (Important), `3466e5e` (Minors + version bump). Not
   pushed — `fork-femfit` still needs merging to `main`.
 
+- Final whole-branch review: 3 Important (web/index.html description, Train tab
+  not strength-first, hub route defaulted to run) + minors fixed in 998c308/3466e5e;
+  suite 3,509 green re-run centrally. Build 0.1.0 (2) uploaded to Firebase.
+  `fork-femfit` fast-forwarded into `main`; both pushed.

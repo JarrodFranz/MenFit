@@ -4,8 +4,7 @@
 
 ## State
 
-- **Flutter 3.47.2 / Dart 3.13.2.** Branch `fork-femfit` (to be merged into
-  `main` and pushed once the final whole-branch review passes).
+- **Flutter 3.47.2 / Dart 3.13.2.** `main` == `fork-femfit`, pushed to `https://github.com/JarrodFranz/MenFit` (2026-09-08).
 - **Fork complete (2026-09-08):** all 14 plan tasks done
   (`docs/superpowers/plans/2026-09-07-menfit-fork.md`, ledger in
   `.git/sdd/progress.md`). Cycle tracking removed; tabs Home / Train /
@@ -25,7 +24,7 @@
   number; 0.1.0 (1) is already on Firebase App Distribution.
 - **First tester build shipped (2026-09-08):** `scripts/distribute_android.ps1`
   built `app-release.apk` (122.7 MB, staging env + secrets overlay) and
-  uploaded release **0.1.0 (1)** to Firebase App Distribution, project
+  uploaded releases **0.1.0 (1)** and, after the final-review fixes, **0.1.0 (2)** (`versionCode 2`) to Firebase App Distribution, project
   `menfit-f17b3`, app `com.jarrodfranz.menfit`, group `main`. apksigner:
   CN=MenFit Upload Key; aapt: package `com.jarrodfranz.menfit`, label MenFit.
   Console: https://console.firebase.google.com/project/menfit-f17b3/appdistribution
@@ -36,20 +35,23 @@
 
 ## In flight
 
-- Nothing. The final whole-branch review's findings are all fixed, committed
-  and validated. `fork-femfit` is ready to merge.
+- Nothing. Fork shipped; `main` == `fork-femfit` and both are pushed.
 
 ## Next
 
-1. Merge `fork-femfit` into `main` and push to
-   `https://github.com/JarrodFranz/MenFit`. Nothing is pushed yet — both
-   review-fix commits are local only.
-2. Owner: add tester emails to Firebase groups `main`/`testers`
-   (`firebase appdistribution:testers:add <email> --project menfit-f17b3 --group-alias main`),
-   back up the keystore + password, set up Codemagic/Apple for iOS.
-3. Replace placeholder artwork: overwrite `assets/images/app_icon.png`, run
-   `python scripts/generate_brand_assets.py`.
-4. Roadmap ideas live in `TASKS_TO_DO.md` (1RM estimates, body-fat, bulk/cut targets).
+1. Owner: add tester emails to Firebase groups `main`/`testers`
+   (`firebase appdistribution:testers:add <email> --project menfit-f17b3 --group-alias main`);
+   both groups had 0 testers when builds 1 and 2 were uploaded, so nobody has
+   been emailed yet. Back up `%USERPROFILE%\menfit-signing\upload-keystore.jks`
+   and the password in `android/key.properties` off-machine.
+2. Install build 0.1.0 (2) on a device and smoke-test: Train tab opens
+   strength-first, Recovery tab, nutrition search via the shared FatSecret
+   proxy, GPS record.
+3. Replace placeholder artwork (overwrite `assets/images/app_icon.png`, run
+   `python scripts/generate_brand_assets.py`).
+4. Deferred Minors from the final review (all doc/test hygiene): see
+   `.git/sdd/progress.md` and `TASKS_TO_DO.md`.
+5. iOS lane: Codemagic app + Apple bundle id for `com.jarrodfranz.menfit`.
 
 ## Open questions
 
