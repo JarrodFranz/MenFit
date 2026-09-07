@@ -4,10 +4,11 @@
 
 ## State
 
-- Branch `fork-femfit`, HEAD `5760afb` (Task 5). Earlier: docs/audit+spec,
+- Branch `fork-femfit`, HEAD `fdf9079` (Task 6). Earlier: docs/audit+spec,
   implementation plan, Task 1 (tree copy + package rename), Task 2 (app
   identity sweep, `ee397ae`), Task 3 (cycle removal, `31351c8`), Task 4
-  (insights cycle-phase removal, `11cfa9d`).
+  (insights cycle-phase removal, `11cfa9d`), Task 5 (recaps month-end only,
+  `5760afb`).
   `main` branch also exists but is behind; work is happening on `fork-femfit`
   per the SDD task sequence in `.git/sdd/`.
 - Source app: FemFit at `D:\Documents\Claude\Projects\Female running app`,
@@ -83,6 +84,34 @@
   passing alone, see Traps). Running just the 5 clean files together
   (`recap_builder_test`, `recap_period_test`, `recap_share_sheet_test`,
   `recap_story_screen_test`, `recap_trigger_test`) gives a true **67/67**.
+
+- **Task 6 done** (`fdf9079`, see `.git/sdd/task-6-report.md`): every
+  cycle-phase concept removed from `lib/features/achievements/**` and the
+  `activity` module's milestone/celebration/share code. `BadgeInputs`
+  drops `cycleRecords`; `BadgeCategory`/`BadgeMetric`/`BadgeCondition` drop
+  `cycleTracking`/`cycleLoggingMonths`/`firstCompletedCycleRecord`; the
+  `cycle_logging_months` and `first_completed_cycle` badges are deleted
+  (catalogue count assertions read `badgeCatalogue.length` dynamically, so
+  no numeric test edit was needed). `achievements_providers.dart` stops
+  watching the cycle repository. `WorkoutMilestoneType.cyclePhasePr` is
+  gone; `MilestoneEvaluator`'s three methods drop their `phase`/
+  `phaseLongestDistance`/`phaseMaxWeights` params; `WorkoutCelebrationDialog`
+  and `WorkoutShareDialog` drop `phase` (the share dialog's whole
+  `_showCyclePhase` toggle/pill/gate machinery is gone). The five
+  finishing-flow controllers/screens the brief named needed zero changes
+  - Task 3 already stripped their `phase:`-passing wiring, leaving only
+  dead parameters on the domain/dialog signatures; confirmed by grep
+  before and after. Also fixed a genuine, unrelated test-infra flake in
+  `workout_share_dialog_test.dart` (see Traps). `zero` analyzer issues in
+  `test/features/achievements/**` and `test/features/activity/**`; the
+  only issues anywhere in scope are the same 4 cascade issues in
+  `achievements_providers.dart` lines 86/102/112 Tasks 3-5 already
+  documented. `flutter test test/features/achievements
+  test/features/activity`: 538 passed, 24 suites fail to load - every one
+  confirmed individually (not shared-kernel contamination this time; see
+  Traps) to be a genuine transitive dependent of the
+  `nutrition_providers.dart` cascade. The 41 non-cascade files pass
+  538/538 run together alone, an exact match to the full-directory count.
 - Firebase: project `menfit-f17b3`, Android app `com.jarrodfranz.menfit`
   registered (app id in `distribution/android.json`, confirmed unchanged by
   the Task 2 sweep), groups `main` and `testers` exist with 0 testers.
@@ -100,28 +129,26 @@
 
 ## In flight
 
-- Nothing mid-task. Task 5 is complete and committed, but it deliberately
-  leaves the tree non-compiling until Tasks 6–7 land (nutrition/weight
-  still import the deleted `features/cycle/`). 9 more tasks remain per the
-  implementation plan (`docs/superpowers/plans/2026-09-07-menfit-fork.md`)
-  and the SDD briefs under `.git/sdd/`.
+- Nothing mid-task. Task 6 is complete and committed. Only Task 7
+  (nutrition micronutrients + weight chart) still imports the deleted
+  `features/cycle/` — once it lands the tree compiles fully again. 8 more
+  tasks remain per the implementation plan
+  (`docs/superpowers/plans/2026-09-07-menfit-fork.md`) and the SDD briefs
+  under `.git/sdd/`.
 
 ## Next
 
-1. Tasks 6–7 (achievements + activity milestones/share dialog; nutrition
-   micronutrients + weight chart) — they are what makes the tree compile
-   again. Doing them in brief order matters less than fixing
-   `nutrition_providers.dart`/`weight_history_providers.dart`'s leftover
-   `features/cycle/` imports early (Task 7): while `nutrition_providers.g.dart`
-   is missing, analyzer errors cascade into every feature that reads a
-   nutrition provider (insights, recaps, home, progress, settings) even
-   though those features have no cycle coupling of their own and are NOT
-   extra scope for whoever fixes them.
+1. Task 7 (nutrition micronutrients + weight chart) — it is what makes
+   the tree compile again. While `nutrition_providers.g.dart` is missing,
+   analyzer errors cascade into every feature that reads a nutrition
+   provider (achievements, insights, recaps, home, progress, settings)
+   even though those features have no cycle coupling of their own and are
+   NOT extra scope for whoever fixes them.
 2. Then Task 8 (Drift schema reset — it replaces `app_database.dart`'s
    migration wholesale; Task 3 only removed the `from < 3` branch), Task 9
    (Wellbeing → Recovery rename), Forge theme, nutrition male values, docs
    rewrite (Task 13).
-3. After Tasks 6–7: re-run `flutter test test/app`, `test/accessibility`,
+3. After Task 7: re-run `flutter test test/app`, `test/accessibility`,
    `test/features/insights`, and `test/features/recaps` — all currently
    blocked purely by the nutrition/cycle cascade, not by their own logic.
 4. Keep running `flutter analyze --fatal-infos` after each task — see Traps
@@ -137,6 +164,19 @@
 
 ## Traps
 
+- **`workout_share_dialog_test.dart`'s `settleCardCapture` helper used a
+  single fixed 50ms `tester.runAsync` wait for the real (non-fake-async)
+  PNG encode `captureCardPng` does.** That's fine for one capture, but
+  when two `WorkoutShareDialog`s that each capture a card run back to
+  back in the same test file (as they do now that the phase-toggle tests
+  sitting between them are gone), the second capture consistently missed
+  its 50ms window on this machine, leaving `_cardPng` null and silently
+  degrading `_handleShare` to its documented text-only fallback —
+  `sharing.imageShares.single` then threw `Bad state: No element`. Fixed
+  in Task 6 by looping the wait up to 5×50ms instead of one shot. If a
+  similar `imageShares`/`toImage()`/`captureCardPng`-based assertion goes
+  flaky elsewhere (recap share sheet, badge celebration share), suspect
+  this same race before the app code.
 - `test/core/adaptive_scaffold_test.dart` deliberately keeps a **six**-entry
   synthetic destination fixture (`_crowdedDestinations`) even though the shell
   has five: at five tabs, 320/5 = 64 dp is above the 62 dp comfort threshold
@@ -187,6 +227,19 @@
 
 ## Corrections
 
+- **2026-09-08 (Task 6):** the Task 6 brief said the five finishing flows
+  (`recording_controller.dart`, `strength_tracker_controller.dart`,
+  `hiit_tracker_controller.dart`, `mindful_tracker_controller.dart`,
+  `swim_tracker_controller.dart`, plus their screens) "pass `phase:`" and
+  need to "stop resolving and passing `phase:` (and remove
+  `cycleRepositoryProvider`/`cyclePredictionEngineProvider` reads)". **That
+  wiring did not exist in any of the ten files** — grepped all of them
+  plus every call site of the milestone-evaluator methods and the two
+  dialogs' `.show()` before and after; none read a cycle provider or
+  passed `phase:`. Whatever step removed it did so before this task (most
+  likely folded into Task 3's cycle removal). No changes were needed in
+  those ten files; do not re-open them looking for phase-passing code
+  that Task 6 "missed" — it was never there.
 - **2026-09-07 (Task 3):** the Task 3 brief said "Wellbeing renamed in Task 5"
   — that rename is actually **Task 9**. The Wellbeing tab was left as-is
   (label `'Wellbeing'`) in Task 3.

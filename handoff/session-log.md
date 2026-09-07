@@ -265,3 +265,96 @@
   passed**.
 - Committed as `5760afb` (29 files, +356 / -1387). Full detail in
   `.git/sdd/task-5-report.md`.
+
+## 2026-09-08 — Session: Task 6, achievements + activity milestones/share
+
+- Followed `.git/sdd/task-6-brief.md`. `BadgeInputs` drops `cycleRecords`;
+  `BadgeCategory`/`BadgeMetric`/`BadgeCondition` drop
+  `cycleTracking`/`cycleLoggingMonths`/`firstCompletedCycleRecord`; the
+  `cycle_logging_months` (tiered) and `first_completed_cycle` (one-off)
+  badges are deleted from the catalogue. `badge_catalogue_test.dart`'s
+  count assertions read `badgeCatalogue.length` dynamically, so they
+  needed no numeric edit. `achievements_providers.dart` stops watching
+  `cycleRepositoryProvider` and fetching/passing `cycleRecords`.
+- `WorkoutMilestoneType.cyclePhasePr` deleted.
+  `MilestoneEvaluator.evaluate{Cardio,Strength,Generic}Milestones` lose
+  their `phase`/`phaseLongestDistance`/`phaseMaxWeights` parameters and
+  the three `cyclePhasePr` emit blocks. `WorkoutCelebrationDialog` and
+  `WorkoutShareDialog` lose their `phase` parameter;
+  `WorkoutShareDialog`'s `_showCyclePhase` toggle, rendered pill,
+  `_chipLabelFor` phase-gate and share-text phase gate are all removed
+  (`_titleShareableMilestones` collapsed into plain `widget.milestones`
+  since there was nothing left to filter).
+- **Correction to the brief's own premise**: it named "the five finishing
+  flows that pass `phase:`" as files needing changes
+  (`recording_controller.dart`, `strength_tracker_controller.dart`,
+  `hiit_tracker_controller.dart`, `mindful_tracker_controller.dart`,
+  `swim_tracker_controller.dart`, plus their screens). Grepped all ten
+  files and every call site of `evaluateCardioMilestones` /
+  `evaluateStrengthMilestones` / `evaluateGenericMilestones` /
+  `WorkoutCelebrationDialog.show` / `WorkoutShareDialog.show`: **none of
+  them ever passed `phase:` or read `cycleRepositoryProvider`/
+  `cyclePredictionEngineProvider` in this fork** — Task 3 (or an earlier
+  fork step) already stripped that wiring, leaving only the now-dead
+  `phase` parameters on the domain/dialog signatures. No changes were
+  needed in any of the ten files; verified with `git grep` before and
+  after.
+- Test edits: deleted `MilestoneEvaluator - Cycle Phase PRs` group (2
+  tests) from `milestone_evaluator_test.dart`; deleted the `cycle logging
+  months` group and the completed-cycle-condition test from
+  `badge_metrics_test.dart`, and removed `cycleRecordFixture` from
+  `achievement_fixtures.dart` (now unused); removed the
+  `cycleLoggingMonths` metric/assertion pair from
+  `achievements_screen_test.dart`'s unit-conversion test. Rewrote
+  `workout_share_dialog_test.dart`: dropped the `phase` param from
+  `buildTestWidget`, changed the shared `testMilestones` fixture from a
+  `cyclePhasePr` milestone to a `longestDistance` one, and deleted three
+  whole groups whose sole subject was the phase pill/toggle/gate
+  (`cycle phase is opt-in`, `milestone chip label falls back without
+  naming a phase`, `share text and the cycle-phase toggle`) plus one test
+  inside `native share` (`the phase toggle gates the shared text...`).
+- **Found and fixed a real, unrelated test-infra flake**: with the phase
+  toggle gone, `workout_share_dialog_test.dart` mounts two
+  image-capturing `WorkoutShareDialog`s back to back for the first time
+  (the earlier phase-toggle tests used to sit between them). The file's
+  `settleCardCapture` helper gave the real async PNG encode a single
+  fixed 50ms window (`tester.runAsync(() => Future.delayed(50ms))`); back
+  to back, the second capture consistently missed that window and
+  `_cardPng` stayed null, so `_handleShare` took its documented text-only
+  fallback and `sharing.imageShares.single` threw `Bad state: No
+  element`. Confirmed with a temporary debug print that the capture
+  genuinely completed *after* the assertion ran, not that the app logic
+  was wrong. Fixed by looping the wait up to 5×50ms in
+  `settleCardCapture` instead of a single attempt — reproduced clean
+  across 3 repeated runs afterward. This predates Task 6's content
+  changes (the file could not compile at all since Task 3 deleted
+  `features/cycle`, so there was no prior "working" baseline to regress
+  from) but blocked the required clean test run, so it was fixed here
+  rather than deferred.
+- Validation: `dart run build_runner build` (only the documented
+  `nutrition_providers.dart` / `weight_history_providers.dart`
+  `InvalidTypeException`s, both Task 7's job) → `dart format` (0 changed)
+  → `flutter analyze --fatal-infos` on the four target dirs: **4 issues,
+  all in `achievements_providers.dart` lines 86/102/112**, all reads of
+  `waterRepositoryProvider`/its return type — the same
+  `nutrition_providers.g.dart`-missing cascade Tasks 3-5 already
+  documented, not new. → `flutter test test/features/achievements
+  test/features/activity` as one command: **538 passed, 24 suites fail to
+  load**, every one confirmed (via the JSON reporter's per-test error
+  text, then individually re-run alone) to fail with the identical
+  `lib/features/nutrition/nutrition_providers.dart:9:8: Error: Error when
+  reading 'lib/features/cycle/cycle_providers.dart'` — a genuine
+  transitive dependency on the cascade in every case, not shared-kernel
+  contamination (unlike Task 4/5's finding, spot-checked four suspicious
+  ones — `hiit_interval_haptics_test.dart`, `live_recording_map_test.dart`,
+  `activity_detail_route_map_test.dart`,
+  `ble_sensor_record_screen_test.dart` — individually, all fail alone).
+  Ran the 41 non-cascade files together as one command for a true,
+  uncontaminated count: **538/538 passed**, exactly matching the
+  full-directory run's pass count.
+- Self-review: `git grep -n
+  "cyclePhasePr\|cycleRecords\|cycleTracking\|_showCyclePhase\|CyclePhase"
+  -- lib/features/achievements lib/features/activity
+  test/features/achievements test/features/activity` empty.
+- Committed as `fdf9079` (16 files, +63 / -628). Full detail in
+  `.git/sdd/task-6-report.md`.
