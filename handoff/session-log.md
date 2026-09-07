@@ -413,3 +413,38 @@
 - Committed as `ec76444` (2 files, +61 / -4964). Full detail in
   `.git/sdd/task-8-report.md`. Updated this handoff to also backfill Task 7,
   which had landed but never been recorded here.
+
+## 2026-09-08 — Task 10: Train tab and strength-first Home
+
+- TDD: wrote `test/features/home/today_session_card_test.dart` first (empty
+  state → "Start a routine"; active cycle → name + day counter + "Start
+  workout"). RED with `Method not found: 'TodaySessionCard'`, then a second
+  RED (`'Override' isn't a type`) fixed by adding
+  `import 'package:flutter_riverpod/misc.dart' show Override;` — **Riverpod 3
+  does not export `Override` from `flutter_riverpod.dart`**; existing tests
+  (`streak_card_test.dart`) already carry that extra import. GREEN 2/2.
+- **The brief's "Week X of Y" does not exist in the domain.** `StrengthCycle`
+  (`lib/features/activity/domain/strength_routine.dart`) has `routines`,
+  `currentDayIndex` and `nextRoutine` — no week fields at all. The card
+  counts days the way the Strength Hub does: `Day <currentDayIndex % n + 1>
+  of <n>`, plus `Next up: <nextRoutine.name>`.
+- Start path replicates `strength_custom_section.dart` exactly:
+  `strengthTrackerControllerProvider.notifier.startWorkout(routine:, cycleId:)`
+  then `const StrengthTrackerRouteData().push<void>(context)`. Empty state
+  uses `const ExerciseHubRouteData(type: 'strength').go(context)` and is
+  covered by a new router-level test in `home_screen_test.dart` that asserts
+  the Strength Hub actually opens.
+- Nav destination → `Train` / `Icons.fitness_center(_outlined)`; the
+  a11y "shipped destination list" mirror in
+  `test/accessibility/a11y_navigation_labels_test.dart` had to be updated
+  with it (icons included). No real-font width threshold moved — "Train" is
+  narrower than "Activity", so every existing measurement still passed
+  untouched.
+- Home order changed, so the two column-layout tests in `home_screen_test.dart`
+  (which pinned Steps as card #1) now pin Macros; the "six cards" test also
+  asserts `TodaySessionCard` sits above the grid.
+- Validation: `dart run build_runner build` clean (304 outputs),
+  `dart format .` (2 files), `flutter analyze --fatal-infos` **No issues
+  found!**, full suite **3493 passed, 0 failed** (was 3490; +3 new tests).
+  Committed `8b488d3` (16 files, +285 / -31).
+

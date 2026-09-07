@@ -1,10 +1,10 @@
 # Handoff — MenFit (men's training + nutrition app)
 
-*Live state. Rewritten and pruned on every material change. Last updated 2026-09-08 (Task 8).*
+*Live state. Rewritten and pruned on every material change. Last updated 2026-09-08 (Task 10).*
 
 ## State
 
-- Branch `fork-femfit`, HEAD `ec76444` (Task 8). Earlier: docs/audit+spec,
+- Branch `fork-femfit`, HEAD `8b488d3` (Task 10). Earlier: docs/audit+spec,
   implementation plan, Task 1 (tree copy + package rename), Task 2 (app
   identity sweep, `ee397ae`), Task 3 (cycle removal, `31351c8`), Task 4
   (insights cycle-phase removal, `11cfa9d`), Task 5 (recaps month-end only,
@@ -143,6 +143,18 @@
   change: **3487 passed, 0 failed** (down from 3611 — expected, since the
   ~130 deleted migration tests were replaced by only 3). `flutter analyze
   --fatal-infos` clean.
+- **Task 9 done** (`01bc432` flare categories, `17ad039` Recovery tab): the
+  Wellbeing tab is labelled **Recovery** (route path `/recovery`), flare
+  categories/symptoms reworked for men.
+- **Task 10 done** (`8b488d3`, see `.git/sdd/task-10-report.md`): the
+  Activity tab is labelled **Train** (`Icons.fitness_center*`), with the
+  strength chip first after "All" and AppBar title `Train` — the route path
+  `/activity` and every `*RouteData` name are unchanged. Home gained
+  `TodaySessionCard` (full width, above the two-column grid), reading
+  `activeStrengthCycleProvider`; the grid order is now Macros, Water,
+  Recent achievement, Steps, Progress, Today. Full suite **3493 passed,
+  0 failed**; `flutter analyze --fatal-infos` clean.
+
 - Firebase: project `menfit-f17b3`, Android app `com.jarrodfranz.menfit`
   registered (app id in `distribution/android.json`, confirmed unchanged by
   the Task 2 sweep), groups `main` and `testers` exist with 0 testers.
@@ -150,18 +162,15 @@
 
 ## In flight
 
-- Nothing mid-task. Task 8 is complete and committed. 6 more tasks remain
-  per the implementation plan
-  (`docs/superpowers/plans/2026-09-07-menfit-fork.md`) and the SDD briefs
-  under `.git/sdd/` (Task 9 onward — brief for Task 9 not yet read this
-  session).
+- Nothing mid-task. Task 10 is complete and committed. Remaining work per
+  the implementation plan (`docs/superpowers/plans/2026-09-07-menfit-fork.md`)
+  and the SDD briefs under `.git/sdd/`: Forge theme, docs rewrite (Task 13),
+  and whatever Tasks 11-12 hold (their briefs not read this session).
 
 ## Next
 
-1. Task 9 (Wellbeing → Recovery rename per the spec's decisions), then
-   Forge theme, remaining nutrition male-values follow-through (if any),
-   docs rewrite (Task 13). Read `.git/sdd/task-9-brief.md` first — it has
-   not been generated/read as of this update.
+1. Task 11 onward: read `.git/sdd/task-11-brief.md` first. Then the Forge
+   theme and the docs rewrite (Task 13).
 2. Keep running `flutter analyze --fatal-infos` after each task — see Traps
    below for rename-fallout gotchas that cost time in Tasks 1 and 2.
 3. Owner: add Firebase testers, create upload keystore, Codemagic iOS app,
