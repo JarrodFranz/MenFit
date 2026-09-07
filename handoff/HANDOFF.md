@@ -267,6 +267,14 @@
 
 ## Corrections
 
+- **2026-09-08 (Task 14 prep):** robocopy in Task 1 leaked FemFit's gitignored
+  `android/key.properties` (pointing at `%USERPROFILE%\femfit-signing\`) into
+  the MenFit tree. It was never committed, but a release build would have
+  been signed with FemFit's key. Replaced by a MenFit keystore at
+  `%USERPROFILE%\menfit-signing\upload-keystore.jks` (alias `upload`,
+  CN=MenFit Upload Key) with the password only in `android/key.properties`.
+  Owner must back up the .jks and that password off-machine.
+
 - **2026-09-08 (Task 6):** the Task 6 brief said the five finishing flows
   (`recording_controller.dart`, `strength_tracker_controller.dart`,
   `hiit_tracker_controller.dart`, `mindful_tracker_controller.dart`,

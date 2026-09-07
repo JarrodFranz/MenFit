@@ -9,7 +9,7 @@
 - **Splits:** per-km (or per-mile) segments with pace; negative-split detection is a nice analytic.
 - **GPS track:** ordered, timestamped samples (lat, lon, elevation, accuracy, HR…). Raw samples are high-volume — store efficiently, downsample for display, keep raw for recompute.
 - **PRs:** best efforts over standard distances (1k, 5k, 10k, half, full) computed by best rolling window over the track, not only whole activities.
-- **Training load:** simple first (weekly distance/duration trends); sophisticated models (TRIMP etc.) later, and they benefit from cycle context.
+- **Training load:** simple first (weekly distance/duration trends); sophisticated models (TRIMP etc.) later, and they benefit from check-in context (sleep, soreness, energy).
 
 ## Data quality realities
 

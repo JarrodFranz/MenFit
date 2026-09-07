@@ -27,12 +27,12 @@ import 'package:drift/drift.dart';
 ///
 /// **No `deleted_at`/`sync_status`**, unlike most tables here (ADR 004's
 /// column convention) and for the same reason `water_logs` omits them:
-/// there is no backend yet, and body weight is S2 data that is
+/// there is no backend yet, and body weight is S3 data that is
 /// **hard-deleted** — a weigh-in the user deletes must actually be gone,
 /// not linger as a hidden row. Add the sync columns when ADR 004's outbox
 /// lands and they mean something.
 ///
-/// S2-tier data (`knowledge/engineering/security_and_privacy.md`): weight
+/// S3-tier data (`knowledge/engineering/security_and_privacy.md`): weight
 /// values and [notes] never enter logs, analytics, or exception messages.
 @TableIndex(name: 'idx_weight_logs_day', columns: {#day})
 class WeightLogs extends Table {
@@ -48,7 +48,7 @@ class WeightLogs extends Table {
   RealColumn get weightKg => real()();
 
   /// Free-text note the user attached to this weigh-in. Nullable: nothing
-  /// is ever required here. S2 — wiped by "Delete my data" with the rest
+  /// is ever required here. S3 — wiped by "Delete my data" with the rest
   /// of the row.
   TextColumn get notes => text().nullable()();
 

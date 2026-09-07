@@ -1,6 +1,6 @@
 # Research
 
-Findings from research tasks that remain useful across sessions: package evaluations, domain evidence reviews (e.g. cycle-phase training literature), API/service comparisons (routing engines, food databases), platform capability investigations.
+Findings from research tasks that remain useful across sessions: package evaluations, domain evidence reviews (e.g. micronutrient reference intakes), API/service comparisons (routing engines, food databases), platform capability investigations.
 
 Conventions:
 - One file per research topic, dated, with sources cited.

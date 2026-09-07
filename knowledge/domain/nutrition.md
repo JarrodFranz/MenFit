@@ -4,7 +4,7 @@
 
 ## Evidence reviews
 
-- **[Energy-needs estimation (BMR/TDEE)](../research/nutrition_energy_estimates.md)** — why Mifflin-St Jeor, the female-coefficient assumption and its limits, the documented error margins, and the BMR-floor decision. Required by `mens_health.md` rule 2 and **must be read before changing anything in `features/nutrition/domain/energy_estimate.dart` or `calorie_target.dart`.**
+- **[Energy-needs estimation (BMR/TDEE)](../research/nutrition_energy_estimates.md)** — why Mifflin-St Jeor, the male-coefficient assumption and its limits, the documented error margins, and the BMR-floor decision. Required by `mens_health.md` rule 2 and **must be read before changing anything in `features/nutrition/domain/energy_estimate.dart` or `calorie_target.dart`.**
 
 - **[Activity energy expenditure ("calories burnt")](../research/energy_expenditure_estimates.md)**
   — required by `mens_health.md` rule 2 before any such figure ships. Read it
