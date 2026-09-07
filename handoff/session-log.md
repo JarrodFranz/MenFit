@@ -204,3 +204,64 @@
   load-failure list.
 - Committed as `11cfa9d` (16 files, +34 / -469). Full detail in
   `.git/sdd/task-4-report.md`.
+
+## 2026-09-08 — Session 5: Task 5, recaps are month-end only
+
+- Followed `.git/sdd/task-5-brief.md`. `git mv
+  lib/features/recaps/domain/cycle_recap.dart -> domain/month_recap.dart`,
+  `CycleRecap` -> `MonthRecap`. Removed the cycle-end recap path: deleted
+  `RecapPeriodKind.cycleEnd`/`forCompletedCycle`/`completedCyclePeriods`;
+  renamed the evaluator's sealed class `RecapDue` -> `RecapTriggerDecision`
+  per the task's explicit "later tasks rely on this name" list, deleted
+  `CycleEndDue`, renamed `NoRecapDue` -> `NothingDue`, and dropped the
+  cycle-end-wins precedence rule (evaluator is now a single month-key
+  comparison). Deleted `RecapPrHighlight.phase`/`displayPhase`,
+  `RecapBuilder.build`'s `phaseByDay`/`hasAnyCycleData` params (sparse
+  guard is now a flat 3-session floor), and `RecapMarkerStore`'s cycle key.
+  Recap slide opener label is now unconditionally
+  `'Monthly Summary · <period>'`; deleted the PR phase pill and the share
+  sheet's phase-toggle UI entirely. Fixed `routes.dart`/`routes.g.dart`
+  for the `$extra` type change (regenerated via `dart run build_runner
+  build`), plus a stray doc-comment fix in `delete_my_data_service.dart`.
+- Test rewrite: deleted `recap_phase_map_test.dart` (sole subject was
+  retrospective cycle-phase mapping — no month-end equivalent). Rewrote
+  `recap_builder_test.dart` in full: its `_julyCycle` fixture existed only
+  to dodge the 3-session floor for hydration/fueling/wellbeing/PR tests,
+  so those now use a new `_fillerSessions()` helper (3 zero-distance
+  activities on days 29-31, verified never to register a PR since
+  `foldActivityIntoRecords` gates on `distanceMeters > 0`). Deleted the
+  cycle-end-only sparse-guard tests and the one phase-only PR test; kept
+  everything else, dropping `phase:`/`phaseByDay:`/`hasAnyCycleData:`
+  args rather than deleting tests. Rewrote `recap_share_sheet_test.dart`
+  (deleted the whole phase-toggle group + the phase-only shared-text
+  group, 8 tests) and `recap_story_screen_test.dart` (deleted 2
+  phase-only PR-slide tests, replaced with 1 phase-free one). Smaller
+  fixes across `recap_period_test.dart`, `recap_trigger_test.dart`,
+  `recap_history_periods_test.dart`, `recap_history_section_test.dart`,
+  `recap_providers_fake_async_test.dart`, `recap_route_test.dart`,
+  `recap_trigger_listener_test.dart` (type renames, dropped cycle-end
+  groups/fixtures). Caught one own mistake via `flutter analyze`: dropped
+  `recap_history_periods_test.dart`'s `show AppDatabase` import qualifier
+  by accident, which caused an `Activity` name collision with Drift's
+  generated row class — restored it.
+- `flutter analyze --fatal-infos` (scoped to
+  `lib/features/recaps test/features/recaps lib/app/router`): 0 issues in
+  `test/features/recaps/**`; `lib/features/recaps/**` has exactly the
+  documented Task 7 cascade (3 undefined-identifier errors in
+  `recaps_providers.dart` from importing the still-broken
+  `nutrition_providers.dart`, plus their necessary follow-on
+  warnings/infos) — confirmed root cause precisely (that file's
+  `part 'nutrition_providers.g.dart'` doesn't exist because its own
+  `features/cycle/` imports fail), not worked around.
+- `flutter test test/features/recaps` as one invocation: 67 passed, 6
+  suites failed to load. Applying the shared-kernel trap from Task 4's
+  log: verified individually that 5 of the 6 are genuine transitive
+  dependents of the nutrition cascade (`recap_history_periods_test.dart`,
+  `recap_history_section_test.dart`, `recap_providers_fake_async_test.dart`,
+  `recap_route_test.dart`, `recap_trigger_listener_test.dart`), while
+  `recap_builder_test.dart` has zero import path to the cascade and passes
+  33/33 alone — it only failed as a batch-compile artifact. Ran the 5
+  genuinely clean files together for a true, uncontaminated **67/67
+  passed**.
+- Committed as `5760afb` (29 files, +356 / -1387). Full detail in
+  `.git/sdd/task-5-report.md`.

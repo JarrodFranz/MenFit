@@ -4,9 +4,10 @@
 
 ## State
 
-- Branch `fork-femfit`, HEAD `11cfa9d` (Task 4). Earlier: docs/audit+spec,
+- Branch `fork-femfit`, HEAD `5760afb` (Task 5). Earlier: docs/audit+spec,
   implementation plan, Task 1 (tree copy + package rename), Task 2 (app
-  identity sweep, `ee397ae`), Task 3 (cycle removal, `31351c8`).
+  identity sweep, `ee397ae`), Task 3 (cycle removal, `31351c8`), Task 4
+  (insights cycle-phase removal, `11cfa9d`).
   `main` branch also exists but is behind; work is happening on `fork-femfit`
   per the SDD task sequence in `.git/sdd/`.
 - Source app: FemFit at `D:\Documents\Claude\Projects\Female running app`,
@@ -59,6 +60,29 @@
   60-90 from that cascade. See Traps for why `flutter test
   test/features/insights` (the whole directory) reports 3 files failing to
   load even though only 2 of them touch the broken import.
+- **Task 5 done** (`5760afb`, see `.git/sdd/task-5-report.md`): recaps
+  are month-end only. `domain/cycle_recap.dart` -> `domain/month_recap.dart`
+  (`git mv`), `CycleRecap` -> `MonthRecap`. `RecapPeriodKind` is
+  `{monthEnd}` only (`cycleEnd`/`forCompletedCycle`/`completedCyclePeriods`
+  gone). `RecapDue` renamed `RecapTriggerDecision` (`CycleEndDue` gone,
+  `NoRecapDue` -> `NothingDue`, precedence rule gone).
+  `RecapPrHighlight.phase`/`displayPhase` gone. `RecapBuilder.build` drops
+  `phaseByDay`/`hasAnyCycleData`; sparse guard is a flat 3-session floor.
+  `RecapMarkerStore` keeps only `recaps_last_shown_month_key`. Recap slide
+  opener label is `'Monthly Summary · <period>'`; PR phase pill and the
+  share sheet's phase toggle are gone. `routes.dart`/`routes.g.dart`
+  updated + regenerated for the `$extra` type change. `zero` analyzer
+  issues in `test/features/recaps/**`; the only `lib/features/recaps/**`
+  issues are 3 errors (+ their necessary follow-on
+  warnings/infos) in `recaps_providers.dart` from the same
+  `nutrition_providers.dart` cascade Task 4 hit — not new, not worked
+  around. `flutter test test/features/recaps` (whole directory): 67
+  passed, 6 suites fail to load — 5 are genuine transitive dependents of
+  the cascade (confirmed individually), 1
+  (`recap_builder_test.dart`) is a shared-kernel batch artifact (33/33
+  passing alone, see Traps). Running just the 5 clean files together
+  (`recap_builder_test`, `recap_period_test`, `recap_share_sheet_test`,
+  `recap_story_screen_test`, `recap_trigger_test`) gives a true **67/67**.
 - Firebase: project `menfit-f17b3`, Android app `com.jarrodfranz.menfit`
   registered (app id in `distribution/android.json`, confirmed unchanged by
   the Task 2 sweep), groups `main` and `testers` exist with 0 testers.
@@ -76,29 +100,30 @@
 
 ## In flight
 
-- Nothing mid-task. Task 4 is complete and committed, but it deliberately
-  leaves the tree non-compiling until Tasks 5–7 land (nutrition still
-  imports the deleted `features/cycle/`). 10 more tasks remain per the
+- Nothing mid-task. Task 5 is complete and committed, but it deliberately
+  leaves the tree non-compiling until Tasks 6–7 land (nutrition/weight
+  still import the deleted `features/cycle/`). 9 more tasks remain per the
   implementation plan (`docs/superpowers/plans/2026-09-07-menfit-fork.md`)
   and the SDD briefs under `.git/sdd/`.
 
 ## Next
 
-1. Tasks 5–7 (recaps/achievements, activity milestones + share dialog,
-   nutrition micronutrients + weight chart) — they are what makes the tree
-   compile again. Doing them in brief order matters less than doing
-   `nutrition_providers.dart` early (part of Task 7): while its `.g.dart` is
-   missing, analyzer errors cascade into every feature that reads a
-   nutrition provider (insights, home, progress, settings) even though
-   those features have no cycle coupling of their own and are NOT extra
-   scope for whoever fixes them.
+1. Tasks 6–7 (achievements + activity milestones/share dialog; nutrition
+   micronutrients + weight chart) — they are what makes the tree compile
+   again. Doing them in brief order matters less than fixing
+   `nutrition_providers.dart`/`weight_history_providers.dart`'s leftover
+   `features/cycle/` imports early (Task 7): while `nutrition_providers.g.dart`
+   is missing, analyzer errors cascade into every feature that reads a
+   nutrition provider (insights, recaps, home, progress, settings) even
+   though those features have no cycle coupling of their own and are NOT
+   extra scope for whoever fixes them.
 2. Then Task 8 (Drift schema reset — it replaces `app_database.dart`'s
    migration wholesale; Task 3 only removed the `from < 3` branch), Task 9
    (Wellbeing → Recovery rename), Forge theme, nutrition male values, docs
    rewrite (Task 13).
-3. After Tasks 4–7: re-run `flutter test test/app` and
-   `flutter test test/accessibility` first — those files already expect five
-   destinations but could not be executed in Task 3.
+3. After Tasks 6–7: re-run `flutter test test/app`, `test/accessibility`,
+   `test/features/insights`, and `test/features/recaps` — all currently
+   blocked purely by the nutrition/cycle cascade, not by their own logic.
 4. Keep running `flutter analyze --fatal-infos` after each task — see Traps
    below for rename-fallout gotchas that cost time in Tasks 1 and 2.
 5. Owner: add Firebase testers, create upload keystore, Codemagic iOS app,
@@ -112,10 +137,6 @@
 
 ## Traps
 
-- `lib/app/router/routes.dart` still imports
-  `features/recaps/domain/cycle_recap.dart` and `routes.g.dart` line 369 casts
-  `state.extra as CycleRecap?`. Whoever removes or renames `CycleRecap` must
-  fix routes.dart **and** re-run `dart run build_runner build`.
 - `test/core/adaptive_scaffold_test.dart` deliberately keeps a **six**-entry
   synthetic destination fixture (`_crowdedDestinations`) even though the shell
   has five: at five tabs, 320/5 = 64 dp is above the 62 dp comfort threshold
