@@ -109,8 +109,11 @@ class MindfulTrackerController extends _$MindfulTrackerController {
     final defaultStyle = type == ActivityType.pilates
         ? 'Mat Pilates'
         : 'Vinyasa';
+    // Both defaults must be members of the `MindfulStyles` lists the
+    // picker renders, or the session opens with no chip selected and saves
+    // a focus area the user never chose.
     final defaultArea = type == ActivityType.pilates
-        ? 'Core & Pelvic Floor'
+        ? 'Core & Spine'
         : 'Full Body Flow';
 
     state = MindfulTrackerState(

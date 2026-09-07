@@ -7,8 +7,9 @@ import 'package:drift/drift.dart';
 /// as the profile's current single value (several features read it: energy
 /// estimates, activity-energy MET maths, the progress card). The profile
 /// column is not derived from this table and this table is not derived from
-/// it; the migration seeds one row from the profile so the history starts
-/// non-empty.
+/// it, and nothing seeds one from the other: a fresh install has an empty
+/// weight history, and the first row lands when the user logs a weight from
+/// the profile or the weight screen.
 ///
 /// [day] is stored as an ISO-8601 date string (`YYYY-MM-DD`), captured in
 /// the user's local timezone at logging time — calendar days, not UTC

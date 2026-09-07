@@ -76,8 +76,8 @@ enum EnergyEstimateInput {
 
   /// Warm, plain-English name for this input, for a "we still need…"
   /// message. Never framed as a failure on the user's part — every profile
-  /// field is optional by design (`knowledge/product/stage1_audit.md`
-  /// §5.1).
+  /// field is optional by design
+  /// (`knowledge/product/product_vision.md`).
   String get label => switch (this) {
     EnergyEstimateInput.dateOfBirth => 'your date of birth',
     EnergyEstimateInput.heightCm => 'your height',

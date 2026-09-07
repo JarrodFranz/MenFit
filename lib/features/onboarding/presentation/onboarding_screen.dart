@@ -151,7 +151,7 @@ class _NavigationButtons extends StatelessWidget {
         // affordance alongside "Continue" - nothing on this step is
         // required to advance either way, but a visible Skip makes that
         // obvious rather than relying on the user to notice Continue works
-        // with nothing chosen (`knowledge/product/stage1_audit.md` §5.1).
+        // with nothing chosen (`knowledge/product/product_vision.md`).
         if (isOptionalStep && !state.isSubmitting) ...[
           TextButton(onPressed: onContinue, child: const Text('Skip')),
           SizedBox(width: tokens.spacingSm),

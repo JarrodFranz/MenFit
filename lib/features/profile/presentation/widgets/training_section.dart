@@ -14,7 +14,7 @@ import 'package:menfit_app/features/profile/presentation/widgets/weekday_toggle_
 /// 'Training' section of `../profile_screen.dart`: fitness goal, running and
 /// strength experience, preferred training days, weekly activity goal, and
 /// preferred unit system — every field individually optional except units
-/// (`knowledge/product/stage1_audit.md` §5.1).
+/// (`knowledge/product/product_vision.md`).
 class TrainingSection extends ConsumerWidget {
   const TrainingSection({required this.profile, super.key});
 

@@ -11,7 +11,7 @@ import 'package:menfit_app/core/theme/tokens.dart';
 /// for the fitness-goal and running/strength-experience pickers, and by
 /// `features/onboarding/presentation/onboarding_steps.dart`'s optional
 /// "Tell us a little more" step — all optional, single-select
-/// (`knowledge/product/stage1_audit.md` §5.1: "never force disclosure").
+/// (`knowledge/product/product_vision.md`: never force disclosure).
 /// Lives in `core/widgets/` (a design-system widget, not feature-specific)
 /// so both features can use it without either depending on the other's
 /// `presentation/` layer (`architecture_overview.md` dependency rule 2).

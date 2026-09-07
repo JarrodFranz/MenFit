@@ -6,7 +6,7 @@ import 'package:menfit_app/core/domain/weekday.dart';
 part 'user_profile.freezed.dart';
 
 /// A broad training goal the user can optionally set
-/// (`knowledge/product/stage1_audit.md` §5.1). Never required — powers
+/// (`knowledge/product/product_vision.md`). Never required — powers
 /// nothing on its own yet (S1-4's nutrition targets and future plan
 /// recommendations are the intended consumers).
 enum FitnessGoal {
@@ -83,7 +83,7 @@ enum ExperienceLevel {
 
 /// The local user's profile: display name, preferred unit system, an
 /// optional weekly activity goal, and the S1-3 fitness-profile fields
-/// (`knowledge/product/stage1_audit.md` §5.1) — date of birth, height,
+/// (`knowledge/product/product_vision.md`) — date of birth, height,
 /// weight, fitness goal, running/strength experience, and preferred
 /// training days. Every field beyond [id]/[displayName]/[unitSystem] is
 /// optional; the spec never forces disclosure.

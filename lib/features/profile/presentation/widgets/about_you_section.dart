@@ -13,7 +13,7 @@ import 'package:menfit_app/features/profile/presentation/widgets/run_profile_upd
 /// 'About you' section of `../profile_screen.dart`: date of birth, height,
 /// weight — every field individually optional, unit-aware (cm vs ft+in, kg
 /// vs lb per `UserProfile.unitSystem`), canonical metric storage
-/// (`knowledge/product/stage1_audit.md` §5.1).
+/// (`knowledge/product/product_vision.md`).
 ///
 /// S2-tier data (`knowledge/engineering/security_and_privacy.md`): this
 /// widget never logs or otherwise surfaces these values outside the normal

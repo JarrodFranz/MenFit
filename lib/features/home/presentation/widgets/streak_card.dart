@@ -247,8 +247,9 @@ class _ActiveStreakCard extends ConsumerWidget {
 /// streak — see `knowledge/product/terminology.md`
 /// ("paused"/"protected", never "frozen"/"excused"/"failed").
 ///
-/// RULING (S1-2, resolving the "shoulder-surfing" product note from
-/// `stage1_audit.md`): always renders with a neutral primary tint, never a
+/// RULING (S1-2, resolving the "shoulder-surfing" product note in
+/// `knowledge/product/product_vision.md`): always renders with a neutral
+/// primary tint, never a
 /// source-specific colour — protection is multi-source (an explicit
 /// recovery day *or* a flare impact), so a source-coloured card would
 /// incorrectly imply the reason on sight, and would leak health data to

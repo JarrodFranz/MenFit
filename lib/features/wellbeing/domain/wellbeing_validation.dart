@@ -122,7 +122,7 @@ const String _rangeTooLongMessage =
 ///   is a deliberate act, not a fast optional tap-through — see
 ///   `knowledge/product/terminology.md`'s "Flare" definition). Symptoms,
 ///   category, and notes stay optional — no diagnosis is ever required
-///   (`knowledge/product/stage1_audit.md` §5.2).
+///   (`knowledge/product/product_vision.md`).
 FlareValidation validateFlareEvent({
   required LocalDate day,
   required LocalDate today,

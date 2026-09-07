@@ -59,8 +59,7 @@ enum FlareImpact {
 }
 
 /// An optional, non-diagnostic category for a flare-up
-/// (`knowledge/product/stage1_audit.md` §5.2: "WITHOUT requiring
-/// diagnosis"). Never required — the UI frames this as "What kind of
+/// (`knowledge/product/product_vision.md`: never requiring a diagnosis). Never required — the UI frames this as "What kind of
 /// flare-up? (optional)" with a "Prefer not to say" option that maps back
 /// to `null`, not to [other].
 enum FlareCategory {

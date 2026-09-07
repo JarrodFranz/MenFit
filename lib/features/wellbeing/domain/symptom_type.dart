@@ -2,8 +2,8 @@
 ///
 /// Shared vocabulary (`knowledge/product/terminology.md`): a small, closed
 /// set of plain-English symptom labels used by both the wellbeing feature
-/// (check-ins, flares) and, per the cycle feature's roadmap note in
-/// `knowledge/product/stage1_audit.md`, future cycle-record symptom fields.
+/// (check-ins, flares) and by any future feature that records symptoms
+/// (`knowledge/product/product_vision.md`).
 /// This is a `domain/` import, legal for another feature to depend on per
 /// ADR 007's "features may depend on another feature's domain/" rule.
 enum SymptomType {

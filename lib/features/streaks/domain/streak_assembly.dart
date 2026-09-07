@@ -11,8 +11,8 @@ import 'package:menfit_app/features/streaks/domain/streak_engine.dart';
 /// without Riverpod or Drift (`knowledge/engineering/testing_strategy.md`'s
 /// pyramid: pure Dart tests are the bulk).
 ///
-/// **Protection assembly (S1-2, `knowledge/product/stage1_audit.md`'s
-/// `DayStatus` evolution):** `protectedDays` — the set [computeStreaks]
+/// **Protection assembly (S1-2, the `DayStatus` evolution in
+/// `knowledge/product/product_vision.md`):** `protectedDays` — the set [computeStreaks]
 /// treats as protected recovery — is the union of two independent,
 /// voluntary sources, neither of which requires the other:
 ///

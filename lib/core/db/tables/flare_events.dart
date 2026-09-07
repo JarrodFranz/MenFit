@@ -9,8 +9,8 @@ import 'package:drift/drift.dart';
 ///
 /// [symptoms] uses the same comma-separated `SymptomType.toStorage()`
 /// encoding as `daily_checkins.dart`. [category] is nullable — never
-/// required, no diagnosis demanded (`knowledge/product/stage1_audit.md`
-/// §5.2).
+/// required, no diagnosis demanded
+/// (`knowledge/product/product_vision.md`).
 ///
 /// S3-tier data, same handling as `daily_checkins.dart`.
 @TableIndex(name: 'idx_flare_events_day', columns: {#day})

@@ -63,7 +63,7 @@ final class MindfulTrackerControllerProvider
 }
 
 String _$mindfulTrackerControllerHash() =>
-    r'32af8f106cd21240043aff96964beb6dfa7c8157';
+    r'01f5021a5c3c3d3a39388822caf7b8084f5379b4';
 
 /// Global, persistent controller for live Yoga/Pilates tracking.
 ///
