@@ -168,7 +168,7 @@ void main() {
 
   group('the range-empty message', () {
     test('is a different sentence from the never-logged one', () {
-      // Telling a user with months of history that she has "no weight
+      // Telling a user with months of history that they have "no weight
       // readings yet" is false, and reads as a prompt to log one now.
       expect(weightRangeEmptyMessage, isNot(weightEmptyStateMessage));
       expect(
@@ -188,7 +188,7 @@ void main() {
       expect(weightRangeEmptyMessage.toLowerCase(), contains('range'));
     });
 
-    test('does not invite her to log one now', () {
+    test('does not invite them to log one now', () {
       final message = weightRangeEmptyMessage.toLowerCase();
 
       expect(message, isNot(contains('log ')));

@@ -276,7 +276,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    // "Nothing logged" is a claim about her records; the app must not make
+    // "Nothing logged" is a claim about their records; the app must not make
     // it about data it never managed to read.
     expect(find.text("Couldn't load this month."), findsOneWidget);
     // The dates are still correct and still tappable — only the markers

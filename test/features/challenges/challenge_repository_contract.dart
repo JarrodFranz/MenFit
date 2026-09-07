@@ -49,7 +49,7 @@ Future<void> expectSaveChallengeContract(ChallengeRepository repository) async {
     DateTime.utc(2026, 8, 30, 9),
     reason:
         'the first save owns createdAt - callers rely on it so a second '
-        'join of a challenge she already holds cannot move the moment she '
+        'join of a challenge they already hold cannot move the moment they '
         'picked it up (domain/challenge_repository.dart#saveChallenge)',
   );
   expect(

@@ -24,7 +24,7 @@ import 'label_ocr/label_fixtures.dart';
 ///    mapping reads the nullable `ParsedValue` fields and this test exists
 ///    to say so.
 /// 2. **A scan fills blanks and never overwrites.** What the user typed is
-///    hers; where the panel disagrees, the disagreement is reported.
+///    theirs; where the panel disagrees, the disagreement is reported.
 void main() {
   const parser = NutritionLabelParser();
 
@@ -234,18 +234,18 @@ void main() {
       expect(next.labelIsPerVolume, isFalse);
     });
 
-    test('never overwrites what she typed, and says where it differed', () {
+    test('never overwrites what they typed, and says where it differed', () {
       final next = applyLabelScan(
         blank.copyWith(calories: '210', protein: '5.2'),
         mapParsedLabel(parser.parse(fsanzTwoColumn())),
       );
 
-      expect(next.calories, '210', reason: 'her value wins');
+      expect(next.calories, '210', reason: 'their value wins');
       expect(
         next.labelWarnings,
         contains('Kept your value for calories (label read 198).'),
       );
-      // A value she typed that agrees with the panel is not worth a note.
+      // A value they typed that agrees with the panel is not worth a note.
       expect(
         next.labelWarnings.where((w) => w.contains('protein')),
         isEmpty,
@@ -254,7 +254,7 @@ void main() {
       expect(next.lowConfidenceFields, isNot(contains(ScanField.calories)));
     });
 
-    test('leaves an amount she already set alone', () {
+    test('leaves an amount they already set alone', () {
       final next = applyLabelScan(
         blank.copyWith(basisAmount: '45', basisUnit: 'g'),
         mapParsedLabel(parser.parse(fsanzTwoColumn())),
@@ -281,12 +281,12 @@ void main() {
       expect(next.basisAmount, isEmpty);
       expect(next.labelIsPerVolume, isTrue);
       expect(next.needsWeightForVolumeLabel, isTrue);
-      // And stops being a blocker once she supplies the weight — which
+      // And stops being a blocker once they supply the weight — which
       // means *setting the field*, not merely the field holding a number.
       // `FoodFormController.updateBasisAmount` writes both, and a
       // `copyWith` that moved only the amount would be reproducing the
       // hole this guard closes (a weight that was already there is not an
-      // answer to a label she has just photographed).
+      // answer to a label they have just photographed).
       expect(
         next
             .copyWith(basisAmount: '104', labelVolumeWeightConfirmed: true)
@@ -320,15 +320,15 @@ void main() {
     });
 
     test('a weight typed BEFORE the scan is not an answer to it', () {
-      // She was defining a food by weight and then photographed a drink
+      // They were defining a food by weight and then photographed a drink
       // printed per 100 mL. The two numbers have nothing to do with each
-      // other, and her 250 g is not a claim about what 100 mL weighs.
+      // other, and their 250 g is not a claim about what 100 mL weighs.
       final after = applyLabelScan(
         blank.copyWith(basisAmount: '250', basisUnit: 'g'),
         volumeLabel,
       );
 
-      expect(after.basisAmount, '250', reason: 'her value is never replaced');
+      expect(after.basisAmount, '250', reason: 'their value is never replaced');
       expect(after.labelIsPerVolume, isTrue);
       expect(after.labelVolumeWeightConfirmed, isFalse);
       expect(after.needsWeightForVolumeLabel, isTrue);
@@ -396,7 +396,7 @@ void main() {
   group('the copy the button carries', () {
     test('promises what the camera permission string promises', () {
       // The same promise in two places: the iOS prompt the user sees once,
-      // and the line under the button she sees every time. A guard on only
+      // and the line under the button they see every time. A guard on only
       // one of them lets the other quietly drop a claim the implementation
       // still keeps (ADR 012 — nothing leaves the phone, and the photo is
       // deleted in a `finally`).
@@ -460,7 +460,7 @@ void main() {
       );
 
       // ADR 010: `source` records where the data came from. Nobody's
-      // database supplied this; her camera did.
+      // database supplied this; their camera did.
       expect(seed.source, FoodSource.custom);
       expect(seed.foundInDatabase, isFalse);
       expect(seed.barcode, '5000112637922');

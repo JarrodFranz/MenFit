@@ -18,7 +18,7 @@ void main() {
   /// A container wired to an in-memory database and the fake adapter.
   ///
   /// [syncEnabled] overrides the fitness-device sync toggle, which is the
-  /// user's explicit per-source permission for reading her health platform.
+  /// user's explicit per-source permission for reading their health platform.
   /// Its real default is `false`, so every test that expects a sync to
   /// happen has to say so — which is the point.
   ProviderContainer makeContainer({bool syncEnabled = true}) {
@@ -213,7 +213,7 @@ void main() {
     });
   });
 
-  group('the sync toggle is her permission', () {
+  group('the sync toggle is their permission', () {
     test('nothing is read or written while the toggle is off', () async {
       final container = makeContainer(syncEnabled: false);
 
@@ -224,7 +224,7 @@ void main() {
       expect(
         adapter.permissionCallCount,
         0,
-        reason: 'her stated preference is checked before the adapter is',
+        reason: 'their stated preference is checked before the adapter is',
       );
       expect(adapter.rangeCallCount, 0);
       expect(await storedRows(container), isEmpty);
@@ -420,7 +420,7 @@ void main() {
     test('reports noPermission and writes nothing', () async {
       // The real adapter's `hasPermissions` is an OR across steps and the
       // two energy types, so this configuration passes it. Gating on it
-      // would show an empty chart that blames her data rather than the
+      // would show an empty chart that blames their data rather than the
       // missing grant.
       adapter = FakeHealthPlatformAdapter.energyOnly();
       final container = makeContainer();

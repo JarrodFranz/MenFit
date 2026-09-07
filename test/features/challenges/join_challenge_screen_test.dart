@@ -160,7 +160,7 @@ void main() {
       }
 
       // Every message is distinct: five outcomes with one shared "that
-      // did not work" would tell her nothing about what to do next.
+      // did not work" would tell them nothing about what to do next.
       final messages = {
         for (final rejection in CodeRejection.values)
           joinCodeRejectionMessage(rejection),
@@ -191,7 +191,7 @@ void main() {
   });
 
   group('joining', () {
-    testWidgets('stores the challenge under the name she chose', (
+    testWidgets('stores the challenge under the name they chose', (
       tester,
     ) async {
       await pumpScreen(tester);
@@ -209,7 +209,7 @@ void main() {
       await flushDriftTimers(tester);
     });
 
-    testWidgets('says so gently when she already has it, and changes '
+    testWidgets('says so gently when they already have it, and changes '
         'nothing', (tester) async {
       // The fixture's own display name, which the re-paste must not
       // overwrite.
@@ -227,7 +227,7 @@ void main() {
       expect(
         stored.selfDisplayName,
         'Alex',
-        reason: 'a re-pasted code must not overwrite what she already has',
+        reason: 'a re-pasted code must not overwrite what they already have',
       );
 
       await flushDriftTimers(tester);

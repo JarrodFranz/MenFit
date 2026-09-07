@@ -19,7 +19,7 @@ import 'fake_challenge_repository.dart';
 /// active and one dated July is not.
 final LocalDate _today = LocalDate(2026, 9, 20);
 
-/// Her standing in the challenge, through the real engine — so a percentage
+/// Their standing in the challenge, through the real engine — so a percentage
 /// on screen is one the engine would actually produce rather than a
 /// hand-faked figure that agrees with the assertion by construction.
 ChallengeSelfProgress _progressFor(
@@ -98,7 +98,7 @@ void main() {
       await flushDriftTimers(tester);
     });
 
-    testWidgets('renders an active challenge with her own progress', (
+    testWidgets('renders an active challenge with their own progress', (
       tester,
     ) async {
       final blueprint = distanceBlueprint();
@@ -119,7 +119,7 @@ void main() {
       await flushDriftTimers(tester);
     });
 
-    testWidgets('shows the buddy with her name, her figure and its date', (
+    testWidgets('shows the buddy with their name, their figure and its date', (
       tester,
     ) async {
       final blueprint = distanceBlueprint();
@@ -149,7 +149,7 @@ void main() {
         ),
         findsOneWidget,
         reason:
-            'her buddy is a sentence, not a second bar: two bars are a '
+            'their buddy is a sentence, not a second bar: two bars are a '
             'comparison whatever the copy says, and the two percentages '
             'are measured against different private targets (see the class '
             'doc on challenge_card.dart)',
@@ -158,7 +158,7 @@ void main() {
       await flushDriftTimers(tester);
     });
 
-    testWidgets('does not celebrate when only one of them reached her goal', (
+    testWidgets('does not celebrate when only one of them reached their goal', (
       tester,
     ) async {
       final blueprint = distanceBlueprint();
@@ -234,7 +234,7 @@ void main() {
       windowEnd: LocalDate(2026, 7, 31),
     );
 
-    testWidgets('is secondary: collapsed until she asks for it', (
+    testWidgets('is secondary: collapsed until they ask for it', (
       tester,
     ) async {
       final active = challengeFrom(distanceBlueprint());

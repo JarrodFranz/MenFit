@@ -90,7 +90,7 @@ const Map<ActivityType, _Coverage> _claimedCoverage = {
 };
 
 /// The badges that are shared rather than specific to one type, so the
-/// "a ladder of her own" test can say what it means.
+/// "a ladder of their own" test can say what it means.
 const Set<String> _sharedTieredBadgeIds = {'sessions_logged'};
 
 /// One entirely ordinary session of [type], built to reach the marks
@@ -232,7 +232,7 @@ void main() {
           greaterThan(0),
           reason:
               '${entry.key.name}: $id did not move for a session of this '
-              'type, so the ladder is not really hers',
+              'type, so the ladder is not really theirs',
         );
       }
       for (final id in entry.value.oneOffs) {

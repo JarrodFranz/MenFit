@@ -299,7 +299,7 @@ void main() {
   });
 
   testWidgets(
-    'a diary row shows what she logged, in the unit she logged it in — and '
+    'a diary row shows what they logged, in the unit they logged it in — and '
     'not the serving count as well',
     (tester) async {
       await logEntry(
@@ -319,7 +319,7 @@ void main() {
         findsOneWidget,
       );
       // 47 g works out to 1.57 servings; printing that too would state the
-      // same fact twice, in a number she never typed.
+      // same fact twice, in a number they never typed.
       expect(find.textContaining('1.57'), findsNothing);
       expect(find.textContaining('servings'), findsNothing);
       // The nutrition still follows the conversion: 47/30 x 300 kcal.

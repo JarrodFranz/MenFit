@@ -65,7 +65,7 @@ void main() {
   test('and still contributes exactly the nutrition it always did', () {
     // 200 ml against a 50 g serving is four servings, whatever the picker
     // does or does not offer today. A changed number here would mean a
-    // user's history moved under her.
+    // user's history moved under them.
     final entry = legacyEntry();
 
     expect(entry.quantityServings, 4);

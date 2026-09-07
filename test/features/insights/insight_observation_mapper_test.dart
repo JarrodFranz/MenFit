@@ -190,7 +190,7 @@ void main() {
       expect(
         observation.proteinGrams,
         isNull,
-        reason: 'an unlogged day is not a day she ate no protein',
+        reason: 'an unlogged day is not a day they ate no protein',
       );
       expect(
         observation.proteinTargetMet(0.85),
@@ -262,7 +262,7 @@ void main() {
               day: day,
               type: ActivityType.yoga,
               distanceMeters: 0,
-              // No `rpe:` — she was never asked. `workout_details.dart`
+              // No `rpe:` — they were never asked. `workout_details.dart`
               // used to default this to 6, which is what kept every
               // exertion insight dormant.
               details: const MindfulWorkoutDetails(),

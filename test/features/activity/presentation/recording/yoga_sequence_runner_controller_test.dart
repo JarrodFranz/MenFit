@@ -563,7 +563,7 @@ void main() {
         await expectLater(controller().finish(), throwsA(isA<Exception>()));
 
         // Nothing was stored, and nothing was thrown away either: the
-        // practice is still on screen, still complete, still hers to save.
+        // practice is still on screen, still complete, still theirs to save.
         expect(repository.saved, isEmpty);
         expect(state().phase, YogaRunPhase.complete);
         expect(state().sequence, isNotNull);

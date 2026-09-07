@@ -323,7 +323,7 @@ void main() {
       expect(
         logged.source,
         WeightLogSource.manual,
-        reason: 'she typed this number herself, via the profile field',
+        reason: 'they typed this number themselves, via the profile field',
       );
     });
 
@@ -345,7 +345,7 @@ void main() {
 
     test(
       're-saving the same weight records nothing - a duplicate point would '
-      'flatten a trend line without her having weighed in again',
+      'flatten a trend line without their having weighed in again',
       () async {
         repository.emit(existingProfile().copyWith(weightKg: 65.5));
         await container.read(profileControllerProvider.future);
@@ -393,8 +393,8 @@ void main() {
       () async {
         // The write-through runs *after* the profile row is persisted, so
         // letting its StorageException out would report a save that landed
-        // as a save that failed, and invite her to redo an edit that is
-        // already stored. The lost point self-heals on her next weight
+        // as a save that failed, and invite them to redo an edit that is
+        // already stored. The lost point self-heals on their next weight
         // edit; the authoritative profile row is correct either way.
         weightRepository.failNextSave = true;
 

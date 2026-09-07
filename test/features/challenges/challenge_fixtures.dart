@@ -51,12 +51,12 @@ ChallengeBlueprint sessionBlueprint({
 }
 
 /// This device's author tag in the fixtures — what `challengeFrom` stamps
-/// on a challenge and therefore what her own exported progress codes
+/// on a challenge and therefore what their own exported progress codes
 /// carry.
 const int selfAuthorTag = 0x11223344;
 
 /// The buddy device's author tag: any value that is not [selfAuthorTag].
-/// A progress code carrying this one is hers, and imports normally; one
+/// A progress code carrying this one is theirs, and imports normally; one
 /// carrying [selfAuthorTag] is the user's own coming back
 /// (`application/challenge_code_service.dart#importProgressCode`).
 const int buddyAuthorTag = 0xA9B8C7D6;
@@ -79,7 +79,7 @@ Challenge challengeFrom(
   );
 }
 
-/// A progress code as the buddy's device would write it: her tag, not
+/// A progress code as the buddy's device would write it: their tag, not
 /// ours. The default in every presentation test, because "a code arriving
 /// from the other phone" is the ordinary case.
 String buddyProgressCode({

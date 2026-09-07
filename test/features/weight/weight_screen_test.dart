@@ -116,7 +116,9 @@ void main() {
       );
     }
 
-    testWidgets('does not claim she has never logged anything', (tester) async {
+    testWidgets('does not claim they have never logged anything', (
+      tester,
+    ) async {
       await seedAprilOnly();
       await pumpScreen(tester);
 

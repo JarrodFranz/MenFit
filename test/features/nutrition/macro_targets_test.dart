@@ -122,7 +122,7 @@ void main() {
       expect(outcome.proteinGrams, closeTo(1800 * 0.2 / 4, 1e-9));
     });
 
-    test('a floored target is still a basis - it is what she works to', () {
+    test('a floored target is still a basis - it is what they work to', () {
       const floored = FlooredCalorieTarget(
         targetKcal: 1400,
         requestedKcal: 1200,

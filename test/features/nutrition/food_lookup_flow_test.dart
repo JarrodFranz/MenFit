@@ -603,8 +603,8 @@ void main() {
       await typeBarcode(tester, _ean8);
 
       // The second fetch is unavoidable — our spelling misses the row — but
-      // the echoed code it comes back with does not, so she lands on the log
-      // dialog for the food she already has.
+      // the echoed code it comes back with does not, so they land on the log
+      // dialog for the food they already have.
       expect(dataProvider.barcodeLookups, [_ean8, _ean8]);
       expect(find.text('Add to your day'), findsOneWidget);
       expect(find.byType(FoodFormScreen), findsNothing);
@@ -780,7 +780,7 @@ void main() {
       await tester.tap(find.text('Porridge oats · Quaker'));
       await settleRealAsync(tester);
 
-      // Straight to logging the food she already has - not through the
+      // Straight to logging the food they already have - not through the
       // review screen again.
       expect(find.text('Add to your day'), findsOneWidget);
       expect(find.byType(FoodFormScreen), findsNothing);

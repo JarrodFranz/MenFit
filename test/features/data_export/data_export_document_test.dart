@@ -145,7 +145,7 @@ void main() {
       expect(tables.keys, containsAll(<String>['weight_logs', 'foods']));
     });
 
-    test('are pretty-printed so she can read the file without the app', () {
+    test('are pretty-printed so they can read the file without the app', () {
       final text = utf8.decode(_document().toBytes());
 
       expect(text, contains('\n'));

@@ -16,7 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// The rule under test: **the app never renders text smaller than the
 /// system asked for.** Before this file existed, `app.dart` used the in-app
 /// preset whenever it was above 1.0, so a user running Android at 130% who
-/// then chose "Large (115%)" in the app got *smaller* text than before she
+/// then chose "Large (115%)" in the app got *smaller* text than before they
 /// touched the setting — an accessibility control that reduced
 /// accessibility, and exactly the kind of defect no screenshot review
 /// catches because both states look plausible on their own.

@@ -83,7 +83,7 @@ void main() {
     // Byte-for-byte identical everywhere except the two percent bytes and
     // the two CRC bytes that necessarily follow from them. The four
     // author-tag bytes are inside this sweep on purpose: the tag is drawn
-    // once per challenge and does not move when her protection does, so it
+    // once per challenge and does not move when their protection does, so it
     // must be identical here or it would be a second channel.
     const percentOffset = 12;
     for (var i = 0; i < plainBytes.length; i++) {
@@ -100,10 +100,10 @@ void main() {
     }
   });
 
-  test('the author tag is a function of nothing about her', () {
+  test('the author tag is a function of nothing about their', () {
     // Stated as an equality rather than as prose: the tag the encoder
-    // writes is exactly the tag it was handed. It is not derived from her
-    // name, her percentage, her date or her protection, so there is
+    // writes is exactly the tag it was handed. It is not derived from their
+    // name, their percentage, their date or their protection, so there is
     // nothing in it to read.
     final tagged = <int>{
       for (final percent in [0.0, withProtection.percent, 212.4])
@@ -155,7 +155,7 @@ void main() {
 
   test('the payload length is a law of the name alone', () {
     // This replaces an older pair of assertions that looked for the digits
-    // of her distance and her adjusted target inside the base64 body.
+    // of their distance and their adjusted target inside the base64 body.
     // Those could not fail: base64url of 47 bytes essentially never
     // contains a given 5-digit run, so the test passed whatever the
     // encoder did. The length law can fail - it is exactly what a fifth

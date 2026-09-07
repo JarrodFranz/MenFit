@@ -53,7 +53,7 @@ void main() {
       expect(
         collapsed.single.weightKg,
         62,
-        reason: 'a mean would be a number she never saw on her scale',
+        reason: 'a mean would be a number they never saw on their scale',
       );
     });
 

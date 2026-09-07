@@ -166,7 +166,7 @@ void main() {
       expect(solution.grams, closeTo((1800 - 800) / 9, 0.001));
     });
 
-    test('the floored target counts as a basis - it is what she works to', () {
+    test('the floored target counts as a basis - it is what they work to', () {
       const floored = FlooredCalorieTarget(
         targetKcal: 1400,
         requestedKcal: 1100,
@@ -212,7 +212,7 @@ void main() {
         isNot(isA<SolvedMacroTarget>()),
         reason:
             'a solve here would have to print -87.5 g of carbs, or hide it '
-            'behind a 0 g target she could meet by eating none',
+            'behind a 0 g target they could meet by eating none',
       );
     });
 
@@ -336,8 +336,8 @@ void main() {
         solution,
         isA<AllMacroTargetsLocked>(),
         reason:
-            'she pinned all three deliberately; the app states the '
-            'arithmetic rather than treating her day as a failure',
+            'they pinned all three deliberately; the app states the '
+            'arithmetic rather than treating their day as a failure',
       );
     });
   });
@@ -366,7 +366,7 @@ void main() {
         ),
         isA<NoMacroLockSolutionBasis>(),
         reason:
-            'a target she set explicitly must not fall through to a '
+            'a target they set explicitly must not fall through to a '
             'different number the app worked out',
       );
     });
@@ -466,7 +466,7 @@ void main() {
       },
     );
 
-    test('an estimated basis is named as an estimate, not as her target', () {
+    test('an estimated basis is named as an estimate, not as their target', () {
       const locks = MacroLocks(protein: true, fat: true);
       final message = note(
         solve(

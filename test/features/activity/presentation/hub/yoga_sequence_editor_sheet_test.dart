@@ -363,7 +363,7 @@ void main() {
       ),
       findsOneWidget,
     );
-    // The sheet is still open on the draft she typed...
+    // The sheet is still open on the draft they typed...
     expect(find.text('Edit sequence'), findsOneWidget);
     // ...and Save is a button again, not a permanently dead one.
     expect(saveButton(tester).onPressed, isNotNull);

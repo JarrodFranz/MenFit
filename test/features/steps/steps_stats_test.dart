@@ -55,7 +55,7 @@ void main() {
     test('averages over days WITH data, not over calendar days', () {
       // 8000 + 4000 over two recorded days inside a seven-day window. The
       // honest average is 6000; dividing by 7 would report 1714 - a number
-      // she never walked, produced by counting five unsynced days as zero.
+      // they never walked, produced by counting five unsynced days as zero.
       final days = buildStepsDays(
         start: monday,
         end: monday.addDays(6),

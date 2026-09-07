@@ -167,7 +167,7 @@ void main() {
       );
 
       // Seed two yoga sequences, one of them soft-deleted: self-authored
-      // training content (S1), still hers, and a hidden row is not a
+      // training content (S1), still theirs, and a hidden row is not a
       // deleted one.
       final yogaRepository = DriftYogaSequenceRepository(database);
       await yogaRepository.saveSequence(
@@ -268,7 +268,7 @@ void main() {
       );
 
       // Seed the weight history - S2-tier body metrics, and ED-sensitive
-      // besides: a number she asked to have deleted must be gone, notes
+      // besides: a number they asked to have deleted must be gone, notes
       // included, with no soft-deleted row left hiding.
       await DriftWeightRepository(database).saveLog(
         WeightLog(
@@ -283,7 +283,7 @@ void main() {
 
       // Seed synced step history - S2-tier health-platform data. Note what
       // this delete can and cannot promise: the health platform keeps its
-      // own copy, which only she can remove there.
+      // own copy, which only they can remove there.
       await DriftStepsRepository(database).upsertMany([
         DailySteps(
           day: LocalDate(2026, 1, 2),
@@ -313,7 +313,7 @@ void main() {
 
       // Seed a buddy challenge with an imported buddy snapshot - S1
       // personal data (two self-chosen display names) and a record of who
-      // she trains with, hard-deleted with the rest.
+      // they train with, hard-deleted with the rest.
       await DriftChallengeRepository(database).saveChallenge(
         Challenge(
           blueprint: challengeBlueprintFrom(

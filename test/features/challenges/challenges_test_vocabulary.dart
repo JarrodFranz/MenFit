@@ -8,7 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 /// 1. **No ranking is expressible, so none may be implied.** The domain
 ///    layer cannot say who is ahead
 ///    (`lib/features/challenges/domain/challenge_progress.dart`: a
-///    participant has a name, a percentage and "did she reach her own
+///    participant has a name, a percentage and "did they reach their own
 ///    goal", and there is no ordering, no delta and no leader). A single
 ///    sentence saying "you're winning" would put back what the model was
 ///    shaped to refuse.
@@ -71,7 +71,7 @@ const List<String> forbiddenChallengeVocabulary = [
   'catch up',
   'catching up',
   'defeat',
-  'against her',
+  'against them',
   'first place',
   'second place',
   // Obligation.
@@ -95,8 +95,8 @@ const List<String> forbiddenChallengeVocabulary = [
   'good',
   'bad ',
   'perfect',
-  // Body and appearance — a challenge is about what she did, never about
-  // her body.
+  // Body and appearance — a challenge is about what they did, never about
+  // their body.
   'weight',
   'calorie',
   'burn',

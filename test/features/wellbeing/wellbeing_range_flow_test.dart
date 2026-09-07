@@ -197,7 +197,7 @@ void main() {
       await settleRealAsync(tester);
       await openWellbeingTab(tester);
 
-      // Never "you have not logged yet" - the button reflects her state
+      // Never "you have not logged yet" - the button reflects their state
       // rather than asserting a shortfall.
       expect(find.text('Revisit today’s check-in'), findsOneWidget);
       expect(find.text('Log today’s check-in'), findsNothing);

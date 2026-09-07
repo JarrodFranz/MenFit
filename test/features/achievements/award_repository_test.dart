@@ -83,7 +83,7 @@ void main() {
       expect(
         rows.single.awardedAt,
         stamp,
-        reason: 'the moment she earned it must not move',
+        reason: 'the moment they earned it must not move',
       );
     });
 

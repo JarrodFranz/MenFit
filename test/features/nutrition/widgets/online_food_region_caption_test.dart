@@ -10,7 +10,7 @@ import 'package:menfit_app/features/nutrition/presentation/widgets/online_food_r
 /// 2026-09-03 region filter the online region could only be too broad; now
 /// it can also be too narrow, and a user who is told nothing would read
 /// "Nothing under those words at Open Food Facts" as a fact about the
-/// database rather than about a setting she never chose.
+/// database rather than about a setting they never chose.
 void main() {
   Future<void> pumpSection(
     WidgetTester tester, {
@@ -101,7 +101,7 @@ void main() {
       'all', (tester) async {
     // Nothing to change: the region governs a search this provider does not
     // offer, so the caption would send the user to a setting that would not
-    // help her.
+    // help them.
     await pumpSection(
       tester,
       regionLabel: 'Australia',

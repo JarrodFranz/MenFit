@@ -11,10 +11,10 @@ import 'package:menfit_app/features/activity/presentation/recording/hiit_tracker
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// The interval timer is the one screen where a haptic carries information
-/// rather than decorating it: mid-interval she is not looking at the phone,
+/// rather than decorating it: mid-interval they are not looking at the phone,
 /// so "WORK!" in 48pt white type reaches nobody — the pulse is the signal.
 /// These tests hold both halves of the promise the Haptic Feedback switch
-/// makes: the pulses exist, and they stop when she turns them off.
+/// makes: the pulses exist, and they stop when they turn them off.
 void main() {
   late List<String> haptics;
 

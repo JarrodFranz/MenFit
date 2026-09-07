@@ -177,7 +177,7 @@ void main() {
     expect(find.text('Morning flow'), findsWidgets);
     expect(find.text('3 poses'), findsOneWidget);
     expect(find.text('Start practice'), findsOneWidget);
-    // Nothing is cued, locked or played until she asks for it.
+    // Nothing is cued, locked or played until they ask for it.
     expect(screenAwake.acquireCount, 0);
     expect(player.preloadCount, 0);
     expect(haptics, isEmpty);
@@ -343,7 +343,7 @@ void main() {
       find.text('Something went wrong saving your data. Please try again.'),
       findsOneWidget,
     );
-    // Still here, still complete, still saveable - she has not been popped
+    // Still here, still complete, still saveable - they have not been popped
     // out of a practice that was never stored.
     expect(find.text('Sequence complete'), findsOneWidget);
     expect(find.text('Save practice'), findsOneWidget);

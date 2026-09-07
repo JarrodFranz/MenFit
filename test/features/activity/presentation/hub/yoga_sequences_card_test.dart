@@ -146,7 +146,7 @@ void main() {
       expect(find.text('3 poses · 02:45'), findsOneWidget);
       expect(find.text('Yin'), findsOneWidget);
       expect(find.text('Practise'), findsOneWidget);
-      // The starter offer is gone once she has one of her own.
+      // The starter offer is gone once they have one of their own.
       expect(find.text('Add Morning flow'), findsNothing);
     });
 
@@ -254,7 +254,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(repository.sequences, isEmpty);
 
-      // The restore is the write that fails; she has already been told the
+      // The restore is the write that fails; they have already been told the
       // sequence is gone, so a silent failure here reads as "restored".
       repository.failWrites = true;
       await tester.tap(find.text('Undo'));

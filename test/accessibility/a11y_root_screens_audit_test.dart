@@ -40,8 +40,8 @@ void main() {
     A11yScreen(name: 'Nutrition goals', location: (_) => '/nutrition/goals'),
     A11yScreen(name: 'Food picker', location: (_) => '/nutrition/add'),
     A11yScreen(name: 'Food form', location: (_) => '/nutrition/add/food'),
-    // Onboarding is the one screen a user sees *before* she can reach the
-    // accessibility settings, so it has to survive whatever her OS is
+    // Onboarding is the one screen a user sees *before* they can reach the
+    // accessibility settings, so it has to survive whatever their OS is
     // already asking for. `onboardingComplete: false` is what makes the
     // router's redirect leave the harness there.
     A11yScreen(

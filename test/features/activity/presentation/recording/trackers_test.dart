@@ -302,7 +302,7 @@ void main() {
       );
 
       // An unanswered RPE must reach storage as null, so the screen may
-      // not show a number she never chose.
+      // not show a number they never chose.
       expect(find.text('Not rated'), findsOneWidget);
       expect(find.text('6 / 10'), findsNothing);
 
@@ -723,7 +723,7 @@ void main() {
 
   // The four tracker controllers are `@Riverpod(keepAlive: true)`. That is
   // load-bearing, not decoration: the screens pop while a session is running
-  // (the user checks another tab, the active-workout banner brings her back)
+  // (the user checks another tab, the active-workout banner brings them back)
   // and an autoDispose provider would rebuild from `build()` the moment its
   // last listener went away, silently throwing the live session, its ticker
   // and everything logged so far on the floor. Each test below closes the
@@ -804,7 +804,7 @@ void main() {
         isTrue,
         reason: 'the mindful session must outlive its screen',
       );
-      expect(state.rpe, 7, reason: 'and keep the RPE she already chose');
+      expect(state.rpe, 7, reason: 'and keep the RPE they already chose');
       container
           .read(mindfulTrackerControllerProvider.notifier)
           .discardSession();

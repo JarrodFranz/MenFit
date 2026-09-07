@@ -159,7 +159,7 @@ void main() {
   });
 
   group('quantityLabel', () {
-    test('a mass reads back as the mass she typed', () {
+    test('a mass reads back as the mass they typed', () {
       expect(_log(amount: 47, unit: QuantityUnit.gram).quantityLabel, '47 g');
       expect(
         _log(amount: 1.5, unit: QuantityUnit.ounce).quantityLabel,

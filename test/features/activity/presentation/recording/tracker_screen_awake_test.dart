@@ -206,7 +206,7 @@ void main() {
             .startWorkoutIfNeeded();
         expect(screenAwake.held, isTrue);
 
-        // She is on the HIIT hub with the workout running behind her.
+        // They are on the HIIT hub with the workout running behind them.
         await container
             .read(screenAwakePreferenceProvider(ActivityType.hiit).notifier)
             .set(enabled: false);
@@ -496,7 +496,7 @@ void main() {
     test(
       'discarding a strength workout leaves a running recording holding',
       () async {
-        // The real scenario: a GPS run in progress, she opens the strength
+        // The real scenario: a GPS run in progress, they open the strength
         // hub on top of it (a priority fallthrough by design - see
         // active_workout_summary.dart), starts and then discards.
         final container = makeContainer();

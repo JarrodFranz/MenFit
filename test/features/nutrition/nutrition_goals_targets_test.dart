@@ -221,7 +221,7 @@ void main() {
         find.descendant(of: section, matching: find.textContaining('2000')),
         findsNothing,
       );
-      // Grams are not calories, so they are still hers to see.
+      // Grams are not calories, so they are still theirs to see.
       expect(
         find.descendant(
           of: section,
@@ -243,7 +243,7 @@ void main() {
   );
 
   testWidgets(
-    'with calorie numbers shown the basis figure is named, so she can see '
+    'with calorie numbers shown the basis figure is named, so they can see '
     'what the shares are shares of',
     (tester) async {
       await saveGoals(
@@ -618,7 +618,7 @@ void main() {
           ),
           findsOneWidget,
           reason:
-              'hiding the figure must not hide the fact - she would be left '
+              'hiding the figure must not hide the fact - they would be left '
               'with a target that cannot be met and no explanation',
         );
 

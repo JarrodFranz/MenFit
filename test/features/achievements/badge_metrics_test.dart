@@ -85,7 +85,7 @@ void main() {
       expect(
         metrics[BadgeMetric.lifetimeStrengthVolumeKg],
         650,
-        reason: 'a planned-but-unfinished set is not tonnage she lifted',
+        reason: 'a planned-but-unfinished set is not tonnage they lifted',
       );
       expect(metrics[BadgeMetric.strengthSessionCount], 2);
     });

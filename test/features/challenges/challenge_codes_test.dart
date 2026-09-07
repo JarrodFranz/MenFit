@@ -133,9 +133,9 @@ void main() {
     });
 
     test('the percent is floored, so both devices see the same goal line', () {
-      // 99.97% must not become 100.0 on the receiving device: her phone
-      // would say she arrived while the phone that sent the code says she
-      // has not, and there is no server to settle it.
+      // 99.97% must not become 100.0 on the receiving device: their phone
+      // would say they arrived while the phone that sent the code says they
+      // have not, and there is no server to settle it.
       final justUnder = decodeProgressCode(
         encodeProgressCode(
           challengeId: distanceBlueprint().id,

@@ -606,7 +606,7 @@ void main() {
       // serving_size and serving_quantity are still there. Falling back to
       // 100 g would throw away a weight the provider supplied and then tell
       // the user on the review screen that there was no serving size to
-      // work from - and she would have to retype what was already known.
+      // work from - and they would have to retype what was already known.
       expect(food!.servingGrams, 28);
       expect(food.servingDescription, '3/4 cup (28 g) (28 g)');
       expect(food.servingBasis, isNot(ServingBasis.per100g));
@@ -1635,7 +1635,7 @@ void main() {
             scope: scopeFor(region),
           );
 
-          // A barcode is a global identifier: the packet in her hand is the
+          // A barcode is a global identifier: the packet in their hand is the
           // packet wherever it was catalogued, and a country filter here
           // could only turn a correct answer into "not found".
           expect(adapter.requests.single.queryParameters, {
@@ -1701,7 +1701,7 @@ void main() {
           'one it has', () async {
         // Deliberately NOT dropped. Locality is handled by the country
         // filter on the request; second-guessing the alphabet of a name
-        // would hide products she can buy - a French brand on an
+        // would hide products they can buy - a French brand on an
         // Australian shelf, a product whose only contributor-entered name
         // is the manufacturer's.
         final hit = _nutellaHit()..['product_name'] = 'Pâte à tartiner';

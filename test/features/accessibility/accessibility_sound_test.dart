@@ -12,7 +12,7 @@ import '../../core/platform/audio/fake_audio_cue_player.dart';
 
 /// The Sound Cues switch makes two promises, and this holds both: the chime
 /// happens when it is on, and *nothing* happens when it is off - not a
-/// quieter chime, not an audio session touched on her behalf.
+/// quieter chime, not an audio session touched on their behalf.
 ///
 /// Routed through a widget because [AccessibilitySound] takes a `WidgetRef`,
 /// which is the shape every cue call site will have.
@@ -83,7 +83,7 @@ void main() {
   testWidgets('does not even preload when sound cues are off', (tester) async {
     // Preloading opens an audio session and, on iOS, can change what the
     // silent switch does to other apps. A user who turned cues off should
-    // not have that happen on her behalf.
+    // not have that happen on their behalf.
     final player = await pumpChimeButton(
       tester,
       initialPrefs: {'accessibility_sound_cues': false},

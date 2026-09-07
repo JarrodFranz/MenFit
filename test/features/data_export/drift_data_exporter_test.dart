@@ -214,7 +214,7 @@ void main() {
     });
   });
 
-  test('soft-deleted rows are included — they are still her data', () async {
+  test('soft-deleted rows are included — they are still their data', () async {
     await database
         .into(database.activities)
         .insert(
@@ -267,7 +267,7 @@ void main() {
       final exception = thrown! as StorageException;
       expect(exception.message, 'Failed to read local data for export');
       // The message is static: no table name, no row, nothing that could
-      // carry her data into a log (security_and_privacy.md rule 3).
+      // carry their data into a log (security_and_privacy.md rule 3).
       expect(exception.message, isNot(contains('activities')));
       expect(exception.message, isNot(contains('Morning run')));
 

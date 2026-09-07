@@ -166,7 +166,7 @@ void main() {
   test('a badge whose data was later deleted keeps its award', () async {
     await detector.detect([tieredAt(BadgeTier.gold)]);
     expect(repository.awards, hasLength(3));
-    // Progress collapses to nothing (she deleted the sessions).
+    // Progress collapses to nothing (they deleted the sessions).
     expect(await detector.detect([tieredAt(null)]), isEmpty);
     expect(
       repository.awards,

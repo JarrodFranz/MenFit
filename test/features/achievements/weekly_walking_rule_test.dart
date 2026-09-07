@@ -195,10 +195,10 @@ void main() {
       );
     });
 
-    test('the five-day ask is the same wherever in the week she walked', () {
+    test('the five-day ask is the same wherever in the week they walked', () {
       // 15 km * 2/7 = 4285.7 m, whether the walk lands on a protected day,
       // on a free day, or is split across both. The ask depends only on how
-      // many days were hers to use.
+      // many days were theirs to use.
       final protectedDays = daysBetween(weekStart, weekStart.addDays(4));
       expect(
         countWith(
@@ -206,7 +206,7 @@ void main() {
           protectedDays: protectedDays,
         ),
         1,
-        reason: 'a walk on a protected day must not raise her own ask',
+        reason: 'a walk on a protected day must not raise their own ask',
       );
       expect(
         countWith(
@@ -241,7 +241,7 @@ void main() {
           protectedDays: allProtected,
         ),
         1,
-        reason: 'walking 1 km on a flare day must never cost her the week',
+        reason: 'walking 1 km on a flare day must never cost them the week',
       );
       expect(
         countWith(
@@ -254,7 +254,7 @@ void main() {
 
     test('a corrupt distance neither counts nor voids the week', () {
       // NaN would make every `>=` comparison false and silently swallow a
-      // week she had actually walked (`badge_metrics.dart#_clean`).
+      // week they had actually walked (`badge_metrics.dart#_clean`).
       expect(
         countWith(
           activities: [
@@ -277,7 +277,7 @@ void main() {
           ],
         ),
         1,
-        reason: 'a negative row must not subtract from what she walked',
+        reason: 'a negative row must not subtract from what they walked',
       );
     });
 
@@ -287,7 +287,7 @@ void main() {
           activities: [walkFixture(LocalDate(2026, 8, 31), 30000)],
         ),
         0,
-        reason: 'an unfinished week is not a week she fell short in',
+        reason: 'an unfinished week is not a week they fell short in',
       );
     });
 

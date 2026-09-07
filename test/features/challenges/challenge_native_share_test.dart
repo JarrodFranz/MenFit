@@ -209,7 +209,7 @@ void main() {
       await tester.tap(find.text(celebrationSystemShareLabel));
       await tester.pumpAndSettle();
 
-      // The card carries both names; what she has always sent from here
+      // The card carries both names; what they have always sent from here
       // is the sentence, and that is what Share sends.
       expect(sharing.imageShares, isEmpty);
       expect(

@@ -31,7 +31,7 @@ PersonalInsight _insight({
 }
 
 /// Words that would turn a description into a cause, a prescription, or a
-/// claim about anyone other than the user herself.
+/// claim about anyone other than the user themselves.
 const List<String> _forbiddenWords = [
   'because',
   'should',
@@ -40,7 +40,7 @@ const List<String> _forbiddenWords = [
   'improves',
   'try ',
   'aim for',
-  'women',
+  'other men',
   'most people',
   'recommend',
 ];

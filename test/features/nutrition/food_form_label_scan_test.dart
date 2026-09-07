@@ -389,7 +389,7 @@ void main() {
 
         // The optional-nutrient section reopens itself after a scan: eight
         // freshly filled fields behind a collapsed header would be eight
-        // values she cannot review.
+        // values they cannot review.
         await scrollToOptionalNutrient(tester, 'saturatedFatField');
 
         // "Saturatecl" was read as saturated fat, and trusted less for it.
@@ -420,12 +420,12 @@ void main() {
       });
     });
 
-    testWidgets('keeps what she typed and says where the label disagreed', (
+    testWidgets('keeps what they typed and says where the label disagreed', (
       tester,
     ) async {
       await onPlatform(TargetPlatform.android, () async {
         await openForm(tester, fakeCapture(result: fsanzTwoColumn()));
-        // She read the packet herself first. A scan may not undo that.
+        // They read the packet themselves first. A scan may not undo that.
         await enter(tester, 'caloriesField', '210');
 
         await tapScan(tester);
@@ -435,7 +435,7 @@ void main() {
           find.text('Kept your value for calories (label read 198).'),
           findsOneWidget,
         );
-        // The fields she had left blank are still filled.
+        // The fields they had left blank are still filled.
         expect(fieldText(tester, 'proteinField'), '5.2');
       });
     });
@@ -491,7 +491,7 @@ void main() {
   group('a panel whose standard cannot be named', () {
     testWidgets('is accepted, not refused as unreadable', (tester) async {
       // A tight crop that lost every heading still has all its numbers.
-      // Refusing it told the user her perfectly good photo could not be
+      // Refusing it told the user their perfectly good photo could not be
       // read; the caution to check the values says the true thing.
       await onPlatform(TargetPlatform.android, () async {
         await openForm(tester, fakeCapture(result: unattributablePanel()));
@@ -530,7 +530,7 @@ void main() {
         await tapSave(tester);
 
         expect(popped, isNull, reason: 'no weight, no save');
-        // Said again where she is looking, under the form.
+        // Said again where they are looking, under the form.
         expect(find.text(labelScanPerVolumeWarning), findsWidgets);
 
         await enter(tester, 'basisAmountField', '104');
@@ -580,7 +580,7 @@ void main() {
           fakeCapture(result: fsanzPer100Millilitres()),
         );
 
-        // She was defining a food by weight first. Her 250 g says nothing
+        // They were defining a food by weight first. Their 250 g says nothing
         // about what 100 mL of this drink weighs.
         await enter(tester, 'foodNameField', 'Sports drink');
         await chooseGramsUnit(tester);
@@ -601,7 +601,7 @@ void main() {
         expect(
           fieldText(tester, 'basisAmountField'),
           '250',
-          reason: 'a scan never replaces what she typed',
+          reason: 'a scan never replaces what they typed',
         );
 
         await tapSave(tester);
@@ -610,7 +610,7 @@ void main() {
 
         // Answering the warning: the weight of 100 mL of the drink, which
         // is the number the label's basis actually needs — not the 250 g
-        // she had typed for a food she was defining by weight.
+        // they had typed for a food they were defining by weight.
         //
         // It has to be a *different* number, and that is a property of the
         // harness rather than of the form: `EditableText` fires `onChanged`

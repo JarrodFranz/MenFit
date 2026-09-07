@@ -91,7 +91,7 @@ void main() {
       expect(
         style,
         'Restorative Yin',
-        reason: 'A value she typed or a label we retired is still hers.',
+        reason: 'A value they typed or a label we retired is still theirs.',
       );
     });
 

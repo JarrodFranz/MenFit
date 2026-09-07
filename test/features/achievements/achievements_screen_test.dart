@@ -132,7 +132,7 @@ void main() {
     });
 
     testWidgets('a new user sees the whole catalogue at zero, with Bronze as '
-        'the next rung and nothing asked of her', (tester) async {
+        'the next rung and nothing asked of them', (tester) async {
       await pumpScreen(tester, progress: _progressFor());
 
       expect(find.text(trophyCaseEmptyLine), findsOneWidget);
@@ -198,7 +198,7 @@ void main() {
       await flushDriftTimers(tester);
     });
 
-    testWidgets('converts canonical units into the ones she reads', (
+    testWidgets('converts canonical units into the ones they read', (
       tester,
     ) async {
       await pumpScreen(
@@ -392,7 +392,7 @@ void main() {
 
       expect(_textIn('run_distance', 'Silver'), findsOneWidget);
       expect(_textIn('run_distance', 'Bronze'), findsNothing);
-      // The next rung on offer is the one above the tier she HOLDS...
+      // The next rung on offer is the one above the tier they Hold...
       expect(_textIn('run_distance', '370 km to Gold'), findsOneWidget);
       // ...and the bar under it is honest about how far off that is.
       final bar = tester.widget<LinearProgressIndicator>(
@@ -471,7 +471,7 @@ void main() {
       await flushDriftTimers(tester);
     });
 
-    testWidgets('a one-off she holds stays earned', (tester) async {
+    testWidgets('a one-off they hold stays earned', (tester) async {
       repository.awards.add(
         BadgeAward(
           id: 'a1',

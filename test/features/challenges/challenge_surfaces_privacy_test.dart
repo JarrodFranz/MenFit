@@ -21,7 +21,7 @@ import 'fake_challenge_repository.dart';
 ///
 /// ## What the rule is, and why it is about four numbers rather than one
 ///
-/// Her adjusted target and her protected-day count are private
+/// Their adjusted target and their protected-day count are private
 /// (`domain/challenge_progress.dart`), and no surface renders either. That
 /// is not enough on its own, because both are recoverable by arithmetic
 /// from figures that are individually harmless:
@@ -31,8 +31,8 @@ import 'fake_challenge_repository.dart';
 /// protectedDays  = windowDays − round(windowDays × adjustedTarget ÷ target)
 /// ```
 ///
-/// So a surface showing **her raw work**, **her adjusted percentage**, the
-/// **nominal target** and the **window** states her protected days exactly
+/// So a surface showing **their raw work**, **their adjusted percentage**, the
+/// **nominal target** and the **window** states their protected days exactly
 /// — 42.3 km at 50% of 100 km over 30 days is five, and nothing else. The
 /// detail screen used to do precisely that, with a comment describing it
 /// as an accepted residual. It is not accepted any more, and this file is
@@ -40,20 +40,20 @@ import 'fake_challenge_repository.dart';
 /// may appear, any three may appear together, and all four together on one
 /// surface is a failure.
 ///
-/// The fixture is a woman with five protected days, because a rule tested
+/// The fixture is a user with five protected days, because a rule tested
 /// against someone with none cannot fail.
 ///
 /// The percentage stays, deliberately: the pro-rated experience *is* the
-/// feature, and hiding her own standing from her to protect her from her
+/// feature, and hiding their own standing from them to protect them from their
 /// own screenshot would be a worse app. The raw figure is the one of the
-/// four with somewhere else to live — her activity history, on a screen
+/// four with somewhere else to live — their activity history, on a screen
 /// that says nothing about a challenge.
 void main() {
   final blueprint = distanceBlueprint();
   final today = LocalDate(2026, 9, 20);
 
-  /// 25.4 km logged, five protected days in a 30-day window: her adjusted
-  /// target is 83,333 m and she reads 30%, not 25%.
+  /// 25.4 km logged, five protected days in a 30-day window: their adjusted
+  /// target is 83,333 m and they read 30%, not 25%.
   final progress = computeSelfProgress(
     challenge: blueprint,
     activities: [activityOn(LocalDate(2026, 9, 3), distanceMeters: 25400)],
@@ -67,7 +67,7 @@ void main() {
   );
 
   /// The two shared figures, as this app renders them. The two personal
-  /// ones are derived per-fixture below, because they move with her.
+  /// ones are derived per-fixture below, because they move with them.
   ///
   /// Written as the strings a reader would see rather than as numbers,
   /// because it is the rendering that leaks: a percentage nobody prints is
@@ -75,7 +75,7 @@ void main() {
   const targetFragment = '100 km';
   const windowFragment = '30 Sep 2026';
 
-  /// Her raw work as any surface would have to print it — kilometres,
+  /// Their raw work as any surface would have to print it — kilometres,
   /// floored to the tenth, which is the form the deleted "42.3 km so far"
   /// line used and the form any replacement would take.
   String kmFragment(double metres) =>
@@ -123,8 +123,8 @@ void main() {
     bool shows(String fragment) => texts.any((t) => t.contains(fragment));
 
     final present = <String>[
-      if (shows(rawFragment)) 'her raw work ($rawFragment)',
-      if (shows(percentFragment)) 'her adjusted percent ($percentFragment)',
+      if (shows(rawFragment)) 'their raw work ($rawFragment)',
+      if (shows(percentFragment)) 'their adjusted percent ($percentFragment)',
       if (shows(targetFragment)) 'the nominal target ($targetFragment)',
       if (shows(windowFragment)) 'the window ($windowFragment)',
     ];
@@ -134,8 +134,8 @@ void main() {
       hasLength(lessThan(4)),
       reason:
           '$where renders all four of ${present.join(', ')} - together they '
-          "resolve her protected-day count exactly (see this file's doc). "
-          'Take the raw figure off this surface; it belongs in her '
+          "resolve their protected-day count exactly (see this file's doc). "
+          'Take the raw figure off this surface; it belongs in their '
           'activity history.',
     );
 
@@ -178,7 +178,7 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
   }
 
-  testWidgets('the fixture is a woman with protected days', (tester) async {
+  testWidgets('the fixture is a user with protected days', (tester) async {
     expect(progress.protectedDaysInWindow, 5);
     expect(progress.adjustedTarget, closeTo(83333.33, 0.01));
     expect(formatPercent(progress.percent), '30%');
@@ -215,7 +215,7 @@ void main() {
       hasLength(3),
       reason:
           'the card is one figure short of solvable, and the missing one is '
-          'her raw work - if this drops to two the sweep has stopped '
+          'their raw work - if this drops to two the sweep has stopped '
           'looking at the card it thinks it is looking at',
     );
 
@@ -263,7 +263,7 @@ void main() {
     // renders three of the four, and used to render the fourth. A sweep
     // that found none of them would pass for the wrong reason forever.
     expect(present, hasLength(3));
-    expect(present.any((p) => p.startsWith('her raw work')), isFalse);
+    expect(present.any((p) => p.startsWith('their raw work')), isFalse);
 
     Future<void> tapVisible(Finder finder) async {
       await tester.ensureVisible(finder);
@@ -305,7 +305,7 @@ void main() {
   testWidgets('nor does the celebration both of them can see', (tester) async {
     useTallWindow(tester);
     addTearDown(() => flushDriftTimers(tester));
-    // She has reached her own goal too, so the card is available - and the
+    // They have reached their own goal too, so the card is available - and the
     // card is the one artefact here built to be shown to other people.
     final reached = computeSelfProgress(
       challenge: blueprint,

@@ -160,14 +160,14 @@ void main() {
 
     await open(tester, 'open-past');
 
-    // Check-in: answered scores only, plus the symptoms she picked.
+    // Check-in: answered scores only, plus the symptoms they picked.
     expect(find.text('4 of 5'), findsOneWidget);
     expect(find.text('2 of 5'), findsOneWidget);
     expect(find.text('Muscle cramps'), findsOneWidget);
     expect(
       find.text('Sleep'),
       findsNothing,
-      reason: 'a question she skipped is not shown as a gap',
+      reason: 'a question they skipped is not shown as a gap',
     );
 
     // Flare-up and recovery day reuse the history list's own rows.
@@ -349,7 +349,7 @@ void main() {
     expect(
       dialog.initialDay,
       past,
-      reason: 'she has already picked the day by tapping it on the calendar',
+      reason: 'they have already picked the day by tapping it on the calendar',
     );
 
     await flushDriftTimers(tester);

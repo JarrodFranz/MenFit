@@ -3,8 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 /// The vocabulary no achievement string may contain, in one place.
 ///
 /// A badge exists to celebrate something that already happened. The moment
-/// one starts telling the user what she *should* do, implies she is behind,
-/// ranks her against anyone, or mentions her body, it has stopped being a
+/// one starts telling the user what they *should* do, implies they are behind,
+/// ranks their against anyone, or mentions their body, it has stopped being a
 /// celebration and become a demand — and a well-meaning copy edit is
 /// exactly how that happens. This list makes such an edit fail the build.
 ///

@@ -53,7 +53,7 @@ void main() {
   });
 
   test('zero steps is a value, not an absence', () {
-    // A day she did not carry her phone. The repository stores it; a day
+    // A day they did not carry their phone. The repository stores it; a day
     // never synced simply has no DailySteps at all.
     expect(steps(count: 0).steps, 0);
     expect(steps(count: 0), isNot(equals(steps())));

@@ -259,7 +259,7 @@ void main() {
     test('the buddy card line says whose goal the figure is against', () {
       expect(
         buddyCardLine('Sam', 48, LocalDate(2026, 9, 12)),
-        'Sam: 48% of her own goal · as of 12 Sep',
+        'Sam: 48% of their own goal · as of 12 Sep',
       );
     });
 

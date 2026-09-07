@@ -149,7 +149,7 @@ void main() {
 
       expect(abandoned.existsSync(), isFalse);
       // Deleted, not read. The user is asking to scan a label *now*;
-      // silently recognising whatever she photographed last time would be
+      // silently recognising whatever they photographed last time would be
       // both wrong and a surprise.
       expect(adapter.recognized, hasLength(1));
       expect((adapter.recognized.single as OcrImageFile).path, fresh.path);

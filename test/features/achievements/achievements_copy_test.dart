@@ -80,7 +80,7 @@ void main() {
   });
 
   group('formatting an amount already done', () {
-    test('never rounds a total up, which would credit her with distance she '
+    test('never rounds a total up, which would credit them with distance they '
         'has not covered', () {
       expect(formatEarnedAmount(11600, BadgeMetricUnit.metres), '11 km');
       expect(formatEarnedAmount(87600, BadgeMetricUnit.metres), '87 km');

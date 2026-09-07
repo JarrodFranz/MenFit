@@ -162,7 +162,7 @@ void main() {
         isNotNull,
         reason:
             'a name that would be silently truncated in the code is better '
-            'rejected where she can see it',
+            'rejected where they can see it',
       );
     });
 

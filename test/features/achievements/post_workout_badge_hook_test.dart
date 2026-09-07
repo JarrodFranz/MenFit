@@ -94,7 +94,7 @@ void main() {
     );
 
     // The detector ran, recorded, and the crossing is shown inside the
-    // celebration she is already looking at - not in a second modal.
+    // celebration they are already looking at - not in a second modal.
     expect(repository.awards, hasLength(1));
     expect(repository.awards.single.badgeId, 'first_activity');
     expect(find.byKey(const Key('postWorkoutBadgeStrip')), findsOneWidget);

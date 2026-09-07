@@ -89,7 +89,7 @@ void main() {
     });
 
     test('a failed write puts the switch back and rethrows', () async {
-      // A switch that stays where she left it while nothing was saved is
+      // A switch that stays where they left it while nothing was saved is
       // worse than one that springs back: next session would silently
       // disagree with what the hub shows.
       final container = containerWith(_FailingWritePreferences());

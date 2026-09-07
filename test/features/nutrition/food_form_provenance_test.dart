@@ -17,7 +17,7 @@ import 'package:menfit_app/features/nutrition/presentation/food_form_seed.dart';
 /// The form used to decide it by asking "was there a seed at all", which got
 /// the commonest barcode case exactly backwards: a scan the database has
 /// never heard of seeds the form with **nothing but the barcode**, the user
-/// types every figure off the packet herself, and the row was still saved as
+/// types every figure off the packet themselves, and the row was still saved as
 /// `open_food_facts`.
 void main() {
   late db.AppDatabase database;
@@ -100,7 +100,7 @@ void main() {
     'number is retyped',
     () async {
       // ADR 010: provenance records where the data *came from*, and editing
-      // it does not make it hers.
+      // it does not make it theirs.
       final food = await save(
         const FoodFormSeed(
           barcode: '5000112637922',
@@ -120,7 +120,7 @@ void main() {
 
   test('editing a hand-entered food keeps custom', () async {
     // The other direction of the same bug: "Edit food details" on a food the
-    // user typed in herself used to relabel it as provider-derived, because
+    // user typed in themselves used to relabel it as provider-derived, because
     // the edit route passes a seed.
     final food = await save(
       const FoodFormSeed(

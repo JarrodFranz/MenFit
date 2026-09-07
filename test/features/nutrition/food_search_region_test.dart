@@ -197,7 +197,7 @@ void main() {
         locale: const DeviceLocale(languageCode: 'en', countryCode: 'AU'),
       );
 
-      // She deliberately widened it; the device must not keep narrowing it
+      // They deliberately widened it; the device must not keep narrowing it
       // back on every launch.
       expect(
         container.read(foodSearchRegionControllerProvider),

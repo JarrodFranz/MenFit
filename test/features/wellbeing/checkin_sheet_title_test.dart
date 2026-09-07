@@ -6,7 +6,7 @@ import 'package:menfit_app/features/wellbeing/presentation/checkin_sheet.dart';
 ///
 /// It was hard-coded to "How are you feeling today?" while the only way in
 /// was today's card. The wellbeing calendar opens the same sheet on any
-/// past day, and asking how she feels *today* while writing a row dated
+/// past day, and asking how they feel *today* while writing a row dated
 /// 12 August asks the wrong question of the wrong day.
 void main() {
   test('today keeps the original present-tense question', () {

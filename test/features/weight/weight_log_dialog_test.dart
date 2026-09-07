@@ -107,7 +107,7 @@ void main() {
     );
   });
 
-  testWidgets('labels the field in her own unit', (tester) async {
+  testWidgets('labels the field in their own unit', (tester) async {
     await openDialog(tester, unitSystem: UnitSystem.imperial);
 
     expect(find.text('Weight (lb)'), findsOneWidget);

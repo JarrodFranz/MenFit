@@ -109,7 +109,7 @@ void main() {
   }
 
   /// The same screen, but pushed on top of a list, so "pop back to where
-  /// she came from" is a thing the test can actually observe.
+  /// they came from" is a thing the test can actually observe.
   Future<void> pumpPushedScreen(
     WidgetTester tester, {
     required Challenge challenge,
@@ -166,9 +166,9 @@ void main() {
       if (widget.key != challengeCodeTextKey) ?widget.data,
   ];
 
-  group('her own progress', () {
-    testWidgets('shows where she is against her own target, and not what '
-        'she did', (tester) async {
+  group('their own progress', () {
+    testWidgets('shows where they are against their own target, and not what '
+        'they did', (tester) async {
       useTallWindow(tester);
       final blueprint = distanceBlueprint();
       await pumpScreen(
@@ -185,9 +185,9 @@ void main() {
       // This assertion used to be its opposite: the screen showed
       // "25.4 km so far" and a comment called the arithmetic an accepted
       // residual. It is not - raw work beside the percentage, the target
-      // and the window resolves her protected-day count uniquely, which
+      // and the window resolves their protected-day count uniquely, which
       // `challenge_surfaces_privacy_test.dart` now checks on every
-      // surface. Her raw distance lives in her activity history.
+      // surface. Their raw distance lives in their activity history.
       expect(find.textContaining('so far'), findsNothing);
       expect(find.textContaining('25.4'), findsNothing);
 
@@ -215,8 +215,8 @@ void main() {
         'numbers', (tester) async {
       useTallWindow(tester);
       final blueprint = distanceBlueprint();
-      // Five protected days in a 30-day window: her adjusted target is
-      // 83,333 m and her percentage 30 rather than 25.
+      // Five protected days in a 30-day window: their adjusted target is
+      // 83,333 m and their percentage 30 rather than 25.
       final progress = _progressFor(
         blueprint,
         metres: 25000,
@@ -236,7 +236,7 @@ void main() {
       expect(find.text(fairnessNote), findsOneWidget);
 
       // And never in numbers: the adjusted target is what a screenshot
-      // would have to leak for her protected days to be inferable from
+      // would have to leak for their protected days to be inferable from
       // this screen, so no rendering of it may appear.
       final texts = renderedText(tester);
       for (final text in texts) {
@@ -259,8 +259,8 @@ void main() {
         isEmpty,
         reason: 'the protected-day count must not appear as a figure',
       );
-      // What she *is* shown: the shared target and her own ratio against
-      // her own version of it. Not her raw work - see the co-presence rule
+      // What they *is* shown: the shared target and their own ratio against
+      // their own version of it. Not their raw work - see the co-presence rule
       // in `challenge_surfaces_privacy_test.dart`.
       expect(find.text('100 km'), findsOneWidget);
       expect(find.text('30%'), findsOneWidget);
@@ -288,7 +288,7 @@ void main() {
       await flushDriftTimers(tester);
     });
 
-    testWidgets('shows her figure and the day it was for', (tester) async {
+    testWidgets('shows their figure and the day it was for', (tester) async {
       useTallWindow(tester);
       final blueprint = distanceBlueprint();
       await pumpScreen(
@@ -370,7 +370,7 @@ void main() {
       await flushDriftTimers(tester);
     });
 
-    testWidgets('turns her own code away and says what to do with it', (
+    testWidgets('turns their own code away and says what to do with it', (
       tester,
     ) async {
       useTallWindow(tester);
@@ -401,7 +401,7 @@ void main() {
       expect(
         stored!.buddy!.progressPercent,
         48,
-        reason: "her own figure must not land under her buddy's name",
+        reason: "their own figure must not land under their buddy's name",
       );
 
       await flushDriftTimers(tester);
@@ -579,8 +579,8 @@ void main() {
     });
   });
 
-  group('sharing her progress', () {
-    testWidgets('shows a copyable code carrying her percentage and today', (
+  group('sharing their progress', () {
+    testWidgets('shows a copyable code carrying their percentage and today', (
       tester,
     ) async {
       useTallWindow(tester);

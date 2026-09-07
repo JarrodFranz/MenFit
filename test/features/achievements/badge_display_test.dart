@@ -10,9 +10,9 @@ import 'package:menfit_app/features/achievements/presentation/badge_display.dart
 /// The merge that makes "awards are never revoked" true on screen.
 ///
 /// The engine answers what the data earns *today*; the awards table records
-/// what she has been given. They can disagree — the cycle-pausing toggle
+/// what they have been given. They can disagree — the cycle-pausing toggle
 /// changes the walking ladder's pro-rated ask, a deleted activity lowers a
-/// lifetime total — and when they do, the badge she holds wins.
+/// lifetime total — and when they do, the badge they hold wins.
 void main() {
   final awardedAt = DateTime.utc(2026, 9, 1, 12);
 
@@ -108,7 +108,7 @@ void main() {
       expect(
         badge(display, 'run_distance').value,
         30000,
-        reason: 'the badge is hers; the kilometres are not retconned',
+        reason: 'the badge is theirs; the kilometres are not retconned',
       );
     });
 

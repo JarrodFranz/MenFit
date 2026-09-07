@@ -310,7 +310,7 @@ void main() {
   });
 
   group('a barcode already in the catalogue', () {
-    testWidgets('offers the food she already has instead of a second row', (
+    testWidgets('offers the food they already have instead of a second row', (
       tester,
     ) async {
       final existing = await seedCatalogueFood(
@@ -338,14 +338,14 @@ void main() {
       await tester.tap(find.byKey(const Key('duplicateBarcodeUseExisting')));
       await settleRealAsync(tester);
 
-      // Still one row, and the form handed back the food she already had —
+      // Still one row, and the form handed back the food they already had —
       // which is what every caller does with a saved food anyway.
       expect(await database.select(database.foods).get(), hasLength(1));
       expect(popped?.id, existing.id);
       expect(find.byType(FoodFormScreen), findsNothing);
     });
 
-    testWidgets('still lets her save a separate food when she means to', (
+    testWidgets('still lets them save a separate food when they mean to', (
       tester,
     ) async {
       // Two rows for one code is usually accidental, but it is legitimately

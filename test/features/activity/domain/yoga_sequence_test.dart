@@ -370,7 +370,7 @@ void main() {
             contains(pose.name),
             reason:
                 '"${pose.name}" is not in the autocomplete catalogue, so a '
-                'user editing this starter would see a name she cannot '
+                'user editing this starter would see a name they cannot '
                 'retype from the suggestions',
           );
         }

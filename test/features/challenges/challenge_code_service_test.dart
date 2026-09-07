@@ -246,7 +246,7 @@ void main() {
       );
     });
 
-    test('a valid code with a name she cannot use is a validation result, '
+    test('a valid code with a name they cannot use is a validation result, '
         'not a code failure', () async {
       final result = await service.joinFromCode(
         encodeChallengeCode(distanceBlueprint()),
@@ -285,7 +285,7 @@ void main() {
   });
 
   group('progressCodeFor', () {
-    test('exports the challenge id and her chosen name', () async {
+    test('exports the challenge id and their chosen name', () async {
       final created = await create();
 
       final code = service.progressCodeFor(
@@ -302,7 +302,7 @@ void main() {
       expect(
         payload.authorTag,
         selfAuthorTag,
-        reason: 'the code she sends carries this device tag, not a fresh one',
+        reason: 'the code they send carries this device tag, not a fresh one',
       );
     });
   });
@@ -377,7 +377,7 @@ void main() {
       expect(
         buddy.progressPercent,
         closeTo(71, 0.05),
-        reason: "her buddy's progress must never appear to fall",
+        reason: "their buddy's progress must never appear to fall",
       );
       expect(buddy.asOf, LocalDate(2026, 9, 18));
     });
@@ -398,8 +398,8 @@ void main() {
     );
 
     test('a second code for the same day is applied, not refused', () async {
-      // She trained twice on Friday and sent two codes. The one her buddy
-      // pasted last is the one her buddy chose to paste, and refusing it
+      // They trained twice on Friday and sent two codes. The one their buddy
+      // pasted last is the one their buddy chose to paste, and refusing it
       // would leave the morning's figure on screen all weekend.
       final challenge = await joinedChallenge();
       await service.importProgressCode(
@@ -416,7 +416,7 @@ void main() {
       expect(buddy.asOf, LocalDate(2026, 9, 18));
     });
 
-    test('a same-day code that only renames her is applied too', () async {
+    test('a same-day code that only renames them is applied too', () async {
       final challenge = await joinedChallenge();
       await service.importProgressCode(
         buddyCode(challenge.id, 71, LocalDate(2026, 9, 18)),
@@ -438,35 +438,39 @@ void main() {
       );
     });
 
-    test('her own code pasted back is refused, and changes nothing', () async {
-      // The self-import the author tag exists for: without it this code
-      // would land under the buddy's name carrying the user's own figure -
-      // a wrong number about someone else that looks like a right one.
-      final challenge = await joinedChallenge();
-      await service.importProgressCode(
-        buddyCode(challenge.id, 42.5, LocalDate(2026, 9, 12)),
-      );
+    test(
+      'their own code pasted back is refused, and changes nothing',
+      () async {
+        // The self-import the author tag exists for: without it this code
+        // would land under the buddy's name carrying the user's own figure -
+        // a wrong number about someone else that looks like a right one.
+        final challenge = await joinedChallenge();
+        await service.importProgressCode(
+          buddyCode(challenge.id, 42.5, LocalDate(2026, 9, 12)),
+        );
 
-      final result = await service.importProgressCode(
-        service.progressCodeFor(
-          challenge,
-          progressPercent: 91,
-          asOf: LocalDate(2026, 9, 18),
-        ),
-      );
+        final result = await service.importProgressCode(
+          service.progressCodeFor(
+            challenge,
+            progressPercent: 91,
+            asOf: LocalDate(2026, 9, 18),
+          ),
+        );
 
-      expect(result, isA<BuddyProgressIsYourOwn>());
-      final buddy = (await repository.getChallenge(challenge.id))!.buddy!;
-      expect(buddy.displayName, 'Alex');
-      expect(
-        buddy.progressPercent,
-        closeTo(42.5, 0.05),
-        reason: "her own percentage must never land under her buddy's name",
-      );
-      expect(buddy.asOf, LocalDate(2026, 9, 12));
-    });
+        expect(result, isA<BuddyProgressIsYourOwn>());
+        final buddy = (await repository.getChallenge(challenge.id))!.buddy!;
+        expect(buddy.displayName, 'Alex');
+        expect(
+          buddy.progressPercent,
+          closeTo(42.5, 0.05),
+          reason:
+              "their own percentage must never land under their buddy's name",
+        );
+        expect(buddy.asOf, LocalDate(2026, 9, 12));
+      },
+    );
 
-    test('her own code is refused even when nothing is stored yet', () async {
+    test('their own code is refused even when nothing is stored yet', () async {
       final challenge = await joinedChallenge();
 
       final result = await service.importProgressCode(
@@ -482,10 +486,10 @@ void main() {
     });
 
     test(
-      'the buddy device draws its own tag, so her codes still land',
+      'the buddy device draws its own tag, so their codes still land',
       () async {
         // Both sides run the same code path: the joiner's tag is drawn on
-        // her device, the creator's on hers, and neither ever sees the
+        // their device, the creator's on theirs, and neither ever sees the
         // other's until a code arrives.
         final challenge = await joinedChallenge();
         final herDevice = ChallengeCodeService(

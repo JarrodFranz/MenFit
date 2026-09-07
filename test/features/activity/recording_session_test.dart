@@ -989,7 +989,7 @@ void main() {
         current = current.add(const Duration(minutes: 20));
         session.markSignalLost(current);
 
-        // An hour of stationary readings at wherever she stopped.
+        // An hour of stationary readings at wherever they stopped.
         for (var i = 1; i <= 30; i++) {
           current = current.add(const Duration(minutes: 2));
           session.addFix(_fixAt(current, speedMetersPerSecond: 0));
@@ -1003,7 +1003,7 @@ void main() {
           hasLength(1),
           reason:
               'only the pre-stop fix describes the workout; the rest just '
-              'pinpoint where she stopped and for how long',
+              'pinpoint where they stopped and for how long',
         );
         expect(result.samples.every((s) => !s.wasPaused), isTrue);
       },

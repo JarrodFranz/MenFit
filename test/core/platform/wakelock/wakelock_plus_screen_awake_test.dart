@@ -49,7 +49,7 @@ void main() {
 
   test('the screen stays on until the last holder lets go', () async {
     // The scenario this counting exists for: a GPS recording running while
-    // she opens another hub on top of it, then discards that one.
+    // they open another hub on top of it, then discards that one.
     final lock = WakelockPlusScreenAwake();
     await lock.acquire();
     await lock.acquire();

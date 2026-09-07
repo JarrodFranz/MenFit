@@ -104,7 +104,7 @@ void main() {
             adapter.permissionCallCount,
             0,
             reason:
-                'her stated preference short-circuits the permission check, '
+                'their stated preference short-circuits the permission check, '
                 'so a user with sync off is never asked about health access',
           );
         });
@@ -153,7 +153,7 @@ void main() {
         // `hasPermissions` is an OR across steps and the two energy types, so
         // this configuration passes it. Reading availability off that OR would
         // promise a step chart the grant cannot fill, and the empty result
-        // would look like her data was missing rather than the permission.
+        // would look like their data was missing rather than the permission.
         adapter = FakeHealthPlatformAdapter.energyOnly();
         await onPlatform(TargetPlatform.android, () async {
           final container = makeContainer(syncEnabled: true);
@@ -179,7 +179,7 @@ void main() {
           await settledAvailability(container),
           StepsAvailability.permissionNeeded,
           reason:
-              'if the app cannot establish that it was granted access to her '
+              'if the app cannot establish that it was granted access to their '
               'health data, it must not behave as though it was',
         );
       });

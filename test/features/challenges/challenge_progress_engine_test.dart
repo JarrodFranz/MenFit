@@ -124,7 +124,7 @@ void main() {
     });
 
     test('a five-day period week lowers the ask to 25/30 of it', () {
-      // 100 km x 25/30 = 83,333.33 m. She ran 25 km, so 30%.
+      // 100 km x 25/30 = 83,333.33 m. They ran 25 km, so 30%.
       final progress = computeSelfProgress(
         challenge: distanceBlueprint(),
         activities: [activityOn(LocalDate(2026, 9, 12), distanceMeters: 25000)],
@@ -137,7 +137,7 @@ void main() {
     });
 
     test('a session challenge pro-rates the same way', () {
-      // 12 sessions x 24/30 = 9.6. She logged 6, so 62.5%.
+      // 12 sessions x 24/30 = 9.6. They logged 6, so 62.5%.
       final progress = computeSelfProgress(
         challenge: sessionBlueprint(),
         activities: [
@@ -256,7 +256,7 @@ void main() {
         expect(
           current,
           greaterThanOrEqualTo(previous),
-          reason: 'adding day $day lowered her progress',
+          reason: 'adding day $day lowered their progress',
         );
         previous = current;
       }
@@ -264,7 +264,7 @@ void main() {
 
     test('training on a protected day helps exactly as much as any other', () {
       // The correction the walking ladder had to make, transplanted: an
-      // earlier draft of that rule deducted only protected days she had
+      // earlier draft of that rule deducted only protected days they had
       // *not* trained on, which made moving on a flare day strictly worse
       // than resting.
       final blueprint = distanceBlueprint();
@@ -310,7 +310,7 @@ void main() {
         expect(
           current,
           lessThanOrEqualTo(previous),
-          reason: 'protecting day $day raised her target',
+          reason: 'protecting day $day raised their target',
         );
         previous = current;
       }
@@ -340,7 +340,7 @@ void main() {
       // differs, and it never crosses the gap.
       final blueprint = distanceBlueprint();
 
-      final hers = computeSelfProgress(
+      final mine = computeSelfProgress(
         challenge: blueprint,
         activities: const [],
         protectedDays: daysFrom(LocalDate(2026, 9, 5), LocalDate(2026, 9, 9)),
@@ -351,8 +351,8 @@ void main() {
         protectedDays: const {},
       );
 
-      expect(hers.nominalTarget, theirs.nominalTarget);
-      expect(hers.adjustedTarget, isNot(theirs.adjustedTarget));
+      expect(mine.nominalTarget, theirs.nominalTarget);
+      expect(mine.adjustedTarget, isNot(theirs.adjustedTarget));
     });
   });
 }

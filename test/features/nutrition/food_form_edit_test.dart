@@ -278,8 +278,8 @@ void main() {
     });
 
     test('still catches another food barcode typed onto this one', () async {
-      // The case a barcode-based exemption would have waved through: she
-      // opens food A and types food B's code onto it.
+      // The case a barcode-based exemption would have waved through: they
+      // open food A and types food B's code onto it.
       final original = fullFood(barcode: null);
       final other = fullFood(id: 'food-milk');
       await putInCatalogue(original);
