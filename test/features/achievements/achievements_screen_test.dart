@@ -213,8 +213,6 @@ void main() {
             BadgeMetric.lifetimeSessionCount: 3,
             // Bronze at 10,000 kg.
             BadgeMetric.lifetimeStrengthVolumeKg: 2500,
-            // Bronze at 2 calendar months.
-            BadgeMetric.cycleLoggingMonths: 1,
           },
         ),
       );
@@ -228,10 +226,6 @@ void main() {
       );
       expect(
         _textIn('strength_volume', '7,500 kg to Bronze'),
-        findsOneWidget,
-      );
-      expect(
-        _textIn('cycle_logging_months', '1 month to Bronze'),
         findsOneWidget,
       );
 

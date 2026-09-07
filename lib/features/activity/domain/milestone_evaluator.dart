@@ -2,7 +2,6 @@ import 'package:menfit_app/features/activity/domain/activity.dart';
 import 'package:menfit_app/features/activity/domain/personal_records.dart';
 import 'package:menfit_app/features/activity/domain/workout_details.dart';
 import 'package:menfit_app/features/activity/domain/workout_milestone.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
 
 /// Pure evaluation service that detects newly unlocked personal records,
 /// volume milestones, and consistency achievements upon completing a workout.
@@ -14,30 +13,8 @@ class MilestoneEvaluator {
     required Activity newActivity,
     required PersonalRecords? priorRecords,
     int weeklyWorkoutCount = 1,
-    CyclePhase? phase,
-    double? phaseLongestDistance,
   }) {
     final milestones = <WorkoutMilestone>[];
-
-    // 1. Cycle-Phase Distance PR
-    if (phase != null &&
-        phase != CyclePhase.none &&
-        newActivity.distanceMeters >= 500) {
-      if (phaseLongestDistance != null &&
-          newActivity.distanceMeters > phaseLongestDistance) {
-        milestones.add(
-          WorkoutMilestone(
-            type: WorkoutMilestoneType.cyclePhasePr,
-            title: '${phase.label} Phase Record! 🌸',
-            subtitle:
-                '${(newActivity.distanceMeters / 1000).toStringAsFixed(2)} km '
-                '— Your longest session during ${phase.label} phase!',
-            badgeLabel: '${phase.label} Best',
-            isPersonalRecord: true,
-          ),
-        );
-      }
-    }
 
     // 1. Longest Distance PR
     if (newActivity.distanceMeters >= 500) {
@@ -113,8 +90,6 @@ class MilestoneEvaluator {
     required Map<String, double> priorMaxWeights,
     int weeklyWorkoutCount = 1,
     bool isNewRoutine = false,
-    CyclePhase? phase,
-    Map<String, double>? phaseMaxWeights,
   }) {
     final milestones = <WorkoutMilestone>[];
 
@@ -133,37 +108,17 @@ class MilestoneEvaluator {
       final normalizedName = exercise.name.trim().toLowerCase();
       final priorMax = priorMaxWeights[normalizedName];
 
-      if (priorMax != null && priorMax > 0) {
-        if (sessionMaxWeight > priorMax) {
-          final diff = (sessionMaxWeight - priorMax).toStringAsFixed(1);
-          milestones.add(
-            WorkoutMilestone(
-              type: WorkoutMilestoneType.strengthExercisePr,
-              title: 'New PR: ${exercise.name} 🏆',
-              subtitle: '${sessionMaxWeight.toStringAsFixed(1)} kg (+$diff kg)',
-              badgeLabel: 'Weight PR',
-              isPersonalRecord: true,
-            ),
-          );
-        }
-      } else if (phase != null &&
-          phase != CyclePhase.none &&
-          phaseMaxWeights != null) {
-        final phaseMax = phaseMaxWeights[normalizedName];
-        if (phaseMax != null && sessionMaxWeight > phaseMax) {
-          final diff = (sessionMaxWeight - phaseMax).toStringAsFixed(1);
-          milestones.add(
-            WorkoutMilestone(
-              type: WorkoutMilestoneType.cyclePhasePr,
-              title: '${phase.label} Peak: ${exercise.name} 🌸',
-              subtitle:
-                  '${sessionMaxWeight.toStringAsFixed(1)} kg '
-                  '(+$diff kg in ${phase.label})',
-              badgeLabel: '${phase.label} Peak',
-              isPersonalRecord: true,
-            ),
-          );
-        }
+      if (priorMax != null && priorMax > 0 && sessionMaxWeight > priorMax) {
+        final diff = (sessionMaxWeight - priorMax).toStringAsFixed(1);
+        milestones.add(
+          WorkoutMilestone(
+            type: WorkoutMilestoneType.strengthExercisePr,
+            title: 'New PR: ${exercise.name} 🏆',
+            subtitle: '${sessionMaxWeight.toStringAsFixed(1)} kg (+$diff kg)',
+            badgeLabel: 'Weight PR',
+            isPersonalRecord: true,
+          ),
+        );
       }
     }
 
@@ -263,22 +218,8 @@ class MilestoneEvaluator {
     required Activity newActivity,
     int weeklyWorkoutCount = 1,
     String? customSubtitle,
-    CyclePhase? phase,
   }) {
     final milestones = <WorkoutMilestone>[];
-
-    if (phase != null && phase != CyclePhase.none) {
-      milestones.add(
-        WorkoutMilestone(
-          type: WorkoutMilestoneType.cyclePhasePr,
-          title: '${phase.label} Phase ${newActivity.activityType.label} 🌸',
-          subtitle:
-              'Honoring your energy with mindful movement in your '
-              '${phase.label} phase',
-          badgeLabel: phase.label,
-        ),
-      );
-    }
 
     if (weeklyWorkoutCount >= 3) {
       milestones.add(

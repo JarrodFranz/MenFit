@@ -8,7 +8,6 @@ import 'package:menfit_app/features/achievements/achievements_widgets.dart';
 import 'package:menfit_app/features/activity/domain/activity.dart';
 import 'package:menfit_app/features/activity/domain/workout_milestone.dart';
 import 'package:menfit_app/features/activity/presentation/widgets/workout_share_dialog.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
 
 /// Celebratory modal dialog presented immediately upon completing a workout.
 ///
@@ -18,7 +17,6 @@ class WorkoutCelebrationDialog extends ConsumerStatefulWidget {
   const WorkoutCelebrationDialog({
     required this.activity,
     required this.milestones,
-    this.phase,
     this.onViewDetails,
     this.onDone,
     this.primaryMetricLabel,
@@ -29,7 +27,6 @@ class WorkoutCelebrationDialog extends ConsumerStatefulWidget {
 
   final Activity activity;
   final List<WorkoutMilestone> milestones;
-  final CyclePhase? phase;
   final VoidCallback? onViewDetails;
   final VoidCallback? onDone;
   final String? primaryMetricLabel;
@@ -48,7 +45,6 @@ class WorkoutCelebrationDialog extends ConsumerStatefulWidget {
     BuildContext context, {
     required Activity activity,
     required List<WorkoutMilestone> milestones,
-    CyclePhase? phase,
     VoidCallback? onViewDetails,
     VoidCallback? onDone,
     String? primaryMetricLabel,
@@ -61,7 +57,6 @@ class WorkoutCelebrationDialog extends ConsumerStatefulWidget {
       builder: (dialogContext) => WorkoutCelebrationDialog(
         activity: activity,
         milestones: milestones,
-        phase: phase,
         onViewDetails: onViewDetails,
         onDone: onDone,
         primaryMetricLabel: primaryMetricLabel,
@@ -367,7 +362,6 @@ class _WorkoutCelebrationDialogState
                             context,
                             activity: widget.activity,
                             milestones: widget.milestones,
-                            phase: widget.phase,
                             primaryMetricLabel: widget.primaryMetricLabel,
                             primaryMetricValue: widget.primaryMetricValue,
                           ),

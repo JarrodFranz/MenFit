@@ -24,7 +24,6 @@ import 'package:menfit_app/features/achievements/domain/badge_inputs.dart';
 import 'package:menfit_app/features/achievements/domain/badge_progress.dart';
 import 'package:menfit_app/features/achievements/domain/badge_progress_engine.dart';
 import 'package:menfit_app/features/activity/activity_providers.dart';
-import 'package:menfit_app/features/cycle/cycle_providers.dart';
 import 'package:menfit_app/features/nutrition/nutrition_providers.dart';
 import 'package:menfit_app/features/streaks/streaks_providers.dart';
 import 'package:menfit_app/features/wellbeing/wellbeing_providers.dart';
@@ -62,11 +61,11 @@ LocalDate achievementsToday(Ref ref) => LocalDate.today();
 /// One-shot (`Future`, not `Stream`) for the same reason as
 /// `insights_providers.dart#insightObservations` and
 /// `recaps_providers.dart#recapForPeriod`: this walks the user's entire
-/// history of activities, check-ins, water days and cycle records, and
-/// re-running that on every unrelated log while the achievements screen
-/// sits closed would be pure waste. It refreshes when invalidated, when
-/// `today` rolls over, and when either of the two derived sources it
-/// watches emits — which for a screen opened deliberately is soon enough.
+/// history of activities, check-ins and water days, and re-running that on
+/// every unrelated log while the achievements screen sits closed would be
+/// pure waste. It refreshes when invalidated, when `today` rolls over, and
+/// when either of the two derived sources it watches emits — which for a
+/// screen opened deliberately is soon enough.
 ///
 /// Every read below is a genuine one-shot `get`, or a `.future` on another
 /// feature's provider — never a `watchXxx().first` snapshot: `Stream.first`
@@ -85,7 +84,6 @@ Future<BadgeInputs> badgeInputs(Ref ref) async {
   final activityRepository = ref.watch(activityRepositoryProvider);
   final wellbeingRepository = ref.watch(wellbeingRepositoryProvider);
   final waterRepository = ref.watch(waterRepositoryProvider);
-  final cycleRepository = ref.watch(cycleRepositoryProvider);
 
   // Best efforts come from `activity`'s own records provider rather than
   // from a second scan of every GPS sample here - that feature owns the
@@ -105,7 +103,6 @@ Future<BadgeInputs> badgeInputs(Ref ref) async {
     windowStart,
     today,
   );
-  final cycleRecords = await cycleRepository.getRecords();
 
   return BadgeInputs(
     today: today,
@@ -113,7 +110,6 @@ Future<BadgeInputs> badgeInputs(Ref ref) async {
     bestEffortDistancesMetres: records.bestEfforts.keys.toSet(),
     checkinDays: {for (final checkin in checkins) checkin.day},
     waterTotalsByDay: waterTotals,
-    cycleRecords: cycleRecords,
     protectedDays: protectedDays,
   );
 }

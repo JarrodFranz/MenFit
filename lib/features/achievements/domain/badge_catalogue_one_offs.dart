@@ -50,14 +50,6 @@ const List<BadgeDefinition> oneOffBadgeDefinitions = [
   ),
 
   BadgeDefinition.oneOff(
-    id: 'first_completed_cycle',
-    title: 'Start to Finish',
-    description: 'A period logged with both a start and an end.',
-    category: BadgeCategory.cycleTracking,
-    condition: BadgeCondition.firstCompletedCycleRecord,
-  ),
-
-  BadgeDefinition.oneOff(
     id: 'first_water_day',
     title: 'Two Litres',
     description: 'A day your logged water reached 2 litres.',

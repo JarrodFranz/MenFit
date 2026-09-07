@@ -172,11 +172,11 @@ String _$achievementsTodayHash() => r'c2871aa243b5a8b532dc0e06825768973d4bf03d';
 /// One-shot (`Future`, not `Stream`) for the same reason as
 /// `insights_providers.dart#insightObservations` and
 /// `recaps_providers.dart#recapForPeriod`: this walks the user's entire
-/// history of activities, check-ins, water days and cycle records, and
-/// re-running that on every unrelated log while the achievements screen
-/// sits closed would be pure waste. It refreshes when invalidated, when
-/// `today` rolls over, and when either of the two derived sources it
-/// watches emits — which for a screen opened deliberately is soon enough.
+/// history of activities, check-ins and water days, and re-running that on
+/// every unrelated log while the achievements screen sits closed would be
+/// pure waste. It refreshes when invalidated, when `today` rolls over, and
+/// when either of the two derived sources it watches emits — which for a
+/// screen opened deliberately is soon enough.
 ///
 /// Every read below is a genuine one-shot `get`, or a `.future` on another
 /// feature's provider — never a `watchXxx().first` snapshot: `Stream.first`
@@ -197,11 +197,11 @@ final badgeInputsProvider = BadgeInputsProvider._();
 /// One-shot (`Future`, not `Stream`) for the same reason as
 /// `insights_providers.dart#insightObservations` and
 /// `recaps_providers.dart#recapForPeriod`: this walks the user's entire
-/// history of activities, check-ins, water days and cycle records, and
-/// re-running that on every unrelated log while the achievements screen
-/// sits closed would be pure waste. It refreshes when invalidated, when
-/// `today` rolls over, and when either of the two derived sources it
-/// watches emits — which for a screen opened deliberately is soon enough.
+/// history of activities, check-ins and water days, and re-running that on
+/// every unrelated log while the achievements screen sits closed would be
+/// pure waste. It refreshes when invalidated, when `today` rolls over, and
+/// when either of the two derived sources it watches emits — which for a
+/// screen opened deliberately is soon enough.
 ///
 /// Every read below is a genuine one-shot `get`, or a `.future` on another
 /// feature's provider — never a `watchXxx().first` snapshot: `Stream.first`
@@ -227,11 +227,11 @@ final class BadgeInputsProvider
   /// One-shot (`Future`, not `Stream`) for the same reason as
   /// `insights_providers.dart#insightObservations` and
   /// `recaps_providers.dart#recapForPeriod`: this walks the user's entire
-  /// history of activities, check-ins, water days and cycle records, and
-  /// re-running that on every unrelated log while the achievements screen
-  /// sits closed would be pure waste. It refreshes when invalidated, when
-  /// `today` rolls over, and when either of the two derived sources it
-  /// watches emits — which for a screen opened deliberately is soon enough.
+  /// history of activities, check-ins and water days, and re-running that on
+  /// every unrelated log while the achievements screen sits closed would be
+  /// pure waste. It refreshes when invalidated, when `today` rolls over, and
+  /// when either of the two derived sources it watches emits — which for a
+  /// screen opened deliberately is soon enough.
   ///
   /// Every read below is a genuine one-shot `get`, or a `.future` on another
   /// feature's provider — never a `watchXxx().first` snapshot: `Stream.first`
@@ -268,7 +268,7 @@ final class BadgeInputsProvider
   }
 }
 
-String _$badgeInputsHash() => r'b161df4bbac7eacd00c074bbd24f40e48786b115';
+String _$badgeInputsHash() => r'350d5dd7ac44a943f84086836982da6a0e4b9ad0';
 
 /// Where the user stands on every badge in the catalogue, in catalogue
 /// order — the trophy case's whole data source.

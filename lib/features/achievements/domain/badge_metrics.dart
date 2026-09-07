@@ -173,7 +173,6 @@ Map<BadgeMetric, double> computeBadgeMetrics(BadgeInputs inputs) {
     BadgeMetric.checkinDayCount: inputs.checkinDays.length.toDouble(),
     BadgeMetric.waterTargetDayCount: waterDays.toDouble(),
     BadgeMetric.mindfulMinutes: _clean(mindfulSeconds / 60),
-    BadgeMetric.cycleLoggingMonths: _cycleLoggingMonths(inputs).toDouble(),
     BadgeMetric.earlyBirdSessionCount: earlyBird.toDouble(),
     BadgeMetric.nightOwlSessionCount: nightOwl.toDouble(),
   };
@@ -190,9 +189,6 @@ Set<BadgeCondition> computeBadgeConditions(BadgeInputs inputs) {
   }
   if (inputs.bestEffortDistancesMetres.contains(5000)) {
     satisfied.add(BadgeCondition.firstFiveKilometreEffort);
-  }
-  if (inputs.cycleRecords.any((record) => record.periodEnd != null)) {
-    satisfied.add(BadgeCondition.firstCompletedCycleRecord);
   }
   if (inputs.waterTotalsByDay.values.any((ml) => ml >= badgeWaterTargetMl)) {
     satisfied.add(BadgeCondition.firstWaterTargetDay);
@@ -339,24 +335,6 @@ void _addActivityTypeConditions(
   if (ascentOf(activity) >= bigClimbMetres) {
     satisfied.add(BadgeCondition.fiveHundredMetreClimb);
   }
-}
-
-/// Distinct calendar months in which a period was logged as **starting**.
-///
-/// Counting the start day rather than every day the period covered is
-/// deliberate: an ongoing record with no end date is treated by
-/// `features/cycle/domain/period_days.dart` as running up to today, so
-/// counting covered days would let one stale un-ended record inflate this
-/// by a month for every month it was left open. A start is a thing she
-/// actually logged. Future-dated starts are ignored.
-int _cycleLoggingMonths(BadgeInputs inputs) {
-  final months = <int>{};
-  for (final record in inputs.cycleRecords) {
-    final start = record.periodStart;
-    if (start.isAfter(inputs.today)) continue;
-    months.add(start.year * 12 + start.month);
-  }
-  return months.length;
 }
 
 /// Whether any Monday-start week has a check-in on all seven of its days.

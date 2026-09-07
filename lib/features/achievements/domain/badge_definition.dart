@@ -21,7 +21,6 @@ enum BadgeCategory {
   mindfulness,
   hydration,
   consistency,
-  cycleTracking,
   fun;
 
   /// Section heading shown above the badges in this category.
@@ -34,7 +33,6 @@ enum BadgeCategory {
     BadgeCategory.mindfulness => 'Mindfulness',
     BadgeCategory.hydration => 'Hydration',
     BadgeCategory.consistency => 'Consistency',
-    BadgeCategory.cycleTracking => 'Cycle notes',
     BadgeCategory.fun => 'Just for fun',
   };
 }
@@ -126,9 +124,6 @@ enum BadgeMetric {
   /// Total minutes of yoga/pilates/mindful sessions.
   mindfulMinutes,
 
-  /// Distinct calendar months in which a period was logged as starting.
-  cycleLoggingMonths,
-
   /// Sessions started before 07:00 local time.
   earlyBirdSessionCount,
 
@@ -147,7 +142,6 @@ enum BadgeCondition {
   firstFiveKilometreEffort,
   firstStrengthSession,
   firstMindfulSession,
-  firstCompletedCycleRecord,
   firstWaterTargetDay,
   fullCheckinWeek,
   seasonalTurnSession,

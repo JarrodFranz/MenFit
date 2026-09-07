@@ -12,7 +12,6 @@ import 'package:menfit_app/core/widgets/share_card_style.dart';
 import 'package:menfit_app/features/accessibility/presentation/accessibility_haptics.dart';
 import 'package:menfit_app/features/activity/domain/activity.dart';
 import 'package:menfit_app/features/activity/domain/workout_milestone.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
 
 export 'package:menfit_app/core/widgets/share_card_style.dart'
     show ShareCardRatio, ShareCardTheme;
@@ -20,17 +19,10 @@ export 'package:menfit_app/core/widgets/share_card_style.dart'
 /// Interactive modal sheet allowing users to customize, preview, and share
 /// post-workout accomplishment cards across social platforms
 /// (Strava, IG Stories).
-///
-/// The cycle-phase pill is **opt-in**: the toggle defaults off, and it
-/// gates the copied/shared *text* exactly as it gates the rendered card,
-/// so S3 cycle data (`knowledge/engineering/security_and_privacy.md`)
-/// never leaves this sheet unless she turns it on for that share. Mirrored
-/// by `features/recaps/presentation/widgets/recap_share_sheet.dart`.
 class WorkoutShareDialog extends ConsumerStatefulWidget {
   const WorkoutShareDialog({
     required this.activity,
     this.milestones = const [],
-    this.phase,
     this.primaryMetricLabel,
     this.primaryMetricValue,
     super.key,
@@ -38,7 +30,6 @@ class WorkoutShareDialog extends ConsumerStatefulWidget {
 
   final Activity activity;
   final List<WorkoutMilestone> milestones;
-  final CyclePhase? phase;
   final String? primaryMetricLabel;
   final String? primaryMetricValue;
 
@@ -47,7 +38,6 @@ class WorkoutShareDialog extends ConsumerStatefulWidget {
     BuildContext context, {
     required Activity activity,
     List<WorkoutMilestone> milestones = const [],
-    CyclePhase? phase,
     String? primaryMetricLabel,
     String? primaryMetricValue,
   }) {
@@ -58,7 +48,6 @@ class WorkoutShareDialog extends ConsumerStatefulWidget {
       builder: (context) => WorkoutShareDialog(
         activity: activity,
         milestones: milestones,
-        phase: phase,
         primaryMetricLabel: primaryMetricLabel,
         primaryMetricValue: primaryMetricValue,
       ),
@@ -91,38 +80,14 @@ class _WorkoutShareDialogState extends ConsumerState<WorkoutShareDialog> {
   /// the capture is not silently shared as the old card.
   String? _capturedCard;
 
-  /// Opt-in, never opt-out: a shareable surface starts with no cycle data
-  /// on it (see the class dartdoc).
-  bool _showCyclePhase = false;
   bool _showMilestones = true;
 
-  /// The milestones allowed on any shareable surface (card chips AND the
-  /// copied share text) under the current toggles. A
-  /// [WorkoutMilestoneType.cyclePhasePr] milestone's *title* names her
-  /// cycle phase ("Follicular Best Effort"), so it is S3 data in disguise
-  /// (`knowledge/engineering/security_and_privacy.md`) and must ride the
-  /// cycle-phase consent toggle, not just the milestones one.
-  List<WorkoutMilestone> get _titleShareableMilestones => widget.milestones
-      .where(
-        (m) => _showCyclePhase || m.type != WorkoutMilestoneType.cyclePhasePr,
-      )
-      .toList();
-
-  /// Chip label that can never name a phase while the toggle is off. The
-  /// achievement itself is hers to show either way: chips fall back to a
-  /// phase-free label rather than disappearing; only the share text's
-  /// title line is withheld (see [_titleShareableMilestones]).
-  String _chipLabelFor(WorkoutMilestone m) {
-    if (!_showCyclePhase && m.type == WorkoutMilestoneType.cyclePhasePr) {
-      return m.badgeLabel ?? 'Personal record';
-    }
-    return m.badgeLabel ?? m.title;
-  }
+  /// Chip label for a milestone.
+  String _chipLabelFor(WorkoutMilestone m) => m.badgeLabel ?? m.title;
 
   /// Identity of the card as currently configured — every control that
   /// changes a pixel of it appears here.
-  String get _cardSignature =>
-      '${_ratio.name}|${_theme.name}|$_showCyclePhase|$_showMilestones';
+  String get _cardSignature => '${_ratio.name}|${_theme.name}|$_showMilestones';
 
   /// Guards against the sheet's entrance animation queueing a full-size
   /// raster on every one of its ~15 frames: [build] registers a callback
@@ -274,17 +239,6 @@ class _WorkoutShareDialogState extends ConsumerState<WorkoutShareDialog> {
                     SizedBox(height: tokens.spacingMd),
 
                     // Toggles
-                    if (widget.phase != null && widget.phase != CyclePhase.none)
-                      SwitchListTile.adaptive(
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(
-                          'Include Cycle Phase (${widget.phase!.label})',
-                          style: textTheme.bodyMedium,
-                        ),
-                        value: _showCyclePhase,
-                        onChanged: (val) =>
-                            setState(() => _showCyclePhase = val),
-                      ),
                     if (widget.milestones.isNotEmpty)
                       SwitchListTile.adaptive(
                         contentPadding: EdgeInsets.zero,
@@ -407,31 +361,6 @@ class _WorkoutShareDialogState extends ConsumerState<WorkoutShareDialog> {
                     letterSpacing: 0.5,
                   ),
                 ),
-                const Spacer(),
-                if (_showCyclePhase &&
-                    widget.phase != null &&
-                    widget.phase != CyclePhase.none)
-                  Flexible(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: accentColor.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        '${widget.phase!.label} Phase 🌸',
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: accentColor,
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
               ],
             ),
             const Spacer(),
@@ -653,27 +582,18 @@ class _WorkoutShareDialogState extends ConsumerState<WorkoutShareDialog> {
 
   /// The one summary text both actions use.
   ///
-  /// Share and Copy must produce byte-identical text: the cycle-phase and
-  /// milestone toggles above the preview are the only consent either
-  /// surface has, and two builders would eventually gate two different
-  /// ways (`knowledge/engineering/security_and_privacy.md`).
+  /// Share and Copy must produce byte-identical text: the milestone toggle
+  /// above the preview is the only consent either surface has, and two
+  /// builders would eventually gate it two different ways
+  /// (`knowledge/engineering/security_and_privacy.md`).
   String _buildShareText() {
     final distanceKm = (widget.activity.distanceMeters / 1000).toStringAsFixed(
       2,
     );
     final durationStr = _formatDuration(widget.activity.movingTime);
-    final shareableMilestones = _titleShareableMilestones;
+    final shareableMilestones = widget.milestones;
     final prText = _showMilestones && shareableMilestones.isNotEmpty
         ? ' (${shareableMilestones.first.title})'
-        : '';
-    // Gated on `_showCyclePhase` exactly as the rendered card is: the
-    // clipboard is a shareable surface too, and the toggle she sees above
-    // the preview is the only consent this text has.
-    final phaseText =
-        _showCyclePhase &&
-            widget.phase != null &&
-            widget.phase != CyclePhase.none
-        ? ' [${widget.phase!.label} Phase]'
         : '';
     final distText = widget.activity.distanceMeters > 0
         ? '• Distance: $distanceKm km\n'
@@ -684,7 +604,7 @@ class _WorkoutShareDialogState extends ConsumerState<WorkoutShareDialog> {
         : '';
 
     final typeLabel = widget.activity.activityType.label;
-    return 'Completed a $typeLabel$phaseText on MenFit!\n'
+    return 'Completed a $typeLabel on MenFit!\n'
         '• Time: $durationStr\n'
         '$distText'
         '$metricText'

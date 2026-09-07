@@ -24,10 +24,6 @@ enum WorkoutMilestoneType {
   /// workout this week).
   weeklyConsistency,
 
-  /// Broken fastest pace, longest distance, or heaviest lift during a
-  /// specific menstrual cycle phase (e.g. Follicular Best Effort, Luteal Peak).
-  cyclePhasePr,
-
   /// Consistently met daily fueling and protein targets over rolling 7 days.
   fuelingConsistency,
 

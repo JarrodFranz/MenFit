@@ -4,7 +4,6 @@ import 'package:menfit_app/features/activity/domain/milestone_evaluator.dart';
 import 'package:menfit_app/features/activity/domain/personal_records.dart';
 import 'package:menfit_app/features/activity/domain/workout_details.dart';
 import 'package:menfit_app/features/activity/domain/workout_milestone.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
 
 void main() {
   const evaluator = MilestoneEvaluator();
@@ -289,82 +288,6 @@ void main() {
 
       expect(milestones.first.type, WorkoutMilestoneType.sessionCompleted);
       expect(milestones.first.subtitle, contains('Full Body Flow'));
-    });
-  });
-
-  group('MilestoneEvaluator - Cycle Phase PRs', () {
-    test('awards cyclePhasePr for longest run in follicular phase', () {
-      final run = Activity(
-        id: 'run-follicular',
-        activityType: ActivityType.run,
-        title: 'Follicular Long Run',
-        startedAt: DateTime.utc(2026, 2),
-        movingTime: const Duration(minutes: 50),
-        elapsedTime: const Duration(minutes: 50),
-        distanceMeters: 8000,
-        source: ActivitySource.recorded,
-        createdAt: DateTime.utc(2026, 2),
-        updatedAt: DateTime.utc(2026, 2),
-      );
-
-      final milestones = evaluator.evaluateCardioMilestones(
-        newActivity: run,
-        priorRecords: null,
-        phase: CyclePhase.follicular,
-        phaseLongestDistance: 6000,
-      );
-
-      expect(
-        milestones.any((m) => m.type == WorkoutMilestoneType.cyclePhasePr),
-        isTrue,
-      );
-      final phasePr = milestones.firstWhere(
-        (m) => m.type == WorkoutMilestoneType.cyclePhasePr,
-      );
-      expect(phasePr.title, contains('Follicular Phase Record'));
-      expect(phasePr.subtitle, contains('8.00 km'));
-    });
-
-    test('awards cyclePhasePr for heaviest lift in luteal phase', () {
-      final activity = Activity(
-        id: 'strength-luteal',
-        activityType: ActivityType.strength,
-        title: 'Luteal Lower Body',
-        startedAt: DateTime.utc(2026, 2),
-        movingTime: const Duration(minutes: 40),
-        elapsedTime: const Duration(minutes: 40),
-        distanceMeters: 0,
-        source: ActivitySource.recorded,
-        createdAt: DateTime.utc(2026, 2),
-        updatedAt: DateTime.utc(2026, 2),
-      );
-
-      final exercises = [
-        const StrengthExercise(
-          name: 'Barbell Squat',
-          sets: [
-            StrengthSet(setNumber: 1, reps: 5, weightKg: 65),
-          ],
-        ),
-      ];
-
-      final milestones = evaluator.evaluateStrengthMilestones(
-        newActivity: activity,
-        exercises: exercises,
-        priorMaxWeights: const {},
-        phase: CyclePhase.luteal,
-        phaseMaxWeights: {'barbell squat': 60.0},
-      );
-
-      expect(
-        milestones.any((m) => m.type == WorkoutMilestoneType.cyclePhasePr),
-        isTrue,
-      );
-      final phasePr = milestones.firstWhere(
-        (m) => m.type == WorkoutMilestoneType.cyclePhasePr,
-      );
-      expect(phasePr.title, contains('Luteal Peak: Barbell Squat'));
-      expect(phasePr.subtitle, contains('65.0 kg'));
     });
   });
 }

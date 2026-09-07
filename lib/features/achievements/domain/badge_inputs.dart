@@ -1,7 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart' show immutable;
 import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/features/activity/domain/activity.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_record.dart';
 
 /// How many days of history the achievement engine is fed from the
 /// repositories that only offer a *windowed* read (check-ins, water
@@ -9,12 +8,11 @@ import 'package:menfit_app/features/cycle/domain/cycle_record.dart';
 ///
 /// Ten years, which is not a real limit so much as the absence of one: it
 /// is longer than any install this app can plausibly have, and the tables
-/// behind those reads are day-keyed and small. Activities and cycle records
-/// are read genuinely unwindowed (their repositories offer it), so the only
-/// thing this constant bounds is how far back a check-in or a water day can
-/// count towards a lifetime badge. If an install ever outlives it, the fix
-/// is an unwindowed one-shot read on those two repositories, not a bigger
-/// number here.
+/// behind those reads are day-keyed and small. Activities are read
+/// genuinely unwindowed (its repository offers it), so the only thing this
+/// constant bounds is how far back a check-in or a water day can count
+/// towards a lifetime badge. If an install ever outlives it, the fix is an
+/// unwindowed one-shot read on that repository, not a bigger number here.
 const int badgeHistoryWindowDays = 3660;
 
 /// Everything the badge engine reads, pre-fetched.
@@ -39,9 +37,8 @@ const int badgeHistoryWindowDays = 3660;
 /// engine counts what is there and never infers anything from what is not.
 ///
 /// S2/S3 data throughout (`knowledge/engineering/security_and_privacy.md`):
-/// nothing here — cycle records and protected days especially — is ever
-/// logged or sent to analytics, and no badge string derived from it names a
-/// date.
+/// nothing here — protected days especially — is ever logged or sent to
+/// analytics, and no badge string derived from it names a date.
 @immutable
 class BadgeInputs {
   const BadgeInputs({
@@ -50,7 +47,6 @@ class BadgeInputs {
     this.bestEffortDistancesMetres = const {},
     this.checkinDays = const {},
     this.waterTotalsByDay = const {},
-    this.cycleRecords = const [],
     this.protectedDays = const {},
   });
 
@@ -71,9 +67,6 @@ class BadgeInputs {
   /// Total logged millilitres per day. Days with nothing logged are absent,
   /// never present as `0`.
   final Map<LocalDate, int> waterTotalsByDay;
-
-  /// Every logged period record, unwindowed.
-  final List<CycleRecord> cycleRecords;
 
   /// The days the streak engine considers protected recovery — the union
   /// of explicit recovery days, protecting flares, and (when the user has

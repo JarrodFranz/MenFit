@@ -3,7 +3,7 @@ import 'package:menfit_app/features/achievements/domain/badge_definition.dart';
 /// The tiered half of the badge catalogue — see `domain/badge_catalogue.dart`
 /// for the catalogue's rules, and for why this is split across two files.
 ///
-/// ## Why these twelve, and how the numbers were picked
+/// ## Why these eleven, and how the numbers were picked
 ///
 /// A tier ladder is only honest on a behaviour the user can **keep**
 /// progressing at, so every metric below is a lifetime or per-period
@@ -208,28 +208,6 @@ const List<BadgeDefinition> tieredBadgeDefinitions = [
       platinum: 3000,
       diamond: 6000,
       diamondProgression: ArithmeticDiamondProgression(3000),
-    ),
-  ),
-
-  // The one ladder whose Bronze cannot arrive "in weeks": the metric counts
-  // calendar months, so two months is the fastest Bronze the unit allows.
-  // Diamond I at 36 months, then a year per diamond level.
-  BadgeDefinition.tiered(
-    id: 'cycle_logging_months',
-    title: 'Keeping Notes',
-    description:
-        'Calendar months in which you logged a period. Your own record, '
-        'kept by you.',
-    category: BadgeCategory.cycleTracking,
-    metric: BadgeMetric.cycleLoggingMonths,
-    unit: BadgeMetricUnit.months,
-    ladder: BadgeLadder(
-      bronze: 2,
-      silver: 6,
-      gold: 12,
-      platinum: 24,
-      diamond: 36,
-      diamondProgression: ArithmeticDiamondProgression(12),
     ),
   ),
 

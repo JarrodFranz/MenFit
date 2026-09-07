@@ -1,7 +1,6 @@
 import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/features/activity/domain/activity.dart';
 import 'package:menfit_app/features/activity/domain/workout_details.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_record.dart';
 
 /// Fixture builders shared by the achievements tests.
 ///
@@ -132,20 +131,6 @@ Activity strengthFixture({
         ),
       ],
     ),
-  );
-}
-
-CycleRecord cycleRecordFixture({
-  required String id,
-  required LocalDate start,
-  LocalDate? end,
-}) {
-  return CycleRecord(
-    id: id,
-    periodStart: start,
-    periodEnd: end,
-    createdAt: fixtureStamp,
-    updatedAt: fixtureStamp,
   );
 }
 

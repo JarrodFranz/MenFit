@@ -235,62 +235,6 @@ void main() {
     });
   });
 
-  group('cycle logging months', () {
-    test('two starts in one month count once', () {
-      final metrics = metricsFor(
-        BadgeInputs(
-          today: today,
-          cycleRecords: [
-            cycleRecordFixture(id: 'a', start: LocalDate(2026, 2, 2)),
-            cycleRecordFixture(id: 'b', start: LocalDate(2026, 2, 28)),
-            cycleRecordFixture(id: 'c', start: LocalDate(2026, 3, 27)),
-          ],
-        ),
-      );
-      expect(metrics[BadgeMetric.cycleLoggingMonths], 2);
-    });
-
-    test('the same month of a different year is a different month', () {
-      final metrics = metricsFor(
-        BadgeInputs(
-          today: today,
-          cycleRecords: [
-            cycleRecordFixture(id: 'a', start: LocalDate(2025, 2, 2)),
-            cycleRecordFixture(id: 'b', start: LocalDate(2026, 2, 2)),
-          ],
-        ),
-      );
-      expect(metrics[BadgeMetric.cycleLoggingMonths], 2);
-    });
-
-    test('an un-ended record still counts exactly one month', () {
-      // A record left ongoing since January is treated by
-      // `period_days.dart` as covering every day up to today; counting
-      // covered days would inflate this to nine months from one entry.
-      final metrics = metricsFor(
-        BadgeInputs(
-          today: today,
-          cycleRecords: [
-            cycleRecordFixture(id: 'a', start: LocalDate(2026, 1, 4)),
-          ],
-        ),
-      );
-      expect(metrics[BadgeMetric.cycleLoggingMonths], 1);
-    });
-
-    test('a future-dated start is ignored', () {
-      final metrics = metricsFor(
-        BadgeInputs(
-          today: today,
-          cycleRecords: [
-            cycleRecordFixture(id: 'a', start: LocalDate(2026, 12, 1)),
-          ],
-        ),
-      );
-      expect(metrics[BadgeMetric.cycleLoggingMonths], 0);
-    });
-  });
-
   group('one-off conditions', () {
     test('firsts fire from a single matching activity', () {
       final conditions = computeBadgeConditions(
@@ -333,35 +277,6 @@ void main() {
           ),
         ),
         contains(BadgeCondition.firstFiveKilometreEffort),
-      );
-    });
-
-    test('a completed cycle needs an end date, an ongoing one is not one', () {
-      expect(
-        computeBadgeConditions(
-          BadgeInputs(
-            today: today,
-            cycleRecords: [
-              cycleRecordFixture(id: 'a', start: LocalDate(2026, 2, 2)),
-            ],
-          ),
-        ),
-        isNot(contains(BadgeCondition.firstCompletedCycleRecord)),
-      );
-      expect(
-        computeBadgeConditions(
-          BadgeInputs(
-            today: today,
-            cycleRecords: [
-              cycleRecordFixture(
-                id: 'a',
-                start: LocalDate(2026, 2, 2),
-                end: LocalDate(2026, 2, 7),
-              ),
-            ],
-          ),
-        ),
-        contains(BadgeCondition.firstCompletedCycleRecord),
       );
     });
 
