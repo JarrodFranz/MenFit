@@ -1,14 +1,17 @@
 # Handoff — MenFit (men's training + nutrition app)
 
-*Live state. Rewritten and pruned on every material change. Last updated 2026-09-08.*
+*Live state. Rewritten and pruned on every material change. Last updated 2026-09-08 (Task 8).*
 
 ## State
 
-- Branch `fork-femfit`, HEAD `fdf9079` (Task 6). Earlier: docs/audit+spec,
+- Branch `fork-femfit`, HEAD `ec76444` (Task 8). Earlier: docs/audit+spec,
   implementation plan, Task 1 (tree copy + package rename), Task 2 (app
   identity sweep, `ee397ae`), Task 3 (cycle removal, `31351c8`), Task 4
   (insights cycle-phase removal, `11cfa9d`), Task 5 (recaps month-end only,
-  `5760afb`).
+  `5760afb`), Task 6 (achievements/activity cycle-phase removal, `fdf9079`),
+  Task 7 (male nutrition constants + weight chart overlay removal, `82249d0`
+  — **the tree compiles again and the full suite is green as of this
+  commit**), Task 8 (Drift schema reset to v1, `ec76444`).
   `main` branch also exists but is behind; work is happening on `fork-femfit`
   per the SDD task sequence in `.git/sdd/`.
 - Source app: FemFit at `D:\Documents\Claude\Projects\Female running app`,
@@ -112,48 +115,56 @@
   Traps) to be a genuine transitive dependent of the
   `nutrition_providers.dart` cascade. The 41 non-cascade files pass
   538/538 run together alone, an exact match to the full-directory count.
+- **Task 7 done** (`82249d0`, see `.git/sdd/task-7-report.md`): male energy
+  constant (`_maleConstant = 5`, added, replacing the female `-161`) and male
+  reference intakes in `micronutrient_adequacy.dart` (iron 8.0 / calcium
+  1000.0 / vitaminD 15.0 / fiber 38.0 / vitaminC 90.0); all `CyclePhase`/
+  `cyclePhase` plumbing removed from nutrition and weight (menstrual banner,
+  `dayCycleStatusProvider`, weight chart's phase-band overlay and legend,
+  `weightHasCycleContext`/`weightCyclePhases`); `womens_health.md` doc
+  citations repointed to `mens_health.md` everywhere in `lib`. **This is the
+  task that made the tree compile again** — `git grep -n
+  "features/cycle\|CyclePhase\|cyclePhase\|phaseByDay" -- lib test` is empty
+  as of this commit. Full suite: **3611 passed, 0 failed**, `flutter analyze
+  --fatal-infos` clean.
+- **Task 8 done** (`ec76444`, see `.git/sdd/task-8-report.md`): Drift schema
+  reset to v1. `app_database.dart`'s `schemaVersion` is now `1` and
+  `migration` is a bare `MigrationStrategy(onCreate: (m) => m.createAll())`
+  — the entire v1→v25 `onUpgrade` chain, its ~650-line dartdoc, and the four
+  migration-only helpers (`_seedWeightLogFromProfile`,
+  `_addOptionalNutrientColumns`, `_addVolumeColumns`,
+  `_addColumnsIfMissing`) are deleted (no installed FemFit base exists for
+  MenFit, so the chain served no purpose). `test/core/db/app_database_test.dart`
+  replaced wholesale: the ~130 `onUpgrade`-at-various-`from` migration tests
+  are gone, replaced by 3 tests (schema version is 1; `onCreate` produces
+  every current table and not `cycle_records`; a profile round-trips).
+  `knowledge/troubleshooting/database_migrations.md` left in place per brief
+  (still useful guidance for any future migration). Full suite after this
+  change: **3487 passed, 0 failed** (down from 3611 — expected, since the
+  ~130 deleted migration tests were replaced by only 3). `flutter analyze
+  --fatal-infos` clean.
 - Firebase: project `menfit-f17b3`, Android app `com.jarrodfranz.menfit`
   registered (app id in `distribution/android.json`, confirmed unchanged by
   the Task 2 sweep), groups `main` and `testers` exist with 0 testers.
 - Not yet pushed to the GitHub remote.
-- Test/analyze status after Task 3 (run 2026-09-07): `flutter analyze
-  --fatal-infos` = 1031 issues (578 errors, 0 warnings, 453 infos), **all
-  inside the Task 4–7 modules or cascading from the missing
-  `nutrition_providers.g.dart`**. Passing: `test/features/streaks` +98,
-  `test/features/data_export` + `test/features/wearables` +69,
-  `test/core` +339, `test/architecture` +1, `test/features/home` +
-  `test/features/settings` +28 (8 load failures), `test/core` + `test/app` +
-  `test/accessibility` + `test/architecture` +363 (11 load failures). Every
-  failure is a compile-load cascade, not an assertion failure. The whole
-  suite cannot be run yet.
 
 ## In flight
 
-- Nothing mid-task. Task 6 is complete and committed. Only Task 7
-  (nutrition micronutrients + weight chart) still imports the deleted
-  `features/cycle/` — once it lands the tree compiles fully again. 8 more
-  tasks remain per the implementation plan
+- Nothing mid-task. Task 8 is complete and committed. 6 more tasks remain
+  per the implementation plan
   (`docs/superpowers/plans/2026-09-07-menfit-fork.md`) and the SDD briefs
-  under `.git/sdd/`.
+  under `.git/sdd/` (Task 9 onward — brief for Task 9 not yet read this
+  session).
 
 ## Next
 
-1. Task 7 (nutrition micronutrients + weight chart) — it is what makes
-   the tree compile again. While `nutrition_providers.g.dart` is missing,
-   analyzer errors cascade into every feature that reads a nutrition
-   provider (achievements, insights, recaps, home, progress, settings)
-   even though those features have no cycle coupling of their own and are
-   NOT extra scope for whoever fixes them.
-2. Then Task 8 (Drift schema reset — it replaces `app_database.dart`'s
-   migration wholesale; Task 3 only removed the `from < 3` branch), Task 9
-   (Wellbeing → Recovery rename), Forge theme, nutrition male values, docs
-   rewrite (Task 13).
-3. After Task 7: re-run `flutter test test/app`, `test/accessibility`,
-   `test/features/insights`, and `test/features/recaps` — all currently
-   blocked purely by the nutrition/cycle cascade, not by their own logic.
-4. Keep running `flutter analyze --fatal-infos` after each task — see Traps
+1. Task 9 (Wellbeing → Recovery rename per the spec's decisions), then
+   Forge theme, remaining nutrition male-values follow-through (if any),
+   docs rewrite (Task 13). Read `.git/sdd/task-9-brief.md` first — it has
+   not been generated/read as of this update.
+2. Keep running `flutter analyze --fatal-infos` after each task — see Traps
    below for rename-fallout gotchas that cost time in Tasks 1 and 2.
-5. Owner: add Firebase testers, create upload keystore, Codemagic iOS app,
+3. Owner: add Firebase testers, create upload keystore, Codemagic iOS app,
    push to the GitHub remote once ready.
 
 ## Open questions

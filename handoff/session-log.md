@@ -358,3 +358,58 @@
   test/features/achievements test/features/activity` empty.
 - Committed as `fdf9079` (16 files, +63 / -628). Full detail in
   `.git/sdd/task-6-report.md`.
+
+## 2026-09-07/08 — Task 7: male nutrition constants + weight chart overlay removal
+
+- A prior agent had done essentially all the implementation (male energy
+  constant, male reference intakes, cycle-phase removal from nutrition and
+  weight, `womens_health.md` → `mens_health.md` repoints) but stopped before
+  validating or committing. This session audited the diff against the
+  brief, broadened the doc-citation repoint to 16 files the brief's list
+  had missed, then ran full validation for the first time: `build_runner`
+  clean, `dart format .` 0 changes, `flutter analyze --fatal-infos` clean,
+  full suite **3611 passed, 0 failed**. Committed as `82249d0`. This is the
+  task that made the tree compile again after Task 3 broke it — see
+  `.git/sdd/task-7-report.md`.
+
+## 2026-09-08 — Task 8: reset Drift schema to v1
+
+- Brief: `.git/sdd/task-8-brief.md`. MenFit has no installed base, so
+  FemFit's v1→v25 `onUpgrade` migration chain in `lib/core/db/app_database.dart`
+  serves no purpose here and was replaced wholesale with `schemaVersion => 1`
+  and `MigrationStrategy(onCreate: (m) => m.createAll())`.
+- TDD: replaced `test/core/db/app_database_test.dart` (previously ~130
+  `onUpgrade`-at-various-`from` migration tests) with the brief's 3 tests —
+  adjusted `UserProfilesCompanion.insert`'s `createdAt`/`updatedAt` args
+  from the brief's illustrative `DateTime.utc(...)` to millisecond `int`s
+  (the generated companion's real signature; confirmed via
+  `app_database.g.dart`). Verified table names against `lib/core/db/tables/*.dart`
+  class names — no `@DataClassName`/table-name overrides exist, so the
+  brief's `expected` snake_case set was already correct as written.
+  Ran the test: RED (`schema version is 1` failed, 25 ≠ 1; other two
+  passed) — confirmed intent before implementing.
+- Implemented: `schemaVersion => 1`; deleted the ~650-line migration
+  dartdoc, the `onUpgrade` callback, and the four migration-only helpers
+  (`_seedWeightLogFromProfile`, `_addOptionalNutrientColumns`,
+  `_addVolumeColumns`, `_addColumnsIfMissing`); removed the now-unused
+  `core/domain/entity_id.dart`/`local_date.dart` imports. Left every table
+  file's migration-era comments/nullable columns untouched per the brief
+  (harmless, not touched otherwise so no trim was owed).
+  `dart run build_runner build` regenerated cleanly (no diff to
+  `app_database.g.dart` — migration strategy isn't part of the generated
+  companions/tables). `test/core/db`: GREEN, 3/3.
+- `dart format .` on the two changed files: 1 redundant-argument-value info
+  surfaced twice (`DateTime.utc(2026, 1, 1)`'s explicit `month`/`day` both
+  match their defaults) — fixed by collapsing to `DateTime.utc(2026)`.
+  `flutter analyze --fatal-infos`: **No issues found!**
+- Full suite once: **3487 passed, 0 failed** (down from Task 7's 3611 —
+  expected, ~130 migration tests deleted, 3 added net).
+- Self-review: `grep -n "schemaVersion\|onUpgrade" lib/core/db/app_database.dart`
+  shows only `=> 1` and doc-comment mentions, no `onUpgrade` implementation;
+  `grep -rn "from:" test/core/db/` empty; `grep -rn` for the four deleted
+  helper names across the whole repo found only doc references (the
+  implementation plan and `knowledge/troubleshooting/database_migrations.md`,
+  both kept intentionally).
+- Committed as `ec76444` (2 files, +61 / -4964). Full detail in
+  `.git/sdd/task-8-report.md`. Updated this handoff to also backfill Task 7,
+  which had landed but never been recorded here.
