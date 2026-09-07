@@ -83,6 +83,11 @@
 
 ## Corrections
 
+- **2026-09-07 (Task 2 review):** the identity sweep must NOT rename the
+  FatSecret proxy backend or the `X-FemFit-Key` header. The proxy VM is
+  shared infrastructure in FemFit's GCP project `femfit-5e600`
+  (`34.27.29.29`); MenFit calls the same deployed server. Spec amended.
+
 - **PowerShell's `-replace` operator is case-insensitive by default**, and
   the Task 2 brief's own verbatim sweep script used plain `-replace` for
   both `'FemFit','MenFit'` and `'femfit','menfit'`. Any lowercase `femfit`

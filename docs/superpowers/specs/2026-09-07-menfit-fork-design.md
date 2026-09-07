@@ -64,8 +64,9 @@ commit whose message records the FemFit source commit, pushed to
   `android_manifest_guard_test.dart`, `env_files_guard_test.dart`.
 - Deploy tooling renamed: `tools/menfit_deploy/`, `distribution/android.json`,
   `codemagic.yaml` (app name, bundle id, integration/var-group names),
-  scripts. The FatSecret proxy backend is app-agnostic and is copied
-  unchanged except for its name strings.
+  scripts. The FatSecret proxy backend (`backend/fatsecret-proxy/`) is shared
+  infrastructure in FemFit's GCP project and is copied verbatim, names
+  included.
 
 ## Navigation and Home
 
