@@ -50,7 +50,7 @@ enum MacroNutrient {
 /// `domain/macro_targets.dart`'s solver works it out. With fewer locked
 /// nothing is determined, and the app **does not invent a split**: choosing
 /// a ratio on the user's behalf would be a nutrition recommendation, which
-/// this app does not make (`knowledge/domain/womens_health.md` rule 1).
+/// this app does not make (`knowledge/domain/mens_health.md` rule 1).
 ///
 /// **Locks are persisted**, not UI state. "I need protein to stay at 200 g"
 /// is a durable intent: when the calorie target moves next month the

@@ -107,7 +107,7 @@ String macroLockSemanticsLabel(MacroNutrient macro, {required bool locked}) =>
 /// (`domain/macro_targets.dart#solveMacroTargets`); the computed field then
 /// shows that figure and stops taking keystrokes until a lock changes. With
 /// fewer than two locked nothing is determined, and the app says so rather
-/// than inventing a split (`knowledge/domain/womens_health.md` rule 1).
+/// than inventing a split (`knowledge/domain/mens_health.md` rule 1).
 ///
 /// **Nothing is locked or prefilled by default**, here or anywhere else in
 /// this form.

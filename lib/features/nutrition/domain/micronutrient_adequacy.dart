@@ -1,24 +1,23 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
 import 'package:menfit_app/features/nutrition/domain/nutrition_totals.dart';
 
 part 'micronutrient_adequacy.freezed.dart';
 
 /// Supported micronutrients with evidence-based biological reference intakes.
 enum MicronutrientType {
-  /// Iron (Fe): Premenopausal adult female standard is 18 mg/day.
+  /// Iron (Fe): Adult male standard is 8 mg/day.
   iron,
 
-  /// Calcium (Ca): Adult female standard is 1,000 mg/day (1,200 mg for >50).
+  /// Calcium (Ca): Adult male standard is 1,000 mg/day (1,200 mg for >70).
   calcium,
 
-  /// Vitamin D: Adult female standard is 15 mcg/day (600 IU).
+  /// Vitamin D: Adult male standard is 15 mcg/day (600 IU).
   vitaminD,
 
-  /// Dietary Fiber: Adequate intake is 25 g/day for adult females.
+  /// Dietary Fiber: Adequate intake is 38 g/day for adult males.
   fiber,
 
-  /// Vitamin C: Recommended intake is 75 mg/day.
+  /// Vitamin C: Recommended intake is 90 mg/day.
   vitaminC;
 
   String get label => switch (this) {
@@ -37,33 +36,29 @@ enum MicronutrientType {
     MicronutrientType.vitaminC => 'mg',
   };
 
-  /// Standard daily reference intake for premenopausal adult females.
+  /// Standard daily reference intake for adult males (19–50, DRI).
   double get standardDailyReference => switch (this) {
-    MicronutrientType.iron => 18.0,
+    MicronutrientType.iron => 8.0,
     MicronutrientType.calcium => 1000.0,
     MicronutrientType.vitaminD => 15.0,
-    MicronutrientType.fiber => 25.0,
-    MicronutrientType.vitaminC => 75.0,
+    MicronutrientType.fiber => 38.0,
+    MicronutrientType.vitaminC => 90.0,
   };
 
-  /// Informational biological rationale for active women.
+  /// Informational rationale for active men.
   String get biologicalRationale => switch (this) {
     MicronutrientType.iron =>
-      'Essential for oxygen transport (hemoglobin) and cellular energy. '
-          'Active females experience elevated losses through menstruation '
-          'and foot-strike impact.',
+      'Carries oxygen (haemoglobin) and powers cellular energy. Endurance '
+          'training raises losses through foot-strike haemolysis and sweat.',
     MicronutrientType.calcium =>
-      'Crucial for bone mineral density, neuromuscular contraction, and '
-          'protecting against bone stress injuries in runners.',
+      'Builds bone mineral density and drives muscle contraction; protects '
+          'against bone stress injuries under high training loads.',
     MicronutrientType.vitaminD =>
-      'Essential for active intestinal calcium absorption, skeletal '
-          'recovery, and immune defense.',
+      'Needed to absorb calcium, for skeletal recovery and immune defence.',
     MicronutrientType.fiber =>
-      'Supports digestive motility, microbiome balance, and healthy '
-          'circulating estrogen clearance.',
+      'Supports gut health, steady energy and satiety during a cut.',
     MicronutrientType.vitaminC =>
-      'Synergistically enhances non-heme (plant) iron absorption and '
-          'promotes collagen synthesis for joint and tendon health.',
+      'Supports collagen synthesis, tissue repair and iron absorption.',
   };
 }
 
@@ -88,12 +83,8 @@ abstract class MicronutrientAdequacyItem with _$MicronutrientAdequacyItem {
     /// and 1.0.
     required double progress,
 
-    /// Contextual message explaining status, menstrual demands, or partial
-    /// data.
+    /// Contextual message explaining status or partial data.
     required String statusMessage,
-
-    /// Active menstrual cycle phase on the evaluated day, if known.
-    CyclePhase? cyclePhase,
   }) = _MicronutrientAdequacyItem;
 
   const MicronutrientAdequacyItem._();
@@ -121,10 +112,9 @@ abstract class MicronutrientAdequacyItem with _$MicronutrientAdequacyItem {
   }
 }
 
-/// Evaluates micronutrient adequacy across [totals] for the given [cyclePhase].
+/// Evaluates micronutrient adequacy across [totals].
 List<MicronutrientAdequacyItem> evaluateMicronutrientAdequacy({
   required NutritionTotals totals,
-  CyclePhase? cyclePhase,
 }) {
   return MicronutrientType.values.map((type) {
     final (amount, isPartial) = switch (type) {
@@ -146,23 +136,15 @@ List<MicronutrientAdequacyItem> evaluateMicronutrientAdequacy({
         ? (amount / reference).clamp(0.0, 1.0)
         : 0.0;
 
-    final isMenstrual = cyclePhase == CyclePhase.menstrual;
-
     final statusMessage = switch (type) {
       MicronutrientType.iron =>
-        isMenstrual
-            ? (isPartial
-                  ? 'Menstrual phase: iron needs are higher (~18 mg). Logged '
-                        'foods report partial data.'
-                  : 'Menstrual phase: ~18 mg recommended to compensate for '
-                        'blood loss.')
-            : (isPartial
-                  ? 'Partial report: some foods did not list iron.'
-                  : 'Daily reference: 18 mg for premenopausal women.'),
+        isPartial
+            ? 'Partial report: some foods did not list iron.'
+            : '8 mg recommended for adult men.',
       MicronutrientType.calcium =>
         isPartial
             ? 'Partial report: some foods did not list calcium.'
-            : '1,000 mg recommended for bone density & runner health.',
+            : '1,000 mg recommended for bone density & training recovery.',
       MicronutrientType.vitaminD =>
         isPartial
             ? 'Partial report: some foods did not list vitamin D.'
@@ -170,11 +152,11 @@ List<MicronutrientAdequacyItem> evaluateMicronutrientAdequacy({
       MicronutrientType.fiber =>
         isPartial
             ? 'Partial report: some foods did not list fiber.'
-            : '25 g recommended for digestive & hormone clearance health.',
+            : '38 g recommended for digestive health.',
       MicronutrientType.vitaminC =>
         isPartial
             ? 'Partial report: some foods did not list vitamin C.'
-            : '75 mg recommended; enhances non-heme iron absorption.',
+            : '90 mg recommended; enhances non-heme iron absorption.',
     };
 
     return MicronutrientAdequacyItem(
@@ -183,7 +165,6 @@ List<MicronutrientAdequacyItem> evaluateMicronutrientAdequacy({
       dailyReference: reference,
       isPartial: isPartial,
       progress: progress,
-      cyclePhase: cyclePhase,
       statusMessage: statusMessage,
     );
   }).toList();

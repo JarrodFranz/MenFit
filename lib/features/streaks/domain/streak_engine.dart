@@ -79,7 +79,7 @@ _DayState _stateOf(
 ///
 /// This is the entire product decision for "protected recovery" streaks
 /// (the named, signature feature — see `knowledge/product/product_vision.md`
-/// and `knowledge/domain/womens_health.md`), implemented precisely as
+/// and `knowledge/domain/mens_health.md`), implemented precisely as
 /// specified:
 ///
 /// 1. A day is **satisfied** if it's in [activeDays] (the caller has

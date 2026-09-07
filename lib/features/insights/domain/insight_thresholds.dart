@@ -7,7 +7,7 @@
 /// controller, not a test, not a debug flag — may relax them. An insight
 /// below any gate is **absent**, never "shown with lower confidence".
 ///
-/// Choices and why (see also `knowledge/domain/womens_health.md`, which
+/// Choices and why (see also `knowledge/domain/mens_health.md`, which
 /// gates what this product may claim):
 ///
 /// * [minPairedObservations] — 10. Below ~10 retained pairs the median of

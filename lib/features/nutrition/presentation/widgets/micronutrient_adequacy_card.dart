@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:menfit_app/core/theme/tokens.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
 import 'package:menfit_app/features/nutrition/domain/micronutrient_adequacy.dart';
 import 'package:menfit_app/features/nutrition/presentation/widgets/micronutrient_info_sheet.dart';
 
-/// Card presenting female-specific micronutrient adequacy against biological
-/// reference intakes (DRIs/RDAs) with cycle-phase context and honesty flags.
+/// Card presenting micronutrient adequacy against biological reference
+/// intakes (DRIs/RDAs) for adult men, with honesty flags for partial data.
 class MicronutrientAdequacyCard extends StatefulWidget {
   const MicronutrientAdequacyCard({
     required this.items,
-    this.cyclePhase,
     this.isMultiDay = false,
     super.key,
   });
 
   final List<MicronutrientAdequacyItem> items;
-  final CyclePhase? cyclePhase;
   final bool isMultiDay;
 
   @override
@@ -42,8 +39,6 @@ class _MicronutrientAdequacyCardState extends State<MicronutrientAdequacyCard> {
       return i.type == MicronutrientType.fiber ||
           i.type == MicronutrientType.vitaminC;
     }).toList();
-
-    final isMenstrual = widget.cyclePhase == CyclePhase.menstrual;
 
     return Card(
       key: const Key('micronutrientAdequacyCard'),
@@ -79,48 +74,11 @@ class _MicronutrientAdequacyCardState extends State<MicronutrientAdequacyCard> {
                 IconButton(
                   key: const Key('micronutrientInfoButton'),
                   icon: const Icon(Icons.info_outline, size: 20),
-                  tooltip: 'About female micronutrient benchmarks',
+                  tooltip: 'About micronutrient benchmarks',
                   onPressed: () => MicronutrientInfoSheet.show(context),
                 ),
               ],
             ),
-            if (isMenstrual) ...[
-              SizedBox(height: tokens.spacingSm),
-              Container(
-                key: const Key('menstrualPhaseNutrientBanner'),
-                padding: EdgeInsets.symmetric(
-                  horizontal: tokens.spacingSm,
-                  vertical: tokens.spacingXs,
-                ),
-                decoration: BoxDecoration(
-                  color: tokens.cyclePhaseMenstrual.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: tokens.cyclePhaseMenstrual.withValues(alpha: 0.4),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.water_drop_outlined,
-                      size: 16,
-                      color: tokens.cyclePhaseMenstrual,
-                    ),
-                    const SizedBox(width: 6),
-                    Expanded(
-                      child: Text(
-                        'Menstrual phase: iron intake is elevated to '
-                        'replace menstrual losses.',
-                        style: textTheme.bodySmall?.copyWith(
-                          color: tokens.cyclePhaseMenstrual,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
             SizedBox(height: tokens.spacingMd),
             for (final item in primaryItems) ...[
               _NutrientAdequacyRow(item: item),

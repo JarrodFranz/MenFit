@@ -290,8 +290,8 @@ void main() {
       );
       expect(
         (estimate as EnergyEstimate).basalMetabolicRateKcal,
-        closeTo(1401.5, 1),
-        reason: '65 kg, 170 cm, 30 years, female coefficients',
+        closeTo(1567.5, 1),
+        reason: '65 kg, 170 cm, 30 years, male coefficients',
       );
     });
   });
@@ -322,11 +322,11 @@ void main() {
         (value) => value is FlooredCalorieTarget,
       );
       final floored = outcome as FlooredCalorieTarget;
-      // TDEE = 1401.5 x 1.2 = 1681.8 -> 1682; 1682 - 1000 = 682, well under
-      // the 1402 BMR floor.
-      expect(floored.floorKcal, 1402);
-      expect(floored.targetKcal, 1402);
-      expect(floored.requestedKcal, 682);
+      // TDEE = 1567.5 x 1.2 = 1881; 1881 - 1000 = 881, well under the 1568
+      // BMR floor.
+      expect(floored.floorKcal, 1568);
+      expect(floored.targetKcal, 1568);
+      expect(floored.requestedKcal, 881);
       expect(floored.explanation, floorExplanation);
     });
 
@@ -347,7 +347,7 @@ void main() {
 
       final outcome = await waitForTarget((value) => value is CalorieTarget);
       expect((outcome as CalorieTarget).appliedAdjustmentKcal, -250);
-      expect(outcome.targetKcal, greaterThan(1402));
+      expect(outcome.targetKcal, greaterThan(1568));
     });
   });
 }

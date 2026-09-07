@@ -108,7 +108,7 @@ void main() {
       expect(find.byType(BadgeTile), findsNWidgets(badgeCatalogue.length));
       expect(
         badgeCatalogue,
-        hasLength(43),
+        hasLength(41),
         reason:
             'a pinned count, so adding a badge is a deliberate act '
             'rather than something that slips in unnoticed',

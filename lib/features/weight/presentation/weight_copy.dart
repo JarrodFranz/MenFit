@@ -1,7 +1,7 @@
 /// Every sentence this feature says to the user, in one auditable place.
 ///
 /// Body weight is the most eating-disorder-sensitive surface in this app,
-/// so the copy is held to `knowledge/domain/womens_health.md` and to the
+/// so the copy is held to `knowledge/domain/mens_health.md` and to the
 /// ED-safe rules `features/nutrition/domain/nutrition_validation.dart`
 /// already states for food. Concretely, nothing here may:
 ///
@@ -16,10 +16,7 @@
 ///   picker labels, and the dialogs). A word added there fails both;
 /// - imply a direction is preferable, which is also why the chart has one
 ///   colour and no red/green anywhere;
-/// - state or imply a medical claim. The cycle sentence names its phases
-///   as estimates and carries the "not medical advice" line
-///   (`womens_health.md` rule 3), because the overlay makes this a
-///   cycle-adjacent surface;
+/// - state or imply a medical claim;
 /// - interpolate a logged value (S2,
 ///   `knowledge/engineering/security_and_privacy.md`). These are fixed
 ///   strings; the reading itself is rendered separately by
@@ -55,13 +52,6 @@ String weightFluidNote(UnitSystem unitSystem) =>
     '${weightUnitWord(unitSystem)} or more between two mornings is ordinary '
     "and doesn't reflect a longer-term change. The smoothed line reads "
     'across those swings; the dots are the individual readings behind it.';
-
-/// Shown alongside the chart whenever the cycle overlay is drawn.
-const String weightCycleContextNote =
-    'The shaded bands mark the menstrual and luteal phases, where holding '
-    'more fluid is expected physiology — a higher reading on those days '
-    "has that context. Phases are estimated from the periods you've "
-    'logged, not measured, and this is not medical advice.';
 
 /// Shown in place of a trend line when too few days carry a reading.
 const String weightMinimumDataNote =

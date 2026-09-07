@@ -92,7 +92,7 @@ enum EnergyEstimateInput {
 /// handle "we can't estimate this" as a first-class outcome instead of
 /// receiving a silent default. There is no fallback number anywhere in this
 /// file — an invented default calorie figure would be exactly the kind of
-/// unsourced, medical-flavoured claim `knowledge/domain/womens_health.md`
+/// unsourced, medical-flavoured claim `knowledge/domain/mens_health.md`
 /// rule 1 forbids.
 ///
 /// Expected outcome, not an exception (see
@@ -151,20 +151,20 @@ final class NoEnergyEstimate extends EnergyEstimateResult {
 }
 
 /// Estimates BMR and TDEE with the **Mifflin-St Jeor** equation, using its
-/// **female coefficients**.
+/// **male coefficients**.
 ///
 /// ```text
-/// BMR  = (10 × weightKg) + (6.25 × heightCm) − (5 × age) − 161
+/// BMR  = (10 × weightKg) + (6.25 × heightCm) − (5 × age) + 5
 /// TDEE = BMR × activityLevel.factor
 /// ```
 ///
-/// **Why the female coefficients, stated plainly:** Mifflin-St Jeor has two
-/// variants that differ only in their final constant (−161 for women, +5
-/// for men). This app's population is women, and the profile deliberately
+/// **Why the male coefficients, stated plainly:** Mifflin-St Jeor has two
+/// variants that differ only in their final constant (+5 for men, −161
+/// for women). This app's population is men, and the profile deliberately
 /// does not collect sex — so rather than guess per user, or ask a question
-/// the product decided not to ask, the female variant is applied
+/// the product decided not to ask, the male variant is applied
 /// uniformly. That is an assumption, and it has limits: for a user the
-/// equation's female variant doesn't fit, the estimate will be low by
+/// equation's male variant doesn't fit, the estimate will be high by
 /// roughly 166 kcal/day. It is stated here, in
 /// `knowledge/research/nutrition_energy_estimates.md`, and must be stated
 /// in the UI too.
@@ -206,7 +206,7 @@ EnergyEstimateResult estimateEnergyNeeds({
     );
   }
 
-  final bmr = (10 * weight) + (6.25 * height) - (5 * age) - _femaleConstant;
+  final bmr = (10 * weight) + (6.25 * height) - (5 * age) + _maleConstant;
   return EnergyEstimate(
     basalMetabolicRateKcal: bmr,
     totalDailyEnergyKcal: bmr * activityLevel.factor,
@@ -214,10 +214,12 @@ EnergyEstimateResult estimateEnergyNeeds({
   );
 }
 
-/// Mifflin-St Jeor's female constant, subtracted from the weight/height/age
-/// terms. The male variant adds 5 instead; see [estimateEnergyNeeds]'s
-/// dartdoc for why only this one is used.
-const double _femaleConstant = 161;
+/// Mifflin-St Jeor's male constant, added to the weight/height/age terms.
+/// MenFit's population is men and the profile deliberately does not ask
+/// for sex, so the male variant is applied to everyone; the estimate is
+/// labelled as an estimate everywhere it is shown. The female variant
+/// subtracts 161 instead.
+const double _maleConstant = 5;
 
 /// [estimateEnergyNeeds] over a [UserProfile], deriving age from
 /// [UserProfile.dateOfBirth] via the existing [UserProfile.ageOn] (leap-day

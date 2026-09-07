@@ -63,7 +63,7 @@ final class WeightViewControllerProvider
 }
 
 String _$weightViewControllerHash() =>
-    r'9448cce89e232d301a3473d40d0df53bf68547e7';
+    r'22cdd639ebbce8af95c077b74d2c1d67067e62ba';
 
 /// Holds the weight screen's view state. No domain rules live here — the
 /// smoothing is in `domain/weight_trend.dart` and the window arithmetic in

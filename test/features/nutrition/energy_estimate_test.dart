@@ -25,15 +25,15 @@ UserProfile _profile({
 void main() {
   group('estimateEnergyNeeds — known-value check', () {
     test(
-      'Mifflin-St Jeor (female coefficients), hand-computed: 65 kg, 170 cm, '
-      '30 years => BMR 1401.5 kcal',
+      'Mifflin-St Jeor (male coefficients), hand-computed: 65 kg, 170 cm, '
+      '30 years => BMR 1567.5 kcal',
       () {
-        // (10 x 65) + (6.25 x 170) - (5 x 30) - 161
-        //   = 650 + 1062.5 - 150 - 161
-        //   = 1401.5
+        // (10 x 65) + (6.25 x 170) - (5 x 30) + 5
+        //   = 650 + 1062.5 - 150 + 5
+        //   = 1567.5
         // Recomputed here rather than copied from the implementation - if
-        // the coefficients or the female constant ever change, this fails.
-        const expectedBmr = 650 + 1062.5 - 150 - 161;
+        // the coefficients or the male constant ever change, this fails.
+        const expectedBmr = 650 + 1062.5 - 150 + 5;
 
         final result = estimateEnergyNeeds(
           ageYears: 30,
@@ -45,12 +45,12 @@ void main() {
         expect(result, isA<EnergyEstimate>());
         final estimate = result as EnergyEstimate;
         expect(estimate.basalMetabolicRateKcal, closeTo(expectedBmr, 1e-9));
-        expect(estimate.basalMetabolicRateKcal, closeTo(1401.5, 1e-9));
+        expect(estimate.basalMetabolicRateKcal, closeTo(1567.5, 1e-9));
       },
     );
 
     test('TDEE is BMR times the chosen activity factor', () {
-      const bmr = 650 + 1062.5 - 150 - 161;
+      const bmr = 650 + 1062.5 - 150 + 5;
 
       for (final level in ActivityLevel.values) {
         final result = estimateEnergyNeeds(
@@ -68,7 +68,7 @@ void main() {
       }
     });
 
-    test('the male +5 constant is NOT used - the female variant is', () {
+    test('the female -161 constant is NOT used - the male variant is', () {
       final result = estimateEnergyNeeds(
         ageYears: 30,
         heightCm: 170,
@@ -76,11 +76,11 @@ void main() {
         activityLevel: ActivityLevel.sedentary,
       ) as EnergyEstimate;
 
-      // Male form would be 1562.5 + 5 = 1567.5; the difference between the
-      // two variants is exactly 166 kcal (see
+      // Female form would be 1562.5 - 161 = 1401.5; the difference between
+      // the two variants is exactly 166 kcal (see
       // knowledge/research/nutrition_energy_estimates.md).
-      expect(result.basalMetabolicRateKcal, isNot(closeTo(1567.5, 1e-9)));
-      expect(result.basalMetabolicRateKcal, closeTo(1567.5 - 166, 1e-9));
+      expect(result.basalMetabolicRateKcal, isNot(closeTo(1401.5, 1e-9)));
+      expect(result.basalMetabolicRateKcal, closeTo(1401.5 + 166, 1e-9));
     });
   });
 

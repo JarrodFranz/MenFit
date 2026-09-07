@@ -18,7 +18,7 @@ import 'package:menfit_app/features/activity/presentation/recording/mindful_trac
 /// *keyed by* the source of truth, checked against it.
 ///
 /// No benefit, therapeutic or outcome claims ("releases fascia", "tones",
-/// "detoxes"): `knowledge/domain/womens_health.md` gates any health claim on
+/// "detoxes"): `knowledge/domain/mens_health.md` gates any health claim on
 /// evidence, and none of these would clear it. A style with no entry falls
 /// back to [_fallbackStyleDescription], so adding a label to
 /// [MindfulStyles] can never leave the dialog empty.

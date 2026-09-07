@@ -42,12 +42,12 @@ import 'package:menfit_app/features/achievements/domain/badge_definition.dart';
 ///    **no weight-logging badge of any kind** — not a tiered
 ///    "weigh-in consistency" ladder, not a one-off. Body weight is the most
 ///    eating-disorder-sensitive surface in the app
-///    (`knowledge/domain/womens_health.md`, and the shipped rules for Tasks
+///    (`knowledge/domain/mens_health.md`, and the shipped rules for Tasks
 ///    2.1/2.2 in `knowledge/product/feature_ideas.md`), and attaching a
 ///    reward ladder to the act of stepping on a scale would manufacture
 ///    exactly the daily-weighing compulsion that feature was built to
 ///    avoid. This exclusion is a product decision, not an oversight: do not
-///    add one later without revisiting `womens_health.md` first.
+///    add one later without revisiting `mens_health.md` first.
 /// 6. **No badge duplicates the streak engine.** Streaks are already the
 ///    app's consistency mechanic and already carry protected recovery. A
 ///    "longest streak" ladder would double-count them and, worse, would

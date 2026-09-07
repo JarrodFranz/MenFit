@@ -15,7 +15,7 @@ import 'package:menfit_app/features/weight/presentation/weight_format.dart';
 /// domain computes that figure ([WeightTrendSeries.trendChangeKg]) and the
 /// UI leaves it there: a running "-1.4 kg since June" next to a body-weight
 /// chart is a scoreboard, and a scoreboard is what
-/// `knowledge/domain/womens_health.md` rules out. Direction answers "is
+/// `knowledge/domain/mens_health.md` rules out. Direction answers "is
 /// the fluctuation I'm seeing actually a trend?", which is the question
 /// this feature is for; magnitude only invites keeping score.
 ///

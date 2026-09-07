@@ -115,11 +115,7 @@ class _DayView extends ConsumerWidget {
     final copyable =
         ref.watch(copyableMealsProvider(day)).value ?? const <MealType>{};
 
-    final cycleStatus = ref.watch(dayCycleStatusProvider(day)).value;
-    final adequacyItems = evaluateMicronutrientAdequacy(
-      totals: totals.total,
-      cyclePhase: cycleStatus?.phase,
-    );
+    final adequacyItems = evaluateMicronutrientAdequacy(totals: totals.total);
 
     return ListView(
       padding: EdgeInsets.all(tokens.spacingMd),
@@ -151,10 +147,7 @@ class _DayView extends ConsumerWidget {
             hideCalorieNumbers: hideCalories,
           ),
           SizedBox(height: tokens.spacingSm),
-          MicronutrientAdequacyCard(
-            items: adequacyItems,
-            cyclePhase: cycleStatus?.phase,
-          ),
+          MicronutrientAdequacyCard(items: adequacyItems),
         ],
         SizedBox(height: tokens.spacingSm),
         WaterIntakeCard(day: day),

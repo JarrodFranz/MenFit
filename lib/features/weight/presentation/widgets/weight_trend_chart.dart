@@ -5,14 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/core/domain/units.dart';
-import 'package:menfit_app/core/theme/tokens.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
 import 'package:menfit_app/features/weight/domain/weight_range.dart';
 import 'package:menfit_app/features/weight/domain/weight_trend.dart';
 import 'package:menfit_app/features/weight/presentation/weight_format.dart';
 
 /// The weight timeline: individual readings as dots, the smoothed trend as
-/// a line, and (optionally) soft bands marking the cycle phases behind it.
+/// a line.
 ///
 /// Design rules, following `features/progress/presentation/widgets/`'s
 /// `weekly_distance_chart.dart` and departing from it only where weight
@@ -28,7 +26,7 @@ import 'package:menfit_app/features/weight/presentation/weight_format.dart';
 /// - **One colour, no valence.** The trend uses [ColorScheme.primary] and
 ///   the dots [ColorScheme.onSurfaceVariant], whichever way the line is
 ///   going. Nothing here is ever green for down or red for up — see
-///   `knowledge/domain/womens_health.md`.
+///   `knowledge/domain/mens_health.md`.
 /// - **Gaps are gaps.** A day with no reading contributes no point; the
 ///   line joins the readings either side of a gap because that is what a
 ///   line does, but no value is invented for the days in between (see
@@ -38,7 +36,6 @@ class WeightTrendChart extends StatelessWidget {
     required this.series,
     required this.unitSystem,
     required this.seriesMode,
-    this.phaseByDay = const {},
     this.height = 240,
     this.enhancedSemantics = false,
     super.key,
@@ -47,11 +44,6 @@ class WeightTrendChart extends StatelessWidget {
   final WeightTrendSeries series;
   final UnitSystem unitSystem;
   final WeightSeriesMode seriesMode;
-
-  /// Per-day cycle phase for the visible window. Empty means no overlay.
-  /// Only [CyclePhase.menstrual] and [CyclePhase.luteal] are banded — see
-  /// [bandedCyclePhases].
-  final Map<LocalDate, CyclePhase> phaseByDay;
 
   final double height;
 
@@ -67,7 +59,6 @@ class WeightTrendChart extends StatelessWidget {
 
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-    final tokens = Theme.of(context).extension<AppTokens>()!;
 
     final firstDay = points.first.day;
     final span = firstDay.difference(points.last.day);
@@ -142,14 +133,6 @@ class WeightTrendChart extends StatelessWidget {
             minY: minY,
             maxY: maxY,
             clipData: const FlClipData.all(),
-            rangeAnnotations: RangeAnnotations(
-              verticalRangeAnnotations: _phaseBands(
-                firstDay: firstDay,
-                lastDay: points.last.day,
-                maxX: maxX,
-                tokens: tokens,
-              ),
-            ),
             gridData: FlGridData(
               drawVerticalLine: false,
               horizontalInterval: step,
@@ -206,7 +189,6 @@ class WeightTrendChart extends StatelessWidget {
                       day: firstDay.addDays(spot.x.round()),
                       isTrend: spot.barIndex == trendBarIndex,
                       colorScheme: colorScheme,
-                      tokens: tokens,
                     ),
                 ],
               ),
@@ -256,16 +238,9 @@ class WeightTrendChart extends StatelessWidget {
     required LocalDate day,
     required bool isTrend,
     required ColorScheme colorScheme,
-    required AppTokens tokens,
   }) {
     final value = '${spot.y.toStringAsFixed(1)} ${weightUnitLabel(unitSystem)}';
     final date = _shortDate(day);
-    final phase = phaseByDay[day];
-    final isBanded = phase != null && bandedCyclePhases.contains(phase);
-
-    final phaseColor = phase == CyclePhase.menstrual
-        ? tokens.cyclePhaseMenstrual
-        : tokens.cyclePhaseLuteal;
 
     final baseText = isTrend
         ? '$date · $value (${series.windowDays}-day trend)'
@@ -278,17 +253,6 @@ class WeightTrendChart extends StatelessWidget {
         fontWeight: FontWeight.w600,
         fontSize: 12,
       ),
-      children: [
-        if (isBanded)
-          TextSpan(
-            text: '\n${phase.label} phase',
-            style: TextStyle(
-              color: phaseColor,
-              fontWeight: FontWeight.w500,
-              fontSize: 11,
-            ),
-          ),
-      ],
     );
   }
 
@@ -345,130 +309,6 @@ class WeightTrendChart extends StatelessWidget {
         'No trend line yet',
     ];
     return '${sentences.join('. ')}.';
-  }
-
-  List<VerticalRangeAnnotation> _phaseBands({
-    required LocalDate firstDay,
-    required LocalDate lastDay,
-    required double maxX,
-    required AppTokens tokens,
-  }) {
-    if (phaseByDay.isEmpty) return const [];
-
-    final bands = <VerticalRangeAnnotation>[];
-    CyclePhase? runPhase;
-    var runStart = 0;
-    var previous = -1;
-
-    void closeRun() {
-      if (runPhase == null) return;
-      bands.add(
-        VerticalRangeAnnotation(
-          // Half a day either side so a single banded day is still a
-          // visible stripe rather than a zero-width line.
-          x1: math.max(0, runStart - 0.5),
-          x2: math.min(maxX, previous + 0.5),
-          color: _bandColor(runPhase!, tokens),
-        ),
-      );
-      runPhase = null;
-    }
-
-    final totalDays = firstDay.difference(lastDay);
-    for (var offset = 0; offset <= totalDays; offset++) {
-      final phase = phaseByDay[firstDay.addDays(offset)];
-      final banded = phase != null && bandedCyclePhases.contains(phase);
-      if (!banded) {
-        closeRun();
-        continue;
-      }
-      if (runPhase != phase || previous != offset - 1) {
-        closeRun();
-        runPhase = phase;
-        runStart = offset;
-      }
-      previous = offset;
-    }
-    closeRun();
-    return bands;
-  }
-
-  Color _bandColor(CyclePhase phase, AppTokens tokens) {
-    final base = phase == CyclePhase.menstrual
-        ? tokens.cyclePhaseMenstrual
-        : tokens.cyclePhaseLuteal;
-    // Faint enough that the readings stay the foreground. The band is
-    // context, not a second data series.
-    return base.withValues(alpha: 0.16);
-  }
-}
-
-/// The phases the chart bands.
-///
-/// **Menstrual and luteal only**, not all four. Those two are the ones the
-/// overlay exists to give context to — progesterone-driven fluid retention
-/// through the luteal phase and the days around bleeding — and they are
-/// the ones task 2.2 names. Banding the follicular and ovulatory phases as
-/// well would tile the entire chart background with stripes that carry no
-/// explanatory payload here, leaving the readings competing with the
-/// decoration; with two bands the untinted stretches read clearly as "the
-/// rest of the cycle" and the legend stays two entries long.
-const Set<CyclePhase> bandedCyclePhases = {
-  CyclePhase.menstrual,
-  CyclePhase.luteal,
-};
-
-/// Names the two bands under the chart. Only rendered when the overlay is.
-class WeightPhaseLegend extends StatelessWidget {
-  const WeightPhaseLegend({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final tokens = Theme.of(context).extension<AppTokens>()!;
-    return Wrap(
-      spacing: tokens.spacingMd,
-      runSpacing: tokens.spacingXs,
-      children: [
-        for (final phase in bandedCyclePhases)
-          _LegendSwatch(phase: phase, key: ValueKey(phase)),
-      ],
-    );
-  }
-}
-
-class _LegendSwatch extends StatelessWidget {
-  const _LegendSwatch({required this.phase, super.key});
-
-  final CyclePhase phase;
-
-  @override
-  Widget build(BuildContext context) {
-    final tokens = Theme.of(context).extension<AppTokens>()!;
-    final colorScheme = Theme.of(context).colorScheme;
-    final base = phase == CyclePhase.menstrual
-        ? tokens.cyclePhaseMenstrual
-        : tokens.cyclePhaseLuteal;
-
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 12,
-          height: 12,
-          decoration: BoxDecoration(
-            color: base.withValues(alpha: 0.32),
-            borderRadius: BorderRadius.circular(tokens.radiusSm),
-          ),
-        ),
-        SizedBox(width: tokens.spacingXs),
-        Text(
-          phase.label,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: colorScheme.onSurfaceVariant,
-          ),
-        ),
-      ],
-    );
   }
 }
 

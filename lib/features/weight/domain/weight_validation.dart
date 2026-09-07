@@ -2,7 +2,7 @@ import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/core/domain/units.dart';
 
 // Copy rules for every message in this file
-// (`knowledge/domain/womens_health.md`, plus the ED-safe stance
+// (`knowledge/domain/mens_health.md`, plus the ED-safe stance
 // `features/nutrition/domain/nutrition_validation.dart` already states for
 // food):
 //

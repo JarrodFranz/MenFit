@@ -28,11 +28,6 @@ class WeightScreen extends ConsumerWidget {
     final view = ref.watch(weightViewControllerProvider);
     final unitSystem =
         ref.watch(activityUnitSystemProvider).value ?? UnitSystem.metric;
-    final hasCycleContext =
-        ref.watch(weightHasCycleContextProvider).value ?? false;
-    final overlayVisible = view.overlayVisibleWhen(
-      hasCycleData: hasCycleContext,
-    );
     final series = ref.watch(weightTrendProvider(view.range)).value;
     final latest = ref.watch(latestWeightLogProvider).value;
     final logs = ref.watch(weightLogsInRangeProvider(view.range)).value;
@@ -70,14 +65,11 @@ class WeightScreen extends ConsumerWidget {
                     range: view.range,
                     unitSystem: unitSystem,
                     seriesMode: view.seriesMode,
-                    showCycleOverlay: overlayVisible,
                   ),
                   SizedBox(height: tokens.spacingMd),
                   _ChartControls(
                     seriesMode: view.seriesMode,
                     showSeriesToggle: series?.hasTrend ?? false,
-                    showOverlayToggle: hasCycleContext,
-                    overlayVisible: overlayVisible,
                   ),
                   SizedBox(height: tokens.spacingLg),
                   Text('History', style: textTheme.titleMedium),
@@ -126,14 +118,10 @@ class _ChartControls extends ConsumerWidget {
   const _ChartControls({
     required this.seriesMode,
     required this.showSeriesToggle,
-    required this.showOverlayToggle,
-    required this.overlayVisible,
   });
 
   final WeightSeriesMode seriesMode;
   final bool showSeriesToggle;
-  final bool showOverlayToggle;
-  final bool overlayVisible;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -165,14 +153,6 @@ class _ChartControls extends ConsumerWidget {
             selected: {seriesMode},
             onSelectionChanged: (selection) =>
                 controller.selectSeriesMode(selection.first),
-          ),
-        if (showOverlayToggle)
-          FilterChip(
-            key: const Key('weightCycleOverlayToggle'),
-            label: const Text('Cycle phases'),
-            selected: overlayVisible,
-            onSelected: (value) =>
-                controller.setCycleOverlayVisible(visible: value),
           ),
       ],
     );

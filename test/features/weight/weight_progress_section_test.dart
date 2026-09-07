@@ -8,14 +8,11 @@ import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/core/domain/units.dart';
 import 'package:menfit_app/core/theme/app_theme.dart';
 import 'package:menfit_app/features/activity/activity_providers.dart';
-import 'package:menfit_app/features/cycle/cycle_providers.dart';
-import 'package:menfit_app/features/cycle/data/drift_cycle_repository.dart';
 import 'package:menfit_app/features/weight/data/drift_weight_repository.dart';
 import 'package:menfit_app/features/weight/domain/weight_log.dart';
 import 'package:menfit_app/features/weight/presentation/weight_history_providers.dart';
 import 'package:menfit_app/features/weight/weight_providers.dart';
 import 'package:menfit_app/features/weight/weight_widgets.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'weight_test_vocabulary.dart';
 
@@ -24,16 +21,12 @@ import 'weight_test_vocabulary.dart';
 void main() {
   late db.AppDatabase database;
   late DriftWeightRepository weightRepository;
-  late DriftCycleRepository cycleRepository;
 
   final today = LocalDate(2026, 9, 1);
 
-  setUp(() async {
-    SharedPreferences.setMockInitialValues({});
-    final preferences = await SharedPreferences.getInstance();
+  setUp(() {
     database = db.AppDatabase.forTesting(NativeDatabase.memory());
     weightRepository = DriftWeightRepository(database);
-    cycleRepository = DriftCycleRepository(database, preferences);
   });
 
   tearDown(() async {
@@ -64,7 +57,6 @@ void main() {
       ProviderScope(
         overrides: [
           weightRepositoryProvider.overrideWithValue(weightRepository),
-          cycleRepositoryProvider.overrideWithValue(cycleRepository),
           weightTodayProvider.overrideWithValue(today),
           activityUnitSystemProvider.overrideWith(
             (ref) => Stream.value(UnitSystem.metric),

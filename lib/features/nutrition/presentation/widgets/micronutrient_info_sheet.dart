@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:menfit_app/core/theme/tokens.dart';
 import 'package:menfit_app/core/widgets/app_bottom_sheet.dart';
 
-/// Modal educational sheet explaining the evidence and rationale behind female
-/// micronutrient reference intakes, runner physiology, and partial label data.
+/// Modal educational sheet explaining the evidence and rationale behind male
+/// micronutrient reference intakes, endurance-training physiology, and
+/// partial label data.
 class MicronutrientInfoSheet extends StatelessWidget {
   const MicronutrientInfoSheet({super.key});
 
@@ -39,7 +40,7 @@ class MicronutrientInfoSheet extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'Micronutrients & Female Health',
+                    'Micronutrients & Recovery',
                     style: textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -55,15 +56,15 @@ class MicronutrientInfoSheet extends StatelessWidget {
             ),
             SizedBox(height: tokens.spacingMd),
             const _Section(
-              title: 'Iron & Athletic Demands',
+              title: 'Iron & Endurance Training',
               body:
-                  'Premenopausal adult women have an elevated baseline iron '
-                  'requirement (18 mg/day) primarily due to monthly menstrual '
-                  'blood loss. Female runners also experience increased '
-                  'red-cell turnover from repetitive foot-strike impact '
-                  '(hemolysis) and exercise-induced hepcidin surges. Pairing '
-                  'plant-based (non-heme) iron foods with Vitamin C can '
-                  'substantially improve absorption.',
+                  'Adult men need a baseline iron intake of 8 mg/day. '
+                  'Endurance training raises losses through repetitive '
+                  'foot-strike impact (hemolysis), sweat, and '
+                  'exercise-induced hepcidin surges that can blunt '
+                  'absorption for a day or two after a hard session. '
+                  'Pairing plant-based (non-heme) iron foods with Vitamin C '
+                  'can substantially improve absorption.',
             ),
             SizedBox(height: tokens.spacingMd),
             const _Section(
@@ -106,7 +107,7 @@ class MicronutrientInfoSheet extends StatelessWidget {
                     child: Text(
                       'Not medical advice. Dietary reference intakes are '
                       'general scientific benchmarks for healthy adult '
-                      'women. They do not constitute clinical diagnosis '
+                      'men. They do not constitute clinical diagnosis '
                       'or personal prescriptions. Consult a sports dietitian '
                       'or healthcare provider for individual guidance.',
                       style: textTheme.bodySmall?.copyWith(

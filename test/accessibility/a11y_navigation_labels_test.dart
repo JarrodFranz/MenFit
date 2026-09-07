@@ -163,22 +163,25 @@ void main() {
     semantics.dispose();
   });
 
-  testWidgets('411dp at 130%: labels hide, and nothing wraps mid-word', (
+  testWidgets('360dp at 130%: labels hide, and nothing wraps mid-word', (
     tester,
   ) async {
     final semantics = tester.ensureSemantics();
-    await pumpShell(tester, width: 411, textScale: 1.3);
+    await pumpShell(tester, width: 360, textScale: 1.3);
 
     expect(
       labelBehavior(tester),
       NavigationDestinationLabelBehavior.alwaysHide,
       reason:
-          '411dp / 68dp per cell is the measured first failure point: at '
-          '130% "Nutrition" no longer fits a cell, and Material would break '
-          'it mid-word rather than ellipsise it.',
+          '360dp / 72dp per cell is the measured first failure point for '
+          "MenFit's five destinations: at 130% \"Nutrition\" no longer fits "
+          'a cell, and Material would break it mid-word rather than '
+          'ellipsise it. (FemFit measured 68dp per cell across six '
+          'destinations; five destinations give each cell more room, so '
+          'the boundary sits at a narrower shell width than before.)',
     );
     expect(
-      wrapFindings(tester, '411dp/130%'),
+      wrapFindings(tester, '360dp/130%'),
       isEmpty,
       reason:
           'The whole point of the icon-only fallback is that no word is '

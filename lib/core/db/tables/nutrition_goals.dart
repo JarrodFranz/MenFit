@@ -37,7 +37,7 @@ import 'package:drift/drift.dart';
 /// Iron is the other first-class adequacy indicator, but unlike calories
 /// and macros there is **no user-set iron target here**: a personal iron
 /// number is a clinical figure this app is not qualified to ask a user to
-/// set, nor to recommend (`knowledge/domain/womens_health.md` rule 1). Iron
+/// set, nor to recommend (`knowledge/domain/mens_health.md` rule 1). Iron
 /// is surfaced as a logged total only. This paragraph marks the absence
 /// deliberately, so a later session doesn't "complete the set".
 ///

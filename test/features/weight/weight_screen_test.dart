@@ -8,31 +8,23 @@ import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/core/domain/units.dart';
 import 'package:menfit_app/core/theme/app_theme.dart';
 import 'package:menfit_app/features/activity/activity_providers.dart';
-import 'package:menfit_app/features/cycle/cycle_providers.dart';
-import 'package:menfit_app/features/cycle/data/drift_cycle_repository.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_record.dart';
 import 'package:menfit_app/features/weight/data/drift_weight_repository.dart';
 import 'package:menfit_app/features/weight/domain/weight_log.dart';
 import 'package:menfit_app/features/weight/presentation/weight_history_providers.dart';
 import 'package:menfit_app/features/weight/presentation/weight_screen.dart';
 import 'package:menfit_app/features/weight/weight_providers.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'weight_test_vocabulary.dart';
 
 void main() {
   late db.AppDatabase database;
   late DriftWeightRepository weightRepository;
-  late DriftCycleRepository cycleRepository;
 
   final today = LocalDate(2026, 9, 1);
 
-  setUp(() async {
-    SharedPreferences.setMockInitialValues({});
-    final preferences = await SharedPreferences.getInstance();
+  setUp(() {
     database = db.AppDatabase.forTesting(NativeDatabase.memory());
     weightRepository = DriftWeightRepository(database);
-    cycleRepository = DriftCycleRepository(database, preferences);
   });
 
   tearDown(() async {
@@ -56,27 +48,6 @@ void main() {
     }
   }
 
-  Future<void> seedCompletedCycle() async {
-    await cycleRepository.saveRecord(
-      CycleRecord(
-        id: 'cycle-1',
-        periodStart: today.addDays(-60),
-        periodEnd: today.addDays(-56),
-        createdAt: DateTime.utc(2026, 7),
-        updatedAt: DateTime.utc(2026, 7),
-      ),
-    );
-    await cycleRepository.saveRecord(
-      CycleRecord(
-        id: 'cycle-2',
-        periodStart: today.addDays(-32),
-        periodEnd: today.addDays(-28),
-        createdAt: DateTime.utc(2026, 8),
-        updatedAt: DateTime.utc(2026, 8),
-      ),
-    );
-  }
-
   Future<void> pumpScreen(
     WidgetTester tester, {
     UnitSystem unitSystem = UnitSystem.metric,
@@ -90,7 +61,6 @@ void main() {
       ProviderScope(
         overrides: [
           weightRepositoryProvider.overrideWithValue(weightRepository),
-          cycleRepositoryProvider.overrideWithValue(cycleRepository),
           weightTodayProvider.overrideWithValue(today),
           activityUnitSystemProvider.overrideWith(
             (ref) => Stream.value(unitSystem),
@@ -270,94 +240,6 @@ void main() {
     });
   });
 
-  group('cycle overlay', () {
-    testWidgets('is absent entirely for a user with no cycle data', (
-      tester,
-    ) async {
-      await seedReadings(20);
-      await pumpScreen(tester);
-
-      expect(find.text('Cycle phases'), findsNothing);
-      expect(find.text('Menstrual'), findsNothing);
-      expect(
-        chartData(tester).rangeAnnotations.verticalRangeAnnotations,
-        isEmpty,
-      );
-      await flushDriftTimers(tester);
-    });
-
-    testWidgets('defaults on for a user who tracks her cycle', (tester) async {
-      await seedReadings(60);
-      await seedCompletedCycle();
-      await pumpScreen(tester);
-
-      expect(find.text('Cycle phases'), findsOneWidget);
-      expect(find.text('Menstrual'), findsOneWidget);
-      expect(find.text('Luteal'), findsOneWidget);
-      expect(
-        chartData(tester).rangeAnnotations.verticalRangeAnnotations,
-        isNotEmpty,
-      );
-      expect(find.textContaining('not medical advice'), findsOneWidget);
-      await flushDriftTimers(tester);
-    });
-
-    testWidgets('says nothing about bands when none are drawn', (tester) async {
-      // 5–12 August 2026 sits wholly inside the follicular stretch of the
-      // cycle seeded below, and only the menstrual and luteal phases are
-      // banded — so the chart paints no band at all. The legend and the
-      // "shaded bands" explainer describe bands, so both must stay away:
-      // gating them on "the phase map is non-empty" put a legend for two
-      // colours under a chart showing neither.
-      for (
-        var day = LocalDate(2026, 8, 5);
-        !day.isAfter(LocalDate(2026, 8, 12));
-        day = day.addDays(1)
-      ) {
-        await weightRepository.saveLog(
-          WeightLog(
-            id: day.toIso(),
-            day: day,
-            weightKg: 62,
-            createdAt: DateTime.utc(2026, 8, 5, 7),
-            updatedAt: DateTime.utc(2026, 8, 5, 7),
-          ),
-        );
-      }
-      await seedCompletedCycle();
-      await pumpScreen(tester);
-
-      // The overlay is on — she tracks her cycle and hasn't turned it off.
-      expect(find.text('Cycle phases'), findsOneWidget);
-      expect(
-        chartData(tester).rangeAnnotations.verticalRangeAnnotations,
-        isEmpty,
-        reason: 'this span carries no banded phase',
-      );
-      expect(find.text('Menstrual'), findsNothing);
-      expect(find.text('Luteal'), findsNothing);
-      expect(find.textContaining('shaded bands'), findsNothing);
-      expect(find.textContaining('not medical advice'), findsNothing);
-      await flushDriftTimers(tester);
-    });
-
-    testWidgets('can be switched off', (tester) async {
-      await seedReadings(60);
-      await seedCompletedCycle();
-      await pumpScreen(tester);
-
-      await tapVisible(tester, find.text('Cycle phases'));
-
-      expect(find.text('Menstrual'), findsNothing);
-      expect(
-        chartData(tester).rangeAnnotations.verticalRangeAnnotations,
-        isEmpty,
-      );
-      expect(find.textContaining('not medical advice'), findsNothing);
-      await flushDriftTimers(tester);
-    });
-  });
-
   group('history', () {
     testWidgets('lists the readings newest first', (tester) async {
       await weightRepository.saveLog(
@@ -509,7 +391,6 @@ void main() {
 
     testWidgets('across the screen itself', (tester) async {
       await seedReadings(20);
-      await seedCompletedCycle();
       await pumpScreen(tester);
 
       expectClean(tester, where: 'the weight screen');

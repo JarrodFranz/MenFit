@@ -124,7 +124,7 @@ class _WeightHistoryTile extends ConsumerWidget {
         title: const Text('Delete this reading?'),
         // No number in the body: the confirmation should not make her read
         // the value back one more time on the way out (S2, and
-        // `knowledge/domain/womens_health.md`).
+        // `knowledge/domain/mens_health.md`).
         // "permanently", not "for good": the feature's copy gate forbids
         // the word "good" outright (`weight_test_vocabulary.dart`) because
         // "looking good" next to a body weight is exactly what it exists

@@ -20,7 +20,6 @@ void main() {
     'emptyState': weightEmptyStateMessage,
     'rangeEmpty': weightRangeEmptyMessage,
     'minimumData': weightMinimumDataNote,
-    'cycleContext': weightCycleContextNote,
     'fluidNote.metric': weightFluidNote(UnitSystem.metric),
     'fluidNote.imperial': weightFluidNote(UnitSystem.imperial),
     for (final direction in WeightTrendDirection.values)
@@ -156,32 +155,6 @@ void main() {
         weightFluidNote(UnitSystem.imperial),
         isNot(contains('kilogram')),
       );
-    });
-  });
-
-  group('the cycle explainer', () {
-    test('names both banded phases', () {
-      final note = weightCycleContextNote.toLowerCase();
-
-      expect(note, contains('menstrual'));
-      expect(note, contains('luteal'));
-    });
-
-    test('labels the phasing as an estimate', () {
-      expect(weightCycleContextNote.toLowerCase(), contains('estimated'));
-    });
-
-    test('carries the not-medical-advice line', () {
-      // `knowledge/domain/womens_health.md` rule 3: every cycle-adjacent
-      // surface says so, and the overlay makes this one.
-      expect(
-        weightCycleContextNote.toLowerCase(),
-        contains('not medical advice'),
-      );
-    });
-
-    test('calls the retention expected rather than a problem', () {
-      expect(weightCycleContextNote.toLowerCase(), contains('expected'));
     });
   });
 

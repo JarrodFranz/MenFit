@@ -115,7 +115,7 @@ final class FlooredCalorieTarget extends CalorieTargetOutcome {
 
   /// The user-facing explanation. Warm, specific, and framed as something
   /// the app won't do — never as something the user did wrong, and never
-  /// as clinical advice (`knowledge/domain/womens_health.md` rule 1).
+  /// as clinical advice (`knowledge/domain/mens_health.md` rule 1).
   String get explanation => floorExplanation;
 }
 

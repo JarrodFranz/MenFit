@@ -6,8 +6,6 @@ import 'package:menfit_app/core/db/app_database_provider.dart';
 import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/core/platform/device_locale.dart';
 import 'package:menfit_app/core/utils/combine_latest.dart';
-import 'package:menfit_app/features/cycle/cycle_providers.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
 import 'package:menfit_app/features/nutrition/data/drift_nutrition_goals_repository.dart';
 import 'package:menfit_app/features/nutrition/data/drift_nutrition_repository.dart';
 import 'package:menfit_app/features/nutrition/data/drift_water_repository.dart';
@@ -432,19 +430,6 @@ Stream<FuelingConsistencyResult> fuelingConsistency(Ref ref) {
   );
 }
 
-/// Cycle status for [day] when the user tracks cycles, or null when
-/// untracked.
-@riverpod
-Future<DayCycleStatus?> dayCycleStatus(Ref ref, LocalDate day) async {
-  final records = await ref.watch(cycleRepositoryProvider).getRecords();
-  if (records.isEmpty) return null;
-  return CyclePredictionEngine().getDayStatus(
-    date: day,
-    records: records,
-    today: LocalDate.today(),
-  );
-}
-
 /// Evaluates micronutrient adequacy items for [day].
 @riverpod
 Future<List<MicronutrientAdequacyItem>> dayMicronutrientAdequacy(
@@ -452,9 +437,5 @@ Future<List<MicronutrientAdequacyItem>> dayMicronutrientAdequacy(
   LocalDate day,
 ) async {
   final totals = await ref.watch(dayNutritionTotalsProvider(day).future);
-  final cycleStatus = await ref.watch(dayCycleStatusProvider(day).future);
-  return evaluateMicronutrientAdequacy(
-    totals: totals.total,
-    cyclePhase: cycleStatus?.phase,
-  );
+  return evaluateMicronutrientAdequacy(totals: totals.total);
 }

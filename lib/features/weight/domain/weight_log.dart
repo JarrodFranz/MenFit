@@ -67,7 +67,7 @@ enum WeightLogSource {
 /// S2-tier data (`knowledge/engineering/security_and_privacy.md`):
 /// [weightKg] and [notes] never enter logs, analytics, or exception
 /// messages. Anything built on top of this entity is also ED-sensitive
-/// territory — `knowledge/domain/womens_health.md` gates the copy: report
+/// territory — `knowledge/domain/mens_health.md` gates the copy: report
 /// what was measured, never judge it, and never imply a target.
 @freezed
 abstract class WeightLog with _$WeightLog {

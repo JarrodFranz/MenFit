@@ -48,7 +48,7 @@ enum MacroTargetMode {
 /// makes "30% of my energy from protein" and "135 g of protein" two ways of
 /// writing the same target. Nothing in this file says any split is better
 /// than any other, and nothing here may grow into saying so
-/// (`knowledge/domain/womens_health.md` rule 1 — the app makes no nutrition
+/// (`knowledge/domain/mens_health.md` rule 1 — the app makes no nutrition
 /// recommendation).
 const double proteinKcalPerGram = 4;
 
@@ -320,7 +320,7 @@ final class MacroTargetsOverBudget extends MacroLockSolution {
 /// Carries what is still unaccounted for so the UI can be useful without
 /// inventing the rest. It must not: distributing the remainder across the
 /// free macros would be the app recommending a split
-/// (`knowledge/domain/womens_health.md` rule 1), which is precisely the
+/// (`knowledge/domain/mens_health.md` rule 1), which is precisely the
 /// thing it does not do.
 final class UnderdeterminedMacroTargets extends MacroLockSolution {
   const UnderdeterminedMacroTargets({

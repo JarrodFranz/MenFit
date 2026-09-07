@@ -22,10 +22,8 @@ mixin _$MicronutrientAdequacyItem {
 /// [loggedAmount] a minimum floor rather than a complete figure.
  bool get isPartial;/// Progress ratio towards daily reference intake clamped between 0.0
 /// and 1.0.
- double get progress;/// Contextual message explaining status, menstrual demands, or partial
-/// data.
- String get statusMessage;/// Active menstrual cycle phase on the evaluated day, if known.
- CyclePhase? get cyclePhase;
+ double get progress;/// Contextual message explaining status or partial data.
+ String get statusMessage;
 /// Create a copy of MicronutrientAdequacyItem
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -36,16 +34,16 @@ $MicronutrientAdequacyItemCopyWith<MicronutrientAdequacyItem> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MicronutrientAdequacyItem&&(identical(other.type, type) || other.type == type)&&(identical(other.loggedAmount, loggedAmount) || other.loggedAmount == loggedAmount)&&(identical(other.dailyReference, dailyReference) || other.dailyReference == dailyReference)&&(identical(other.isPartial, isPartial) || other.isPartial == isPartial)&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.statusMessage, statusMessage) || other.statusMessage == statusMessage)&&const DeepCollectionEquality().equals(other.cyclePhase, cyclePhase));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MicronutrientAdequacyItem&&(identical(other.type, type) || other.type == type)&&(identical(other.loggedAmount, loggedAmount) || other.loggedAmount == loggedAmount)&&(identical(other.dailyReference, dailyReference) || other.dailyReference == dailyReference)&&(identical(other.isPartial, isPartial) || other.isPartial == isPartial)&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.statusMessage, statusMessage) || other.statusMessage == statusMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,type,loggedAmount,dailyReference,isPartial,progress,statusMessage,const DeepCollectionEquality().hash(cyclePhase));
+int get hashCode => Object.hash(runtimeType,type,loggedAmount,dailyReference,isPartial,progress,statusMessage);
 
 @override
 String toString() {
-  return 'MicronutrientAdequacyItem(type: $type, loggedAmount: $loggedAmount, dailyReference: $dailyReference, isPartial: $isPartial, progress: $progress, statusMessage: $statusMessage, cyclePhase: $cyclePhase)';
+  return 'MicronutrientAdequacyItem(type: $type, loggedAmount: $loggedAmount, dailyReference: $dailyReference, isPartial: $isPartial, progress: $progress, statusMessage: $statusMessage)';
 }
 
 
@@ -56,7 +54,7 @@ abstract mixin class $MicronutrientAdequacyItemCopyWith<$Res>  {
   factory $MicronutrientAdequacyItemCopyWith(MicronutrientAdequacyItem value, $Res Function(MicronutrientAdequacyItem) _then) = _$MicronutrientAdequacyItemCopyWithImpl;
 @useResult
 $Res call({
- MicronutrientType type, double? loggedAmount, double dailyReference, bool isPartial, double progress, String statusMessage, CyclePhase? cyclePhase
+ MicronutrientType type, double? loggedAmount, double dailyReference, bool isPartial, double progress, String statusMessage
 });
 
 
@@ -73,7 +71,7 @@ class _$MicronutrientAdequacyItemCopyWithImpl<$Res>
 
 /// Create a copy of MicronutrientAdequacyItem
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? type = null,Object? loggedAmount = freezed,Object? dailyReference = null,Object? isPartial = null,Object? progress = null,Object? statusMessage = null,Object? cyclePhase = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? type = null,Object? loggedAmount = freezed,Object? dailyReference = null,Object? isPartial = null,Object? progress = null,Object? statusMessage = null,}) {
   return _then(MicronutrientAdequacyItem(
 type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as MicronutrientType,loggedAmount: freezed == loggedAmount ? _self.loggedAmount : loggedAmount // ignore: cast_nullable_to_non_nullable
@@ -81,8 +79,7 @@ as double?,dailyReference: null == dailyReference ? _self.dailyReference : daily
 as double,isPartial: null == isPartial ? _self.isPartial : isPartial // ignore: cast_nullable_to_non_nullable
 as bool,progress: null == progress ? _self.progress : progress // ignore: cast_nullable_to_non_nullable
 as double,statusMessage: null == statusMessage ? _self.statusMessage : statusMessage // ignore: cast_nullable_to_non_nullable
-as String,cyclePhase: freezed == cyclePhase ? _self.cyclePhase : cyclePhase // ignore: cast_nullable_to_non_nullable
-as CyclePhase?,
+as String,
   ));
 }
 
@@ -167,10 +164,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( MicronutrientType type,  double? loggedAmount,  double dailyReference,  bool isPartial,  double progress,  String statusMessage,  CyclePhase? cyclePhase)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( MicronutrientType type,  double? loggedAmount,  double dailyReference,  bool isPartial,  double progress,  String statusMessage)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MicronutrientAdequacyItem() when $default != null:
-return $default(_that.type,_that.loggedAmount,_that.dailyReference,_that.isPartial,_that.progress,_that.statusMessage,_that.cyclePhase);case _:
+return $default(_that.type,_that.loggedAmount,_that.dailyReference,_that.isPartial,_that.progress,_that.statusMessage);case _:
   return orElse();
 
 }
@@ -188,10 +185,10 @@ return $default(_that.type,_that.loggedAmount,_that.dailyReference,_that.isParti
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( MicronutrientType type,  double? loggedAmount,  double dailyReference,  bool isPartial,  double progress,  String statusMessage,  CyclePhase? cyclePhase)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( MicronutrientType type,  double? loggedAmount,  double dailyReference,  bool isPartial,  double progress,  String statusMessage)  $default,) {final _that = this;
 switch (_that) {
 case _MicronutrientAdequacyItem():
-return $default(_that.type,_that.loggedAmount,_that.dailyReference,_that.isPartial,_that.progress,_that.statusMessage,_that.cyclePhase);case _:
+return $default(_that.type,_that.loggedAmount,_that.dailyReference,_that.isPartial,_that.progress,_that.statusMessage);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -208,10 +205,10 @@ return $default(_that.type,_that.loggedAmount,_that.dailyReference,_that.isParti
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( MicronutrientType type,  double? loggedAmount,  double dailyReference,  bool isPartial,  double progress,  String statusMessage,  CyclePhase? cyclePhase)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( MicronutrientType type,  double? loggedAmount,  double dailyReference,  bool isPartial,  double progress,  String statusMessage)?  $default,) {final _that = this;
 switch (_that) {
 case _MicronutrientAdequacyItem() when $default != null:
-return $default(_that.type,_that.loggedAmount,_that.dailyReference,_that.isPartial,_that.progress,_that.statusMessage,_that.cyclePhase);case _:
+return $default(_that.type,_that.loggedAmount,_that.dailyReference,_that.isPartial,_that.progress,_that.statusMessage);case _:
   return null;
 
 }
@@ -223,7 +220,7 @@ return $default(_that.type,_that.loggedAmount,_that.dailyReference,_that.isParti
 
 
 class _MicronutrientAdequacyItem extends MicronutrientAdequacyItem {
-  const _MicronutrientAdequacyItem({required this.type, required this.loggedAmount, required this.dailyReference, required this.isPartial, required this.progress, required this.statusMessage, this.cyclePhase}): super._();
+  const _MicronutrientAdequacyItem({required this.type, required this.loggedAmount, required this.dailyReference, required this.isPartial, required this.progress, required this.statusMessage}): super._();
   
 
 @override final  MicronutrientType type;
@@ -238,11 +235,8 @@ class _MicronutrientAdequacyItem extends MicronutrientAdequacyItem {
 /// Progress ratio towards daily reference intake clamped between 0.0
 /// and 1.0.
 @override final  double progress;
-/// Contextual message explaining status, menstrual demands, or partial
-/// data.
+/// Contextual message explaining status or partial data.
 @override final  String statusMessage;
-/// Active menstrual cycle phase on the evaluated day, if known.
-@override final  CyclePhase? cyclePhase;
 
 /// Create a copy of MicronutrientAdequacyItem
 /// with the given fields replaced by the non-null parameter values.
@@ -254,16 +248,16 @@ _$MicronutrientAdequacyItemCopyWith<_MicronutrientAdequacyItem> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MicronutrientAdequacyItem&&(identical(other.type, type) || other.type == type)&&(identical(other.loggedAmount, loggedAmount) || other.loggedAmount == loggedAmount)&&(identical(other.dailyReference, dailyReference) || other.dailyReference == dailyReference)&&(identical(other.isPartial, isPartial) || other.isPartial == isPartial)&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.statusMessage, statusMessage) || other.statusMessage == statusMessage)&&const DeepCollectionEquality().equals(other.cyclePhase, cyclePhase));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MicronutrientAdequacyItem&&(identical(other.type, type) || other.type == type)&&(identical(other.loggedAmount, loggedAmount) || other.loggedAmount == loggedAmount)&&(identical(other.dailyReference, dailyReference) || other.dailyReference == dailyReference)&&(identical(other.isPartial, isPartial) || other.isPartial == isPartial)&&(identical(other.progress, progress) || other.progress == progress)&&(identical(other.statusMessage, statusMessage) || other.statusMessage == statusMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,type,loggedAmount,dailyReference,isPartial,progress,statusMessage,const DeepCollectionEquality().hash(cyclePhase));
+int get hashCode => Object.hash(runtimeType,type,loggedAmount,dailyReference,isPartial,progress,statusMessage);
 
 @override
 String toString() {
-  return 'MicronutrientAdequacyItem(type: $type, loggedAmount: $loggedAmount, dailyReference: $dailyReference, isPartial: $isPartial, progress: $progress, statusMessage: $statusMessage, cyclePhase: $cyclePhase)';
+  return 'MicronutrientAdequacyItem(type: $type, loggedAmount: $loggedAmount, dailyReference: $dailyReference, isPartial: $isPartial, progress: $progress, statusMessage: $statusMessage)';
 }
 
 
@@ -274,7 +268,7 @@ abstract mixin class _$MicronutrientAdequacyItemCopyWith<$Res> implements $Micro
   factory _$MicronutrientAdequacyItemCopyWith(_MicronutrientAdequacyItem value, $Res Function(_MicronutrientAdequacyItem) _then) = __$MicronutrientAdequacyItemCopyWithImpl;
 @override @useResult
 $Res call({
- MicronutrientType type, double? loggedAmount, double dailyReference, bool isPartial, double progress, String statusMessage, CyclePhase? cyclePhase
+ MicronutrientType type, double? loggedAmount, double dailyReference, bool isPartial, double progress, String statusMessage
 });
 
 
@@ -291,7 +285,7 @@ class __$MicronutrientAdequacyItemCopyWithImpl<$Res>
 
 /// Create a copy of MicronutrientAdequacyItem
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? type = null,Object? loggedAmount = freezed,Object? dailyReference = null,Object? isPartial = null,Object? progress = null,Object? statusMessage = null,Object? cyclePhase = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? type = null,Object? loggedAmount = freezed,Object? dailyReference = null,Object? isPartial = null,Object? progress = null,Object? statusMessage = null,}) {
   return _then(_MicronutrientAdequacyItem(
 type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as MicronutrientType,loggedAmount: freezed == loggedAmount ? _self.loggedAmount : loggedAmount // ignore: cast_nullable_to_non_nullable
@@ -299,8 +293,7 @@ as double?,dailyReference: null == dailyReference ? _self.dailyReference : daily
 as double,isPartial: null == isPartial ? _self.isPartial : isPartial // ignore: cast_nullable_to_non_nullable
 as bool,progress: null == progress ? _self.progress : progress // ignore: cast_nullable_to_non_nullable
 as double,statusMessage: null == statusMessage ? _self.statusMessage : statusMessage // ignore: cast_nullable_to_non_nullable
-as String,cyclePhase: freezed == cyclePhase ? _self.cyclePhase : cyclePhase // ignore: cast_nullable_to_non_nullable
-as CyclePhase?,
+as String,
   ));
 }
 

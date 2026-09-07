@@ -58,6 +58,38 @@ Future<void> scrollTo(WidgetTester tester, Finder finder) async {
   await search(const Offset(0, -300), 15);
   await search(const Offset(0, 300), 30);
   await tester.ensureVisible(finder);
+
+  // `ensureVisible` computes its jump from the enclosing sliver's current
+  // scroll metrics, and a plain `ListView(children: …)` can under-report
+  // those before every child has actually been realized once: the jump
+  // lands on what looks like the right offset, but the target ends up
+  // only partially inside the viewport with nothing after it ever built
+  // (a day with a real entry logged plus every meal section is tall
+  // enough to hit this). A few more small drags force the sliver to keep
+  // realizing children and settle on the true extent, then `ensureVisible`
+  // finishes the job for real. Best-effort: a target with no scrollable
+  // ancestor, or one dragged out of the built range along the way, just
+  // falls back to whatever `ensureVisible` already did above.
+  final ancestorScrollables = find.ancestor(
+    of: finder,
+    matching: find.byType(Scrollable),
+  );
+  if (ancestorScrollables.evaluate().isNotEmpty) {
+    final scrollableFinder = ancestorScrollables.first;
+    for (var i = 0; i < 10 && finder.evaluate().isNotEmpty; i++) {
+      final target = tester.getRect(finder);
+      final viewport = tester.getRect(scrollableFinder);
+      if (viewport.top <= target.top && target.bottom <= viewport.bottom) {
+        break;
+      }
+      final direction = target.top < viewport.top ? 200.0 : -200.0;
+      await tester.drag(scrollableFinder, Offset(0, direction));
+      await tester.pump();
+    }
+    if (finder.evaluate().isNotEmpty) {
+      await tester.ensureVisible(finder);
+    }
+  }
 }
 
 Finder mealSection(MealType meal) => find.byWidgetPredicate(

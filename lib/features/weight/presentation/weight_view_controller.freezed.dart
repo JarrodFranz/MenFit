@@ -15,17 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$WeightViewState {
 
- WeightRange get range; WeightSeriesMode get seriesMode;/// The user's explicit choice about the cycle overlay, or `null` while
-/// she hasn't made one.
-///
-/// Tri-state on purpose: the overlay's default is "on, but only for a
-/// user who tracks her cycle"
-/// (`presentation/weight_history_providers.dart#weightHasCycleContext`),
-/// which the controller cannot evaluate without reading cycle data it
-/// has no business reading. Storing `null` lets the widget resolve the
-/// default against that provider while an explicit `false` still wins
-/// over it.
- bool? get cycleOverlayVisible;
+ WeightRange get range; WeightSeriesMode get seriesMode;
 /// Create a copy of WeightViewState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -36,16 +26,16 @@ $WeightViewStateCopyWith<WeightViewState> get copyWith => _$WeightViewStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WeightViewState&&(identical(other.range, range) || other.range == range)&&(identical(other.seriesMode, seriesMode) || other.seriesMode == seriesMode)&&(identical(other.cycleOverlayVisible, cycleOverlayVisible) || other.cycleOverlayVisible == cycleOverlayVisible));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WeightViewState&&(identical(other.range, range) || other.range == range)&&(identical(other.seriesMode, seriesMode) || other.seriesMode == seriesMode));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,range,seriesMode,cycleOverlayVisible);
+int get hashCode => Object.hash(runtimeType,range,seriesMode);
 
 @override
 String toString() {
-  return 'WeightViewState(range: $range, seriesMode: $seriesMode, cycleOverlayVisible: $cycleOverlayVisible)';
+  return 'WeightViewState(range: $range, seriesMode: $seriesMode)';
 }
 
 
@@ -56,7 +46,7 @@ abstract mixin class $WeightViewStateCopyWith<$Res>  {
   factory $WeightViewStateCopyWith(WeightViewState value, $Res Function(WeightViewState) _then) = _$WeightViewStateCopyWithImpl;
 @useResult
 $Res call({
- WeightRange range, WeightSeriesMode seriesMode, bool? cycleOverlayVisible
+ WeightRange range, WeightSeriesMode seriesMode
 });
 
 
@@ -73,12 +63,11 @@ class _$WeightViewStateCopyWithImpl<$Res>
 
 /// Create a copy of WeightViewState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? range = null,Object? seriesMode = null,Object? cycleOverlayVisible = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? range = null,Object? seriesMode = null,}) {
   return _then(WeightViewState(
 range: null == range ? _self.range : range // ignore: cast_nullable_to_non_nullable
 as WeightRange,seriesMode: null == seriesMode ? _self.seriesMode : seriesMode // ignore: cast_nullable_to_non_nullable
-as WeightSeriesMode,cycleOverlayVisible: freezed == cycleOverlayVisible ? _self.cycleOverlayVisible : cycleOverlayVisible // ignore: cast_nullable_to_non_nullable
-as bool?,
+as WeightSeriesMode,
   ));
 }
 
@@ -163,10 +152,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( WeightRange range,  WeightSeriesMode seriesMode,  bool? cycleOverlayVisible)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( WeightRange range,  WeightSeriesMode seriesMode)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _WeightViewState() when $default != null:
-return $default(_that.range,_that.seriesMode,_that.cycleOverlayVisible);case _:
+return $default(_that.range,_that.seriesMode);case _:
   return orElse();
 
 }
@@ -184,10 +173,10 @@ return $default(_that.range,_that.seriesMode,_that.cycleOverlayVisible);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( WeightRange range,  WeightSeriesMode seriesMode,  bool? cycleOverlayVisible)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( WeightRange range,  WeightSeriesMode seriesMode)  $default,) {final _that = this;
 switch (_that) {
 case _WeightViewState():
-return $default(_that.range,_that.seriesMode,_that.cycleOverlayVisible);case _:
+return $default(_that.range,_that.seriesMode);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -204,10 +193,10 @@ return $default(_that.range,_that.seriesMode,_that.cycleOverlayVisible);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( WeightRange range,  WeightSeriesMode seriesMode,  bool? cycleOverlayVisible)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( WeightRange range,  WeightSeriesMode seriesMode)?  $default,) {final _that = this;
 switch (_that) {
 case _WeightViewState() when $default != null:
-return $default(_that.range,_that.seriesMode,_that.cycleOverlayVisible);case _:
+return $default(_that.range,_that.seriesMode);case _:
   return null;
 
 }
@@ -219,22 +208,11 @@ return $default(_that.range,_that.seriesMode,_that.cycleOverlayVisible);case _:
 
 
 class _WeightViewState extends WeightViewState {
-  const _WeightViewState({this.range = WeightRange.threeMonths, this.seriesMode = WeightSeriesMode.readingsAndTrend, this.cycleOverlayVisible}): super._();
+  const _WeightViewState({this.range = WeightRange.threeMonths, this.seriesMode = WeightSeriesMode.readingsAndTrend}): super._();
   
 
 @override@JsonKey() final  WeightRange range;
 @override@JsonKey() final  WeightSeriesMode seriesMode;
-/// The user's explicit choice about the cycle overlay, or `null` while
-/// she hasn't made one.
-///
-/// Tri-state on purpose: the overlay's default is "on, but only for a
-/// user who tracks her cycle"
-/// (`presentation/weight_history_providers.dart#weightHasCycleContext`),
-/// which the controller cannot evaluate without reading cycle data it
-/// has no business reading. Storing `null` lets the widget resolve the
-/// default against that provider while an explicit `false` still wins
-/// over it.
-@override final  bool? cycleOverlayVisible;
 
 /// Create a copy of WeightViewState
 /// with the given fields replaced by the non-null parameter values.
@@ -246,16 +224,16 @@ _$WeightViewStateCopyWith<_WeightViewState> get copyWith => __$WeightViewStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WeightViewState&&(identical(other.range, range) || other.range == range)&&(identical(other.seriesMode, seriesMode) || other.seriesMode == seriesMode)&&(identical(other.cycleOverlayVisible, cycleOverlayVisible) || other.cycleOverlayVisible == cycleOverlayVisible));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WeightViewState&&(identical(other.range, range) || other.range == range)&&(identical(other.seriesMode, seriesMode) || other.seriesMode == seriesMode));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,range,seriesMode,cycleOverlayVisible);
+int get hashCode => Object.hash(runtimeType,range,seriesMode);
 
 @override
 String toString() {
-  return 'WeightViewState(range: $range, seriesMode: $seriesMode, cycleOverlayVisible: $cycleOverlayVisible)';
+  return 'WeightViewState(range: $range, seriesMode: $seriesMode)';
 }
 
 
@@ -266,7 +244,7 @@ abstract mixin class _$WeightViewStateCopyWith<$Res> implements $WeightViewState
   factory _$WeightViewStateCopyWith(_WeightViewState value, $Res Function(_WeightViewState) _then) = __$WeightViewStateCopyWithImpl;
 @override @useResult
 $Res call({
- WeightRange range, WeightSeriesMode seriesMode, bool? cycleOverlayVisible
+ WeightRange range, WeightSeriesMode seriesMode
 });
 
 
@@ -283,12 +261,11 @@ class __$WeightViewStateCopyWithImpl<$Res>
 
 /// Create a copy of WeightViewState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? range = null,Object? seriesMode = null,Object? cycleOverlayVisible = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? range = null,Object? seriesMode = null,}) {
   return _then(_WeightViewState(
 range: null == range ? _self.range : range // ignore: cast_nullable_to_non_nullable
 as WeightRange,seriesMode: null == seriesMode ? _self.seriesMode : seriesMode // ignore: cast_nullable_to_non_nullable
-as WeightSeriesMode,cycleOverlayVisible: freezed == cycleOverlayVisible ? _self.cycleOverlayVisible : cycleOverlayVisible // ignore: cast_nullable_to_non_nullable
-as bool?,
+as WeightSeriesMode,
   ));
 }
 

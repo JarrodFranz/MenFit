@@ -76,7 +76,7 @@ class InsightDiscoverySection extends ConsumerWidget {
                   insight: insight,
                 ),
               // Says what these are and, just as importantly, what they
-              // are not (`knowledge/domain/womens_health.md` rules 1 and
+              // are not (`knowledge/domain/mens_health.md` rules 1 and
               // 3) - cycle-phase findings can surface here.
               Text(
                 'Patterns in your own logs. Descriptive only — '

@@ -8,7 +8,7 @@
 /// summary cannot disagree about what "on target" means.
 ///
 /// 7 500 is a **display default, not health advice**
-/// (`knowledge/domain/womens_health.md`: this app does not set clinical
+/// (`knowledge/domain/mens_health.md`: this app does not set clinical
 /// targets). It is a round number the user is expected to be able to change
 /// once a per-user target exists; nothing in the app tells her it is a
 /// figure she ought to hit.

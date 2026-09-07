@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:menfit_app/core/theme/app_theme.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
 import 'package:menfit_app/features/nutrition/domain/micronutrient_adequacy.dart';
 import 'package:menfit_app/features/nutrition/domain/nutrition_facts.dart';
 import 'package:menfit_app/features/nutrition/domain/nutrition_totals.dart';
@@ -15,7 +14,7 @@ void main() {
     const totals = NutritionTotals(
       entryCount: 2,
       facts: NutritionFacts(
-        ironMg: 12,
+        ironMg: 4,
         calciumMg: 800,
         vitaminDMcg: 10,
         fiberGrams: 18,
@@ -24,20 +23,14 @@ void main() {
       ironIsPartial: true,
     );
 
-    final items = evaluateMicronutrientAdequacy(
-      totals: totals,
-      cyclePhase: CyclePhase.menstrual,
-    );
+    final items = evaluateMicronutrientAdequacy(totals: totals);
 
     await tester.pumpWidget(
       MaterialApp(
         theme: AppTheme.light(),
         home: Scaffold(
           body: SingleChildScrollView(
-            child: MicronutrientAdequacyCard(
-              items: items,
-              cyclePhase: CyclePhase.menstrual,
-            ),
+            child: MicronutrientAdequacyCard(items: items),
           ),
         ),
       ),
@@ -46,12 +39,6 @@ void main() {
 
     expect(find.byKey(const Key('micronutrientAdequacyCard')), findsOneWidget);
     expect(find.text('Micronutrient Adequacy'), findsOneWidget);
-
-    // Menstrual banner
-    expect(
-      find.byKey(const Key('menstrualPhaseNutrientBanner')),
-      findsOneWidget,
-    );
 
     // Primary nutrients
     expect(find.text('Iron'), findsOneWidget);
@@ -76,7 +63,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(MicronutrientInfoSheet), findsOneWidget);
-    expect(find.text('Micronutrients & Female Health'), findsOneWidget);
+    expect(find.text('Micronutrients & Recovery'), findsOneWidget);
     expect(find.textContaining('Not medical advice'), findsOneWidget);
 
     // Close info sheet

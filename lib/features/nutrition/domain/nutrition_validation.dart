@@ -341,7 +341,7 @@ const String macroPercentTooLargeMessage =
 ///
 /// The message states arithmetic and nothing else. It does not call a split
 /// balanced, sensible, high, low, or anything else — this app makes no
-/// nutrition recommendation (`knowledge/domain/womens_health.md` rule 1),
+/// nutrition recommendation (`knowledge/domain/mens_health.md` rule 1),
 /// and a validator is the last place one should sneak in.
 MacroPercentValidation validateMacroTargetPercentages({
   double? proteinPercent,
@@ -408,7 +408,7 @@ String? _percentError(double? value) {
 /// to, and how that sits against the day's energy figure. None of them
 /// describes a split as balanced, sensible, high or low, and none implies
 /// the user has done something wrong — the app is doing her sums, not
-/// recommending a diet (`knowledge/domain/womens_health.md` rule 1).
+/// recommending a diet (`knowledge/domain/mens_health.md` rule 1).
 ///
 /// **`null` when nothing is locked.** A user who hasn't asked for this
 /// doesn't need a paragraph about it; the lock buttons are the affordance.

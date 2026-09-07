@@ -20,7 +20,7 @@ import 'package:menfit_app/features/insights/domain/personal_insight.dart';
 /// 2. **It never advises.** No "try", no "aim for", no "should". A
 ///    training or nutrition recommendation tied to any of these signals —
 ///    cycle phase above all — needs a documented evidence review first
-///    (`knowledge/domain/womens_health.md` rule 2).
+///    (`knowledge/domain/mens_health.md` rule 2).
 /// 3. **It never generalises past her.** Every phrase is second-person and
 ///    about her own logs. Nothing here may say what women, or athletes, or
 ///    anyone else does.

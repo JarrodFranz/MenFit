@@ -23,7 +23,7 @@ enum WeightTrendMethod {
 /// `improving`/`gaining` would smuggle a judgement back in through the
 /// type system — presentation would then have somewhere to hang a green
 /// arrow. Callers get a direction and nothing else; see
-/// `knowledge/domain/womens_health.md`.
+/// `knowledge/domain/mens_health.md`.
 enum WeightTrendDirection {
   rising,
   falling,
@@ -117,8 +117,8 @@ class WeightTrendSeries {
 ///
 /// **A 7-day rolling median, not an EMA**, despite task 2.2's title naming
 /// the EMA. The two behave differently in exactly the situation this
-/// feature exists for — a luteal-phase fluid swing of a kilogram or more
-/// sitting on top of an otherwise ordinary week:
+/// feature exists for — a sodium- or hydration-driven fluid swing of a
+/// kilogram or more sitting on top of an otherwise ordinary week:
 ///
 /// - An EMA *absorbs* the swing. With `alpha = 0.25` a single +1.5 kg
 ///   reading lifts the line by ~0.4 kg immediately and is still visible

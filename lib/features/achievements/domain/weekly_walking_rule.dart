@@ -22,7 +22,7 @@ const Set<ActivityType> walkingActivityTypes = {
 /// The plain reading of a weekly badge — "walk 15 km every week" — quietly
 /// punishes a period week, a flare week, or any week she marked as
 /// recovery. The app's protected-recovery design says a rest is never a
-/// lapse (`knowledge/product/terminology.md`, `knowledge/domain/womens_health.md`),
+/// lapse (`knowledge/product/terminology.md`, `knowledge/domain/mens_health.md`),
 /// so the week's ask is **pro-rated to the days that were actually hers to
 /// use**:
 ///

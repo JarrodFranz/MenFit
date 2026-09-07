@@ -75,7 +75,7 @@ class YogaPose {
   final YogaPoseSide side;
 
   /// Free-text reminder shown while the pose is held. Never medical
-  /// guidance — see `knowledge/domain/womens_health.md`.
+  /// guidance — see `knowledge/domain/mens_health.md`.
   final String cue;
 
   /// The name as it should be spoken/shown, with the side appended when the
@@ -320,7 +320,7 @@ List<String> validateYogaSequence(YogaSequence sequence) {
 ///
 /// Names only. No benefit claims, no "good for X" copy, nothing that reads
 /// as guidance about a body or a condition — the app does not make those
-/// claims (`knowledge/domain/womens_health.md`). The list is a convenience,
+/// claims (`knowledge/domain/mens_health.md`). The list is a convenience,
 /// not a closed set: a user may type any pose name she likes, and
 /// [validateYogaSequence] never checks membership here.
 abstract final class YogaPoseCatalogue {

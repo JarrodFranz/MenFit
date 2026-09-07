@@ -12,26 +12,9 @@ abstract class WeightViewState with _$WeightViewState {
   const factory WeightViewState({
     @Default(WeightRange.threeMonths) WeightRange range,
     @Default(WeightSeriesMode.readingsAndTrend) WeightSeriesMode seriesMode,
-
-    /// The user's explicit choice about the cycle overlay, or `null` while
-    /// she hasn't made one.
-    ///
-    /// Tri-state on purpose: the overlay's default is "on, but only for a
-    /// user who tracks her cycle"
-    /// (`presentation/weight_history_providers.dart#weightHasCycleContext`),
-    /// which the controller cannot evaluate without reading cycle data it
-    /// has no business reading. Storing `null` lets the widget resolve the
-    /// default against that provider while an explicit `false` still wins
-    /// over it.
-    bool? cycleOverlayVisible,
   }) = _WeightViewState;
 
   const WeightViewState._();
-
-  /// Whether to draw the overlay, given whether the user has any cycle
-  /// data at all.
-  bool overlayVisibleWhen({required bool hasCycleData}) =>
-      hasCycleData && (cycleOverlayVisible ?? true);
 }
 
 /// Holds the weight screen's view state. No domain rules live here — the
@@ -52,9 +35,5 @@ class WeightViewController extends _$WeightViewController {
 
   void selectSeriesMode(WeightSeriesMode mode) {
     state = state.copyWith(seriesMode: mode);
-  }
-
-  void setCycleOverlayVisible({required bool visible}) {
-    state = state.copyWith(cycleOverlayVisible: visible);
   }
 }

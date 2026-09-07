@@ -45,8 +45,6 @@ class WeightProgressSection extends ConsumerWidget {
     final unitSystem =
         ref.watch(activityUnitSystemProvider).value ?? UnitSystem.metric;
     final view = ref.watch(weightViewControllerProvider);
-    final hasCycleContext =
-        ref.watch(weightHasCycleContextProvider).value ?? false;
     final series = ref.watch(weightTrendProvider(cardRange)).value;
     final latest = ref.watch(latestWeightLogProvider).value;
 
@@ -85,9 +83,6 @@ class WeightProgressSection extends ConsumerWidget {
               range: cardRange,
               unitSystem: unitSystem,
               seriesMode: view.seriesMode,
-              showCycleOverlay: view.overlayVisibleWhen(
-                hasCycleData: hasCycleContext,
-              ),
               height: 160,
             ),
             SizedBox(height: tokens.spacingSm),
