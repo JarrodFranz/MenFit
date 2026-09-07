@@ -1,0 +1,20 @@
+{
+  "name": "femfit-fatsecret-proxy",
+  "version": "1.0.0",
+  "description": "API proxy for the FatSecret Platform API, run on a Google Compute Engine VM",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "private": true
+}

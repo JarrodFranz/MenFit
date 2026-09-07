@@ -1,0 +1,19 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "femfit-web",
+      "runtimeExecutable": "flutter",
+      "runtimeArgs": [
+        "run",
+        "-d",
+        "web-server",
+        "--web-port",
+        "5171",
+        "--dart-define-from-file=env/dev.json",
+        "--dart-define-from-file=env/dev.secrets.json"
+      ],
+      "port": 5171
+    }
+  ]
+}

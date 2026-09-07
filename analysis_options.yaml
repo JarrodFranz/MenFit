@@ -1,0 +1,28 @@
+include: package:very_good_analysis/analysis_options.yaml
+
+# NOTE: custom_lint / riverpod_lint are deliberately NOT declared as
+# dependencies or enabled as an analyzer plugin here. Verified during the
+# Flutter 3.47.2 / Dart 3.13 upgrade (2026-08-28): while analyzer ^13 is now
+# unblocked, riverpod_lint (3.1.8) requires `analyzer_plugin ^0.14.0` while
+# custom_lint (0.8.1) requires `analyzer_plugin ^0.13.0`. Revisit once
+# custom_lint releases a version supporting analyzer_plugin ^0.14.
+# Details: knowledge/troubleshooting/dependency_resolution.md
+analyzer:
+  language:
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+
+linter:
+  rules:
+    # This project intentionally ships without hand-written API docs on every
+    # public member; VGA's docs rule is unworkable for an app (not a package).
+    public_member_api_docs: false

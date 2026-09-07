@@ -1,0 +1,9 @@
+{
+  "APP_ENV": "prod",
+  "API_BASE_URL": "",
+  "LOG_LEVEL": "warning",
+  "MAP_TILE_URL": "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+  "OFF_BASE_URL": "https://world.openfoodfacts.org",
+  "OFF_SEARCH_BASE_URL": "https://search.openfoodfacts.org",
+  "OFF_CONTACT": ""
+}

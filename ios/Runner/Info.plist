@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>FemFit</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>FemFit</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(FLUTTER_BUILD_NAME)</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<!-- TWO camera uses share this one string, because iOS only permits one
+	     per app:
+	     1. Product barcode scanning in the food diary (S1-5) - frames are
+	        decoded on-device by Apple Vision via mobile_scanner and never
+	        written to disk.
+	     2. Nutrition-label photo capture (ADR 012) - one still photo, taken
+	        by the OS camera into this app's cache, read by on-device ML Kit
+	        text recognition and deleted immediately afterwards
+	        (core/platform/ocr/label_capture.dart).
+	     Nothing is uploaded in either case, which is what the string
+	     promises, so keep the two in step - if a future camera use does not
+	     match this sentence, the sentence changes, not the feature.
+	     Android needs no counterpart for either: mobile_scanner merges
+	     CAMERA and its uses-feature entry into the manifest, and
+	     image_picker detects that declaration and requests the runtime
+	     permission itself. -->
+	<key>NSCameraUsageDescription</key>
+	<string>FemFit uses your camera to scan product barcodes and to read a food's nutrition label. Photos are processed on your device, are never uploaded, and the label photo is discarded as soon as it has been read.</string>
+	<!-- GPS activity recording (ADR 008, Phase C wave 2). When-in-use only -
+	     the app never REQUESTS Always authorization; a foreground-started
+	     session with UIBackgroundModes "location" +
+	     allowsBackgroundLocationUpdates keeps receiving updates with the
+	     screen off, so Always authorization is not needed. The Always
+	     string below exists solely because Apple's upload check
+	     (ITMS-90683, 2026-09-06) requires a purpose string for any API the
+	     linked plugins reference - geolocator references the Always API
+	     even though this app never calls it. See
+	     knowledge/decisions/008_run_recording_stack.md. -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>FemFit uses your location to record your route while you're tracking a run, walk, hike, or ride. Your route is never shared without your consent.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>FemFit only uses your location while you're recording a run, walk, hike, or ride. It never tracks you in the background or asks for always-on access.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>FemFit reads your step count and active energy burn to show your daily activity and progress.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>FemFit syncs your fitness activity data with Apple Health.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>FemFit connects to your Garmin watch or heart rate sensor to display real-time heart rate during workouts.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+	</array>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+		<key>UISceneConfigurations</key>
+		<dict>
+			<key>UIWindowSceneSessionRoleApplication</key>
+			<array>
+				<dict>
+					<key>UISceneClassName</key>
+					<string>UIWindowScene</string>
+					<key>UISceneConfigurationName</key>
+					<string>flutter</string>
+					<key>UISceneDelegateClassName</key>
+					<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
+					<key>UISceneStoryboardFile</key>
+					<string>Main</string>
+				</dict>
+			</array>
+		</dict>
+	</dict>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<!-- Export compliance (App Store Connect "Missing Compliance" prompt).
+	     The app only uses HTTPS via the OS networking stack - no proprietary
+	     or third-party cryptography - which is exempt from export
+	     documentation. -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+</dict>
+</plist>

@@ -1,0 +1,112 @@
+# Codemagic CI - builds the iOS app on a Mac and publishes it to TestFlight.
+#
+# Android is NOT built here on purpose: tester APKs are built and uploaded to
+# Firebase App Distribution from the dev machine (scripts/distribute_android.ps1).
+#
+# Everything secret lives in Codemagic, nothing in this file:
+#   - App Store Connect API key  -> Codemagic > Teams > Integrations > "App Store Connect",
+#                                   named as `integrations.app_store_connect` below.
+#   - Signing certificate/profile -> fetched automatically from that key by
+#                                   `xcode-project use-profiles` (ios_signing block).
+#   - ENV_SECRETS_JSON            -> environment variable group `femfit_secrets`,
+#                                   marked Secure; the full JSON body of
+#                                   env/<env>.secrets.json (ADR 006 overlay).
+#   - APP_STORE_APPLE_ID          -> the numeric Apple ID of the app record in
+#                                   App Store Connect (not secret, but per-app).
+# Full setup steps: knowledge/engineering/release_and_distribution.md.
+
+workflows:
+  ios-testflight:
+    name: iOS -> TestFlight
+    max_build_duration: 90
+    instance_type: mac_mini_m2
+    integrations:
+      # Name of the App Store Connect integration created in the Codemagic UI.
+      app_store_connect: femfit-asc
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.jarrodfranz.femfit
+      groups:
+        - femfit_secrets   # ENV_SECRETS_JSON (Secure), APP_STORE_APPLE_ID
+      vars:
+        # Which env/<name>.json to compile in. staging = info-level logging,
+        # otherwise identical to prod today (ADR 006).
+        FLUTTER_ENV: staging
+        # Bundle id repeated for scripts below; must equal ios_signing above
+        # and android/app/build.gradle.kts applicationId (guard test).
+        BUNDLE_ID: com.jarrodfranz.femfit
+      # Pinned to the version the repo is validated against
+      # (handoff/HANDOFF.md). Bump deliberately, together with the local SDK.
+      flutter: 3.47.2
+      xcode: latest
+      cocoapods: default
+    cache:
+      cache_paths:
+        - $HOME/.pub-cache
+        - $HOME/Library/Caches/CocoaPods
+    triggering:
+      events:
+        - tag
+      tag_patterns:
+        - pattern: 'ios-v*'
+          include: true
+      cancel_previous_builds: true
+    scripts:
+      - name: Write the secrets overlay (ADR 006)
+        script: |
+          set -e
+          if [ -n "${ENV_SECRETS_JSON:-}" ]; then
+            printf '%s' "$ENV_SECRETS_JSON" > "env/${FLUTTER_ENV}.secrets.json"
+            echo "Wrote env/${FLUTTER_ENV}.secrets.json"
+          else
+            echo "ENV_SECRETS_JSON not set - building without the secrets overlay (route suggestions / FatSecret will show setup cards)."
+          fi
+      - name: Flutter packages
+        script: |
+          set -e
+          flutter pub get
+      - name: Analyze
+        script: |
+          set -e
+          flutter analyze --fatal-infos
+      - name: CocoaPods
+        script: |
+          set -e
+          cd ios && pod install
+      - name: Apply signing profiles
+        script: |
+          set -e
+          xcode-project use-profiles
+      - name: Build IPA
+        script: |
+          set -e
+          # TestFlight rejects a build number it has already seen, so take the
+          # latest one App Store Connect knows about and add one. Version name
+          # (CFBundleShortVersionString) still comes from pubspec.yaml.
+          LATEST=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID" 2>/dev/null || echo 0)
+          BUILD_NUMBER=$(( ${LATEST:-0} + 1 ))
+          echo "Building with build number $BUILD_NUMBER"
+          DEFINES="--dart-define-from-file=env/${FLUTTER_ENV}.json"
+          if [ -f "env/${FLUTTER_ENV}.secrets.json" ]; then
+            DEFINES="$DEFINES --dart-define-from-file=env/${FLUTTER_ENV}.secrets.json"
+          fi
+          flutter build ipa --release \
+            --build-number="$BUILD_NUMBER" \
+            $DEFINES \
+            --export-options-plist=/Users/builder/export_options.plist
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - flutter_drive.log
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        # No beta_groups on purpose. The TestFlight group "Internal testers"
+        # has "Enable automatic distribution" on, so App Store Connect hands
+        # it every processed build by itself, and asking the API to assign an
+        # internal group is rejected ("Builds cannot be assigned to this
+        # internal group", first build 2026-09-06). List EXTERNAL groups here
+        # if any are created later; those do need explicit assignment (and
+        # the first build of each version gets Beta App Review).
