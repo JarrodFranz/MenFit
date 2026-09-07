@@ -3,19 +3,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:menfit_app/core/domain/local_date.dart';
-import 'package:menfit_app/features/recaps/domain/cycle_recap.dart';
+import 'package:menfit_app/features/recaps/domain/month_recap.dart';
 import 'package:menfit_app/features/recaps/domain/recap_period.dart';
 import 'package:menfit_app/features/recaps/presentation/recap_trigger_controller.dart';
 import 'package:menfit_app/features/recaps/recaps_widgets.dart';
 
-CycleRecap _recap(RecapPeriod period) =>
-    CycleRecap(period: period, sessionCount: 9, consistencyRatio: 9 / 31);
+MonthRecap _recap(RecapPeriod period) =>
+    MonthRecap(period: period, sessionCount: 9, consistencyRatio: 9 / 31);
 
-/// A cycle-end recap and a month recap — the exact pair
-/// `RecapTriggerEvaluator` can surface back to back, since marking the
-/// cycle-end shown lets the runner-up month become due immediately.
-final CycleRecap _recapA = _recap(RecapPeriod.forMonth(LocalDate(2026, 7, 1)));
-final CycleRecap _recapB = _recap(RecapPeriod.forMonth(LocalDate(2026, 6, 1)));
+/// Two different month recaps — the shape `RecapTriggerListener` must guard
+/// against is a second recap becoming due (a different month, on the very
+/// next evaluation) while the first one is still on screen.
+final MonthRecap _recapA = _recap(RecapPeriod.forMonth(LocalDate(2026, 7, 1)));
+final MonthRecap _recapB = _recap(RecapPeriod.forMonth(LocalDate(2026, 6, 1)));
 
 /// Stands in for the real controller so the test drives the exact
 /// sequence: a due recap, then a *different* due recap after `markShown`.
@@ -23,16 +23,15 @@ final CycleRecap _recapB = _recap(RecapPeriod.forMonth(LocalDate(2026, 6, 1)));
 /// Subclasses the real notifier rather than faking the repositories under
 /// it — the behaviour under test is entirely
 /// `RecapTriggerListener._handled`, and reproducing the real controller's
-/// cycle-record → evaluator → builder chain would test everything except
-/// that.
+/// marker → evaluator → builder chain would test everything except that.
 class _FakeRecapTriggerController extends RecapTriggerController {
   int markShownCalls = 0;
 
   @override
-  Future<CycleRecap?> build() async => null;
+  Future<MonthRecap?> build() async => null;
 
   /// Test-only: surfaces [recap] as the currently due one.
-  void emit(CycleRecap? recap) => state = AsyncData(recap);
+  void emit(MonthRecap? recap) => state = AsyncData(recap);
 
   /// The real implementation writes a marker and calls `invalidateSelf`;
   /// the fake only records the call, so the test decides what surfaces
@@ -74,7 +73,7 @@ GoRouter _buildRouter({
       GoRoute(
         path: '/recap',
         builder: (context, state) {
-          builtWith.add((state.extra! as CycleRecap).period.label);
+          builtWith.add((state.extra! as MonthRecap).period.label);
           return const Scaffold(body: Text('recap story'));
         },
       ),

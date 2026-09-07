@@ -6,26 +6,25 @@ import 'package:menfit_app/features/activity/domain/pace_format.dart'
 import 'package:menfit_app/features/activity/domain/personal_records.dart';
 import 'package:menfit_app/features/activity/domain/track_analysis.dart';
 import 'package:menfit_app/features/activity/domain/workout_details.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
 import 'package:menfit_app/features/insights/domain/insight_statistics.dart';
 import 'package:menfit_app/features/insights/domain/insight_thresholds.dart';
 import 'package:menfit_app/features/nutrition/domain/nutrition_entry.dart';
 import 'package:menfit_app/features/nutrition/domain/nutrition_goals.dart';
 import 'package:menfit_app/features/nutrition/domain/nutrition_totals.dart';
-import 'package:menfit_app/features/recaps/domain/cycle_recap.dart';
+import 'package:menfit_app/features/recaps/domain/month_recap.dart';
 import 'package:menfit_app/features/recaps/domain/recap_period.dart';
 import 'package:menfit_app/features/recaps/domain/recap_pr_highlight.dart';
 import 'package:menfit_app/features/wellbeing/domain/daily_checkin.dart';
 
-/// Pure, injectable builder that turns raw period data into a [CycleRecap]
-/// (Task 1.3, `TASKS_TO_DO.md`: "Your Cycle in Motion").
+/// Pure, injectable builder that turns raw month data into a [MonthRecap]
+/// (Task 1.3, `TASKS_TO_DO.md`).
 ///
 /// Every input is data the caller has already fetched (this class does no
 /// I/O), and everything it needs from other features arrives through their
-/// domain types only — `activity/domain`, `cycle/domain`,
-/// `nutrition/domain`, `wellbeing/domain` — never a repository or a
-/// provider, which is what keeps this fully unit-testable with plain
-/// fixtures (see `test/features/recaps/recap_builder_test.dart`).
+/// domain types only — `activity/domain`, `nutrition/domain`,
+/// `wellbeing/domain` — never a repository or a provider, which is what
+/// keeps this fully unit-testable with plain fixtures (see
+/// `test/features/recaps/recap_builder_test.dart`).
 ///
 /// Formats PR value labels directly in metric (`"12.40 km"`, `"65.0 kg"`)
 /// rather than taking a `UnitSystem`, the same simplification
@@ -36,10 +35,9 @@ import 'package:menfit_app/features/wellbeing/domain/daily_checkin.dart';
 class RecapBuilder {
   const RecapBuilder();
 
-  /// Sparse-data guard (Task 1.3): a **month** recap with fewer sessions
-  /// than this inside that month has nothing worth interrupting her for —
-  /// [build] returns `null` and the trigger silently skips. Also the
-  /// fallback bar for a cycle-end period (see [build]).
+  /// Sparse-data guard (Task 1.3): a month recap with fewer sessions than
+  /// this inside that month has nothing worth interrupting him for —
+  /// [build] returns `null` and the trigger silently skips.
   ///
   /// Public because the recap history list applies the same bar *before*
   /// offering a month at all
@@ -63,19 +61,13 @@ class RecapBuilder {
   /// is even considered (Task 1.3's explicit "≥8 check-ins" gate).
   ///
   /// A cheap entry gate on *engagement*, not a statistical one: how many
-  /// days of the period she answered anything at all. The statistical
+  /// days of the period he answered anything at all. The statistical
   /// floor is the insights engine's, reused verbatim — see
   /// [_buildWellbeingObservation].
   static const int _minCheckinsForObservation = 8;
 
-  /// Builds the recap for [period], or returns `null` when the sparse-data
-  /// guard applies.
-  ///
-  /// The guard differs by [RecapPeriod.kind]:
-  /// - **month**: at least [minSessionsForMonthRecap] sessions logged
-  ///   *inside that month*. Cycle data is deliberately irrelevant here.
-  /// - **cycleEnd**: anything at all logged inside the period — a session,
-  ///   a check-in, a day of water, or a nutrition entry.
+  /// Builds the recap for [period], or returns `null` when fewer than
+  /// [minSessionsForMonthRecap] sessions were logged inside it.
   ///
   /// - [periodActivities]: every activity whose local calendar day falls
   ///   within `[period.start, period.end]`, any order (sorted internally).
@@ -95,14 +87,7 @@ class RecapBuilder {
   /// - [periodNutritionEntries] / [nutritionGoals]: the period's food
   ///   diary and the user's current targets.
   /// - [periodCheckins]: check-ins logged within the period.
-  /// - [phaseByDay]: cycle phase per local calendar day covered by the
-  ///   period — sparse (or entirely empty) when the user doesn't log
-  ///   cycles; a day absent from this map means "no phase known", not
-  ///   [CyclePhase.none].
-  /// - [hasAnyCycleData]: whether the user has *ever* logged a period,
-  ///   anywhere in their history (not just this period) — feeds the
-  ///   sparse-data guard.
-  CycleRecap? build({
+  MonthRecap? build({
     required RecapPeriod period,
     required List<Activity> periodActivities,
     required Map<String, List<ActivitySample>> samplesByActivityId,
@@ -112,43 +97,10 @@ class RecapBuilder {
     required List<NutritionEntry> periodNutritionEntries,
     required NutritionGoals? nutritionGoals,
     required List<DailyCheckin> periodCheckins,
-    required Map<LocalDate, CyclePhase> phaseByDay,
-    required bool hasAnyCycleData,
   }) {
     // Sparse-data guard. A month recap must earn its interruption with
-    // sessions logged *in that month* — historical cycle data elsewhere in
-    // the app is not a reason to interrupt her with an empty story (the
-    // original AND-guard, "<3 sessions AND no cycle data anywhere in
-    // history", meant one stale period record produced a hollow month
-    // recap every month, forever — that regression is what pushed an empty
-    // recap story over Home in `test/features/settings_delete_data_test.dart`).
-    //
-    // A cycle-end recap is different: the cycle *completing* is itself
-    // recent, real content — she just logged a new period start — so it
-    // shows with fewer sessions, provided the period contains anything at
-    // all to say. "Anything" is deliberately broad: a woman actively
-    // tracking her cycle who logged only food and water through it still
-    // gets a modest recap; only a period with literally nothing logged
-    // gets none.
-    final sparse = switch (period.kind) {
-      RecapPeriodKind.month =>
-        periodActivities.length < minSessionsForMonthRecap,
-      RecapPeriodKind.cycleEnd =>
-        !_hasAnyLoggedContent(
-              activities: periodActivities,
-              checkins: periodCheckins,
-              waterTotalsByDay: waterTotalsByDay,
-              nutritionEntries: periodNutritionEntries,
-            ) ||
-            // Without a single logged cycle anywhere, the "a cycle just
-            // completed" premise that justifies the lower bar doesn't
-            // hold, so fall back to the month bar. Unreachable in
-            // production — a cycle-end period is only derived from two or
-            // more logged cycle records — but kept as a defensive floor.
-            (!hasAnyCycleData &&
-                periodActivities.length < minSessionsForMonthRecap),
-    };
-    if (sparse) {
+    // sessions logged *in that month*.
+    if (periodActivities.length < minSessionsForMonthRecap) {
       return null;
     }
 
@@ -169,7 +121,6 @@ class RecapBuilder {
     for (final activity in sortedActivities) {
       final localDay = LocalDate.fromDateTime(activity.startedAt.toLocal());
       activeDays.add(localDay);
-      final phase = phaseByDay[localDay];
 
       if (activity.distanceMeters > 0) {
         distanceByType[activity.activityType] =
@@ -184,10 +135,10 @@ class RecapBuilder {
 
       final details = activity.workoutDetails;
       if (details is StrengthWorkoutDetails) {
-        // Completed sets only — `CycleRecap.totalTonnageKg`'s contract,
+        // Completed sets only — `MonthRecap.totalTonnageKg`'s contract,
         // and the same definition
         // `insights/application/insight_observation_mapper.dart#completedTonnageKg`
-        // reports against. `totalVolumeKg` would count a set she racked
+        // reports against. `totalVolumeKg` would count a set he racked
         // but never lifted.
         totalTonnageKg += details.completedVolumeKg;
       }
@@ -205,7 +156,6 @@ class RecapBuilder {
         activity: activity,
         before: beforeRecords,
         after: runningRecords,
-        phase: phase,
         highlights: prHighlights,
       );
 
@@ -214,7 +164,6 @@ class RecapBuilder {
           exercises: details.exercises,
           runningMaxWeights: runningMaxWeights,
           activity: activity,
-          phase: phase,
           highlights: prHighlights,
         );
       }
@@ -236,7 +185,7 @@ class RecapBuilder {
         ? metWaterDays / loggedWaterDays
         : null;
 
-    return CycleRecap(
+    return MonthRecap(
       period: period,
       sessionCount: sortedActivities.length,
       consistencyRatio: consistencyRatio,
@@ -254,23 +203,6 @@ class RecapBuilder {
     );
   }
 
-  /// Whether the period holds anything at all worth recapping: a session,
-  /// a check-in, a day with water logged, or a nutrition entry.
-  ///
-  /// Note [waterTotalsByDay] never carries an explicit `0` for an unlogged
-  /// day (see [build]'s parameter docs), so "non-empty" really does mean
-  /// "she logged water on at least one day".
-  bool _hasAnyLoggedContent({
-    required List<Activity> activities,
-    required List<DailyCheckin> checkins,
-    required Map<LocalDate, int> waterTotalsByDay,
-    required List<NutritionEntry> nutritionEntries,
-  }) =>
-      activities.isNotEmpty ||
-      checkins.isNotEmpty ||
-      waterTotalsByDay.isNotEmpty ||
-      nutritionEntries.isNotEmpty;
-
   /// Detects a new longest-distance, most-elevation, or best-effort PR set
   /// by [activity], comparing [before] (the running records prior to
   /// folding this activity in) against [after] (the result of that fold,
@@ -285,7 +217,6 @@ class RecapBuilder {
     required Activity activity,
     required PersonalRecords before,
     required PersonalRecords after,
-    required CyclePhase? phase,
     required List<RecapPrHighlight> highlights,
   }) {
     final beforeLongest = before.longestDistance;
@@ -300,7 +231,6 @@ class RecapBuilder {
           valueLabel:
               '${(activity.distanceMeters / 1000).toStringAsFixed(2)} km',
           achievedAt: activity.startedAt,
-          phase: phase,
         ),
       );
     }
@@ -318,7 +248,6 @@ class RecapBuilder {
           label: 'Highest climb',
           valueLabel: '${elevation.round()} m',
           achievedAt: activity.startedAt,
-          phase: phase,
         ),
       );
     }
@@ -338,7 +267,6 @@ class RecapBuilder {
             label: '$distanceName best effort',
             valueLabel: formatDuration(afterEntry.value),
             achievedAt: activity.startedAt,
-            phase: phase,
           ),
         );
       }
@@ -353,7 +281,6 @@ class RecapBuilder {
     required List<StrengthExercise> exercises,
     required Map<String, double> runningMaxWeights,
     required Activity activity,
-    required CyclePhase? phase,
     required List<RecapPrHighlight> highlights,
   }) {
     for (final exercise in exercises) {
@@ -376,7 +303,6 @@ class RecapBuilder {
             label: exercise.name,
             valueLabel: '${sessionMax.toStringAsFixed(1)} kg',
             achievedAt: activity.startedAt,
-            phase: phase,
           ),
         );
       }
@@ -414,9 +340,9 @@ class RecapBuilder {
   }
 
   /// A plain, descriptive-only observation (never causal, never
-  /// prescriptive — `knowledge/domain/womens_health.md`) comparing logged
-  /// energy on better-slept days against the rest, or `null` when there
-  /// isn't enough paired data or no difference worth naming.
+  /// prescriptive) comparing logged energy on better-slept days against
+  /// the rest, or `null` when there isn't enough paired data or no
+  /// difference worth naming.
   ///
   /// Deliberately one-directional: it only ever names "better sleep,
   /// higher energy" when the data actually shows that (the intuitive,
@@ -441,10 +367,6 @@ class RecapBuilder {
   ///    [InsightThresholds.minRelativeDifference];
   /// 4. Cliff's delta must reach [InsightThresholds.minCliffsDelta].
   ///
-  /// Before this, the arms were only checked non-empty and compared on a
-  /// 0.3 *mean* gap, so one well-slept night against seven poor ones
-  /// produced the sentence.
-  ///
   /// `compareGroups` itself is not called: it returns a `PersonalInsight`
   /// keyed to an `InsightMetric`, and a check-in energy score is not one of
   /// those three metrics — inventing a metric value to satisfy it would be
@@ -453,10 +375,8 @@ class RecapBuilder {
   ///
   /// [InsightThresholds.minPairedObservations] (10) is deliberately *not*
   /// applied: it sizes a 90-day insights window, whereas this describes one
-  /// cycle or month, and [_minCheckinsForObservation] plus the 4-per-arm
-  /// floor already put the minimum at 8 retained days. The gates that stop
-  /// a lopsided or overlapping comparison — 2, 3 and 4 — are the ones the
-  /// review found missing, and those are shared exactly.
+  /// month, and [_minCheckinsForObservation] plus the 4-per-arm floor
+  /// already put the minimum at 8 retained days.
   String? _buildWellbeingObservation(List<DailyCheckin> checkins) {
     if (checkins.length < _minCheckinsForObservation) return null;
 

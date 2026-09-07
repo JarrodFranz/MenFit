@@ -6,8 +6,7 @@ import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/core/platform/sharing/sharing_adapter.dart';
 import 'package:menfit_app/core/platform/sharing/sharing_providers.dart';
 import 'package:menfit_app/core/theme/app_theme.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
-import 'package:menfit_app/features/recaps/domain/cycle_recap.dart';
+import 'package:menfit_app/features/recaps/domain/month_recap.dart';
 import 'package:menfit_app/features/recaps/domain/recap_period.dart';
 import 'package:menfit_app/features/recaps/domain/recap_pr_highlight.dart';
 import 'package:menfit_app/features/recaps/presentation/widgets/recap_share_sheet.dart';
@@ -36,19 +35,16 @@ String? lastSharedText(FakeSharingAdapter sharing) =>
 
 final RecapPeriod _july = RecapPeriod.forMonth(LocalDate(2026, 7, 1));
 
-const String _toggleLabel = 'Include cycle phase context';
-
-RecapPrHighlight _pr({CyclePhase? phase}) => RecapPrHighlight(
+RecapPrHighlight _pr() => RecapPrHighlight(
   type: RecapPrType.bestEffort,
   label: '5 km best effort',
   valueLabel: '24:12',
   achievedAt: DateTime.utc(2026, 7, 12),
-  phase: phase,
 );
 
 /// By default carries neither distance nor tonnage, so the preview card's
-/// headline stat is the short "12 sessions" line — the phase-toggle tests
-/// below are about consent, not typography.
+/// headline stat is the short "12 sessions" line — the headline-overflow
+/// group below exercises the other two.
 ///
 /// Pass [totalDistanceMeters] or [totalTonnageKg] for the headline-overflow
 /// group: under `flutter_test`'s fixed-width test font every glyph is a
@@ -56,11 +52,11 @@ RecapPrHighlight _pr({CyclePhase? phase}) => RecapPrHighlight(
 /// ~240px wide inside a 220px card. That used to overflow the stat [Row]
 /// (which throws in a widget test and paints the yellow stripe in the app);
 /// `_statLine` now scales the value down instead.
-CycleRecap _recap({
+MonthRecap _recap({
   List<RecapPrHighlight> prs = const [],
   double? totalDistanceMeters,
   double? totalTonnageKg,
-}) => CycleRecap(
+}) => MonthRecap(
   period: _july,
   sessionCount: 12,
   consistencyRatio: 12 / 31,
@@ -114,7 +110,7 @@ void main() {
   /// navigator, so the next pump builds a genuinely new one.
   Future<void> pumpSheet(
     WidgetTester tester,
-    CycleRecap recap, {
+    MonthRecap recap, {
     FakeSharingAdapter? sharing,
   }) async {
     useTallWindow(tester);
@@ -133,68 +129,6 @@ void main() {
     );
     await tester.pumpAndSettle();
   }
-
-  group('RecapShareSheet phase toggle', () {
-    testWidgets('defaults off, so the card carries no phase until she asks', (
-      tester,
-    ) async {
-      await pumpSheet(tester, _recap(prs: [_pr(phase: CyclePhase.luteal)]));
-
-      final toggle = tester.widget<SwitchListTile>(
-        find.widgetWithText(SwitchListTile, _toggleLabel),
-      );
-      expect(toggle.value, isFalse);
-      expect(find.text('🏆 5 km best effort'), findsOneWidget);
-      expect(find.textContaining('Luteal'), findsNothing);
-    });
-
-    testWidgets('turning it on puts the phase on the card', (tester) async {
-      await pumpSheet(tester, _recap(prs: [_pr(phase: CyclePhase.luteal)]));
-
-      await tester.tap(find.text(_toggleLabel));
-      await tester.pumpAndSettle();
-
-      expect(find.text('🏆 5 km best effort · Luteal'), findsOneWidget);
-    });
-
-    testWidgets('is not offered at all when no PR carries a phase', (
-      tester,
-    ) async {
-      await pumpSheet(tester, _recap(prs: [_pr()]));
-
-      expect(find.text(_toggleLabel), findsNothing);
-      expect(find.text('🏆 5 km best effort'), findsOneWidget);
-    });
-
-    testWidgets('treats CyclePhase.none as no phase — no toggle, no pill', (
-      tester,
-    ) async {
-      // `CyclePredictionEngine.getDayStatus` resolves an unknown day to
-      // `none`, which is not a fifth phase: rendering it produced the
-      // meaningless "None phase" on every completed-cycle recap.
-      await pumpSheet(tester, _recap(prs: [_pr(phase: CyclePhase.none)]));
-
-      expect(find.text(_toggleLabel), findsNothing);
-      expect(find.textContaining('None'), findsNothing);
-      expect(find.text('🏆 5 km best effort'), findsOneWidget);
-    });
-
-    testWidgets('offers the toggle when only some PRs carry a phase', (
-      tester,
-    ) async {
-      await pumpSheet(
-        tester,
-        _recap(
-          prs: [
-            _pr(phase: CyclePhase.none),
-            _pr(phase: CyclePhase.luteal),
-          ],
-        ),
-      );
-
-      expect(find.text(_toggleLabel), findsOneWidget);
-    });
-  });
 
   group('RecapShareSheet card headline fits', () {
     /// Switches the preview to the 1:1 card. Story (9:16) is the default,
@@ -251,57 +185,13 @@ void main() {
     });
   });
 
-  group('RecapShareSheet shared text', () {
-    testWidgets('omits the phase while the toggle is off', (tester) async {
-      final copied = interceptClipboard(tester);
-      await pumpSheet(tester, _recap(prs: [_pr(phase: CyclePhase.luteal)]));
-
-      await tester.tap(find.text('Copy text'));
-      await tester.pumpAndSettle();
-
-      expect(copied(), isNotNull);
-      expect(copied(), contains('🏆 5 km best effort: 24:12'));
-      expect(copied(), isNot(contains('Luteal')));
-      expect(copied(), isNot(contains('phase')));
-    });
-
-    testWidgets('carries the phase once the toggle is on', (tester) async {
-      final copied = interceptClipboard(tester);
-      await pumpSheet(tester, _recap(prs: [_pr(phase: CyclePhase.luteal)]));
-
-      await tester.tap(find.text(_toggleLabel));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Copy text'));
-      await tester.pumpAndSettle();
-
-      expect(copied(), contains('🏆 5 km best effort: 24:12 (Luteal phase)'));
-    });
-
-    testWidgets('never writes "None phase" for an unknown-phase PR', (
-      tester,
-    ) async {
-      final copied = interceptClipboard(tester);
-      await pumpSheet(tester, _recap(prs: [_pr(phase: CyclePhase.none)]));
-
-      await tester.tap(find.text('Copy text'));
-      await tester.pumpAndSettle();
-
-      expect(copied(), contains('🏆 5 km best effort: 24:12'));
-      expect(copied(), isNot(contains('None')));
-    });
-  });
-
   group('RecapShareSheet native share', () {
     testWidgets('Share hands the rendered card and the recap text to the OS', (
       tester,
     ) async {
       final sharing = FakeSharingAdapter();
       final copied = interceptClipboard(tester);
-      await pumpSheet(
-        tester,
-        _recap(prs: [_pr(phase: CyclePhase.luteal)]),
-        sharing: sharing,
-      );
+      await pumpSheet(tester, _recap(prs: [_pr()]), sharing: sharing);
       await settleCardCapture(tester);
 
       await tester.tap(find.text('Share card'));
@@ -312,16 +202,13 @@ void main() {
       expect(shared.fileName, 'menfit-recap-card.png');
       expect(shared.pngBytes.take(4), [0x89, 0x50, 0x4e, 0x47]);
       expect(shared.text, contains('🏆 5 km best effort: 24:12'));
-      // The phase toggle is off, and it gates the share as it gates the
-      // copy (knowledge/engineering/security_and_privacy.md).
-      expect(shared.text, isNot(contains('Luteal')));
       expect(copied(), isNull);
     });
 
     testWidgets('Share and Copy produce byte-identical text', (tester) async {
       final sharing = FakeSharingAdapter();
       final copied = interceptClipboard(tester);
-      final recap = _recap(prs: [_pr(phase: CyclePhase.luteal)]);
+      final recap = _recap(prs: [_pr()]);
 
       await pumpSheet(tester, recap, sharing: sharing);
       await tester.tap(find.text('Share card'));
@@ -332,22 +219,6 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(lastSharedText(sharing), copied());
-    });
-
-    testWidgets('the phase toggle gates the shared text too', (tester) async {
-      final sharing = FakeSharingAdapter();
-      await pumpSheet(
-        tester,
-        _recap(prs: [_pr(phase: CyclePhase.luteal)]),
-        sharing: sharing,
-      );
-
-      await tester.tap(find.text(_toggleLabel));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Share card'));
-      await tester.pumpAndSettle();
-
-      expect(lastSharedText(sharing), contains('(Luteal phase)'));
     });
 
     testWidgets('an unconfirmable share is never announced as done', (

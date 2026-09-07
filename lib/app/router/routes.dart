@@ -29,7 +29,7 @@ import 'package:menfit_app/features/nutrition/presentation/nutrition_screen.dart
 import 'package:menfit_app/features/onboarding/presentation/onboarding_screen.dart';
 import 'package:menfit_app/features/profile/presentation/profile_screen.dart';
 import 'package:menfit_app/features/progress/presentation/progress_screen.dart';
-import 'package:menfit_app/features/recaps/domain/cycle_recap.dart';
+import 'package:menfit_app/features/recaps/domain/month_recap.dart';
 import 'package:menfit_app/features/recaps/presentation/recap_story_screen.dart';
 import 'package:menfit_app/features/routes/domain/geo_point.dart';
 import 'package:menfit_app/features/routes/presentation/route_detail_screen.dart';
@@ -218,15 +218,15 @@ class RouteDetailRouteData extends GoRouteData with $RouteDetailRouteData {
   }
 }
 
-/// The "Your Cycle in Motion" recap story (Task 1.3, `TASKS_TO_DO.md`).
-/// Deliberately outside [AppShellRouteData]'s [StatefulShellRoute] - no nav
-/// chrome for a full-screen immersive story, same reasoning as
+/// The monthly recap story (Task 1.3, `TASKS_TO_DO.md`). Deliberately
+/// outside [AppShellRouteData]'s [StatefulShellRoute] - no nav chrome for a
+/// full-screen immersive story, same reasoning as
 /// [ActivityRecordRouteData]. **Must stay root-level**: nesting a
 /// full-screen route pushed from Home under a shell branch previously
 /// caused a `GlobalKey<NavigatorState>#root` duplication crash for Saved
 /// Routes / Route Suggest - this route follows the same fixed pattern.
 ///
-/// [$extra] carries the already-built [CycleRecap] (from
+/// [$extra] carries the already-built [MonthRecap] (from
 /// `features/recaps/recaps_providers.dart#recapForPeriodProvider`) rather
 /// than a period the screen re-fetches itself - both callers
 /// (`recaps/presentation/widgets/recap_trigger_listener.dart`'s automatic
@@ -235,19 +235,17 @@ class RouteDetailRouteData extends GoRouteData with $RouteDetailRouteData {
 /// activity/water/nutrition/check-in scan a second time. Like
 /// [NutritionNewFoodRouteData]'s seed, this makes the route **deliberately
 /// not deep-linkable** - correct here too, since a rebuilt recap for an
-/// arbitrary URL would have no caller-supplied period to build it from, and
-/// cycle-adjacent data has no business being reconstructible from a URL
-/// (`knowledge/engineering/security_and_privacy.md`).
+/// arbitrary URL would have no caller-supplied period to build it from.
 ///
 /// [$extra] is therefore **nullable**, exactly as [NutritionNewFoodRouteData]'s
 /// seed is: go_router's `extra` is an in-memory object, so `/recap` typed
 /// into a browser, deep-linked, or restored by a web reload arrives with
 /// no recap at all. A non-nullable field made the generated
-/// `state.extra as CycleRecap` throw during route build in precisely that
+/// `state.extra as MonthRecap` throw during route build in precisely that
 /// case; [redirect] now sends those arrivals to the Progress screen, where
 /// the re-viewable recap history lives
-/// (`recaps/presentation/widgets/recap_history_section.dart`) — she lands
-/// on the list she can pick a recap from rather than a crash or a blank
+/// (`recaps/presentation/widgets/recap_history_section.dart`) — he lands
+/// on the list he can pick a recap from rather than a crash or a blank
 /// screen.
 @TypedGoRoute<RecapStoryRouteData>(path: '/recap')
 class RecapStoryRouteData extends GoRouteData with $RecapStoryRouteData {
@@ -259,7 +257,7 @@ class RecapStoryRouteData extends GoRouteData with $RecapStoryRouteData {
   /// The `$` name is go_router_builder's, not a style choice: it is the
   /// exact identifier the generator recognises as the non-URL `extra`
   /// payload.
-  final CycleRecap? $extra;
+  final MonthRecap? $extra;
 
   /// The one route-level redirect in the app. ADR 002 keeps redirect logic
   /// out of *screens*; this is not screen logic but the route's own
@@ -269,7 +267,7 @@ class RecapStoryRouteData extends GoRouteData with $RecapStoryRouteData {
   /// typed view of `extra`.
   @override
   String? redirect(BuildContext context, GoRouterState state) =>
-      state.extra is CycleRecap ? null : const ProgressRouteData().location;
+      state.extra is MonthRecap ? null : const ProgressRouteData().location;
 
   @override
   Widget build(BuildContext context, GoRouterState state) {

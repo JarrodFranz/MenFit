@@ -5,11 +5,9 @@ import 'package:menfit_app/features/activity/domain/activity.dart';
 import 'package:menfit_app/features/activity/domain/activity_sample.dart';
 import 'package:menfit_app/features/activity/domain/personal_records.dart';
 import 'package:menfit_app/features/activity/domain/workout_details.dart';
-import 'package:menfit_app/features/cycle/cycle_providers.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
 import 'package:menfit_app/features/nutrition/nutrition_providers.dart';
 import 'package:menfit_app/features/recaps/data/recap_marker_store.dart';
-import 'package:menfit_app/features/recaps/domain/cycle_recap.dart';
+import 'package:menfit_app/features/recaps/domain/month_recap.dart';
 import 'package:menfit_app/features/recaps/domain/recap_builder.dart';
 import 'package:menfit_app/features/recaps/domain/recap_period.dart';
 import 'package:menfit_app/features/wellbeing/wellbeing_providers.dart';
@@ -29,8 +27,8 @@ RecapMarkerStore recapMarkerStore(Ref ref) {
   return RecapMarkerStore(prefs);
 }
 
-/// Preference controller for whether automatic cycle and monthly recap stories
-/// are presented on startup / cycle end. Defaults to true.
+/// Preference controller for whether automatic monthly recap stories are
+/// presented on startup. Defaults to true.
 @Riverpod(keepAlive: true)
 class ShowAutomaticRecapsController extends _$ShowAutomaticRecapsController {
   static const String prefKey = 'show_automatic_recaps';
@@ -48,7 +46,7 @@ class ShowAutomaticRecapsController extends _$ShowAutomaticRecapsController {
   }
 }
 
-/// Builds the [CycleRecap] for an arbitrary [period], gathering every
+/// Builds the [MonthRecap] for an arbitrary [period], gathering every
 /// source through the owning feature's composition surface (ADR 007) —
 /// never a `data/` import. Returns `null` when [RecapBuilder]'s
 /// sparse-data guard applies.
@@ -99,9 +97,8 @@ class ShowAutomaticRecapsController extends _$ShowAutomaticRecapsController {
 ///
 /// `retry: _noRetry` — see [_noRetry] for why this one must fail fast.
 @Riverpod(retry: _noRetry)
-Future<CycleRecap?> recapForPeriod(Ref ref, RecapPeriod period) async {
+Future<MonthRecap?> recapForPeriod(Ref ref, RecapPeriod period) async {
   final activityRepo = ref.watch(activityRepositoryProvider);
-  final cycleRepo = ref.watch(cycleRepositoryProvider);
   final waterRepo = ref.watch(waterRepositoryProvider);
   final nutritionRepo = ref.watch(nutritionRepositoryProvider);
   final goalsRepo = ref.watch(nutritionGoalsRepositoryProvider);
@@ -116,7 +113,6 @@ Future<CycleRecap?> recapForPeriod(Ref ref, RecapPeriod period) async {
   // `AppDatabase.close()` in `tearDown`. See
   // `features/activity/domain/activity_repository.dart#getActivities`.
   final allActivities = await activityRepo.getActivities();
-  final cycleRecords = await cycleRepo.getRecords();
 
   final periodActivities = allActivities
       .where((a) => _fallsWithin(a, period))
@@ -184,8 +180,8 @@ Future<CycleRecap?> recapForPeriod(Ref ref, RecapPeriod period) async {
   }
 
   // The period's own tracks, which `RecapBuilder` needs in full and all at
-  // once — a single period is a month or a cycle, so this is bounded by
-  // what one woman can log in ~30 days, not by her whole history.
+  // once — a single period is a month, so this is bounded by what he can
+  // log in ~31 days, not by his whole history.
   final samplesByActivityId = await activityRepo.getSamplesForActivities([
     for (final activity in periodActivities)
       if (activity.source == ActivitySource.recorded) activity.id,
@@ -205,31 +201,6 @@ Future<CycleRecap?> recapForPeriod(Ref ref, RecapPeriod period) async {
     period.end,
   );
 
-  // `CyclePhase.none` is the engine's "no phase known for this day", not a
-  // fifth phase: `getDayStatus` returns it for every day that falls before
-  // the most recently logged period start and outside any logged or
-  // predicted period — which, for a *completed* cycle or month, is most of
-  // the period. `RecapBuilder`'s contract is that a day **absent** from
-  // this map is unknown (which is why `RecapPrHighlight.phase` is
-  // nullable), so a `none` day is left out rather than stored, otherwise
-  // every PR in a cycle-end recap renders as "None phase".
-  final phaseByDay = <LocalDate, CyclePhase>{};
-  if (cycleRecords.isNotEmpty) {
-    final engine = CyclePredictionEngine();
-    final today = LocalDate.today();
-    for (
-      var day = period.start;
-      !day.isAfter(period.end);
-      day = day.addDays(1)
-    ) {
-      final phase = engine
-          .getDayStatus(date: day, records: cycleRecords, today: today)
-          .phase;
-      if (phase == CyclePhase.none) continue;
-      phaseByDay[day] = phase;
-    }
-  }
-
   return const RecapBuilder().build(
     period: period,
     periodActivities: periodActivities,
@@ -240,8 +211,6 @@ Future<CycleRecap?> recapForPeriod(Ref ref, RecapPeriod period) async {
     periodNutritionEntries: nutritionEntries,
     nutritionGoals: nutritionGoals,
     periodCheckins: checkins,
-    phaseByDay: phaseByDay,
-    hasAnyCycleData: cycleRecords.isNotEmpty,
   );
 }
 
@@ -288,7 +257,7 @@ const int _priorFoldChunkSize = 25;
 
 /// Whether [activity]'s **local** calendar day falls inside [period],
 /// both ends inclusive. Local, not UTC: a period is a range of calendar
-/// days a woman lived through (`core/domain/local_date.dart`).
+/// days he lived through (`core/domain/local_date.dart`).
 bool _fallsWithin(Activity activity, RecapPeriod period) {
   final day = LocalDate.fromDateTime(activity.startedAt.toLocal());
   return !day.isBefore(period.start) && !day.isAfter(period.end);
@@ -297,32 +266,27 @@ bool _fallsWithin(Activity activity, RecapPeriod period) {
 /// How many recap periods [recentRecapPeriodsProvider] surfaces at most.
 const int recapHistoryLimit = 6;
 
-/// Every completed cycle and completed calendar month recap period
-/// available to revisit, newest-ending-first, capped at
-/// [recapHistoryLimit] — powers the Progress screen's re-viewable recap
-/// history (`TASKS_TO_DO.md` Task 1.3's second entry point).
+/// Every completed calendar month recap period available to revisit,
+/// newest-ending-first, capped at [recapHistoryLimit] — powers the
+/// Progress screen's re-viewable recap history (`TASKS_TO_DO.md` Task
+/// 1.3's second entry point).
 ///
 /// A candidate month is only offered once it clears the same bar
 /// [RecapBuilder.minSessionsForMonthRecap] applies when actually building
 /// one. Without that, a brand-new account's Progress screen showed six
 /// months whose only possible answer was "there's not quite enough logged
 /// for this period to recap yet" — a list of six dead ends is worse than
-/// no list. Completed *cycles* are not filtered: a cycle appears here only
-/// because she logged the period that closed it, which is a stronger
-/// reality test than a session count, and `RecapBuilder`'s cycle-end guard
-/// accepts water or food or a check-in as content.
+/// no list.
 @riverpod
 Future<List<RecapPeriod>> recentRecapPeriods(Ref ref) async {
-  final cycleRepo = ref.watch(cycleRepositoryProvider);
   final activityRepo = ref.watch(activityRepositoryProvider);
-  final cycleRecords = await cycleRepo.getRecords();
   // One whole-history snapshot, reused for every candidate month below —
   // never `watchActivities().first` (see
   // `features/activity/domain/activity_repository.dart#getActivities`).
   final allActivities = await activityRepo.getActivities();
   final today = LocalDate.today();
 
-  final periods = <RecapPeriod>[...completedCyclePeriods(cycleRecords)];
+  final periods = <RecapPeriod>[];
 
   // Walk backwards from the most recently completed month, one month at a
   // time - cheap since it's pure date arithmetic plus an in-memory count

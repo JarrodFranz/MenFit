@@ -3,16 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:menfit_app/core/config/shared_preferences_provider.dart';
 // `show AppDatabase`: the generated Drift row classes include their own
-// `Activity` and `CycleRecord`, which would collide with the domain
-// entities this test builds fixtures from.
+// `Activity`, which would collide with the domain entity this test builds
+// fixtures from.
 import 'package:menfit_app/core/db/app_database.dart' show AppDatabase;
 import 'package:menfit_app/core/db/app_database_provider.dart';
 import 'package:menfit_app/core/domain/entity_id.dart';
 import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/features/activity/activity_providers.dart';
 import 'package:menfit_app/features/activity/domain/activity.dart';
-import 'package:menfit_app/features/cycle/cycle_providers.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_record.dart';
 import 'package:menfit_app/features/recaps/domain/recap_builder.dart';
 import 'package:menfit_app/features/recaps/domain/recap_period.dart';
 import 'package:menfit_app/features/recaps/recaps_providers.dart';
@@ -119,33 +117,6 @@ void main() {
     expect(periods.map((p) => p.key), isNot(contains(monthBefore.key)));
   });
 
-  test('a completed cycle is offered even with nothing logged inside '
-      'it', () async {
-    // Two logged period starts = one completed cycle. It earns its row by
-    // having completed at all, not by a session count - the cycle-end
-    // guard in `RecapBuilder` accepts water, food or a check-in as content.
-    await container.read(cycleRepositoryProvider).saveRecords([
-      CycleRecord(
-        id: 'cycle-a',
-        periodStart: LocalDate(2024, 1, 1),
-        periodEnd: LocalDate(2024, 1, 5),
-        createdAt: DateTime.utc(2024),
-        updatedAt: DateTime.utc(2024),
-      ),
-      CycleRecord(
-        id: 'cycle-b',
-        periodStart: LocalDate(2024, 2, 1),
-        createdAt: DateTime.utc(2024, 2),
-        updatedAt: DateTime.utc(2024, 2),
-      ),
-    ]);
-
-    final periods = await read();
-
-    expect(periods, hasLength(1));
-    expect(periods.single.kind, RecapPeriodKind.cycleEnd);
-  });
-
   test('the cap is unchanged: never more than recapHistoryLimit, '
       'newest-ending first', () async {
     var month = lastMonth;
@@ -153,20 +124,6 @@ void main() {
       await logSessions(month, RecapBuilder.minSessionsForMonthRecap);
       month = mostRecentCompletedMonth(month.start);
     }
-    await container.read(cycleRepositoryProvider).saveRecords([
-      CycleRecord(
-        id: 'cycle-a',
-        periodStart: LocalDate(2024, 1, 1),
-        createdAt: DateTime.utc(2024),
-        updatedAt: DateTime.utc(2024),
-      ),
-      CycleRecord(
-        id: 'cycle-b',
-        periodStart: LocalDate(2024, 2, 1),
-        createdAt: DateTime.utc(2024, 2),
-        updatedAt: DateTime.utc(2024, 2),
-      ),
-    ]);
 
     final periods = await read();
 

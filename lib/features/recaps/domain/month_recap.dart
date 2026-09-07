@@ -13,8 +13,8 @@ import 'package:menfit_app/features/recaps/domain/recap_pr_highlight.dart';
 /// as a shameful "you lifted 0 kg", so it's absent instead. The story
 /// screen's job is only to skip whichever slides have nothing to show, not
 /// to decide what counts as "nothing".
-class CycleRecap {
-  const CycleRecap({
+class MonthRecap {
+  const MonthRecap({
     required this.period,
     required this.sessionCount,
     required this.consistencyRatio,
@@ -65,19 +65,18 @@ class CycleRecap {
   /// logged. `null` when no protein target is set, or nothing was logged.
   final double? fuelingConsistencyRatio;
 
-  /// Up to 3 personal records set during the period, with phase context —
-  /// see `RecapBuilder` for selection order. Empty when none were set.
+  /// Up to 3 personal records set during the period — see `RecapBuilder`
+  /// for selection order. Empty when none were set.
   final List<RecapPrHighlight> topPrs;
 
-  /// A plain, descriptive (never causal or prescriptive —
-  /// `knowledge/domain/womens_health.md`) observation about energy and
-  /// sleep check-ins, only ever produced from at least 8 check-ins in the
-  /// period. `null` when there isn't enough paired data, or no pattern
-  /// worth naming.
+  /// A plain, descriptive (never causal or prescriptive) observation about
+  /// energy and sleep check-ins, only ever produced from at least 8
+  /// check-ins in the period. `null` when there isn't enough paired data,
+  /// or no pattern worth naming.
   final String? wellbeingObservation;
 
   @override
   String toString() =>
-      'CycleRecap(${period.key}, sessions: $sessionCount, '
+      'MonthRecap(${period.key}, sessions: $sessionCount, '
       'prs: ${topPrs.length})';
 }

@@ -74,19 +74,19 @@ final class RecapMarkerStoreProvider
 
 String _$recapMarkerStoreHash() => r'ea071a1bf8a12c89b4f5e835a292510f9b4c1d5a';
 
-/// Preference controller for whether automatic cycle and monthly recap stories
-/// are presented on startup / cycle end. Defaults to true.
+/// Preference controller for whether automatic monthly recap stories are
+/// presented on startup. Defaults to true.
 
 @ProviderFor(ShowAutomaticRecapsController)
 final showAutomaticRecapsControllerProvider =
     ShowAutomaticRecapsControllerProvider._();
 
-/// Preference controller for whether automatic cycle and monthly recap stories
-/// are presented on startup / cycle end. Defaults to true.
+/// Preference controller for whether automatic monthly recap stories are
+/// presented on startup. Defaults to true.
 final class ShowAutomaticRecapsControllerProvider
     extends $NotifierProvider<ShowAutomaticRecapsController, bool> {
-  /// Preference controller for whether automatic cycle and monthly recap stories
-  /// are presented on startup / cycle end. Defaults to true.
+  /// Preference controller for whether automatic monthly recap stories are
+  /// presented on startup. Defaults to true.
   ShowAutomaticRecapsControllerProvider._()
     : super(
         from: null,
@@ -117,8 +117,8 @@ final class ShowAutomaticRecapsControllerProvider
 String _$showAutomaticRecapsControllerHash() =>
     r'ccc9dd59503e837456ccbdb558e9fadab282b7ed';
 
-/// Preference controller for whether automatic cycle and monthly recap stories
-/// are presented on startup / cycle end. Defaults to true.
+/// Preference controller for whether automatic monthly recap stories are
+/// presented on startup. Defaults to true.
 
 abstract class _$ShowAutomaticRecapsController extends $Notifier<bool> {
   bool build();
@@ -138,7 +138,7 @@ abstract class _$ShowAutomaticRecapsController extends $Notifier<bool> {
   }
 }
 
-/// Builds the [CycleRecap] for an arbitrary [period], gathering every
+/// Builds the [MonthRecap] for an arbitrary [period], gathering every
 /// source through the owning feature's composition surface (ADR 007) —
 /// never a `data/` import. Returns `null` when [RecapBuilder]'s
 /// sparse-data guard applies.
@@ -192,7 +192,7 @@ abstract class _$ShowAutomaticRecapsController extends $Notifier<bool> {
 @ProviderFor(recapForPeriod)
 final recapForPeriodProvider = RecapForPeriodFamily._();
 
-/// Builds the [CycleRecap] for an arbitrary [period], gathering every
+/// Builds the [MonthRecap] for an arbitrary [period], gathering every
 /// source through the owning feature's composition surface (ADR 007) —
 /// never a `data/` import. Returns `null` when [RecapBuilder]'s
 /// sparse-data guard applies.
@@ -246,12 +246,12 @@ final recapForPeriodProvider = RecapForPeriodFamily._();
 final class RecapForPeriodProvider
     extends
         $FunctionalProvider<
-          AsyncValue<CycleRecap?>,
-          CycleRecap?,
-          FutureOr<CycleRecap?>
+          AsyncValue<MonthRecap?>,
+          MonthRecap?,
+          FutureOr<MonthRecap?>
         >
-    with $FutureModifier<CycleRecap?>, $FutureProvider<CycleRecap?> {
-  /// Builds the [CycleRecap] for an arbitrary [period], gathering every
+    with $FutureModifier<MonthRecap?>, $FutureProvider<MonthRecap?> {
+  /// Builds the [MonthRecap] for an arbitrary [period], gathering every
   /// source through the owning feature's composition surface (ADR 007) —
   /// never a `data/` import. Returns `null` when [RecapBuilder]'s
   /// sparse-data guard applies.
@@ -324,12 +324,12 @@ final class RecapForPeriodProvider
 
   @$internal
   @override
-  $FutureProviderElement<CycleRecap?> $createElement(
+  $FutureProviderElement<MonthRecap?> $createElement(
     $ProviderPointer pointer,
   ) => $FutureProviderElement(pointer);
 
   @override
-  FutureOr<CycleRecap?> create(Ref ref) {
+  FutureOr<MonthRecap?> create(Ref ref) {
     final argument = this.argument as RecapPeriod;
     return recapForPeriod(ref, argument);
   }
@@ -345,9 +345,9 @@ final class RecapForPeriodProvider
   }
 }
 
-String _$recapForPeriodHash() => r'8a4d57031448415799da78bb778aeb3bfc45d45c';
+String _$recapForPeriodHash() => r'dcf048b2ee7b7071f207d2701e499ab2842c80c8';
 
-/// Builds the [CycleRecap] for an arbitrary [period], gathering every
+/// Builds the [MonthRecap] for an arbitrary [period], gathering every
 /// source through the owning feature's composition surface (ADR 007) —
 /// never a `data/` import. Returns `null` when [RecapBuilder]'s
 /// sparse-data guard applies.
@@ -399,7 +399,7 @@ String _$recapForPeriodHash() => r'8a4d57031448415799da78bb778aeb3bfc45d45c';
 /// `retry: _noRetry` — see [_noRetry] for why this one must fail fast.
 
 final class RecapForPeriodFamily extends $Family
-    with $FunctionalFamilyOverride<FutureOr<CycleRecap?>, RecapPeriod> {
+    with $FunctionalFamilyOverride<FutureOr<MonthRecap?>, RecapPeriod> {
   RecapForPeriodFamily._()
     : super(
         retry: _noRetry,
@@ -409,7 +409,7 @@ final class RecapForPeriodFamily extends $Family
         isAutoDispose: true,
       );
 
-  /// Builds the [CycleRecap] for an arbitrary [period], gathering every
+  /// Builds the [MonthRecap] for an arbitrary [period], gathering every
   /// source through the owning feature's composition surface (ADR 007) —
   /// never a `data/` import. Returns `null` when [RecapBuilder]'s
   /// sparse-data guard applies.
@@ -467,38 +467,32 @@ final class RecapForPeriodFamily extends $Family
   String toString() => r'recapForPeriodProvider';
 }
 
-/// Every completed cycle and completed calendar month recap period
-/// available to revisit, newest-ending-first, capped at
-/// [recapHistoryLimit] — powers the Progress screen's re-viewable recap
-/// history (`TASKS_TO_DO.md` Task 1.3's second entry point).
+/// Every completed calendar month recap period available to revisit,
+/// newest-ending-first, capped at [recapHistoryLimit] — powers the
+/// Progress screen's re-viewable recap history (`TASKS_TO_DO.md` Task
+/// 1.3's second entry point).
 ///
 /// A candidate month is only offered once it clears the same bar
 /// [RecapBuilder.minSessionsForMonthRecap] applies when actually building
 /// one. Without that, a brand-new account's Progress screen showed six
 /// months whose only possible answer was "there's not quite enough logged
 /// for this period to recap yet" — a list of six dead ends is worse than
-/// no list. Completed *cycles* are not filtered: a cycle appears here only
-/// because she logged the period that closed it, which is a stronger
-/// reality test than a session count, and `RecapBuilder`'s cycle-end guard
-/// accepts water or food or a check-in as content.
+/// no list.
 
 @ProviderFor(recentRecapPeriods)
 final recentRecapPeriodsProvider = RecentRecapPeriodsProvider._();
 
-/// Every completed cycle and completed calendar month recap period
-/// available to revisit, newest-ending-first, capped at
-/// [recapHistoryLimit] — powers the Progress screen's re-viewable recap
-/// history (`TASKS_TO_DO.md` Task 1.3's second entry point).
+/// Every completed calendar month recap period available to revisit,
+/// newest-ending-first, capped at [recapHistoryLimit] — powers the
+/// Progress screen's re-viewable recap history (`TASKS_TO_DO.md` Task
+/// 1.3's second entry point).
 ///
 /// A candidate month is only offered once it clears the same bar
 /// [RecapBuilder.minSessionsForMonthRecap] applies when actually building
 /// one. Without that, a brand-new account's Progress screen showed six
 /// months whose only possible answer was "there's not quite enough logged
 /// for this period to recap yet" — a list of six dead ends is worse than
-/// no list. Completed *cycles* are not filtered: a cycle appears here only
-/// because she logged the period that closed it, which is a stronger
-/// reality test than a session count, and `RecapBuilder`'s cycle-end guard
-/// accepts water or food or a check-in as content.
+/// no list.
 
 final class RecentRecapPeriodsProvider
     extends
@@ -510,20 +504,17 @@ final class RecentRecapPeriodsProvider
     with
         $FutureModifier<List<RecapPeriod>>,
         $FutureProvider<List<RecapPeriod>> {
-  /// Every completed cycle and completed calendar month recap period
-  /// available to revisit, newest-ending-first, capped at
-  /// [recapHistoryLimit] — powers the Progress screen's re-viewable recap
-  /// history (`TASKS_TO_DO.md` Task 1.3's second entry point).
+  /// Every completed calendar month recap period available to revisit,
+  /// newest-ending-first, capped at [recapHistoryLimit] — powers the
+  /// Progress screen's re-viewable recap history (`TASKS_TO_DO.md` Task
+  /// 1.3's second entry point).
   ///
   /// A candidate month is only offered once it clears the same bar
   /// [RecapBuilder.minSessionsForMonthRecap] applies when actually building
   /// one. Without that, a brand-new account's Progress screen showed six
   /// months whose only possible answer was "there's not quite enough logged
   /// for this period to recap yet" — a list of six dead ends is worse than
-  /// no list. Completed *cycles* are not filtered: a cycle appears here only
-  /// because she logged the period that closed it, which is a stronger
-  /// reality test than a session count, and `RecapBuilder`'s cycle-end guard
-  /// accepts water or food or a check-in as content.
+  /// no list.
   RecentRecapPeriodsProvider._()
     : super(
         from: null,
@@ -551,4 +542,4 @@ final class RecentRecapPeriodsProvider
 }
 
 String _$recentRecapPeriodsHash() =>
-    r'462c6564fba428cbacc4f823719467cf5152e888';
+    r'1a8226bdeeb8eeb64b918284bb688ae40a2f1300';

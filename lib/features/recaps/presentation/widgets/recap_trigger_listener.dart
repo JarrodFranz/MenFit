@@ -26,15 +26,14 @@ class RecapTriggerListener extends ConsumerStatefulWidget {
 class _RecapTriggerListenerState extends ConsumerState<RecapTriggerListener> {
   /// Whether this listener has already presented a recap this mount.
   ///
-  /// One recap per sitting, ever: after `markShown` flips the provider back
-  /// to `null` and re-evaluation surfaces a *different* due recap (a
-  /// month-end right after a cycle-end — cycle-end wins precedence in
-  /// `RecapTriggerEvaluator`), presenting it immediately would push a second
-  /// story **on top of the still-open first one**, because Home stays
-  /// mounted beneath the pushed route and this listener stays live. The
-  /// runner-up recap simply waits for the next Home mount (next app launch
-  /// or tab return), which is the "show exactly one, never two" rule the
-  /// feature spec requires.
+  /// One recap per sitting, ever: if `markShown` flips the provider back
+  /// to `null` and re-evaluation somehow surfaces a *different* due recap
+  /// right away, presenting it immediately would push a second story **on
+  /// top of the still-open first one**, because Home stays mounted beneath
+  /// the pushed route and this listener stays live. The runner-up recap
+  /// simply waits for the next Home mount (next app launch or tab return),
+  /// which is the "show exactly one, never two" rule the feature spec
+  /// requires.
   bool _handled = false;
 
   @override

@@ -10,7 +10,7 @@ import 'package:menfit_app/core/widgets/app_bottom_sheet.dart';
 import 'package:menfit_app/core/widgets/share_capture.dart';
 import 'package:menfit_app/core/widgets/share_card_style.dart';
 import 'package:menfit_app/features/accessibility/presentation/accessibility_haptics.dart';
-import 'package:menfit_app/features/recaps/domain/cycle_recap.dart';
+import 'package:menfit_app/features/recaps/domain/month_recap.dart';
 
 /// The recap story's "Save recap card" export sheet — reuses Wave 2's
 /// share-card approach (`core/widgets/share_card_style.dart`: the same
@@ -18,20 +18,12 @@ import 'package:menfit_app/features/recaps/domain/cycle_recap.dart';
 /// `features/activity/presentation/widgets/workout_share_dialog.dart`)
 /// rather than inventing a second rendering path, per Task 1.3's explicit
 /// instruction.
-///
-/// Cycle phase context on any of the recap's PRs is **opt-in** in the
-/// exported graphic *and* in the copied text, mirroring Wave 2's
-/// phase-pill toggle exactly: the toggle defaults **off**, so S3 cycle
-/// data (`knowledge/engineering/security_and_privacy.md`) never leaves
-/// this screen unless she turns it on for that share. The toggle is
-/// hidden entirely when no PR in the recap carries a phase — offering to
-/// include something that does not exist only invites the question.
 class RecapShareSheet extends ConsumerStatefulWidget {
   const RecapShareSheet({required this.recap, super.key});
 
-  final CycleRecap recap;
+  final MonthRecap recap;
 
-  static Future<void> show(BuildContext context, {required CycleRecap recap}) {
+  static Future<void> show(BuildContext context, {required MonthRecap recap}) {
     return showAppBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -59,20 +51,9 @@ class _RecapShareSheetState extends ConsumerState<RecapShareSheet> {
   /// Which card [_cardPng] is a picture of.
   String? _capturedCard;
 
-  /// Opt-in, never opt-out: a shareable surface starts with no cycle data
-  /// on it (see the class dartdoc).
-  bool _showPhaseContext = false;
-
-  /// Whether any PR has a phase worth offering to include —
-  /// `displayPhase`, so a `CyclePhase.none` PR does not put a toggle on
-  /// screen that would change nothing.
-  bool get _hasPhaseContext =>
-      widget.recap.topPrs.any((pr) => pr.displayPhase != null);
-
   /// Identity of the card as currently configured - every control that
   /// changes a pixel of it appears here.
-  String get _cardSignature =>
-      '${_ratio.name}|${_theme.name}|$_showPhaseContext';
+  String get _cardSignature => '${_ratio.name}|${_theme.name}';
 
   /// Guards against the sheet's entrance animation queueing a full-size
   /// raster on every one of its ~15 frames: [build] registers a callback
@@ -210,19 +191,6 @@ class _RecapShareSheetState extends ConsumerState<RecapShareSheet> {
                       onSelectionChanged: (selected) =>
                           setState(() => _theme = selected.first),
                     ),
-                    if (_hasPhaseContext) ...[
-                      SizedBox(height: tokens.spacingMd),
-                      SwitchListTile.adaptive(
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(
-                          'Include cycle phase context',
-                          style: textTheme.bodyMedium,
-                        ),
-                        value: _showPhaseContext,
-                        onChanged: (val) =>
-                            setState(() => _showPhaseContext = val),
-                      ),
-                    ],
                   ],
                 ),
               ),
@@ -363,9 +331,7 @@ class _RecapShareSheetState extends ConsumerState<RecapShareSheet> {
                   ),
                 ),
                 child: Text(
-                  _showPhaseContext && topPr.displayPhase != null
-                      ? '🏆 ${topPr.label} · ${topPr.displayPhase!.label}'
-                      : '🏆 ${topPr.label}',
+                  '🏆 ${topPr.label}',
                   style: const TextStyle(
                     color: Color(0xFFF59E0B),
                     fontSize: 10,
@@ -490,9 +456,8 @@ class _RecapShareSheetState extends ConsumerState<RecapShareSheet> {
     );
   }
 
-  /// The one recap text both actions use - a second builder would
-  /// eventually gate the phase toggle two different ways
-  /// (`knowledge/engineering/security_and_privacy.md`).
+  /// The one recap text both actions use, so Share and Copy never drift
+  /// apart.
   String _buildShareText() {
     final recap = widget.recap;
     final lines = <String>['${recap.period.label} on MenFit!'];
@@ -507,12 +472,9 @@ class _RecapShareSheetState extends ConsumerState<RecapShareSheet> {
     }
     lines.add('• Sessions: ${recap.sessionCount}');
     for (final pr in recap.topPrs) {
-      final phaseText = _showPhaseContext && pr.displayPhase != null
-          ? ' (${pr.displayPhase!.label} phase)'
-          : '';
-      lines.add('🏆 ${pr.label}: ${pr.valueLabel}$phaseText');
+      lines.add('🏆 ${pr.label}: ${pr.valueLabel}');
     }
-    lines.add('#MenFit #WomensFitness');
+    lines.add('#MenFit');
     return lines.join('\n');
   }
 }

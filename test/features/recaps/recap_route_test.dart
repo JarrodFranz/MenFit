@@ -33,7 +33,7 @@ void main() {
     // A web reload or a deep link arrives with `state.extra == null`:
     // go_router's `extra` is an in-memory object and never survives
     // either. The generated factory used to cast it to a non-nullable
-    // `CycleRecap` and throw during route build.
+    // `MonthRecap` and throw during route build.
     await tester.pumpWidget(
       MaterialApp.router(routerConfig: _buildRouter(initialLocation: '/recap')),
     );

@@ -4,13 +4,11 @@ import 'package:menfit_app/features/activity/domain/activity.dart';
 import 'package:menfit_app/features/activity/domain/activity_sample.dart';
 import 'package:menfit_app/features/activity/domain/personal_records.dart';
 import 'package:menfit_app/features/activity/domain/workout_details.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_record.dart';
 import 'package:menfit_app/features/nutrition/domain/meal_type.dart';
 import 'package:menfit_app/features/nutrition/domain/nutrition_entry.dart';
 import 'package:menfit_app/features/nutrition/domain/nutrition_facts.dart';
 import 'package:menfit_app/features/nutrition/domain/nutrition_goals.dart';
-import 'package:menfit_app/features/recaps/domain/cycle_recap.dart';
+import 'package:menfit_app/features/recaps/domain/month_recap.dart';
 import 'package:menfit_app/features/recaps/domain/recap_builder.dart';
 import 'package:menfit_app/features/recaps/domain/recap_period.dart';
 import 'package:menfit_app/features/recaps/domain/recap_pr_highlight.dart';
@@ -19,31 +17,6 @@ import 'package:menfit_app/features/wellbeing/domain/daily_checkin.dart';
 /// Every fixture lives in July 2026 (31 days), so `consistencyRatio`
 /// denominators below are all `31`.
 final RecapPeriod _july = RecapPeriod.forMonth(LocalDate(2026, 7, 1));
-
-/// A **completed-cycle** period spanning exactly the same 1–31 July window
-/// as [_july], so any month-vs-cycle-end difference a test sees is down to
-/// [RecapPeriod.kind] alone and never to the dates.
-///
-/// Most tests below use this rather than [_july] because the two kinds
-/// carry different sparse-data bars (`RecapBuilder.build`): a month recap
-/// demands 3+ sessions, while a cycle-end recap only demands *some*
-/// content in the period. That lets a hydration/fueling/wellbeing test
-/// bring exactly the data it is about — water, food, check-ins — without
-/// padding in three unrelated sessions it then has to reason about.
-final RecapPeriod _julyCycle = RecapPeriod.forCompletedCycle(
-  cycleStart: CycleRecord(
-    id: 'cycle-july-start',
-    periodStart: LocalDate(2026, 7, 1),
-    createdAt: DateTime.utc(2026, 7),
-    updatedAt: DateTime.utc(2026, 7),
-  ),
-  nextCycleStart: CycleRecord(
-    id: 'cycle-august-start',
-    periodStart: LocalDate(2026, 8, 1),
-    createdAt: DateTime.utc(2026, 8),
-    updatedAt: DateTime.utc(2026, 8),
-  ),
-);
 
 /// A UTC instant that is unambiguously *[day] July local time* in any
 /// timezone the suite might run in — `RecapBuilder` buckets activities by
@@ -79,6 +52,19 @@ Activity _activity({
     workoutDetails: workoutDetails,
   );
 }
+
+/// Three inert sessions (no distance, no strength) whose only purpose is
+/// clearing [RecapBuilder.minSessionsForMonthRecap] — every `RecapPeriod`
+/// is a month now that the cycle-end path is gone, so a test that wants to
+/// isolate one metric (hydration, fueling, wellbeing, a single PR) without
+/// caring about session count still needs to clear the guard. Days 29-31
+/// never collide with a test's own fixtures, which all live in the first
+/// half of the month.
+List<Activity> _fillerSessions() => [
+  _activity(id: 'filler-1', day: 29),
+  _activity(id: 'filler-2', day: 30),
+  _activity(id: 'filler-3', day: 31),
+];
 
 StrengthWorkoutDetails _strength({
   required String name,
@@ -174,7 +160,7 @@ List<ActivitySample> _straightTrack({
   ];
 }
 
-CycleRecap? _build({
+MonthRecap? _build({
   RecapPeriod? period,
   List<Activity> activities = const [],
   Map<String, List<ActivitySample>> samples = const {},
@@ -184,8 +170,6 @@ CycleRecap? _build({
   List<NutritionEntry> nutrition = const [],
   NutritionGoals? goals,
   List<DailyCheckin> checkins = const [],
-  Map<LocalDate, CyclePhase> phaseByDay = const {},
-  bool hasAnyCycleData = true,
 }) {
   return const RecapBuilder().build(
     period: period ?? _july,
@@ -197,8 +181,6 @@ CycleRecap? _build({
     periodNutritionEntries: nutrition,
     nutritionGoals: goals,
     periodCheckins: checkins,
-    phaseByDay: phaseByDay,
-    hasAnyCycleData: hasAnyCycleData,
   );
 }
 
@@ -291,18 +273,18 @@ void main() {
     });
 
     test('never manufactures a zero for a metric with nothing logged', () {
-      // A cycle-end period whose only content is a single check-in - the
-      // sparsest recap the guard still builds. Every optional metric must
-      // be absent rather than a shaming "0" (Task 1.3's framing rule,
-      // enforced here rather than in the slide widgets).
+      // The sparsest recap the guard still builds: just enough sessions to
+      // clear the bar, with a single check-in and nothing else. Every
+      // optional metric must be absent rather than a shaming "0" (Task
+      // 1.3's framing rule, enforced here rather than in the slide
+      // widgets).
       final recap = _build(
-        period: _julyCycle,
+        activities: _fillerSessions(),
         checkins: [_checkin(1)],
       );
 
       expect(recap, isNotNull);
-      expect(recap!.sessionCount, 0);
-      expect(recap.consistencyRatio, 0.0);
+      expect(recap!.sessionCount, 3);
       expect(recap.distanceByType, isEmpty);
       expect(recap.totalDistanceMeters, isNull);
       expect(recap.totalTonnageKg, isNull);
@@ -315,9 +297,9 @@ void main() {
 
     test('strength work with no completed weight yields no tonnage', () {
       final recap = _build(
-        period: _julyCycle,
         priorRecords: _unbeatableRecords(),
         activities: [
+          ..._fillerSessions(),
           _activity(
             id: 'a1',
             day: 4,
@@ -343,95 +325,29 @@ void main() {
         _activity(id: 'a$i', day: i + 1, distanceMeters: 1000),
     ];
 
-    test('month recap: null below 3 sessions even with cycle data', () {
-      // The defining regression case: one old period record elsewhere in
-      // the app must NOT cause a hollow month recap to interrupt the user
-      // (this exact shape broke settings_delete_data_test's seeded state).
+    test('null below 3 sessions', () {
       expect(
         _build(activities: sessions(2), priorRecords: _unbeatableRecords()),
         isNull,
       );
       expect(_build(priorRecords: _unbeatableRecords()), isNull);
-      expect(
-        _build(
-          activities: sessions(2),
-          priorRecords: _unbeatableRecords(),
-          hasAnyCycleData: false,
-        ),
-        isNull,
-      );
     });
 
-    test('month recap: builds at 3 sessions even with no cycle data', () {
+    test('builds at 3 sessions', () {
       final recap = _build(
         activities: sessions(3),
         priorRecords: _unbeatableRecords(),
-        hasAnyCycleData: false,
       );
 
       expect(recap, isNotNull);
       expect(recap!.sessionCount, 3);
-    });
-
-    test('cycle-end recap: builds below 3 sessions with cycle data', () {
-      final recap = _build(
-        period: _julyCycle,
-        activities: sessions(2),
-        priorRecords: _unbeatableRecords(),
-      );
-
-      expect(recap, isNotNull);
-      expect(recap!.sessionCount, 2);
-    });
-
-    test('cycle-end recap: builds on water, food or check-ins alone', () {
-      // Content for a cycle-end recap is anything she logged during the
-      // cycle - a woman tracking her cycle who logged only food and water
-      // through it still gets a modest recap.
-      final onWaterAlone = _build(
-        period: _julyCycle,
-        priorRecords: _unbeatableRecords(),
-        water: {LocalDate(2026, 7, 3): 1500},
-      );
-      expect(onWaterAlone, isNotNull);
-      // No sessions at all, and the recap says so honestly.
-      expect(onWaterAlone!.sessionCount, 0);
-
-      expect(
-        _build(
-          period: _julyCycle,
-          priorRecords: _unbeatableRecords(),
-          nutrition: [_entry(4, proteinGrams: 20)],
-        ),
-        isNotNull,
-      );
-
-      expect(
-        _build(
-          period: _julyCycle,
-          priorRecords: _unbeatableRecords(),
-          checkins: [_checkin(5, energy: 3)],
-        ),
-        isNotNull,
-      );
-    });
-
-    test('cycle-end recap: null when the period has no content at all', () {
-      // A completed cycle alone is not enough when there is not a single
-      // session, check-in, water day or nutrition entry inside the period
-      // to talk about.
-      expect(
-        _build(period: _julyCycle, priorRecords: _unbeatableRecords()),
-        isNull,
-      );
     });
   });
 
   group('RecapBuilder hydration consistency', () {
     test('is days-hit over days-logged, not over calendar days', () {
       final recap = _build(
-        period: _julyCycle,
-        priorRecords: _unbeatableRecords(),
+        activities: _fillerSessions(),
         water: {
           LocalDate(2026, 7, 1): 2500,
           LocalDate(2026, 7, 2): 1200,
@@ -448,7 +364,10 @@ void main() {
     test('is null when no water was logged at all', () {
       // A check-in is what gets this period past the sparse-data guard; it
       // has no bearing on hydration either way.
-      final recap = _build(period: _julyCycle, checkins: [_checkin(1)]);
+      final recap = _build(
+        activities: _fillerSessions(),
+        checkins: [_checkin(1)],
+      );
       expect(recap!.hydrationConsistencyRatio, isNull);
     });
 
@@ -456,7 +375,7 @@ void main() {
       'is null when water was logged but never hit target (no 0% shaming)',
       () {
         final recap = _build(
-          period: _julyCycle,
+          activities: _fillerSessions(),
           water: {
             LocalDate(2026, 7, 1): 500,
             LocalDate(2026, 7, 2): 1999,
@@ -470,7 +389,7 @@ void main() {
 
     test('is null when water was logged on fewer than 3 days', () {
       final recap = _build(
-        period: _julyCycle,
+        activities: _fillerSessions(),
         water: {
           LocalDate(2026, 7, 1): 2500,
           LocalDate(2026, 7, 2): 2200,
@@ -484,7 +403,7 @@ void main() {
       'counts a day exactly on target as a hit when at least 3 days logged',
       () {
         final recap = _build(
-          period: _julyCycle,
+          activities: _fillerSessions(),
           water: {
             LocalDate(2026, 7, 1): 2000,
             LocalDate(2026, 7, 2): 2000,
@@ -499,7 +418,7 @@ void main() {
   group('RecapBuilder fueling consistency', () {
     test('is days-met over days-logged at the 85% protein threshold', () {
       final recap = _build(
-        period: _julyCycle,
+        activities: _fillerSessions(),
         goals: _goals(proteinTargetGrams: 100),
         nutrition: [
           _entry(1, proteinGrams: 90),
@@ -514,7 +433,7 @@ void main() {
 
     test('is null when protein target was never hit (no 0% shaming)', () {
       final recap = _build(
-        period: _julyCycle,
+        activities: _fillerSessions(),
         goals: _goals(proteinTargetGrams: 100),
         nutrition: [
           _entry(1, proteinGrams: 50),
@@ -528,7 +447,7 @@ void main() {
 
     test('is null when fewer than 3 days logged', () {
       final recap = _build(
-        period: _julyCycle,
+        activities: _fillerSessions(),
         goals: _goals(proteinTargetGrams: 100),
         nutrition: [
           _entry(1, proteinGrams: 90),
@@ -541,7 +460,7 @@ void main() {
 
     test('ignores a day whose entries total nothing at all', () {
       final recap = _build(
-        period: _julyCycle,
+        activities: _fillerSessions(),
         goals: _goals(proteinTargetGrams: 100),
         nutrition: [
           _entry(1, proteinGrams: 90),
@@ -556,7 +475,7 @@ void main() {
 
     test('is null with no protein target set', () {
       final recap = _build(
-        period: _julyCycle,
+        activities: _fillerSessions(),
         goals: _goals(),
         nutrition: [_entry(1, proteinGrams: 90)],
       );
@@ -567,7 +486,7 @@ void main() {
     test('is null with a target but nothing logged', () {
       // The check-in only clears the sparse-data guard - it is not food.
       final recap = _build(
-        period: _julyCycle,
+        activities: _fillerSessions(),
         goals: _goals(proteinTargetGrams: 100),
         checkins: [_checkin(1)],
       );
@@ -576,15 +495,9 @@ void main() {
   });
 
   group('RecapBuilder personal records', () {
-    test('credits the first three PRs chronologically, with the phase '
-        'each was set in', () {
+    test('credits the first three PRs chronologically', () {
       final recap = _build(
         priorMaxWeights: const {'deadlift': 60},
-        phaseByDay: {
-          LocalDate(2026, 7, 2): CyclePhase.follicular,
-          LocalDate(2026, 7, 12): CyclePhase.luteal,
-          LocalDate(2026, 7, 15): CyclePhase.menstrual,
-        },
         activities: [
           _activity(
             id: 'a1',
@@ -614,34 +527,18 @@ void main() {
       expect(recap.topPrs[0].type, RecapPrType.longestDistance);
       expect(recap.topPrs[0].label, 'Longest distance');
       expect(recap.topPrs[0].valueLabel, '10.00 km');
-      expect(recap.topPrs[0].phase, CyclePhase.follicular);
       expect(recap.topPrs[0].achievedAt, _at(2));
 
       expect(recap.topPrs[1].type, RecapPrType.mostElevation);
       expect(recap.topPrs[1].label, 'Highest climb');
       expect(recap.topPrs[1].valueLabel, '300 m');
-      expect(recap.topPrs[1].phase, CyclePhase.follicular);
 
       expect(recap.topPrs[2].type, RecapPrType.longestDistance);
       expect(recap.topPrs[2].valueLabel, '12.00 km');
-      expect(recap.topPrs[2].phase, CyclePhase.luteal);
-    });
-
-    test('leaves phase null on a day no cycle data covers', () {
-      // `phaseByDay` - not the period kind - is the only source of phase,
-      // so an empty map leaves a PR unphased even in a cycle-end recap.
-      final recap = _build(
-        period: _julyCycle,
-        activities: [_activity(id: 'a1', day: 2, distanceMeters: 10000)],
-      );
-
-      expect(recap!.topPrs, hasLength(1));
-      expect(recap.topPrs.single.phase, isNull);
     });
 
     test('a session that merely equals the standing record is not a PR', () {
       final recap = _build(
-        period: _julyCycle,
         priorRecords: PersonalRecords(
           bestEfforts: const {},
           longestDistance: PrEntry<double>(
@@ -651,7 +548,10 @@ void main() {
             value: 10000,
           ),
         ),
-        activities: [_activity(id: 'a1', day: 2, distanceMeters: 10000)],
+        activities: [
+          ..._fillerSessions(),
+          _activity(id: 'a1', day: 2, distanceMeters: 10000),
+        ],
       );
 
       expect(recap!.topPrs, isEmpty);
@@ -708,9 +608,9 @@ void main() {
 
     test('ignores an uncompleted heavy set', () {
       final recap = _build(
-        period: _julyCycle,
         priorMaxWeights: const {'deadlift': 60},
         activities: [
+          ..._fillerSessions(),
           _activity(
             id: 'a1',
             day: 2,
@@ -735,17 +635,17 @@ void main() {
       );
 
       expect(recap!.topPrs, isEmpty);
-      // The set she racked but never lifted is not tonnage either: with
+      // The set he racked but never lifted is not tonnage either: with
       // nothing completed, there is no strength work to report at all.
-      // (`CycleRecap.totalTonnageKg`: "summed across every completed set".)
+      // (`MonthRecap.totalTonnageKg`: "summed across every completed set".)
       expect(recap.totalTonnageKg, isNull);
     });
 
     test('tonnage counts completed sets only, not planned ones', () {
       final recap = _build(
-        period: _julyCycle,
         priorMaxWeights: const {'bench press': 200},
         activities: [
+          ..._fillerSessions(),
           _activity(
             id: 'a1',
             day: 3,
@@ -788,10 +688,9 @@ void main() {
       final samples = _straightTrack(activityId: trackId, count: 130);
 
       final recap = _build(
-        period: _julyCycle,
         priorRecords: _unbeatableRecords(),
-        phaseByDay: {LocalDate(2026, 7, 20): CyclePhase.ovulatory},
         activities: [
+          ..._fillerSessions(),
           _activity(
             id: trackId,
             day: 20,
@@ -808,16 +707,15 @@ void main() {
         (pr) => pr.type == RecapPrType.bestEffort,
       );
       expect(effort.label, '1 km best effort');
-      expect(effort.phase, CyclePhase.ovulatory);
       expect(effort.valueLabel, isNotEmpty);
     });
 
     test('ignores samples for a manually-logged activity', () {
       const id = 'manual-1';
       final recap = _build(
-        period: _julyCycle,
         priorRecords: _unbeatableRecords(),
         activities: [
+          ..._fillerSessions(),
           _activity(
             id: id,
             day: 20,
@@ -865,7 +763,7 @@ void main() {
 
     test('stays silent below 8 check-ins, however strong the pattern', () {
       final recap = _build(
-        period: _julyCycle,
+        activities: _fillerSessions(),
         checkins: checkins(goodSleepDays: 4, otherDays: 3),
       );
 
@@ -876,7 +774,7 @@ void main() {
       // 4 and 4 is exactly the shared per-arm floor, and energy 5 against
       // energy 2 separates completely (Cliff's delta 1.0).
       final recap = _build(
-        period: _julyCycle,
+        activities: _fillerSessions(),
         checkins: checkins(goodSleepDays: 4, otherDays: 4),
       );
 
@@ -887,8 +785,7 @@ void main() {
         'On the days you logged better sleep, your energy check-ins '
         'tended to be higher too.',
       );
-      // Descriptive, never causal or prescriptive
-      // (`knowledge/domain/womens_health.md`).
+      // Descriptive, never causal or prescriptive.
       final lower = observation!.toLowerCase();
       for (final banned in const [
         'because',
@@ -906,7 +803,7 @@ void main() {
       // Three answered both, two answered both the other way, three
       // answered energy alone — neither arm reaches four.
       final recap = _build(
-        period: _julyCycle,
+        activities: _fillerSessions(),
         checkins: checkins(
           goodSleepDays: 3,
           otherDays: 2,
@@ -919,7 +816,7 @@ void main() {
 
     test('stays silent when every logged night was a good one', () {
       final recap = _build(
-        period: _julyCycle,
+        activities: _fillerSessions(),
         checkins: checkins(goodSleepDays: 8, otherDays: 0),
       );
 
@@ -929,7 +826,7 @@ void main() {
     test('stays silent when the difference is too small to be worth '
         'naming', () {
       final recap = _build(
-        period: _julyCycle,
+        activities: _fillerSessions(),
         checkins: checkins(
           goodSleepDays: 4,
           otherDays: 4,
@@ -944,9 +841,9 @@ void main() {
     test('stays silent when one arm is a single night against seven', () {
       // The finding this gate exists for: the arms used only have to be
       // non-empty, so one well-slept night with high energy against seven
-      // poor ones produced a sentence about her body.
+      // poor ones produced a sentence about him.
       final recap = _build(
-        period: _julyCycle,
+        activities: _fillerSessions(),
         checkins: checkins(goodSleepDays: 7, otherDays: 1),
       );
 
@@ -954,7 +851,7 @@ void main() {
 
       // ...and the mirror image, one poor night against seven good ones.
       final mirrored = _build(
-        period: _julyCycle,
+        activities: _fillerSessions(),
         checkins: checkins(goodSleepDays: 1, otherDays: 7),
       );
 
@@ -969,7 +866,7 @@ void main() {
       // manufacture the comparison; they belong to neither arm, so the
       // lower arm is still three and the observation stays absent.
       final recap = _build(
-        period: _julyCycle,
+        activities: _fillerSessions(),
         checkins: checkins(
           goodSleepDays: 4,
           otherDays: 3,
@@ -986,7 +883,7 @@ void main() {
       // (Cliff's delta 0.125, well under 0.33), so the "difference" is two
       // orderings away from vanishing. A mean gap alone could not see it.
       final recap = _build(
-        period: _julyCycle,
+        activities: _fillerSessions(),
         checkins: [
           _checkin(1, energy: 3, sleep: 5),
           _checkin(2, energy: 4, sleep: 5),
@@ -1005,7 +902,7 @@ void main() {
     test('stays silent when better-slept days scored lower, never naming '
         'the reverse', () {
       final recap = _build(
-        period: _julyCycle,
+        activities: _fillerSessions(),
         checkins: checkins(
           goodSleepDays: 4,
           otherDays: 4,

@@ -7,7 +7,7 @@ import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/core/errors/app_exception.dart';
 import 'package:menfit_app/core/errors/error_messages.dart';
 import 'package:menfit_app/core/theme/app_theme.dart';
-import 'package:menfit_app/features/recaps/domain/cycle_recap.dart';
+import 'package:menfit_app/features/recaps/domain/month_recap.dart';
 import 'package:menfit_app/features/recaps/domain/recap_period.dart';
 import 'package:menfit_app/features/recaps/recaps_providers.dart';
 import 'package:menfit_app/features/recaps/recaps_widgets.dart';
@@ -22,7 +22,7 @@ final RecapPeriod _period = RecapPeriod.forMonth(LocalDate(2026, 7, 15));
 /// [buildRecap] stands in for the real (slow) recap build and is called
 /// afresh on every provider build, so a retry after a failure really does
 /// run it again.
-Widget _app({required Future<CycleRecap?> Function() buildRecap}) {
+Widget _app({required Future<MonthRecap?> Function() buildRecap}) {
   return ProviderScope(
     overrides: [
       recentRecapPeriodsProvider.overrideWith((ref) async => [_period]),
@@ -50,7 +50,7 @@ Future<void> _clearSnackBars(WidgetTester tester) async {
 void main() {
   testWidgets('a tap shows a progress indicator in place of the chevron '
       'and blocks a second tap', (tester) async {
-    final pending = Completer<CycleRecap?>();
+    final pending = Completer<MonthRecap?>();
     await tester.pumpWidget(_app(buildRecap: () => pending.future));
     await tester.pumpAndSettle();
 

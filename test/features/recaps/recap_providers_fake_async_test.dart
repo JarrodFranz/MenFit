@@ -6,7 +6,7 @@ import 'package:menfit_app/core/config/shared_preferences_provider.dart';
 import 'package:menfit_app/core/db/app_database.dart';
 import 'package:menfit_app/core/db/app_database_provider.dart';
 import 'package:menfit_app/core/domain/local_date.dart';
-import 'package:menfit_app/features/recaps/domain/cycle_recap.dart';
+import 'package:menfit_app/features/recaps/domain/month_recap.dart';
 import 'package:menfit_app/features/recaps/domain/recap_period.dart';
 import 'package:menfit_app/features/recaps/recaps_providers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -73,7 +73,7 @@ void main() {
 
     // An empty database trips `RecapBuilder`'s sparse-data guard, so the
     // value is `null` - what matters is that it is a *value* at all.
-    expect(subscription.read(), isA<AsyncData<CycleRecap?>>());
+    expect(subscription.read(), isA<AsyncData<MonthRecap?>>());
 
     container.dispose();
     await database.close();

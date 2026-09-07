@@ -5,8 +5,7 @@ import 'package:menfit_app/core/config/shared_preferences_provider.dart';
 import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/core/theme/app_theme.dart';
 import 'package:menfit_app/features/activity/domain/activity.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
-import 'package:menfit_app/features/recaps/domain/cycle_recap.dart';
+import 'package:menfit_app/features/recaps/domain/month_recap.dart';
 import 'package:menfit_app/features/recaps/domain/recap_period.dart';
 import 'package:menfit_app/features/recaps/domain/recap_pr_highlight.dart';
 import 'package:menfit_app/features/recaps/presentation/recap_story_screen.dart';
@@ -17,43 +16,41 @@ final RecapPeriod _july = RecapPeriod.forMonth(LocalDate(2026, 7, 1));
 
 /// A recap with something for every slide: opener, movement, strength,
 /// mindful, PR showcase, hydration/fueling, wellbeing, closing.
-CycleRecap _fullRecap({CyclePhase? phase = CyclePhase.follicular}) =>
-    CycleRecap(
-      period: _july,
-      sessionCount: 12,
-      consistencyRatio: 12 / 31,
-      distanceByType: const {
-        ActivityType.run: 42000,
-        ActivityType.walk: 8000,
-      },
-      totalDistanceMeters: 50000,
-      totalTonnageKg: 3450,
-      mindfulMinutes: 90,
-      hydrationConsistencyRatio: 0.75,
-      fuelingConsistencyRatio: 0.5,
-      topPrs: [
-        RecapPrHighlight(
-          type: RecapPrType.bestEffort,
-          label: '5 km best effort',
-          valueLabel: '24:12',
-          achievedAt: DateTime.utc(2026, 7, 12),
-          phase: phase,
-        ),
-      ],
-      wellbeingObservation:
-          'On the days you logged better sleep, your energy check-ins '
-          'tended to be higher too.',
-    );
+MonthRecap _fullRecap() => MonthRecap(
+  period: _july,
+  sessionCount: 12,
+  consistencyRatio: 12 / 31,
+  distanceByType: const {
+    ActivityType.run: 42000,
+    ActivityType.walk: 8000,
+  },
+  totalDistanceMeters: 50000,
+  totalTonnageKg: 3450,
+  mindfulMinutes: 90,
+  hydrationConsistencyRatio: 0.75,
+  fuelingConsistencyRatio: 0.5,
+  topPrs: [
+    RecapPrHighlight(
+      type: RecapPrType.bestEffort,
+      label: '5 km best effort',
+      valueLabel: '24:12',
+      achievedAt: DateTime.utc(2026, 7, 12),
+    ),
+  ],
+  wellbeingObservation:
+      'On the days you logged better sleep, your energy check-ins '
+      'tended to be higher too.',
+);
 
 /// A recap whose optional metrics are all absent — only the opener and the
 /// closing affirmation should survive (Task 1.3's "never render a zero").
-CycleRecap _sparseRecap() =>
-    CycleRecap(period: _july, sessionCount: 4, consistencyRatio: 4 / 31);
+MonthRecap _sparseRecap() =>
+    MonthRecap(period: _july, sessionCount: 4, consistencyRatio: 4 / 31);
 
 /// A yoga/Pilates-only period: mindful minutes and nothing else. The
 /// figure used to be computed and then shown only as a footnote of the
 /// strength slide, so a recap like this one never showed it at all.
-CycleRecap _mindfulOnlyRecap({int mindfulMinutes = 90}) => CycleRecap(
+MonthRecap _mindfulOnlyRecap({int mindfulMinutes = 90}) => MonthRecap(
   period: _july,
   sessionCount: 5,
   consistencyRatio: 5 / 31,
@@ -62,7 +59,7 @@ CycleRecap _mindfulOnlyRecap({int mindfulMinutes = 90}) => CycleRecap(
 
 Future<void> _pumpStory(
   WidgetTester tester,
-  CycleRecap recap, {
+  MonthRecap recap, {
   bool reduceMotion = false,
 }) async {
   SharedPreferences.setMockInitialValues({
@@ -125,7 +122,7 @@ void main() {
 
       expect(_slideCount(tester), 8);
       expect(_filledSegments(tester), 1);
-      expect(find.text('Your July'), findsOneWidget);
+      expect(find.text('Monthly Summary · Your July'), findsOneWidget);
       expect(find.textContaining('12 of 31 days'), findsOneWidget);
     });
 
@@ -180,9 +177,7 @@ void main() {
       expect(find.text('Strength moved'), findsOneWidget);
     });
 
-    testWidgets('shows the PR phase context on the showcase slide', (
-      tester,
-    ) async {
+    testWidgets('shows the PR showcase slide', (tester) async {
       await _pumpStory(tester, _fullRecap());
 
       for (var i = 0; i < 4; i++) {
@@ -192,24 +187,7 @@ void main() {
 
       expect(find.text('Personal records set'), findsOneWidget);
       expect(find.text('24:12'), findsOneWidget);
-      expect(find.text('5 km best effort · Follicular phase'), findsOneWidget);
-    });
-
-    testWidgets('renders a CyclePhase.none PR without a phase suffix', (
-      tester,
-    ) async {
-      // `none` is the prediction engine's "no phase known", not a fifth
-      // phase; the providers keep it out of the phase map, and the slide
-      // must not render "None phase" if one ever reaches it anyway.
-      await _pumpStory(tester, _fullRecap(phase: CyclePhase.none));
-
-      for (var i = 0; i < 4; i++) {
-        await _tapForward(tester);
-        await tester.pumpAndSettle();
-      }
-
       expect(find.text('5 km best effort'), findsOneWidget);
-      expect(find.textContaining('None'), findsNothing);
     });
 
     testWidgets('a first slide left tap stays put rather than dismissing', (

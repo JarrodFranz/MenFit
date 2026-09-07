@@ -89,8 +89,7 @@ class DeleteMyDataService {
   final ChallengeRepository challengeRepository;
   final ProfileRepository profileRepository;
 
-  /// Clears `RecapMarkerStore`'s two keys, and
-  /// `OnlineLookupNoticeStore`'s one.
+  /// Clears `RecapMarkerStore`'s key, and `OnlineLookupNoticeStore`'s one.
   ///
   /// Passed as callbacks rather than as the stores themselves: both live in
   /// their own feature's `data/` layer, which `architecture_overview.md`

@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:menfit_app/core/theme/tokens.dart';
-import 'package:menfit_app/features/recaps/domain/cycle_recap.dart';
-import 'package:menfit_app/features/recaps/domain/recap_period.dart';
+import 'package:menfit_app/features/recaps/domain/month_recap.dart';
 import 'package:menfit_app/features/recaps/presentation/widgets/recap_slide_scaffold.dart';
 
 /// Builds the ordered, non-empty slides for [recap] (Task 1.3,
 /// `TASKS_TO_DO.md`): opener → movement → strength → mindful → PR showcase
 /// → hydration/fueling → wellbeing → closing affirmation, skipping any
-/// slide [CycleRecap] has nothing for — the framing rule is enforced by
+/// slide [MonthRecap] has nothing for — the framing rule is enforced by
 /// `domain/recap_builder.dart` leaving those fields `null`/empty, so this
 /// only has to check for absence, never decide what counts as one.
 ///
 /// Mindful minutes get a slide of their own rather than only the
 /// strength slide's footnote: gating them on tonnage meant a yoga- or
 /// Pilates-only period computed the figure and then never showed it to
-/// her. The footnote stays where there *is* tonnage, the way the opener
+/// him. The footnote stays where there *is* tonnage, the way the opener
 /// and the movement slide already both mention the session count.
-List<Widget> buildRecapSlides(CycleRecap recap) {
+List<Widget> buildRecapSlides(MonthRecap recap) {
   return [
     _OpenerSlide(recap: recap),
     if (recap.totalDistanceMeters != null) _MovementSlide(recap: recap),
@@ -34,15 +33,13 @@ List<Widget> buildRecapSlides(CycleRecap recap) {
 class _OpenerSlide extends StatelessWidget {
   const _OpenerSlide({required this.recap});
 
-  final CycleRecap recap;
+  final MonthRecap recap;
 
   @override
   Widget build(BuildContext context) {
     final activeDays = (recap.consistencyRatio * recap.period.totalDays)
         .round();
-    final title = recap.period.kind == RecapPeriodKind.cycleEnd
-        ? 'Cycle Summary · ${recap.period.label}'
-        : recap.period.label;
+    final title = 'Monthly Summary · ${recap.period.label}';
     return RecapSlideScaffold(
       icon: Icons.auto_awesome_rounded,
       title: title,
@@ -60,7 +57,7 @@ class _OpenerSlide extends StatelessWidget {
 class _MovementSlide extends StatelessWidget {
   const _MovementSlide({required this.recap});
 
-  final CycleRecap recap;
+  final MonthRecap recap;
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +97,7 @@ class _MovementSlide extends StatelessWidget {
 class _StrengthSlide extends StatelessWidget {
   const _StrengthSlide({required this.recap});
 
-  final CycleRecap recap;
+  final MonthRecap recap;
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +116,7 @@ class _StrengthSlide extends StatelessWidget {
 class _MindfulSlide extends StatelessWidget {
   const _MindfulSlide({required this.recap});
 
-  final CycleRecap recap;
+  final MonthRecap recap;
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +136,7 @@ class _MindfulSlide extends StatelessWidget {
 class _PrShowcaseSlide extends StatelessWidget {
   const _PrShowcaseSlide({required this.recap});
 
-  final CycleRecap recap;
+  final MonthRecap recap;
 
   @override
   Widget build(BuildContext context) {
@@ -164,12 +161,7 @@ class _PrShowcaseSlide extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    // `displayPhase`, never `phase`: `CyclePhase.none`
-                    // means "unknown", and reading it raw renders the
-                    // meaningless "None phase".
-                    pr.displayPhase != null
-                        ? '${pr.label} · ${pr.displayPhase!.label} phase'
-                        : pr.label,
+                    pr.label,
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.8),
                       fontSize: 13,
@@ -187,7 +179,7 @@ class _PrShowcaseSlide extends StatelessWidget {
 class _ConsistencySlide extends StatelessWidget {
   const _ConsistencySlide({required this.recap});
 
-  final CycleRecap recap;
+  final MonthRecap recap;
 
   @override
   Widget build(BuildContext context) {
@@ -220,7 +212,7 @@ class _ConsistencySlide extends StatelessWidget {
 class _WellbeingSlide extends StatelessWidget {
   const _WellbeingSlide({required this.recap});
 
-  final CycleRecap recap;
+  final MonthRecap recap;
 
   @override
   Widget build(BuildContext context) {
@@ -236,7 +228,7 @@ class _WellbeingSlide extends StatelessWidget {
 class _ClosingSlide extends StatelessWidget {
   const _ClosingSlide({required this.recap});
 
-  final CycleRecap recap;
+  final MonthRecap recap;
 
   @override
   Widget build(BuildContext context) {

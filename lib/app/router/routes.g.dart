@@ -366,7 +366,7 @@ RouteBase get $recapStoryRouteData => GoRouteData.$route(
 
 mixin $RecapStoryRouteData on GoRouteData {
   static RecapStoryRouteData _fromState(GoRouterState state) =>
-      RecapStoryRouteData($extra: state.extra as CycleRecap?);
+      RecapStoryRouteData($extra: state.extra as MonthRecap?);
 
   RecapStoryRouteData get _self => this as RecapStoryRouteData;
 

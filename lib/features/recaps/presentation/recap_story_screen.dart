@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:menfit_app/core/widgets/share_card_style.dart';
 import 'package:menfit_app/features/accessibility/presentation/accessibility_controller.dart';
-import 'package:menfit_app/features/recaps/domain/cycle_recap.dart';
+import 'package:menfit_app/features/recaps/domain/month_recap.dart';
 import 'package:menfit_app/features/recaps/presentation/widgets/recap_share_sheet.dart';
 import 'package:menfit_app/features/recaps/presentation/widgets/recap_slides.dart';
 
-/// Full-screen immersive story carousel for one [CycleRecap] (Task 1.3,
-/// `TASKS_TO_DO.md`: "Your Cycle in Motion").
+/// Full-screen immersive story carousel for one [MonthRecap] (Task 1.3,
+/// `TASKS_TO_DO.md`).
 ///
 /// Reached at `/recap`, pushed by
 /// `presentation/widgets/recap_trigger_listener.dart` (automatic, on Home
 /// mount) or from the Progress screen's recap history section (manual
-/// re-view) — both build the [CycleRecap] first
+/// re-view) — both build the [MonthRecap] first
 /// (`recaps_providers.dart#recapForPeriodProvider`) and pass it in, so this
 /// screen itself does no data fetching.
 ///
@@ -28,7 +28,7 @@ import 'package:menfit_app/features/recaps/presentation/widgets/recap_slides.dar
 class RecapStoryScreen extends ConsumerStatefulWidget {
   const RecapStoryScreen({required this.recap, super.key});
 
-  final CycleRecap recap;
+  final MonthRecap recap;
 
   @override
   ConsumerState<RecapStoryScreen> createState() => _RecapStoryScreenState();

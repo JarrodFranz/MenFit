@@ -5,13 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:menfit_app/app/router/routes.dart';
 import 'package:menfit_app/core/errors/error_messages.dart';
 import 'package:menfit_app/core/theme/tokens.dart';
-import 'package:menfit_app/features/recaps/domain/cycle_recap.dart';
+import 'package:menfit_app/features/recaps/domain/month_recap.dart';
 import 'package:menfit_app/features/recaps/domain/recap_period.dart';
 import 'package:menfit_app/features/recaps/recaps_providers.dart';
 
 /// The Progress screen's re-viewable recap history (Task 1.3,
-/// `TASKS_TO_DO.md`'s second entry point): every recent completed cycle
-/// and calendar month, tap to re-open its story.
+/// `TASKS_TO_DO.md`'s second entry point): every recent completed
+/// calendar month, tap to re-open its story.
 ///
 /// A recap is built on demand when tapped (`recapForPeriodProvider`), not
 /// eagerly for the whole list — most of these periods will never be
@@ -21,8 +21,7 @@ import 'package:menfit_app/features/recaps/recaps_providers.dart';
 /// instead of silently doing nothing, since here — unlike the automatic
 /// trigger — the user explicitly asked to see it. (Months that could
 /// *only* answer that are filtered out upstream by
-/// `recentRecapPeriodsProvider`; the message remains for a completed cycle
-/// that turns out empty.)
+/// `recentRecapPeriodsProvider` already, so this is mostly defensive.)
 class RecapHistorySection extends ConsumerWidget {
   const RecapHistorySection({super.key});
 
@@ -102,9 +101,7 @@ class _RecapHistoryTileState extends ConsumerState<_RecapHistoryTile> {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: Icon(
-        widget.period.kind == RecapPeriodKind.cycleEnd
-            ? Icons.favorite_rounded
-            : Icons.calendar_month_rounded,
+        Icons.calendar_month_rounded,
         color: Theme.of(context).colorScheme.primary,
       ),
       title: Text(widget.period.label),
@@ -135,7 +132,7 @@ class _RecapHistoryTileState extends ConsumerState<_RecapHistoryTile> {
     if (_isOpening) return;
     setState(() => _isOpening = true);
 
-    final CycleRecap? recap;
+    final MonthRecap? recap;
     try {
       recap = await ref.read(recapForPeriodProvider(widget.period).future);
     } on Object catch (error) {
