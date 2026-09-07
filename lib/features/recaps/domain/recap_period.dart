@@ -90,7 +90,7 @@ class RecapPeriod {
   /// provider value, and provider errors interpolate their value into a
   /// description that `app/bootstrap.dart`'s error hooks pass to
   /// `developer.log`. [key] is safe to keep: it names an opaque calendar
-  /// month (`month:2026-07`), never a date she logged.
+  /// month (`month:2026-07`), never a date the user logged.
   @override
   String toString() => 'RecapPeriod(${kind.name}, $key)';
 }
