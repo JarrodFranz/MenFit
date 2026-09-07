@@ -477,3 +477,14 @@
   rewritten). Also: body-weight tier is now S3 in the knowledge docs but
   `lib/core/db/tables/weight_logs.dart`'s own dartdoc still says S2 — a
   doc/code-comment mismatch, not a behavioural change.
+
+## 2026-09-08 — Session 1 (cont.): fork executed, first build shipped
+
+- Executed the 14-task plan with subagent-driven development (fresh
+  implementer + reviewer per task, controller fixes for small findings).
+  Notable corrections: shared FatSecret proxy must keep FemFit's GCP names
+  and `X-FemFit-Key`; FemFit's `key.properties` had leaked into the tree
+  (never committed) and was replaced by a MenFit keystore.
+- Full validation green (3,495 tests). Release 0.1.0 (1) uploaded to Firebase
+  App Distribution (`menfit-f17b3`, group `main`); APK signer and package
+  verified with apksigner/aapt.

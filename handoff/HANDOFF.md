@@ -4,197 +4,44 @@
 
 ## State
 
-- Branch `fork-femfit`, HEAD `60c5720` (Task 13). Earlier: docs/audit+spec,
-  implementation plan, Task 1 (tree copy + package rename), Task 2 (app
-  identity sweep, `ee397ae`), Task 3 (cycle removal, `31351c8`), Task 4
-  (insights cycle-phase removal, `11cfa9d`), Task 5 (recaps month-end only,
-  `5760afb`), Task 6 (achievements/activity cycle-phase removal, `fdf9079`),
-  Task 7 (male nutrition constants + weight chart overlay removal, `82249d0`
-  — **the tree compiles again and the full suite is green as of this
-  commit**), Task 8 (Drift schema reset to v1, `ec76444`), Tasks 9-12 (not
-  detailed here — see their own SDD reports under `.git/sdd/`), **Task 13
-  done** (`5ef830c`, `c84fbe2`, `60c5720`, see `.git/sdd/task-13-report.md`):
-  full knowledge/CLAUDE.md/AGENTS.md/README.md/.claude rewrite for MenFit —
-  new `knowledge/domain/mens_health.md` + ADR 017 (fork record), S3 privacy
-  tier redefined to health check-ins/flares/weight/location, male DRI/Mifflin
-  research reviews, `TASKS_TO_DO.md` tracker, privacy-policy HTML rewrite.
-  `dart format .` / `flutter analyze --fatal-infos` clean; scoped suite
-  (achievements/activity/insights/weight/core-db, 926 tests) green — a full
-  suite run was not required for this doc/comment-only task.
-  `main` branch also exists but is behind; work is happening on `fork-femfit`
-  per the SDD task sequence in `.git/sdd/`.
-- Source app: FemFit at `D:\Documents\Claude\Projects\Female running app`,
-  forked at commit `13e91b9` (Flutter 3.47.2 / Dart 3.13.2, schema v25,
-  3832 tests passing as of 2026-09-07).
-- **Task 1 done**: FemFit's tree copied into MenFit, Dart package renamed
-  `femfit_app` -> `menfit_app`.
-- **Task 2 done** (see `.git/sdd/task-2-report.md`): every remaining
-  FemFit/femfit identity string swept to MenFit/menfit — Android
-  applicationId/namespace (`com.jarrodfranz.menfit`) + Kotlin package dir,
-  iOS bundle id + `CFBundleDisplayName`/`CFBundleName`, web manifest/index,
-  Windows runner strings, Dart-side `AppEnv.appName` default, DB name
-  (`menfit`), method channel (`com.menfit.app/wearables`), export filename
-  prefix (`menfit-`), GPX/share-card
-  creator strings, `tools/femfit_deploy` -> `tools/menfit_deploy` (+
-  `FemFitDeploy.cs` -> `MenFitDeploy.cs`), `scripts/*.ps1`,
-  `backend/fatsecret-proxy/*`, `docs/privacy_policy.html`,
-  `docs/live_tracker.html`. `pubspec.yaml` and `web/manifest.json`
-  descriptions fixed from the leftover "Women-focused" text. All 4 guard
-  tests + `flutter analyze --fatal-infos` clean. See **Corrections** below
-  for a real bug found and fixed in the brief's own sweep script — read it
-  before running any similar find/replace sweep in a later task.
-- **Task 3 done** (`31351c8`, see `.git/sdd/task-3-report.md`): cycle
-  tracking removed — `lib/features/cycle/`, the `CycleRecords` Drift table,
-  the Cycle shell branch (five tabs now: Home, Activity, Nutrition,
-  Wellbeing, Settings), the `cyclePhase*` `AppTokens`, and the small
-  couplings in streaks, home, settings/delete-my-data, watch companion,
-  wearable sync and data export. `assembleStreakResult` /
-  `assembleProtectedDays` / `TodayProtectionSources` no longer take
-  `records`/`pausingEnabled`/`isPeriodProtected`; export's
-  `cycleAndWellbeingTables` is now `sensitiveHealthTables` (4 tables).
-  **The tree does not fully compile**: insights, recaps, achievements,
-  activity milestone/share-dialog, nutrition micronutrient and weight still
-  import `features/cycle`. That is by design — Tasks 4–7 remove them.
-- **Task 4 done** (`11cfa9d`, see `.git/sdd/task-4-report.md`): every
-  cycle-phase concept removed from `lib/features/insights/**` —
-  `CyclePhaseEvaluator` deleted, `DailyObservation.cyclePhase`/
-  `hasTrackedPhase` gone, `InsightKind.cyclePhaseExertion/cyclePhaseOutput`
-  and `InsightGroup.cyclePhaseFocus/otherCyclePhases` gone,
-  `InsightThresholds.minCliffsDeltaCyclePhase` gone, `phaseByDay` plumbing
-  removed from `insight_observation_mapper.dart` and
-  `insights_providers.dart` (including the `cycleRepositoryProvider` read).
-  Protein/wellbeing(sleep+energy)/hydration evaluators and their tests
-  untouched, all passing. `insights_providers.dart` itself still cannot
-  compile — it imports `nutrition_providers.dart`, which still imports the
-  deleted `features/cycle/` (Task 7's job); this is the same documented
-  cascade as Task 3 left, not new. `zero` analyzer issues in
-  `test/features/insights/**`; the only `lib/features/insights/**` issues
-  are the 6 errors + 4 infos/warnings inside `insights_providers.dart` lines
-  60-90 from that cascade. See Traps for why `flutter test
-  test/features/insights` (the whole directory) reports 3 files failing to
-  load even though only 2 of them touch the broken import.
-- **Task 5 done** (`5760afb`, see `.git/sdd/task-5-report.md`): recaps
-  are month-end only. `domain/cycle_recap.dart` -> `domain/month_recap.dart`
-  (`git mv`), `CycleRecap` -> `MonthRecap`. `RecapPeriodKind` is
-  `{monthEnd}` only (`cycleEnd`/`forCompletedCycle`/`completedCyclePeriods`
-  gone). `RecapDue` renamed `RecapTriggerDecision` (`CycleEndDue` gone,
-  `NoRecapDue` -> `NothingDue`, precedence rule gone).
-  `RecapPrHighlight.phase`/`displayPhase` gone. `RecapBuilder.build` drops
-  `phaseByDay`/`hasAnyCycleData`; sparse guard is a flat 3-session floor.
-  `RecapMarkerStore` keeps only `recaps_last_shown_month_key`. Recap slide
-  opener label is `'Monthly Summary · <period>'`; PR phase pill and the
-  share sheet's phase toggle are gone. `routes.dart`/`routes.g.dart`
-  updated + regenerated for the `$extra` type change. `zero` analyzer
-  issues in `test/features/recaps/**`; the only `lib/features/recaps/**`
-  issues are 3 errors (+ their necessary follow-on
-  warnings/infos) in `recaps_providers.dart` from the same
-  `nutrition_providers.dart` cascade Task 4 hit — not new, not worked
-  around. `flutter test test/features/recaps` (whole directory): 67
-  passed, 6 suites fail to load — 5 are genuine transitive dependents of
-  the cascade (confirmed individually), 1
-  (`recap_builder_test.dart`) is a shared-kernel batch artifact (33/33
-  passing alone, see Traps). Running just the 5 clean files together
-  (`recap_builder_test`, `recap_period_test`, `recap_share_sheet_test`,
-  `recap_story_screen_test`, `recap_trigger_test`) gives a true **67/67**.
-
-- **Task 6 done** (`fdf9079`, see `.git/sdd/task-6-report.md`): every
-  cycle-phase concept removed from `lib/features/achievements/**` and the
-  `activity` module's milestone/celebration/share code. `BadgeInputs`
-  drops `cycleRecords`; `BadgeCategory`/`BadgeMetric`/`BadgeCondition` drop
-  `cycleTracking`/`cycleLoggingMonths`/`firstCompletedCycleRecord`; the
-  `cycle_logging_months` and `first_completed_cycle` badges are deleted
-  (catalogue count assertions read `badgeCatalogue.length` dynamically, so
-  no numeric test edit was needed). `achievements_providers.dart` stops
-  watching the cycle repository. `WorkoutMilestoneType.cyclePhasePr` is
-  gone; `MilestoneEvaluator`'s three methods drop their `phase`/
-  `phaseLongestDistance`/`phaseMaxWeights` params; `WorkoutCelebrationDialog`
-  and `WorkoutShareDialog` drop `phase` (the share dialog's whole
-  `_showCyclePhase` toggle/pill/gate machinery is gone). The five
-  finishing-flow controllers/screens the brief named needed zero changes
-  - Task 3 already stripped their `phase:`-passing wiring, leaving only
-  dead parameters on the domain/dialog signatures; confirmed by grep
-  before and after. Also fixed a genuine, unrelated test-infra flake in
-  `workout_share_dialog_test.dart` (see Traps). `zero` analyzer issues in
-  `test/features/achievements/**` and `test/features/activity/**`; the
-  only issues anywhere in scope are the same 4 cascade issues in
-  `achievements_providers.dart` lines 86/102/112 Tasks 3-5 already
-  documented. `flutter test test/features/achievements
-  test/features/activity`: 538 passed, 24 suites fail to load - every one
-  confirmed individually (not shared-kernel contamination this time; see
-  Traps) to be a genuine transitive dependent of the
-  `nutrition_providers.dart` cascade. The 41 non-cascade files pass
-  538/538 run together alone, an exact match to the full-directory count.
-- **Task 7 done** (`82249d0`, see `.git/sdd/task-7-report.md`): male energy
-  constant (`_maleConstant = 5`, added, replacing the female `-161`) and male
-  reference intakes in `micronutrient_adequacy.dart` (iron 8.0 / calcium
-  1000.0 / vitaminD 15.0 / fiber 38.0 / vitaminC 90.0); all `CyclePhase`/
-  `cyclePhase` plumbing removed from nutrition and weight (menstrual banner,
-  `dayCycleStatusProvider`, weight chart's phase-band overlay and legend,
-  `weightHasCycleContext`/`weightCyclePhases`); `womens_health.md` doc
-  citations repointed to `mens_health.md` everywhere in `lib`. **This is the
-  task that made the tree compile again** — `git grep -n
-  "features/cycle\|CyclePhase\|cyclePhase\|phaseByDay" -- lib test` is empty
-  as of this commit. Full suite: **3611 passed, 0 failed**, `flutter analyze
-  --fatal-infos` clean.
-- **Task 8 done** (`ec76444`, see `.git/sdd/task-8-report.md`): Drift schema
-  reset to v1. `app_database.dart`'s `schemaVersion` is now `1` and
-  `migration` is a bare `MigrationStrategy(onCreate: (m) => m.createAll())`
-  — the entire v1→v25 `onUpgrade` chain, its ~650-line dartdoc, and the four
-  migration-only helpers (`_seedWeightLogFromProfile`,
-  `_addOptionalNutrientColumns`, `_addVolumeColumns`,
-  `_addColumnsIfMissing`) are deleted (no installed FemFit base exists for
-  MenFit, so the chain served no purpose). `test/core/db/app_database_test.dart`
-  replaced wholesale: the ~130 `onUpgrade`-at-various-`from` migration tests
-  are gone, replaced by 3 tests (schema version is 1; `onCreate` produces
-  every current table and not `cycle_records`; a profile round-trips).
-  `knowledge/troubleshooting/database_migrations.md` left in place per brief
-  (still useful guidance for any future migration). Full suite after this
-  change: **3487 passed, 0 failed** (down from 3611 — expected, since the
-  ~130 deleted migration tests were replaced by only 3). `flutter analyze
-  --fatal-infos` clean.
-- **Task 9 done** (`01bc432` flare categories, `17ad039` Recovery tab): the
-  Wellbeing tab is labelled **Recovery** (route path `/recovery`), flare
-  categories/symptoms reworked for men.
-- **Task 10 done** (`8b488d3`, see `.git/sdd/task-10-report.md`): the
-  Activity tab is labelled **Train** (`Icons.fitness_center*`), with the
-  strength chip first after "All" and AppBar title `Train` — the route path
-  `/activity` and every `*RouteData` name are unchanged. Home gained
-  `TodaySessionCard` (full width, above the two-column grid), reading
-  `activeStrengthCycleProvider`; the grid order is now Macros, Water,
-  Recent achievement, Steps, Progress, Today. Full suite **3493 passed,
-  0 failed**; `flutter analyze --fatal-infos` clean.
-
-- Firebase: project `menfit-f17b3`, Android app `com.jarrodfranz.menfit`
-  registered (app id in `distribution/android.json`, confirmed unchanged by
-  the Task 2 sweep), groups `main` and `testers` exist with 0 testers.
-- Not yet pushed to the GitHub remote.
+- **Flutter 3.47.2 / Dart 3.13.2.** Branch `fork-femfit` (to be merged into
+  `main` and pushed once the final whole-branch review passes).
+- **Fork complete (2026-09-08):** all 14 plan tasks done
+  (`docs/superpowers/plans/2026-09-07-menfit-fork.md`, ledger in
+  `.git/sdd/progress.md`). Cycle tracking removed; tabs Home / Train /
+  Nutrition / Recovery / Settings; strength-first Home with Today's session
+  card; Forge theme (seed `0xFFD84A1B`); male Mifflin constant and adult-male
+  reference intakes; Drift schema reset to v1; placeholder Forge assets;
+  knowledge base rewritten (`knowledge/domain/mens_health.md`, ADR 017).
+- **Validation (2026-09-08, run centrally):** `dart format` 0 changed;
+  `flutter analyze --fatal-infos` No issues found; `flutter test`
+  **3,495 passed, 0 failed** (1m50s).
+- **First tester build shipped (2026-09-08):** `scripts/distribute_android.ps1`
+  built `app-release.apk` (122.7 MB, staging env + secrets overlay) and
+  uploaded release **0.1.0 (1)** to Firebase App Distribution, project
+  `menfit-f17b3`, app `com.jarrodfranz.menfit`, group `main`. apksigner:
+  CN=MenFit Upload Key; aapt: package `com.jarrodfranz.menfit`, label MenFit.
+  Console: https://console.firebase.google.com/project/menfit-f17b3/appdistribution
+  Group `main` had 0 testers at upload time, so nobody was emailed yet.
+- Signing: MenFit upload keystore `%USERPROFILE%\menfit-signing\upload-keystore.jks`
+  (alias `upload`); password only in gitignored `android/key.properties`.
+  **Owner must back both up off-machine.**
 
 ## In flight
 
-- Nothing mid-task. Task 13 (docs/knowledge/instructions rewrite) is
-  complete and committed. Known residual, not fixed in Task 13 because it
-  was out of that task's explicit file scope:
-  `knowledge/engineering/play_store_declarations.md` and
-  `knowledge/research/energy_expenditure_estimates.md` still contain
-  FemFit-era women's-health/menstrual-cycle content (the latter only in its
-  historical research body, now flagged with a fork note). See
-  `.git/sdd/task-13-report.md`'s residual-grep section for the full list
-  and justification for each.
-- `lib/core/db/tables/weight_logs.dart` and other S2/S3-tagged dartdoc
-  comments in `lib/` still say "S2" for body weight; Task 13 redefined the
-  security_and_privacy.md tier table so body weight is S3 (per the task's
-  own instructions). This is a doc/code-comment inconsistency, not a
-  behavioural one — nothing in the S3/S2 label changes actual code paths.
+- Final whole-branch review (opus agent) running; then merge `fork-femfit`
+  into `main` and push to `https://github.com/JarrodFranz/MenFit`.
 
 ## Next
 
-1. Check whether a later task should fix
-   `play_store_declarations.md`/`energy_expenditure_estimates.md` (flagged
-   above) and the S2→S3 weight-tier dartdoc comments.
-2. Keep running `flutter analyze --fatal-infos` after each task — see Traps
-   below for rename-fallout gotchas that cost time in Tasks 1 and 2.
-3. Owner: add Firebase testers, create upload keystore, Codemagic iOS app,
-   push to the GitHub remote once ready.
+1. Act on the final review's Important findings (if any), re-run the
+   validation sequence, merge to `main`, push.
+2. Owner: add tester emails to Firebase groups `main`/`testers`
+   (`firebase appdistribution:testers:add <email> --project menfit-f17b3 --group-alias main`),
+   back up the keystore + password, set up Codemagic/Apple for iOS.
+3. Replace placeholder artwork: overwrite `assets/images/app_icon.png`, run
+   `python scripts/generate_brand_assets.py`.
+4. Roadmap ideas live in `TASKS_TO_DO.md` (1RM estimates, body-fat, bulk/cut targets).
 
 ## Open questions
 
