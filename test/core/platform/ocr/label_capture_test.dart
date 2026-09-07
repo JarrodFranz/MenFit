@@ -19,7 +19,7 @@ void main() {
   late Directory tempDir;
 
   setUp(() {
-    tempDir = Directory.systemTemp.createTempSync('femfit_label_capture');
+    tempDir = Directory.systemTemp.createTempSync('menfit_label_capture');
   });
 
   tearDown(() {

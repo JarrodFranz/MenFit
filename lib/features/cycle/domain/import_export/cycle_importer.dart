@@ -34,7 +34,7 @@ abstract class CycleDataImporter {
   });
 }
 
-/// Guided CSV importer supporting FemFit, Clue, Flo, and Apple Health CSVs.
+/// Guided CSV importer supporting MenFit, Clue, Flo, and Apple Health CSVs.
 class CsvCycleImporter implements CycleDataImporter {
   const CsvCycleImporter({
     this.startDateColumnIndex,
@@ -276,7 +276,7 @@ class CsvCycleImporter implements CycleDataImporter {
   }
 }
 
-/// JSON cycle importer supporting standard FemFit JSON and generic arrays.
+/// JSON cycle importer supporting standard MenFit JSON and generic arrays.
 class JsonCycleImporter implements CycleDataImporter {
   const JsonCycleImporter();
 

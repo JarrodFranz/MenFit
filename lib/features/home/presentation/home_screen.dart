@@ -42,7 +42,7 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('FemFit'),
+        title: const Text('MenFit'),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings_outlined),

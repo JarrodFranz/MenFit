@@ -26,7 +26,7 @@ class IoTileStorage implements TileStorage {
         _baseDir = Directory('${appDir.path}/offline_map_tiles');
       } on Object catch (_) {
         _baseDir = Directory(
-          '${Directory.systemTemp.path}/femfit_offline_map_tiles',
+          '${Directory.systemTemp.path}/menfit_offline_map_tiles',
         );
       }
     }

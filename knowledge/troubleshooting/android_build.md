@@ -59,7 +59,7 @@ Missing class com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
 
 `flutter build apk --debug` and every debug smoke build had passed cleanly — this only showed up when release was built for the first time after adopting `google_mlkit_text_recognition` (ADR 012, feat/nutrition OCR).
 
-**Cause:** `google_mlkit_text_recognition`'s Android plugin code references the optional Chinese/Devanagari/Japanese/Korean recogniser option classes so a host app can opt into those scripts. FemFit bundles only the Latin model on purpose (ADR 012). Debug builds don't run R8, so the missing classes are never noticed. Release builds run R8 in full mode, which treats any referenced-but-absent class as an error unless told otherwise.
+**Cause:** `google_mlkit_text_recognition`'s Android plugin code references the optional Chinese/Devanagari/Japanese/Korean recogniser option classes so a host app can opt into those scripts. MenFit bundles only the Latin model on purpose (ADR 012). Debug builds don't run R8, so the missing classes are never noticed. Release builds run R8 in full mode, which treats any referenced-but-absent class as an error unless told otherwise.
 
 **Fix** (`android/app/proguard-rules.pro`, new file):
 

@@ -46,7 +46,7 @@ the OAuth wave — Strava has changed terms twice in two years.*
   Web: keep tokens in-memory only (per central secure-storage doc).
 - Upload: `POST /api/v3/uploads` (gpx/tcx/fit + name, description, sport_type,
   external_id; async — poll `GET /uploads/{id}`) for GPS activities;
-  `POST /api/v3/activities` for manual/no-GPS. Set `external_id` to the FemFit
+  `POST /api/v3/activities` for manual/no-GPS. Set `external_id` to the MenFit
   activity UUID as the idempotency key (exact dedup algorithm undocumented).
   Description length limit undocumented — cap client-side (~1,000 chars).
 - Terms that bind: per-user data display only; no AI/ML training on API data;

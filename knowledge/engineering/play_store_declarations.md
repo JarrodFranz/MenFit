@@ -6,9 +6,9 @@
 
 ## 1. Application Identity
 
-- **App Name:** FemFit
-- **Package Name:** `com.jarrodfranz.femfit`
-- **Hosted Privacy Policy URL:** `https://jarrodfranz.github.io/Womens-Fitness-App/privacy_policy.html` (or `https://femfit.app/privacy.html`)
+- **App Name:** MenFit
+- **Package Name:** `com.jarrodfranz.menfit`
+- **Hosted Privacy Policy URL:** `https://jarrodfranz.github.io/Womens-Fitness-App/privacy_policy.html` (or `https://menfit.app/privacy.html`)
 - **Developer / Publisher:** Jarrod Franz
 
 ---
@@ -39,15 +39,15 @@ Google Play requires explicit functional justification for each requested Health
 
 ### A. Permission: `android.permission.health.READ_STEPS`
 - **Justification:**
-  > "FemFit reads daily step totals from Health Connect to display daily step progress on the Activity dashboard, Progress analytics screens, and Walking hub. This allows female runners and walkers to track baseline non-exercise activity without manually entering daily steps."
+  > "MenFit reads daily step totals from Health Connect to display daily step progress on the Activity dashboard, Progress analytics screens, and Walking hub. This allows female runners and walkers to track baseline non-exercise activity without manually entering daily steps."
 
 ### B. Permission: `android.permission.health.READ_ACTIVE_ENERGY_BURNED` & `READ_TOTAL_CALORIES_BURNED`
 - **Justification:**
-  > "FemFit accesses active energy burned to calculate daily workout caloric expenditure and summarize physical workload alongside logged runs, walks, and strength workouts. This ensures fueling and nutrition targets accurately reflect training volume."
+  > "MenFit accesses active energy burned to calculate daily workout caloric expenditure and summarize physical workload alongside logged runs, walks, and strength workouts. This ensures fueling and nutrition targets accurately reflect training volume."
 
 ### C. Permission: `android.permission.health.READ_EXERCISE`
 - **Justification:**
-  > "FemFit accesses completed exercise workouts to allow users to automatically ingest activities recorded on Garmin, WearOS, or external fitness watches directly into their local FemFit activity diary with automated menstrual cycle-phase tagging."
+  > "MenFit accesses completed exercise workouts to allow users to automatically ingest activities recorded on Garmin, WearOS, or external fitness watches directly into their local MenFit activity diary with automated menstrual cycle-phase tagging."
 
 ### Core Health Connect Compliance Statements:
 - Health Connect data is **never transferred, sold, or shared** with third parties or data brokers.
@@ -62,7 +62,7 @@ Google Play requires a policy declaration explaining why a Foreground Service wi
 
 ### Declaration Prompt: "Why does your app need to access location in the background / foreground service?"
 - **Submission Text:**
-  > "FemFit is a running and outdoor workout tracker. When a user begins an outdoor workout (run, walk, hike, or bicycle ride), the app activates a location foreground service (`FOREGROUND_SERVICE_LOCATION`) to continuously record GPS trackpoints, compute real-time split paces, calculate distance covered, and monitor runner safety (stationary SOS detection).
+  > "MenFit is a running and outdoor workout tracker. When a user begins an outdoor workout (run, walk, hike, or bicycle ride), the app activates a location foreground service (`FOREGROUND_SERVICE_LOCATION`) to continuously record GPS trackpoints, compute real-time split paces, calculate distance covered, and monitor runner safety (stationary SOS detection).
   >
   > Runners routinely lock their phone screen or place their device in a pocket or arm band while exercising. The foreground service is strictly necessary to maintain uninterrupted GPS recording while the screen is off.
   >
@@ -75,18 +75,18 @@ Google Play requires a policy declaration explaining why a Foreground Service wi
 Google Play submission requires a public YouTube or Cloud Storage video URL demonstrating the user-facing FGS location tracking flow:
 
 1. **Scene 1 (0:00 – 0:08): Home & Pre-Run Setup**
-   - User opens FemFit, taps on the "Activity" tab, and selects "GPS Run" / "Record Run".
+   - User opens MenFit, taps on the "Activity" tab, and selects "GPS Run" / "Record Run".
    - Shows the pre-start HUD with GPS status, route options, and the prominent "Start Run" button.
 2. **Scene 2 (0:08 – 0:20): Initiating Active Workout & FGS Notification**
    - User taps "Start Run". Workout timer begins counting.
    - User swipes down the Android notification shade.
    - Camera focuses on the persistent system notification:
-     - Title: "FemFit — Running"
+     - Title: "MenFit — Running"
      - Subtitle: "Distance: 0.12 km · Time: 0:45 · Pace: 5:15 /km"
      - Action buttons: "Pause", "Finish".
 3. **Scene 3 (0:20 – 0:35): Screen Off / Background Recording Demonstration**
    - User locks the phone screen (or switches to another app) for 5 seconds.
-   - User wakes device and resumes FemFit. Shows that the GPS breadcrumb trail continued plotting accurately and metrics updated without data loss.
+   - User wakes device and resumes MenFit. Shows that the GPS breadcrumb trail continued plotting accurately and metrics updated without data loss.
 4. **Scene 4 (0:35 – 0:45): Finishing Activity & Immediate FGS Termination**
    - User taps "Finish Run" and confirms completion.
    - User swipes down notification shade to demonstrate that the persistent Foreground Service notification immediately disappears.

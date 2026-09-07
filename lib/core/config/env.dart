@@ -83,7 +83,7 @@ class AppEnv {
 
   static const String _appName = String.fromEnvironment(
     'APP_NAME',
-    defaultValue: 'FemFit',
+    defaultValue: 'MenFit',
   );
 
   static const String _apiBaseUrl = String.fromEnvironment(
@@ -195,7 +195,7 @@ class AppEnv {
     'FATSECRET_PROXY_URL',
   );
 
-  /// Optional secret key passed to the FatSecret proxy via X-FemFit-Key.
+  /// Optional secret key passed to the FatSecret proxy via X-MenFit-Key.
   static const String _fatSecretProxyKey = String.fromEnvironment(
     'FATSECRET_PROXY_KEY',
   );

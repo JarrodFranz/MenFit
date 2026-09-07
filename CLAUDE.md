@@ -36,6 +36,6 @@ Women-focused running, fitness & nutrition app. Flutter, targeting **iOS + Andro
 
 ## Project facts
 
-- App identity is **`com.jarrodfranz.femfit`** (Android applicationId = iOS bundle id, permanent since 2026-09-05; guarded by `test/platform/app_identity_guard_test.dart`). The Dart package name `menfit_app` is internal and stays. Distribution: Android → Firebase App Distribution from the dev machine (GUI: `tools/femfit_deploy`), iOS → Codemagic → TestFlight — `knowledge/engineering/release_and_distribution.md`. Never distribute a debug-signed build.
+- App identity is **`com.jarrodfranz.menfit`** (Android applicationId = iOS bundle id, permanent since 2026-09-05; guarded by `test/platform/app_identity_guard_test.dart`). The Dart package name `menfit_app` is internal and stays. Distribution: Android → Firebase App Distribution from the dev machine (GUI: `tools/menfit_deploy`), iOS → Codemagic → TestFlight — `knowledge/engineering/release_and_distribution.md`. Never distribute a debug-signed build.
 - Dev machine is Windows: web + windows + **android all build locally** (Android was blocked by Avast TLS interception until 2026-08-27 — fix and diagnosis in `knowledge/troubleshooting/android_build.md`; do not re-litigate it); **iOS target exists but needs macOS to compile** — document anything a Mac session must verify.
 - Run: `flutter run -d windows|chrome` (defaults to dev env); other envs: `--dart-define-from-file=env/staging.json`.

@@ -28,53 +28,54 @@ class OnboardingScreen extends ConsumerWidget {
       },
       child: Scaffold(
         body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: tokens.contentMaxWidth),
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: tokens.spacingLg,
-                vertical: tokens.spacingMd,
-              ),
-              child: Column(
-                children: [
-                  _StepProgress(
-                    stepIndex: state.stepIndex,
-                    stepCount: onboardingStepCount,
-                  ),
-                  SizedBox(height: tokens.spacingLg),
-                  Expanded(
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 200),
-                      child: KeyedSubtree(
-                        key: ValueKey(state.stepIndex),
-                        child: _stepFor(state.stepIndex),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: tokens.contentMaxWidth),
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: tokens.spacingLg,
+                  vertical: tokens.spacingMd,
+                ),
+                child: Column(
+                  children: [
+                    _StepProgress(
+                      stepIndex: state.stepIndex,
+                      stepCount: onboardingStepCount,
+                    ),
+                    SizedBox(height: tokens.spacingLg),
+                    Expanded(
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 200),
+                        child: KeyedSubtree(
+                          key: ValueKey(state.stepIndex),
+                          child: _stepFor(state.stepIndex),
+                        ),
                       ),
                     ),
-                  ),
-                  if (state.submitError != null) ...[
-                    SizedBox(height: tokens.spacingMd),
-                    Text(
-                      state.submitError!,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.error,
+                    if (state.submitError != null) ...[
+                      SizedBox(height: tokens.spacingMd),
+                      Text(
+                        state.submitError!,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.error,
+                        ),
                       ),
+                    ],
+                    SizedBox(height: tokens.spacingLg),
+                    _NavigationButtons(
+                      state: state,
+                      onBack: controller.back,
+                      onContinue: controller.continueFromCurrentStep,
+                      onFinish: controller.finish,
                     ),
                   ],
-                  SizedBox(height: tokens.spacingLg),
-                  _NavigationButtons(
-                    state: state,
-                    onBack: controller.back,
-                    onContinue: controller.continueFromCurrentStep,
-                    onFinish: controller.finish,
-                  ),
-                ],
+                ),
               ),
             ),
           ),
         ),
       ),
-    ));
+    );
   }
 
   Widget _stepFor(int stepIndex) {

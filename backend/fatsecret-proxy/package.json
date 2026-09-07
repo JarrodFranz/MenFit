@@ -1,5 +1,5 @@
 {
-  "name": "femfit-fatsecret-proxy",
+  "name": "menfit-fatsecret-proxy",
   "version": "1.0.0",
   "description": "API proxy for the FatSecret Platform API, run on a Google Compute Engine VM",
   "main": "server.js",

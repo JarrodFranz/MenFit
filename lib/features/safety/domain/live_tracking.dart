@@ -262,7 +262,7 @@ class LiveTrackingSession {
 /// Generates shareable, tokenized live-tracking URLs.
 class LiveTrackingUrlBuilder {
   const LiveTrackingUrlBuilder({
-    this.baseUrl = 'https://live.femfit.app/track',
+    this.baseUrl = 'https://live.menfit.app/track',
   });
 
   /// The web endpoint hosting the standalone live watcher interface.
@@ -296,7 +296,7 @@ class LiveTrackingUrlBuilder {
     required String liveTrackingUrl,
   }) {
     final effectiveName = userName.trim().isEmpty ? 'Runner' : userName.trim();
-    return 'FemFit Safety: $effectiveName is starting an outdoor run and '
+    return 'MenFit Safety: $effectiveName is starting an outdoor run and '
         'shared a live location tracking link with you: $liveTrackingUrl '
         '(Link expires 2 hours after the run ends).';
   }

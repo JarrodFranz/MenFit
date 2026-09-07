@@ -102,7 +102,7 @@ class SafetyWarningDialog extends StatelessWidget {
     final description = isDeadline
         ? "You have reached your estimated return time and haven't "
               'checked in.'
-        : 'FemFit noticed you have stopped moving for several minutes.';
+        : 'MenFit noticed you have stopped moving for several minutes.';
 
     return PopScope(
       canPop: false,

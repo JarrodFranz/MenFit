@@ -716,7 +716,7 @@ class AppDatabase extends _$AppDatabase {
 
 QueryExecutor _openConnection() {
   return driftDatabase(
-    name: 'femfit',
+    name: 'menfit',
     web: DriftWebOptions(
       sqlite3Wasm: Uri.parse('sqlite3.wasm'),
       driftWorker: Uri.parse('drift_worker.js'),

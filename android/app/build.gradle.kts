@@ -25,7 +25,7 @@ if (hasReleaseKeystore) {
 }
 
 android {
-    namespace = "com.jarrodfranz.femfit"
+    namespace = "com.jarrodfranz.menfit"
     // permission_handler_android requires compileSdk 37, and the SDK
     // manager installs API 37 under Android's new *minor* versioning as
     // `platforms/android-37.0` (source.properties says ApiLevel=37.0).
@@ -46,7 +46,7 @@ android {
         // Permanent application id (decided 2026-09-05). Registered in
         // Firebase and matches the iOS bundle id; never change it - installed
         // testers and store listings are keyed on it.
-        applicationId = "com.jarrodfranz.femfit"
+        applicationId = "com.jarrodfranz.menfit"
         // You can update the following values to match your application needs.
         // Health Connect requires minSdk 26
         minSdk = 26
@@ -80,7 +80,7 @@ android {
             }
             // R8 runs on release builds. The rules file suppresses "Missing
             // class" errors for ML Kit's optional non-Latin recognisers, which
-            // FemFit deliberately does not bundle (ADR 012) - without it
+            // MenFit deliberately does not bundle (ADR 012) - without it
             // :app:minifyReleaseWithR8 fails while debug builds pass.
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

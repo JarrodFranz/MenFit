@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:menfit_app/core/theme/tokens.dart';
 import 'package:menfit_app/core/widgets/app_bottom_sheet.dart';
 
-/// Shows a guided dialog explaining how to connect Garmin devices to FemFit
+/// Shows a guided dialog explaining how to connect Garmin devices to MenFit
 /// via Google Health Connect (Android) or Apple Health (iOS).
 Future<void> showGarminConnectDialog(BuildContext context) {
   return showAppBottomSheet<void>(
@@ -111,9 +111,9 @@ class GarminConnectSheet extends StatelessWidget {
           ),
           const _StepItem(
             stepNumber: '4',
-            title: 'Enable Sync in FemFit',
+            title: 'Enable Sync in MenFit',
             description:
-                'Turn on "Sync Fitness Device" in FemFit Settings to '
+                'Turn on "Sync Fitness Device" in MenFit Settings to '
                 'automatically receive all Garmin metrics.',
           ),
           SizedBox(height: tokens.spacingMd),

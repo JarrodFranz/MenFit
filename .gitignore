@@ -56,6 +56,6 @@ scratch/
 # Built binaries handed to the owner; never versioned
 Deployments/
 
-# FemFit Deploy GUI build output (rebuild with tools/femfit_deploy/build.ps1)
+# MenFit Deploy GUI build output (rebuild with tools/menfit_deploy/build.ps1)
 tools/menfit_deploy/bin/
 tools/menfit_deploy/obj/

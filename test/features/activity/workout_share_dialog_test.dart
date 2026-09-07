@@ -142,7 +142,7 @@ void main() {
 
     // Verify title and brand watermark
     expect(find.text('Share Your Win 🌟'), findsOneWidget);
-    expect(find.text('FemFit'), findsWidgets);
+    expect(find.text('MenFit'), findsWidgets);
     expect(find.text('Morning 5k Tempo'), findsOneWidget);
     expect(find.text('5.00'), findsOneWidget); // Distance km
     expect(find.text('km'), findsOneWidget);
@@ -271,7 +271,7 @@ void main() {
       expect(copied(), isNotNull);
       expect(copied(), isNot(contains('Follicular')));
       expect(copied(), isNot(contains('Phase]')));
-      expect(copied(), contains('Completed a Run on FemFit!'));
+      expect(copied(), contains('Completed a Run on MenFit!'));
     });
 
     testWidgets('includes the phase once she turns the toggle on', (
@@ -327,11 +327,11 @@ void main() {
 
       expect(sharing.shareCount, 1);
       final shared = sharing.imageShares.single;
-      expect(shared.fileName, 'femfit-workout-card.png');
+      expect(shared.fileName, 'menfit-workout-card.png');
       // The PNG magic number: proof the RepaintBoundary actually
       // rasterised rather than the handler falling through to text.
       expect(shared.pngBytes.take(4), [0x89, 0x50, 0x4e, 0x47]);
-      expect(shared.text, contains('Completed a Run on FemFit!'));
+      expect(shared.text, contains('Completed a Run on MenFit!'));
       // Share is not a copy in disguise - the clipboard is untouched.
       expect(copied(), isNull);
     });

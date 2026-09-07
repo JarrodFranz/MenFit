@@ -97,7 +97,7 @@ class ActivityExportService {
     );
   }
 
-  /// e.g. `femfit-run-2026-09-01-morning-tempo-run.gpx`. Built from the
+  /// e.g. `menfit-run-2026-09-01-morning-tempo-run.gpx`. Built from the
   /// activity's date and type plus a slugified title, rather than the
   /// title alone, so two activities on the same day never collide and an
   /// empty/whitespace-only title still produces a sensible name.
@@ -110,8 +110,8 @@ class ActivityExportService {
     final titleSlug = _slugify(activity.title);
     final extension = format == ActivityExportFormat.gpx ? 'gpx' : 'tcx';
     final base = titleSlug.isEmpty
-        ? 'femfit-$typePart-$datePart'
-        : 'femfit-$typePart-$datePart-$titleSlug';
+        ? 'menfit-$typePart-$datePart'
+        : 'menfit-$typePart-$datePart-$titleSlug';
     return '$base.$extension';
   }
 

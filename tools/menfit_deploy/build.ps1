@@ -1,9 +1,9 @@
-# Compiles FemFit Deploy into a single dependency-free exe using the .NET
+# Compiles MenFit Deploy into a single dependency-free exe using the .NET
 # Framework 4 C# compiler that ships with Windows (no dotnet SDK needed).
 #
-#   powershell -ExecutionPolicy Bypass -File tools/femfit_deploy/build.ps1
+#   powershell -ExecutionPolicy Bypass -File tools/menfit_deploy/build.ps1
 #
-# Output: tools/femfit_deploy/bin/FemFitDeploy.exe (gitignored).
+# Output: tools/menfit_deploy/bin/MenFitDeploy.exe (gitignored).
 # ASCII only, no BOM; Windows PowerShell 5.1 compatible.
 
 $ErrorActionPreference = 'Stop'
@@ -19,7 +19,7 @@ if (-not (Test-Path $csc)) {
 
 $binDir = Join-Path $here 'bin'
 New-Item -ItemType Directory -Force -Path $binDir | Out-Null
-$outExe = Join-Path $binDir 'FemFitDeploy.exe'
+$outExe = Join-Path $binDir 'MenFitDeploy.exe'
 
 $sources = Get-ChildItem -Path $here -Filter '*.cs' | ForEach-Object { $_.FullName }
 if (-not $sources) { throw "No .cs sources found in $here" }

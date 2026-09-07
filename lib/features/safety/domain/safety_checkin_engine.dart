@@ -104,17 +104,17 @@ class SafetyCheckinEngine {
     final String reasonText;
     switch (reason) {
       case SafetyAlertReason.inactivity:
-        header = 'FemFit Safety Alert:';
+        header = 'MenFit Safety Alert:';
         reasonText =
             '$effectiveName has stopped moving during an outdoor run at '
             '$timeStr and has not responded to safety checks.';
       case SafetyAlertReason.checkinDeadline:
-        header = 'FemFit Safety Alert:';
+        header = 'MenFit Safety Alert:';
         reasonText =
             '$effectiveName has not checked in from an outdoor run by '
             '$timeStr and has not responded to safety checks.';
       case SafetyAlertReason.manualSos:
-        header = 'FemFit Emergency SOS:';
+        header = 'MenFit Emergency SOS:';
         reasonText =
             '$effectiveName triggered an emergency alert during an outdoor '
             'run at $timeStr.';

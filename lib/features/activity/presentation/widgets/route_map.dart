@@ -72,7 +72,7 @@ class RouteMap extends ConsumerWidget {
               children: [
                 TileLayer(
                   urlTemplate: tileUrl,
-                  userAgentPackageName: 'com.femfit.app',
+                  userAgentPackageName: 'com.menfit.app',
                   tileProvider: tileProvider,
                 ),
                 PolylineLayer(

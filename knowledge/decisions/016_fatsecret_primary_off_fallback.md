@@ -128,7 +128,7 @@ secret-management burden for a feature that works without it, and couples a
 core flow to a billing relationship." The proxy removes the first half: the
 client embeds no FatSecret credential, committed or otherwise — only a proxy
 URL, which is not a secret in the same sense (it is a routing detail, not a
-credential; see ADR 006 and the proxy's `X-FemFit-Key` gate for what
+credential; see ADR 006 and the proxy's `X-MenFit-Key` gate for what
 *is* treated as one). The second half — a billing relationship — is not
 eliminated, only currently absent: FatSecret is being used on **the tier the
 owner registered for**, and this ADR does not assert a specific price or
@@ -154,7 +154,7 @@ still hold.
   assumed "this build's provider" was a single, static answer for the whole
   session needs to read `source` off the individual result instead.
 - Env/config surfaces (`release_and_distribution.md`, `distribute_android.ps1`,
-  `tools/femfit_deploy/DeployCore.cs`) now describe "no FatSecret proxy
+  `tools/menfit_deploy/DeployCore.cs`) now describe "no FatSecret proxy
   configured" as "this build uses OFF only", not as a degraded or
   unsupported state — it is ADR 010's behaviour, unchanged, and remains a
   legitimate build shape (e.g. a build made before the owner sets up

@@ -129,7 +129,7 @@ void main() {
         longitude: 151.2093,
       );
 
-      expect(msg, contains('FemFit Safety Alert:'));
+      expect(msg, contains('MenFit Safety Alert:'));
       expect(
         msg,
         contains(
@@ -160,7 +160,7 @@ void main() {
         customMessage: 'Running through Centennial Park',
       );
 
-      expect(msg, contains('FemFit Emergency SOS:'));
+      expect(msg, contains('MenFit Emergency SOS:'));
       expect(msg, contains('Note: Running through Centennial Park'));
     });
 
@@ -172,13 +172,13 @@ void main() {
           timestamp: DateTime(2026, 9, 4, 10, 30),
           latitude: -33.8688,
           longitude: 151.2093,
-          liveTrackingUrl: 'https://femfit.app/live_tracker.html?token=xyz123',
+          liveTrackingUrl: 'https://menfit.app/live_tracker.html?token=xyz123',
         );
 
         expect(
           msg,
           contains(
-            'Live tracking: https://femfit.app/live_tracker.html?token=xyz123',
+            'Live tracking: https://menfit.app/live_tracker.html?token=xyz123',
           ),
         );
       },

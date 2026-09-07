@@ -20,7 +20,7 @@ class HealthWorkoutSession {
   /// Unique external session ID or UUID from Health Connect / HealthKit.
   final String externalId;
 
-  /// The mapped FemFit [ActivityType] for this session.
+  /// The mapped MenFit [ActivityType] for this session.
   final ActivityType activityType;
 
   /// Descriptive title (e.g. "Garmin Outdoor Run", "Apple Watch Walk").

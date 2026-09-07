@@ -15,7 +15,7 @@ void main() {
           child: OnlineFoodSection(
             supportsTextSearch: true,
             attributionName: 'FatSecret and Open Food Facts',
-            attributionUrl: 'https://femfit.app',
+            attributionUrl: 'https://menfit.app',
             regionLabel: 'Australia',
             state: OnlineFoodSearchState(
               hasSearched: true,

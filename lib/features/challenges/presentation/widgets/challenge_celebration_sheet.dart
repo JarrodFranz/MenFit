@@ -204,7 +204,7 @@ class _CelebrationCard extends StatelessWidget {
               ),
               const SizedBox(width: 6),
               Text(
-                'FemFit',
+                'MenFit',
                 style: TextStyle(
                   color: style.textColor,
                   fontWeight: FontWeight.w800,

@@ -312,7 +312,7 @@ class _RecapShareSheetState extends ConsumerState<RecapShareSheet> {
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  'FemFit',
+                  'MenFit',
                   style: TextStyle(
                     color: style.textColor,
                     fontWeight: FontWeight.w800,
@@ -376,7 +376,7 @@ class _RecapShareSheetState extends ConsumerState<RecapShareSheet> {
             ],
             const Spacer(),
             Text(
-              'Tuned to her rhythm · FemFit',
+              'Tuned to her rhythm · MenFit',
               style: TextStyle(
                 color: style.subtextColor,
                 fontSize: 8,
@@ -462,7 +462,7 @@ class _RecapShareSheetState extends ConsumerState<RecapShareSheet> {
         ? await adapter.shareText(shareText, sharePositionOrigin: origin)
         : await adapter.shareImage(
             pngBytes: bytes,
-            fileName: 'femfit-recap-card.png',
+            fileName: 'menfit-recap-card.png',
             text: shareText,
             sharePositionOrigin: origin,
           );
@@ -495,7 +495,7 @@ class _RecapShareSheetState extends ConsumerState<RecapShareSheet> {
   /// (`knowledge/engineering/security_and_privacy.md`).
   String _buildShareText() {
     final recap = widget.recap;
-    final lines = <String>['${recap.period.label} on FemFit!'];
+    final lines = <String>['${recap.period.label} on MenFit!'];
     if (recap.totalDistanceMeters != null) {
       lines.add(
         '• Distance: '
@@ -512,7 +512,7 @@ class _RecapShareSheetState extends ConsumerState<RecapShareSheet> {
           : '';
       lines.add('🏆 ${pr.label}: ${pr.valueLabel}$phaseText');
     }
-    lines.add('#FemFit #WomensFitness');
+    lines.add('#MenFit #WomensFitness');
     return lines.join('\n');
   }
 }

@@ -1,11 +1,11 @@
 {
-    "name": "FemFit",
-    "short_name": "FemFit",
+    "name": "MenFit",
+    "short_name": "MenFit",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#2B0E24",
     "theme_color": "#7A3B69",
-    "description": "Women-focused running, fitness and nutrition app.",
+    "description": "Men's strength-first training and nutrition app.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

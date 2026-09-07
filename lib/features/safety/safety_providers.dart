@@ -380,7 +380,7 @@ class SafetyMonitorController extends _$SafetyMonitorController {
     unawaited(
       sharing.shareText(
         message,
-        subject: 'FemFit Safety Alert',
+        subject: 'MenFit Safety Alert',
       ),
     );
 

@@ -1,7 +1,7 @@
-# FemFit FatSecret API Proxy Server
+# MenFit FatSecret API Proxy Server
 
 A lightweight, secure API reverse proxy that brokers requests between the
-FemFit mobile/web application and the FatSecret Platform REST API. It runs on
+MenFit mobile/web application and the FatSecret Platform REST API. It runs on
 a dedicated Google Compute Engine `e2-micro` VM (Always Free tier) so it has a
 single, stable static egress IP that can be placed on FatSecret's IP
 allowlist.
@@ -13,7 +13,7 @@ give one, costs roughly $32/month), and FatSecret's IP restriction feature
 rejects wide-open ranges like `0.0.0.0/0`. A Compute Engine VM can be given a
 reserved static IPv4 address at no extra cost while attached to a running
 instance, so the proxy was moved off Cloud Run onto a VM. **The original Cloud
-Run service (`femfit-fatsecret-proxy` in `us-central1`) has been deleted.**
+Run service (`menfit-fatsecret-proxy` in `us-central1`) has been deleted.**
 There is no Cloud Run deployment for this proxy any more.
 
 ## Features
@@ -27,16 +27,16 @@ There is no Cloud Run deployment for this proxy any more.
 - **Automatic HTTPS:** Caddy reverse-proxies the Node service and obtains a
   Let's Encrypt certificate for `34.27.29.29.sslip.io` with no domain
   purchase required.
-- **App protection:** optional `X-FemFit-Key` header (`PROXY_API_KEY`) that
+- **App protection:** optional `X-MenFit-Key` header (`PROXY_API_KEY`) that
   the proxy checks on every `/rest/server.api` request.
 
 ## Current deployment
 
-- Project: `femfit-5e600`, region/zone: `us-central1`.
-- Static IP: `femfit-proxy-ip` (`34.27.29.29`), reserved separately from the
+- Project: `menfit-5e600`, region/zone: `us-central1`.
+- Static IP: `menfit-proxy-ip` (`34.27.29.29`), reserved separately from the
   instance so it survives an instance rebuild.
-- Firewall rule `allow-femfit-proxy`: inbound TCP 80, 443, 8080.
-- Instance: `femfit-proxy-vm` (`e2-micro`, 30 GB pd-standard, Debian 12,
+- Firewall rule `allow-menfit-proxy`: inbound TCP 80, 443, 8080.
+- Instance: `menfit-proxy-vm` (`e2-micro`, 30 GB pd-standard, Debian 12,
   Always Free tier), provisioned with the startup script in this directory
   (`startup-script.sh`).
 - Public endpoint: `https://34.27.29.29.sslip.io/rest/server.api`.
@@ -49,10 +49,10 @@ The script is passed to `gcloud compute instances create` as
 instance's startup-script metadata for an existing instance). On boot it:
 
 1. Installs Node.js 20 via NodeSource.
-2. Writes `package.json` and `server.js` into `/opt/femfit-proxy` (the copies
+2. Writes `package.json` and `server.js` into `/opt/menfit-proxy` (the copies
    embedded in the script — keep them in sync with the versions in this
    directory if you change proxy behaviour) and runs `npm install --omit=dev`.
-3. Writes a systemd unit, `/etc/systemd/system/femfit-proxy.service`, that
+3. Writes a systemd unit, `/etc/systemd/system/menfit-proxy.service`, that
    runs `node server.js` as `root`, with `Restart=always`, listening on the
    port from the `PORT` environment variable (the unit sets `PORT=80`).
 4. The FatSecret credentials (`FATSECRET_CLIENT_ID`, `FATSECRET_CLIENT_SECRET`)
@@ -61,8 +61,8 @@ instance's startup-script metadata for an existing instance). On boot it:
    read by `server.js` from the environment but is **not** currently set by
    `startup-script.sh`; add an `Environment=PROXY_API_KEY=...` line to the
    unit (either in the script before provisioning, or directly on the VM,
-   see below) if you want the `X-FemFit-Key` gate enforced.
-5. Enables and starts `femfit-proxy.service` via `systemctl`.
+   see below) if you want the `X-MenFit-Key` gate enforced.
+5. Enables and starts `menfit-proxy.service` via `systemctl`.
 
 Caddy (installed separately, not by `startup-script.sh`) reverse-proxies
 `34.27.29.29.sslip.io` on ports 80/443 to the Node service and handles the
@@ -76,22 +76,22 @@ automated redeploy/update path. To ship a change to `server.js`:
 1. Edit `server.js` in this directory (and keep the copy embedded in
    `startup-script.sh` in sync, since a future re-provision of the VM uses the
    script's embedded copy, not this file).
-2. SSH to the instance: `gcloud compute ssh femfit-proxy-vm --zone us-central1-<zone>`.
-3. Copy the updated `server.js` to `/opt/femfit-proxy/server.js` on the VM
-   (e.g. via `gcloud compute scp backend/fatsecret-proxy/server.js femfit-proxy-vm:/opt/femfit-proxy/server.js --zone us-central1-<zone>`).
-4. Restart the service: `sudo systemctl restart femfit-proxy`.
+2. SSH to the instance: `gcloud compute ssh menfit-proxy-vm --zone us-central1-<zone>`.
+3. Copy the updated `server.js` to `/opt/menfit-proxy/server.js` on the VM
+   (e.g. via `gcloud compute scp backend/fatsecret-proxy/server.js menfit-proxy-vm:/opt/menfit-proxy/server.js --zone us-central1-<zone>`).
+4. Restart the service: `sudo systemctl restart menfit-proxy`.
 5. Verify: `curl https://34.27.29.29.sslip.io/health`.
 
 To change environment variables (e.g. add `PROXY_API_KEY`), edit
-`/etc/systemd/system/femfit-proxy.service` on the VM directly, then run
-`sudo systemctl daemon-reload && sudo systemctl restart femfit-proxy`.
+`/etc/systemd/system/menfit-proxy.service` on the VM directly, then run
+`sudo systemctl daemon-reload && sudo systemctl restart menfit-proxy`.
 
-## The `X-FemFit-Key` gate
+## The `X-MenFit-Key` gate
 
-`server.js` only enforces the `X-FemFit-Key` header check when `PROXY_API_KEY`
+`server.js` only enforces the `X-MenFit-Key` header check when `PROXY_API_KEY`
 is a non-empty environment variable on the proxy; if it is unset, the
-`/rest/server.api` route accepts any caller. On the client side, the FemFit
-app only sends the `X-FemFit-Key` header when `FATSECRET_PROXY_KEY` is set in
+`/rest/server.api` route accepts any caller. On the client side, the MenFit
+app only sends the `X-MenFit-Key` header when `FATSECRET_PROXY_KEY` is set in
 `env/dev.secrets.json` (or the equivalent `--dart-define`) — see
 `lib/core/config/env.dart`. Both sides must agree: set the same value in the
 VM's `PROXY_API_KEY` and the client's `FATSECRET_PROXY_KEY` env entry, or
@@ -101,10 +101,10 @@ leave both unset.
 
 `server.js` calls `app.use(cors())` with no origin restriction, so the proxy
 currently allows requests from any origin. This is acceptable because the
-route requires a valid `X-FemFit-Key` (when configured) and never exposes the
+route requires a valid `X-MenFit-Key` (when configured) and never exposes the
 FatSecret client secret itself, but it means the proxy is not origin-locked.
 
-## Configuring the FemFit app
+## Configuring the MenFit app
 
 Set `FATSECRET_PROXY_URL` to the proxy's `/rest/server.api` path (it must end
 in `/rest/server.api`) in `env/dev.secrets.json` or via `--dart-define`:
@@ -115,7 +115,7 @@ in `/rest/server.api`) in `env/dev.secrets.json` or via `--dart-define`:
 }
 ```
 
-If the `X-FemFit-Key` gate is enabled on the proxy, also set
+If the `X-MenFit-Key` gate is enabled on the proxy, also set
 `FATSECRET_PROXY_KEY` to the matching value in the same file.
 
 ## FatSecret IP allowlist

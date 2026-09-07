@@ -161,7 +161,7 @@ void main() {
   group('LiveTrackingUrlBuilder', () {
     test('buildUrl produces proper URL format with parameters', () {
       const builder = LiveTrackingUrlBuilder(
-        baseUrl: 'https://femfit.app/live_tracker.html',
+        baseUrl: 'https://menfit.app/live_tracker.html',
       );
       final session = LiveTrackingSession.create(
         userName: 'Alice',
@@ -174,7 +174,7 @@ void main() {
         runnerName: session.userName,
       );
 
-      expect(url, startsWith('https://femfit.app/live_tracker.html#'));
+      expect(url, startsWith('https://menfit.app/live_tracker.html#'));
       expect(url, contains('token=${session.token}'));
       expect(url, contains('runner=Alice'));
 

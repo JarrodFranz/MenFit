@@ -123,11 +123,11 @@ void main() {
       expect(fakeSharing.shareCount, 1);
       expect(
         fakeSharing.textShares.first.subject,
-        'FemFit Safety Alert (Test)',
+        'MenFit Safety Alert (Test)',
       );
       expect(
         fakeSharing.textShares.first.text,
-        contains('FemFit Safety Alert:'),
+        contains('MenFit Safety Alert:'),
       );
     });
   });

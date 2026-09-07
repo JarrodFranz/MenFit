@@ -309,7 +309,7 @@ void main() {
 
       expect(sharing.shareCount, 1);
       final shared = sharing.imageShares.single;
-      expect(shared.fileName, 'femfit-recap-card.png');
+      expect(shared.fileName, 'menfit-recap-card.png');
       expect(shared.pngBytes.take(4), [0x89, 0x50, 0x4e, 0x47]);
       expect(shared.text, contains('🏆 5 km best effort: 24:12'));
       // The phase toggle is off, and it gates the share as it gates the

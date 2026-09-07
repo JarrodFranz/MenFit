@@ -5,7 +5,7 @@
 ## Bootstrap facts (2026-08-25)
 
 - Dev machine: Windows 11, Flutter 3.44.4 stable, Dart 3.12.2. Windows + Web + Android build locally; **iOS cannot be compiled here** (needs macOS) — target committed, validation deferred to a Mac/CI.
-- ~~Project identifiers `menfit_app` / `com.example` are temporary~~ **Renamed 2026-09-05** to `com.jarrodfranz.femfit` (applicationId, namespace, Kotlin package, iOS bundle id). The Dart package `menfit_app` stays. MSIX identity / web manifest still carry the working title (no Windows/Web distribution yet). See `engineering/release_and_distribution.md`.
+- ~~Project identifiers `menfit_app` / `com.example` are temporary~~ **Renamed 2026-09-05** to `com.jarrodfranz.menfit` (applicationId, namespace, Kotlin package, iOS bundle id). The Dart package `menfit_app` stays. MSIX identity / web manifest still carry the working title (no Windows/Web distribution yet). See `engineering/release_and_distribution.md`.
 
 ## Pre-distribution checklist
 
@@ -13,7 +13,7 @@ Things that are fine locally and **must** be changed before any store or
 public distribution build:
 
 - ~~Rename `menfit_app` / `com.example`~~ Done 2026-09-05 for Android + iOS
-  (`com.jarrodfranz.femfit`); MSIX identity and web manifest remain on the
+  (`com.jarrodfranz.menfit`); MSIX identity and web manifest remain on the
   working title until Windows/Web are distributed.
 - **Sign Android with the upload keystore** (`scripts/create_upload_keystore.ps1`
   once; `distribute_android.ps1` refuses debug-signed builds) — see

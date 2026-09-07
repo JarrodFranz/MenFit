@@ -42,7 +42,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Onboarding shows, not the home screen.
-      expect(find.text('Welcome to FemFit'), findsOneWidget);
+      expect(find.text('Welcome to MenFit'), findsOneWidget);
       expect(find.text('Welcome back'), findsNothing);
 
       // Step 1 (welcome) -> step 2 (about you).
@@ -76,7 +76,7 @@ void main() {
 
       // Lands on home (the redirect fires now that onboarding is complete).
       expect(find.textContaining('Welcome back'), findsOneWidget);
-      expect(find.text('Welcome to FemFit'), findsNothing);
+      expect(find.text('Welcome to MenFit'), findsNothing);
 
       // The profile row exists, with the entered name, and no goal since
       // the optional step was skipped.
@@ -170,7 +170,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('Welcome to FemFit'), findsOneWidget);
+      expect(find.text('Welcome to MenFit'), findsOneWidget);
 
       // Advance to step 2
       await tester.tap(find.text('Continue'));
@@ -182,7 +182,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Should return to step 1
-      expect(find.text('Welcome to FemFit'), findsOneWidget);
+      expect(find.text('Welcome to MenFit'), findsOneWidget);
     },
   );
 }

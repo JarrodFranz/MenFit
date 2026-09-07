@@ -149,6 +149,6 @@ Future<Uri?> _defaultSave({
     fileName: fileName,
     bytes: bytes,
     mimeType: mimeType,
-    dialogTitle: 'Save your FemFit data',
+    dialogTitle: 'Save your MenFit data',
   );
 }

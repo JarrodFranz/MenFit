@@ -142,7 +142,7 @@ the exporter test).
   `db.allTables` rather than a hand-written list, so a table added later is
   exported the day it exists and cannot be silently forgotten. Rows are
   Drift's own `toJson()` maps with nothing reformatted or derived - epoch-ms
-  columns stay epoch ms. Envelope: app, format (`femfit-export`),
+  columns stay epoch ms. Envelope: app, format (`menfit-export`),
   formatVersion, appVersion, `AppDatabase.schemaVersion`, `exportedAt`
   (ISO-8601 UTC), `includesCycleAndWellbeingData`, then `tables`.
 - **The S3 opt-in.** `cycle_records`, `daily_checkins`, `flare_events` and

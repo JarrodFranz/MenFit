@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-/// Full-screen branding and splash screen for FemFit.
+/// Full-screen branding and splash screen for MenFit.
 ///
 /// Features the signature deep plum / berry gradient, radiant luminous
 /// athletic running emblem, and brand typography.
-class FemFitSplashScreen extends StatefulWidget {
-  const FemFitSplashScreen({
+class MenFitSplashScreen extends StatefulWidget {
+  const MenFitSplashScreen({
     this.onLoaded,
     this.duration = const Duration(milliseconds: 2200),
     super.key,
@@ -18,10 +18,10 @@ class FemFitSplashScreen extends StatefulWidget {
   final Duration duration;
 
   @override
-  State<FemFitSplashScreen> createState() => _FemFitSplashScreenState();
+  State<MenFitSplashScreen> createState() => _MenFitSplashScreenState();
 }
 
-class _FemFitSplashScreenState extends State<FemFitSplashScreen>
+class _MenFitSplashScreenState extends State<MenFitSplashScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _fadeAnimation;
@@ -106,7 +106,7 @@ class _FemFitSplashScreenState extends State<FemFitSplashScreen>
                       ),
                       child: ClipOval(
                         child: Image.asset(
-                          'assets/images/femfit_logo.png',
+                          'assets/images/menfit_logo.png',
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) =>
                               const ColoredBox(
@@ -124,7 +124,7 @@ class _FemFitSplashScreenState extends State<FemFitSplashScreen>
 
                     // App Title
                     const Text(
-                      'FemFit',
+                      'MenFit',
                       style: TextStyle(
                         fontSize: 42,
                         fontWeight: FontWeight.w800,

@@ -163,7 +163,7 @@ class FatSecretService implements FoodDataProvider {
         headers['Authorization'] = 'Bearer $token';
       }
       if (proxyApiKey != null && proxyApiKey!.isNotEmpty) {
-        headers['X-FemFit-Key'] = proxyApiKey!;
+        headers['X-MenFit-Key'] = proxyApiKey!;
       }
 
       final response = await dio.post<dynamic>(

@@ -12,7 +12,7 @@ WatchCompanionAdapter createDefaultWatchAdapter() => IoWatchCompanionAdapter();
 /// Android).
 class IoWatchCompanionAdapter implements WatchCompanionAdapter {
   IoWatchCompanionAdapter({MethodChannel? channel})
-    : _channel = channel ?? const MethodChannel('com.femfit.app/wearables') {
+    : _channel = channel ?? const MethodChannel('com.menfit.app/wearables') {
     _channel.setMethodCallHandler(_handleNativeCall);
   }
 

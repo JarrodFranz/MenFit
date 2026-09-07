@@ -315,12 +315,12 @@ void main() {
 
       expect(result, isA<DataExported>());
       final exported = result as DataExported;
-      expect(exported.filename, 'femfit-export-2026-09-04.json');
+      expect(exported.filename, 'menfit-export-2026-09-04.json');
 
       final text = utf8.decode(exported.bytes);
       expect(text, contains('\n  '));
       final decoded = jsonDecode(text) as Map<String, Object?>;
-      expect(decoded['format'], 'femfit-export');
+      expect(decoded['format'], 'menfit-export');
       expect(decoded['schemaVersion'], database.schemaVersion);
 
       final tables = decoded['tables']! as Map<String, Object?>;

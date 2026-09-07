@@ -91,7 +91,7 @@ class ActivityFileExporter {
         'gpx',
         attributes: {
           'version': '1.1',
-          'creator': 'FemFit',
+          'creator': 'MenFit',
           'xmlns': 'http://www.topografix.com/GPX/1/1',
           'xmlns:gpxtpx':
               'http://www.garmin.com/xmlschemas/TrackPointExtension/v1',

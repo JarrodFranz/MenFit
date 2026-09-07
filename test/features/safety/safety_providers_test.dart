@@ -242,7 +242,7 @@ void main() {
         state = container.read(safetyMonitorControllerProvider);
         expect(state.isWarningActive, isFalse);
         expect(state.isSosDispatched, isTrue);
-        expect(state.dispatchedMessage, contains('FemFit Safety Alert:'));
+        expect(state.dispatchedMessage, contains('MenFit Safety Alert:'));
         expect(
           state.dispatchedMessage,
           contains('https://maps.google.com/?q=-33.8688,151.2093'),
@@ -269,14 +269,14 @@ void main() {
 
       final state = container.read(safetyMonitorControllerProvider);
       expect(state.isSosDispatched, isTrue);
-      expect(msg, contains('FemFit Emergency SOS:'));
+      expect(msg, contains('MenFit Emergency SOS:'));
       expect(fakeSharing.shareCount, 1);
     });
 
     test('Live tracking providers resolve correctly', () async {
       final container = createContainer();
       final urlBuilder = container.read(liveTrackingUrlBuilderProvider);
-      expect(urlBuilder.baseUrl, 'https://live.femfit.app/track');
+      expect(urlBuilder.baseUrl, 'https://live.menfit.app/track');
 
       final service = container.read(liveTrackingServiceProvider);
       // Keep provider subscribed to stream

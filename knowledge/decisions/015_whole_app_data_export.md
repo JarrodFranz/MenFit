@@ -39,10 +39,10 @@ export path reached nineteen.
    language on what the file contains, that it is created on this device and
    goes only where she saves it, that nothing is sent to anyone, and the
    opt-in checkbox. Dismissing is declining.
-5. **Envelope:** `app`, `format: femfit-export`, `formatVersion: 1`,
+5. **Envelope:** `app`, `format: menfit-export`, `formatVersion: 1`,
    `appVersion` (constant guarded against pubspec), `schemaVersion`,
    `exportedAt` (UTC), `includesCycleAndWellbeingData`, `tables`. Filename
-   `femfit-export-YYYY-MM-DD.json`, pretty-printed so it is readable without
+   `menfit-export-YYYY-MM-DD.json`, pretty-printed so it is readable without
    tooling.
 
 ## Privacy

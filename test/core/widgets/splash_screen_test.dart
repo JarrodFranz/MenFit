@@ -5,14 +5,14 @@ import 'package:menfit_app/core/widgets/splash_screen.dart';
 
 void main() {
   testWidgets(
-    'FemFitSplashScreen renders title, tagline and triggers callback',
+    'MenFitSplashScreen renders title, tagline and triggers callback',
     (tester) async {
       var isLoaded = false;
 
       await tester.pumpWidget(
         MaterialApp(
           theme: AppTheme.light(),
-          home: FemFitSplashScreen(
+          home: MenFitSplashScreen(
             duration: const Duration(milliseconds: 500),
             onLoaded: () {
               isLoaded = true;
@@ -23,7 +23,7 @@ void main() {
 
       // Initial frame
       await tester.pump();
-      expect(find.text('FemFit'), findsOneWidget);
+      expect(find.text('MenFit'), findsOneWidget);
       expect(find.text('Empowering Every Stride & Cycle'), findsOneWidget);
       expect(isLoaded, isFalse);
 

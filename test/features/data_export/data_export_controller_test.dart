@@ -125,7 +125,7 @@ void main() {
 
     expect(state, isA<DataExportSaved>());
     final saved = state as DataExportSaved;
-    expect(saved.filename, startsWith('femfit-export-'));
+    expect(saved.filename, startsWith('menfit-export-'));
     expect(saved.filename, endsWith('.json'));
     expect(saved.summary.tableCount, 1);
     expect(saved.summary.rowCount, 1);
@@ -148,7 +148,7 @@ void main() {
       expect(saver.fileName, endsWith('.json'));
       final decoded =
           jsonDecode(utf8.decode(saver.bytes!)) as Map<String, Object?>;
-      expect(decoded['format'], 'femfit-export');
+      expect(decoded['format'], 'menfit-export');
     },
   );
 
@@ -186,7 +186,7 @@ void main() {
     () async {
       build();
       final saver = _RecordingSaver(
-        failure: StateError('disk full at C:/Users/jordan/femfit-export.json'),
+        failure: StateError('disk full at C:/Users/jordan/menfit-export.json'),
       );
 
       final state = await controller().export(

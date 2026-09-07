@@ -81,7 +81,7 @@ class MicronutrientInfoSheet extends StatelessWidget {
               body:
                   'Packaged food nutrition panels in many regions only '
                   'mandate macronutrient reporting. When you log foods that '
-                  'do not list iron, calcium, or vitamin D, FemFit treats '
+                  'do not list iron, calcium, or vitamin D, MenFit treats '
                   'those values as unknown rather than assuming zero. The '
                   'reported number represents a minimum floor—your actual '
                   'intake may be higher.',

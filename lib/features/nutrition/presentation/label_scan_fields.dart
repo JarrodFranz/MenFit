@@ -274,7 +274,7 @@ const labelScanExplainerText =
 /// serving-weight field is not rendered at all, so offering it would point
 /// at something she cannot see.
 const labelScanPerVolumeWarning =
-    'This label is per 100 mL. FemFit records weight — enter the grams for '
+    'This label is per 100 mL. MenFit records weight — enter the grams for '
     '100 mL before saving.';
 
 /// What one scan did, so the screen knows what to say.

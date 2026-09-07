@@ -116,7 +116,7 @@ class _SuggestMapState extends ConsumerState<SuggestMap> {
               children: [
                 TileLayer(
                   urlTemplate: tileUrl,
-                  userAgentPackageName: 'com.femfit.app',
+                  userAgentPackageName: 'com.menfit.app',
                   tileProvider: tileProvider,
                 ),
                 if (polyline != null && polyline.isNotEmpty)

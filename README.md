@@ -1,10 +1,10 @@
-# FemFit (working title)
+# MenFit (working title)
 
 A women-focused running, fitness, health and nutrition app — designed around women's physiology, safety, and privacy (not a generic fitness app with pink styling).
 
 Working today: GPS activity recording (run/walk/hike/ride) with live map and route following; round-trip route suggestion by target distance; strength training with routines, multi-day cycles and progression memory; specialised live trackers (HIIT, yoga/pilates, swim) that survive backgrounding; nutrition logging with Open Food Facts search, barcode scanning, macro targets/locks and water tracking; cycle tracking with an interactive calendar, prediction engine and retrospective phase modelling; cycle-aware streaks with protected recovery days; post-workout celebrations, cycle-phase PRs and social share cards; monthly and cycle-end recap stories; a cross-domain personal-insights engine (descriptive-only, statistically gated); GPX/TCX activity export; Health Connect / HealthKit step and energy sync; Garmin GPX/TCX/FIT import; and a multi-domain progress dashboard. Local-first — all data lives on-device (Drift/SQLite); there is no backend.
 
-> App id / bundle id is `com.jarrodfranz.femfit` (permanent). The Dart package name `menfit_app` is internal only.
+> App id / bundle id is `com.jarrodfranz.menfit` (permanent). The Dart package name `menfit_app` is internal only.
 
 ## Platforms
 
@@ -29,7 +29,7 @@ No `--dart-define` needed for dev (defaults apply). Other environments: `flutter
 ## Distribute to testers
 
 - **Android → Firebase App Distribution** (built here): one-time `scripts/create_upload_keystore.ps1`, then `scripts/distribute_android.ps1 -Notes "..."` per build.
-  - GUI alternative: double-click `tools/femfit_deploy/bin/FemFitDeploy.exe` (rebuild with `powershell -ExecutionPolicy Bypass -File tools/femfit_deploy/build.ps1`; see `tools/femfit_deploy/README.md`).
+  - GUI alternative: double-click `tools/menfit_deploy/bin/MenFitDeploy.exe` (rebuild with `powershell -ExecutionPolicy Bypass -File tools/menfit_deploy/build.ps1`; see `tools/menfit_deploy/README.md`).
 - **iOS → TestFlight** (built by Codemagic from `codemagic.yaml`): push a tag matching `ios-v*`.
 
 Setup steps, where each secret lives, and the reasoning: `knowledge/engineering/release_and_distribution.md`.

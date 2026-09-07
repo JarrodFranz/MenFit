@@ -104,13 +104,13 @@ void main() {
 
     gate.complete(
       const DataExportSaved(
-        filename: 'femfit-export-2026-09-04.json',
+        filename: 'menfit-export-2026-09-04.json',
         summary: DataExportSummary(tableCount: 3, rowCount: 9),
       ),
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Saved femfit-export-2026-09-04.json'), findsOneWidget);
+    expect(find.text('Saved menfit-export-2026-09-04.json'), findsOneWidget);
     expect(tile(tester).enabled, isTrue);
     expect(find.byType(CircularProgressIndicator), findsNothing);
   });

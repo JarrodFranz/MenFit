@@ -111,7 +111,7 @@ void main() {
       expect(utf8.decode(exported.bytes), contains('<gpx'));
       expect(
         exported.filename,
-        equals('femfit-run-2026-09-01-park-run-fast.gpx'),
+        equals('menfit-run-2026-09-01-park-run-fast.gpx'),
       );
     },
   );

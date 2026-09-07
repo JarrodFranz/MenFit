@@ -293,7 +293,7 @@ class _GuidedCycleImportSheetState
             _ImportOptionTile(
               icon: Icons.code,
               title: 'Import JSON File',
-              subtitle: 'FemFit JSON export or structured cycle array',
+              subtitle: 'MenFit JSON export or structured cycle array',
               onTap: _pickAndParseJson,
             ),
             SizedBox(height: tokens.spacingSm),

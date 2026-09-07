@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-echo "=== Setting up FemFit Proxy on e2-micro ==="
+echo "=== Setting up MenFit Proxy on e2-micro ==="
 
 # Install Node.js 20
 apt-get update
@@ -9,12 +9,12 @@ apt-get install -y curl
 curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 apt-get install -y nodejs
 
-mkdir -p /opt/femfit-proxy
-cd /opt/femfit-proxy
+mkdir -p /opt/menfit-proxy
+cd /opt/menfit-proxy
 
 cat << 'EOF' > package.json
 {
-  "name": "femfit-fatsecret-proxy",
+  "name": "menfit-fatsecret-proxy",
   "version": "1.0.0",
   "type": "module",
   "dependencies": {
@@ -86,20 +86,20 @@ async function getAccessToken() {
 app.get('/health', (req, res) => {
   res.json({
     status: 'ok',
-    service: 'femfit-fatsecret-proxy',
+    service: 'menfit-fatsecret-proxy',
     configured: Boolean(clientId && clientSecret),
     timestamp: new Date().toISOString()
   });
 });
 
 app.get('/', (req, res) => {
-  res.json({ status: 'ok', service: 'femfit-fatsecret-proxy' });
+  res.json({ status: 'ok', service: 'menfit-fatsecret-proxy' });
 });
 
 app.post('/rest/server.api', async (req, res) => {
-  if (proxyApiKey && req.headers['x-femfit-key'] !== proxyApiKey) {
+  if (proxyApiKey && req.headers['x-menfit-key'] !== proxyApiKey) {
     return res.status(401).json({
-      error: { code: 401, message: 'Invalid or missing X-FemFit-Key' }
+      error: { code: 401, message: 'Invalid or missing X-MenFit-Key' }
     });
   }
 
@@ -137,19 +137,19 @@ app.post('/rest/server.api', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`FemFit FatSecret proxy running on port ${port}`);
+  console.log(`MenFit FatSecret proxy running on port ${port}`);
 });
 EOF
 
-cat << 'EOF' > /etc/systemd/system/femfit-proxy.service
+cat << 'EOF' > /etc/systemd/system/menfit-proxy.service
 [Unit]
-Description=FemFit FatSecret Proxy
+Description=MenFit FatSecret Proxy
 After=network.target
 
 [Service]
 Type=simple
 User=root
-WorkingDirectory=/opt/femfit-proxy
+WorkingDirectory=/opt/menfit-proxy
 Environment=PORT=80
 Environment=FATSECRET_CLIENT_ID=0f37b19e58fe453f97f954f302bb2e68
 Environment=FATSECRET_CLIENT_SECRET=4d298a5211674ef682cf4c0993a69efd
@@ -162,7 +162,7 @@ WantedBy=multi-user.target
 EOF
 
 systemctl daemon-reload
-systemctl enable femfit-proxy
-systemctl start femfit-proxy
+systemctl enable menfit-proxy
+systemctl start menfit-proxy
 
-echo "=== FemFit Proxy Service Started on Port 80 ==="
+echo "=== MenFit Proxy Service Started on Port 80 ==="

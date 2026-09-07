@@ -454,7 +454,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // The redirect fires once onboarding is marked incomplete.
-      expect(find.text('Welcome to FemFit'), findsOneWidget);
+      expect(find.text('Welcome to MenFit'), findsOneWidget);
       expect(find.textContaining('Welcome back'), findsNothing);
 
       final rows = await database.select(database.userProfiles).get();

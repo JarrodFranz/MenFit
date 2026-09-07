@@ -323,7 +323,7 @@ is set, and the save is refused until she supplies a weight — because
 `_effectiveServing` reads a blank amount as 100, so doing nothing would
 have filed figures printed per 100 mL as "per 100 g" with nobody told. The
 copy names the next action rather than the impossibility: "This label is
-per 100 mL. FemFit records weight — enter the grams for 100 mL before
+per 100 mL. MenFit records weight — enter the grams for 100 mL before
 saving." (`knowledge/domain/nutrition.md`: 100 ml of oil is ~92 g, of honey
 ~140 g. It does not offer "or a serving weight": a per-volume panel puts
 the form in per-reference mode, where that field is not rendered.)

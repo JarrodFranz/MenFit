@@ -1,6 +1,6 @@
 import 'package:menfit_app/features/activity/domain/activity.dart';
 
-/// Sealed hierarchy of cross-platform messages passed between FemFit (phone)
+/// Sealed hierarchy of cross-platform messages passed between MenFit (phone)
 /// and wearable companions (WearOS, Apple Watch / watchOS).
 sealed class WatchMessage {
   const WatchMessage();
@@ -197,7 +197,7 @@ class WatchWristWorkout extends WatchMessage {
   };
 }
 
-/// Menstrual cycle context synced from FemFit phone app to the watch face/companion.
+/// Menstrual cycle context synced from MenFit phone app to the watch face/companion.
 class WatchCycleContext extends WatchMessage {
   const WatchCycleContext({
     required this.phaseName,

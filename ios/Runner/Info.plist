@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>FemFit</string>
+	<string>MenFit</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -15,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>FemFit</string>
+	<string>MenFit</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -43,7 +43,7 @@
 	     image_picker detects that declaration and requests the runtime
 	     permission itself. -->
 	<key>NSCameraUsageDescription</key>
-	<string>FemFit uses your camera to scan product barcodes and to read a food's nutrition label. Photos are processed on your device, are never uploaded, and the label photo is discarded as soon as it has been read.</string>
+	<string>MenFit uses your camera to scan product barcodes and to read a food's nutrition label. Photos are processed on your device, are never uploaded, and the label photo is discarded as soon as it has been read.</string>
 	<!-- GPS activity recording (ADR 008, Phase C wave 2). When-in-use only -
 	     the app never REQUESTS Always authorization; a foreground-started
 	     session with UIBackgroundModes "location" +
@@ -55,15 +55,15 @@
 	     even though this app never calls it. See
 	     knowledge/decisions/008_run_recording_stack.md. -->
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>FemFit uses your location to record your route while you're tracking a run, walk, hike, or ride. Your route is never shared without your consent.</string>
+	<string>MenFit uses your location to record your route while you're tracking a run, walk, hike, or ride. Your route is never shared without your consent.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>FemFit only uses your location while you're recording a run, walk, hike, or ride. It never tracks you in the background or asks for always-on access.</string>
+	<string>MenFit only uses your location while you're recording a run, walk, hike, or ride. It never tracks you in the background or asks for always-on access.</string>
 	<key>NSHealthShareUsageDescription</key>
-	<string>FemFit reads your step count and active energy burn to show your daily activity and progress.</string>
+	<string>MenFit reads your step count and active energy burn to show your daily activity and progress.</string>
 	<key>NSHealthUpdateUsageDescription</key>
-	<string>FemFit syncs your fitness activity data with Apple Health.</string>
+	<string>MenFit syncs your fitness activity data with Apple Health.</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>FemFit connects to your Garmin watch or heart rate sensor to display real-time heart rate during workouts.</string>
+	<string>MenFit connects to your Garmin watch or heart rate sensor to display real-time heart rate during workouts.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>

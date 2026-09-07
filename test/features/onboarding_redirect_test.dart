@@ -42,7 +42,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Welcome back'), findsOneWidget);
-      expect(find.text('Welcome to FemFit'), findsNothing);
+      expect(find.text('Welcome to MenFit'), findsNothing);
 
       // Directly navigating to /onboarding is redirected straight back.
       final container = ProviderScope.containerOf(
@@ -52,7 +52,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Welcome back'), findsOneWidget);
-      expect(find.text('Welcome to FemFit'), findsNothing);
+      expect(find.text('Welcome to MenFit'), findsNothing);
 
       // Flush Drift's stream-cleanup timers under a pump we control before
       // the framework's own teardown (central testing-pitfalls.md).

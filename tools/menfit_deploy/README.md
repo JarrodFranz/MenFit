@@ -1,7 +1,7 @@
-# FemFit Deploy (Windows GUI)
+# MenFit Deploy (Windows GUI)
 
 A small WinForms front end for `scripts/distribute_android.ps1`. Double-click
-`bin/FemFitDeploy.exe`, choose the environment, edit the release notes, tick
+`bin/MenFitDeploy.exe`, choose the environment, edit the release notes, tick
 the optional tester group if wanted, press **Deploy**. The tool never
 reimplements the script; it runs
 
@@ -15,21 +15,21 @@ the log pane. **Cancel** kills the whole process tree (`taskkill /T /F`).
 ## Rebuild
 
 ```
-powershell -ExecutionPolicy Bypass -File tools/femfit_deploy/build.ps1
+powershell -ExecutionPolicy Bypass -File tools/menfit_deploy/build.ps1
 ```
 
 Uses the .NET Framework 4 `csc.exe` that ships with Windows (C# 5 syntax
-only; no dotnet SDK). Output: `tools/femfit_deploy/bin/FemFitDeploy.exe`
+only; no dotnet SDK). Output: `tools/menfit_deploy/bin/MenFitDeploy.exe`
 (gitignored). The app icon is embedded from
 `windows/runner/resources/app_icon.ico` when present.
 
 Self-test without deploying:
 
 ```
-tools\femfit_deploy\bin\FemFitDeploy.exe --dry-run
+tools\menfit_deploy\bin\MenFitDeploy.exe --dry-run
 ```
 
-writes `tools/femfit_deploy/bin/dry-run.txt` with the resolved repo root,
+writes `tools/menfit_deploy/bin/dry-run.txt` with the resolved repo root,
 config, preflight results and the exact command for both checkbox states.
 
 ## Repo discovery

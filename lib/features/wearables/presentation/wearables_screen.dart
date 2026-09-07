@@ -130,7 +130,7 @@ class WearablesScreen extends ConsumerWidget {
             SizedBox(height: tokens.spacingSm),
             Text(
               'Outdoor runs, rides, and workouts from your Garmin watch are '
-              'automatically ingested into FemFit with your biological '
+              'automatically ingested into MenFit with your biological '
               'cycle phase.',
               style: textTheme.bodyMedium,
             ),
@@ -241,7 +241,7 @@ class WearablesScreen extends ConsumerWidget {
                       Text(
                         isPaired
                             ? '${companion.deviceName} (${companion.platform})'
-                            : 'Apple Watch & WearOS (femfit app)',
+                            : 'Apple Watch & WearOS (menfit app)',
                         style: textTheme.bodySmall?.copyWith(
                           color: colorScheme.onSurfaceVariant,
                         ),
@@ -275,7 +275,7 @@ class WearablesScreen extends ConsumerWidget {
             SizedBox(height: tokens.spacingSm),
             Text(
               'Record standalone workouts on an Apple Watch or WearOS device '
-              'with the FemFit companion app installed. For Garmin watches or '
+              'with the MenFit companion app installed. For Garmin watches or '
               'chest straps broadcasting optical HR, connect via Bluetooth '
               'below.',
               style: textTheme.bodyMedium,

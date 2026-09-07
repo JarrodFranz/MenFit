@@ -121,7 +121,7 @@ class _LiveRecordingMapState extends ConsumerState<LiveRecordingMap> {
           children: [
             TileLayer(
               urlTemplate: AppEnv.instance.mapTileUrl,
-              userAgentPackageName: 'com.femfit.app',
+              userAgentPackageName: 'com.menfit.app',
               tileProvider: tileProvider,
             ),
             if (plannedLatLngs.isNotEmpty)

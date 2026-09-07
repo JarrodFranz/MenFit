@@ -645,7 +645,7 @@ class _MessagePreviewCardState extends ConsumerState<_MessagePreviewCard> {
                       .read(sharingAdapterProvider)
                       .shareText(
                         previewMessage,
-                        subject: 'FemFit Safety Alert (Test)',
+                        subject: 'MenFit Safety Alert (Test)',
                       ),
                 );
               },

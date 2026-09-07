@@ -426,7 +426,7 @@ const String celebrationSystemShareLabel = 'Share card text';
 
 const String celebrationCopiedMessage = 'Copied, ready to send.';
 
-const String celebrationCardFooter = 'Tuned to her rhythm · FemFit';
+const String celebrationCardFooter = 'Tuned to her rhythm · MenFit';
 
 /// `'Alex & Sam'` — two names, joined by an ampersand and nothing that
 /// puts one of them first in any sense that means anything. The user's
@@ -448,7 +448,7 @@ String celebrationShareText({
       'goal — ${challengeTargetLine(blueprint)}, '
       '${challengeActivityLine(blueprint.activityTypes)}, '
       '${challengeWindowLine(blueprint.windowStart, blueprint.windowEnd)}.\n'
-      '#FemFit';
+      '#MenFit';
 }
 
 // ---------------------------------------------------------------------------

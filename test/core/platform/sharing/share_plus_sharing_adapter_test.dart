@@ -195,7 +195,7 @@ void main() {
 
       await adapterFor(platform).shareImage(
         pngBytes: png,
-        fileName: 'femfit-workout-card.png',
+        fileName: 'menfit-workout-card.png',
         text: 'summary',
         sharePositionOrigin: const Rect.fromLTWH(1, 2, 3, 4),
       );
@@ -205,7 +205,7 @@ void main() {
       expect(params.files!.single.mimeType, 'image/png');
       // `XFile.fromData`'s own name is ignored off the web; this is the
       // parameter that names the file for the receiving app.
-      expect(params.fileNameOverrides, ['femfit-workout-card.png']);
+      expect(params.fileNameOverrides, ['menfit-workout-card.png']);
       expect(params.text, 'summary');
       expect(params.sharePositionOrigin, const Rect.fromLTWH(1, 2, 3, 4));
       expect(await params.files!.single.readAsBytes(), png);

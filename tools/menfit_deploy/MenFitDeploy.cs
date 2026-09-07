@@ -1,4 +1,4 @@
-// FemFit Deploy - WinForms front end for scripts/distribute_android.ps1.
+// MenFit Deploy - WinForms front end for scripts/distribute_android.ps1.
 // Double-click the exe, pick env/notes/groups, press Deploy.
 //
 // Compiled with the .NET Framework 4 csc.exe (C# 5). See build.ps1 and README.md.
@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 
-namespace FemFitDeploy
+namespace MenFitDeploy
 {
     public sealed class MainForm : Form
     {
@@ -44,7 +44,7 @@ namespace FemFitDeploy
 
         private void BuildLayout()
         {
-            Text = "FemFit Deploy";
+            Text = "MenFit Deploy";
             MinimumSize = new Size(720, 640);
             Size = new Size(860, 760);
             StartPosition = FormStartPosition.CenterScreen;
@@ -320,7 +320,7 @@ namespace FemFitDeploy
         {
             if (!_runner.IsRunning) return;
             DialogResult answer = MessageBox.Show(this, "A deploy is still running. Kill it and exit?",
-                "FemFit Deploy", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+                "MenFit Deploy", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
             if (answer == DialogResult.Yes) _runner.Cancel();
             else e.Cancel = true;
         }
@@ -354,7 +354,7 @@ namespace FemFitDeploy
         public static int Execute(string[] args, string root)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("FemFit Deploy dry run " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            sb.AppendLine("MenFit Deploy dry run " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
             sb.AppendLine("exe:  " + Application.ExecutablePath);
             sb.AppendLine("root: " + (root ?? "(not found)"));
             int exitCode = 0;
@@ -424,19 +424,19 @@ namespace FemFitDeploy
 
             if (root == null)
             {
-                MessageBox.Show("Could not find the FemFit repo (a folder with pubspec.yaml and scripts\\distribute_android.ps1) above this exe. Please pick the repo root.",
-                    "FemFit Deploy", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Could not find the MenFit repo (a folder with pubspec.yaml and scripts\\distribute_android.ps1) above this exe. Please pick the repo root.",
+                    "MenFit Deploy", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 using (FolderBrowserDialog dialog = new FolderBrowserDialog())
                 {
-                    dialog.Description = "Select the FemFit repository root";
+                    dialog.Description = "Select the MenFit repository root";
                     dialog.ShowNewFolderButton = false;
                     if (dialog.ShowDialog() != DialogResult.OK) return 2;
                     root = RepoLocator.IsRepoRoot(dialog.SelectedPath) ? dialog.SelectedPath : RepoLocator.WalkUp(dialog.SelectedPath);
                 }
                 if (root == null)
                 {
-                    MessageBox.Show("That folder is not the FemFit repo (no pubspec.yaml + scripts\\distribute_android.ps1).",
-                        "FemFit Deploy", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("That folder is not the MenFit repo (no pubspec.yaml + scripts\\distribute_android.ps1).",
+                        "MenFit Deploy", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return 2;
                 }
             }

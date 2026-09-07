@@ -127,7 +127,7 @@ class CycleSettingsFaqModal extends ConsumerWidget {
             const _FaqTile(
               question: 'Can I use this app for contraception or fertility?',
               answer:
-                  'No. FemFit is an informational lifestyle and fitness '
+                  'No. MenFit is an informational lifestyle and fitness '
                   'training tool. It is not a medical device, diagnostic '
                   'tool, or contraceptive method.',
             ),

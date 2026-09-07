@@ -16,7 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 void _log(
   String message, {
   required LogLevel level,
-  String name = 'FemFit',
+  String name = 'MenFit',
   Object? error,
   StackTrace? stackTrace,
 }) {

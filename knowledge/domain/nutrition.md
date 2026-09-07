@@ -243,7 +243,7 @@ half — what a photographed panel is allowed to do to a food definition.
   user supplies a weight, because a blank amount is otherwise read as 100
   and would file per-100 mL figures as per-100 g. This is the same rule
   that withdrew `ml` from the quantity picker: 100 ml of oil is ~92 g, of
-  honey ~140 g. Copy: "This label is per 100 mL. FemFit records weight —
+  honey ~140 g. Copy: "This label is per 100 mL. MenFit records weight —
   enter the grams for 100 mL before saving." The guard is **sticky and
   independent of who set the amount**: a second scan does not clear it, and
   a weight typed *before* the scan does not count as an answer to it (she

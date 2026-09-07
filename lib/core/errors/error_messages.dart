@@ -76,7 +76,7 @@ const Map<String, String> _messagesByKey = {
       'changed. Please try again.',
   'error.importRead':
       'Could not read the backup file. It may be damaged or not a valid '
-      'FemFit export.',
+      'MenFit export.',
   'error.importWrite':
       'Something went wrong restoring your data from the backup. '
       'Please try again.',

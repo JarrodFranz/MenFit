@@ -16,7 +16,7 @@ import 'package:menfit_app/core/theme/tokens.dart';
 /// one has to go through the `package-evaluation` workflow, which was out
 /// of scope for S1-5. Copyable text satisfies "a link to the source" in
 /// substance; a tap would satisfy it better.
-// TODO(femfit): evaluate url_launcher and make this address tappable.
+// TODO(menfit): evaluate url_launcher and make this address tappable.
 class FoodDataAttribution extends StatelessWidget {
   const FoodDataAttribution({
     required this.name,

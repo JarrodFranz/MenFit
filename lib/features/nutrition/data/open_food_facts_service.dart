@@ -90,7 +90,7 @@ class OpenFoodFactsService implements FoodDataProvider {
     this._baseUrl = defaultBaseUrl,
     this._searchBaseUrl = defaultSearchBaseUrl,
     String contact = '',
-    String appName = 'FemFit',
+    String appName = 'MenFit',
     String appVersion = openFoodFactsClientVersion,
   }) : _userAgent = _buildUserAgent(
          appName: appName,

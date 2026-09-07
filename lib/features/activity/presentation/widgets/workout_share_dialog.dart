@@ -399,7 +399,7 @@ class _WorkoutShareDialogState extends ConsumerState<WorkoutShareDialog> {
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  'FemFit',
+                  'MenFit',
                   style: TextStyle(
                     color: textColor,
                     fontWeight: FontWeight.w800,
@@ -555,7 +555,7 @@ class _WorkoutShareDialogState extends ConsumerState<WorkoutShareDialog> {
 
             // Bottom Tagline
             Text(
-              'Tuned to her rhythm · FemFit',
+              'Tuned to her rhythm · MenFit',
               style: TextStyle(
                 color: subtextColor,
                 fontSize: 8,
@@ -623,7 +623,7 @@ class _WorkoutShareDialogState extends ConsumerState<WorkoutShareDialog> {
         ? await adapter.shareText(shareText, sharePositionOrigin: origin)
         : await adapter.shareImage(
             pngBytes: bytes,
-            fileName: 'femfit-workout-card.png',
+            fileName: 'menfit-workout-card.png',
             text: shareText,
             sharePositionOrigin: origin,
           );
@@ -684,12 +684,12 @@ class _WorkoutShareDialogState extends ConsumerState<WorkoutShareDialog> {
         : '';
 
     final typeLabel = widget.activity.activityType.label;
-    return 'Completed a $typeLabel$phaseText on FemFit!\n'
+    return 'Completed a $typeLabel$phaseText on MenFit!\n'
         '• Time: $durationStr\n'
         '$distText'
         '$metricText'
         '$prText\n'
-        '#FemFit #WomensFitness';
+        '#MenFit #WomensFitness';
   }
 
   String _formatDuration(Duration duration) {

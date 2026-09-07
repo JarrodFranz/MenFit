@@ -16,7 +16,7 @@ const String dataExportAppVersion = '0.1.0';
 
 /// Value of the file's `format` field. A reader that does not recognise it
 /// should refuse the file rather than guess at its shape.
-const String dataExportFormatName = 'femfit-export';
+const String dataExportFormatName = 'menfit-export';
 
 /// Version of the *envelope* below — the keys of [DataExportDocument.toJson]
 /// and their meaning. Independent of the database's `schemaVersion`, which
@@ -85,7 +85,7 @@ class DataExportDocument {
     final format = json['format'];
     if (format != dataExportFormatName) {
       throw const FormatException(
-        'Not a valid FemFit export file: unrecognised format.',
+        'Not a valid MenFit export file: unrecognised format.',
       );
     }
 
@@ -162,17 +162,17 @@ class DataExportDocument {
     rowCount: tables.values.fold(0, (total, rows) => total + rows.length),
   );
 
-  /// `femfit-export-2026-09-04.json` — dated by [exportedAt] in UTC, to match
+  /// `menfit-export-2026-09-04.json` — dated by [exportedAt] in UTC, to match
   /// the `exportedAt` field inside the file. No time component and no id: a
   /// second export on the same day should visibly be the same day's export,
   /// and the OS save dialog already deals with a name that is taken.
   String get suggestedFilename {
     final date = exportedAt.toUtc().toIso8601String().substring(0, 10);
-    return 'femfit-export-$date.json';
+    return 'menfit-export-$date.json';
   }
 
   Map<String, Object?> toJson() => {
-    'app': 'FemFit',
+    'app': 'MenFit',
     'format': dataExportFormatName,
     'formatVersion': dataExportFormatVersion,
     'appVersion': dataExportAppVersion,

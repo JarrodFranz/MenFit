@@ -12,7 +12,7 @@
 #   .\scripts\create_upload_keystore.ps1 -PropertiesOnly   # keystore exists, rewrite android/key.properties
 #
 # The keystore is written OUTSIDE the repo (default
-# %USERPROFILE%\femfit-signing\upload-keystore.jks) so a `git clean` or a
+# %USERPROFILE%\menfit-signing\upload-keystore.jks) so a `git clean` or a
 # fresh clone can never delete it. android/key.properties (gitignored) points
 # at it. Passwords are read with hidden input and handed to keytool through
 # an environment variable, never on a command line. Nothing here is echoed.
@@ -20,9 +20,9 @@
 # ASCII only, no BOM: Windows PowerShell 5.1 reads BOM-less UTF-8 as ANSI.
 
 param(
-  [string]$KeystoreDir = (Join-Path $env:USERPROFILE 'femfit-signing'),
+  [string]$KeystoreDir = (Join-Path $env:USERPROFILE 'menfit-signing'),
   [string]$Alias = 'upload',
-  [string]$DistinguishedName = 'CN=FemFit Upload Key, O=Jarrod Franz',
+  [string]$DistinguishedName = 'CN=MenFit Upload Key, O=Jarrod Franz',
   [switch]$PropertiesOnly
 )
 
@@ -85,12 +85,12 @@ function Write-KeyProperties([string]$password) {
 
 function Show-Fingerprints([string]$password) {
   Write-Host 'Certificate fingerprints (needed if Firebase or Play ever ask for them):'
-  $env:FEMFIT_KS_PASS = $password
+  $env:MENFIT_KS_PASS = $password
   try {
-    Invoke-Keytool @('-list', '-v', '-keystore', $keystorePath, '-alias', $Alias, '-storepass:env', 'FEMFIT_KS_PASS') |
+    Invoke-Keytool @('-list', '-v', '-keystore', $keystorePath, '-alias', $Alias, '-storepass:env', 'MENFIT_KS_PASS') |
       Select-String 'SHA1:|SHA256:'
   } finally {
-    Remove-Item Env:\FEMFIT_KS_PASS -ErrorAction SilentlyContinue
+    Remove-Item Env:\MENFIT_KS_PASS -ErrorAction SilentlyContinue
   }
 }
 
@@ -102,11 +102,11 @@ if ($PropertiesOnly) {
   $password = Read-PlainPassword 'Keystore password (hidden)'
   # Verify the password against the keystore before writing anything, so a
   # typo here surfaces now rather than as a Gradle signing failure later.
-  $env:FEMFIT_KS_PASS = $password
+  $env:MENFIT_KS_PASS = $password
   try {
-    Invoke-Keytool @('-list', '-keystore', $keystorePath, '-alias', $Alias, '-storepass:env', 'FEMFIT_KS_PASS') | Out-Null
+    Invoke-Keytool @('-list', '-keystore', $keystorePath, '-alias', $Alias, '-storepass:env', 'MENFIT_KS_PASS') | Out-Null
   } finally {
-    Remove-Item Env:\FEMFIT_KS_PASS -ErrorAction SilentlyContinue
+    Remove-Item Env:\MENFIT_KS_PASS -ErrorAction SilentlyContinue
   }
   Write-KeyProperties $password
   Write-Host "Gradle config:   $propertiesPath (gitignored)" -ForegroundColor Green
@@ -122,7 +122,7 @@ if ($keystoreExists) {
   exit 1
 }
 
-Write-Host 'Creating the FemFit upload keystore.' -ForegroundColor Cyan
+Write-Host 'Creating the MenFit upload keystore.' -ForegroundColor Cyan
 Write-Host 'Choose a strong password and store it in a password manager NOW - it cannot be recovered.'
 $plain1 = Read-PlainPassword 'Keystore password (hidden)'
 $plain2 = Read-PlainPassword 'Repeat password (hidden)'
@@ -133,7 +133,7 @@ New-Item -ItemType Directory -Force $KeystoreDir | Out-Null
 
 # keytool reads passwords from named environment variables with the :env
 # suffix, so the secret never appears in the process command line.
-$env:FEMFIT_KS_PASS = $plain1
+$env:MENFIT_KS_PASS = $plain1
 try {
   Invoke-Keytool @(
     '-genkeypair', '-v',
@@ -142,11 +142,11 @@ try {
     '-alias', $Alias,
     '-keyalg', 'RSA', '-keysize', '2048', '-validity', '10000',
     '-dname', $DistinguishedName,
-    '-storepass:env', 'FEMFIT_KS_PASS',
-    '-keypass:env', 'FEMFIT_KS_PASS'
+    '-storepass:env', 'MENFIT_KS_PASS',
+    '-keypass:env', 'MENFIT_KS_PASS'
   ) | ForEach-Object { Write-Host $_ }
 } finally {
-  Remove-Item Env:\FEMFIT_KS_PASS -ErrorAction SilentlyContinue
+  Remove-Item Env:\MENFIT_KS_PASS -ErrorAction SilentlyContinue
 }
 
 Write-KeyProperties $plain1

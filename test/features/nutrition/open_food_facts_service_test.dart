@@ -962,7 +962,7 @@ void main() {
       final headers = adapter.requests.single.headers;
       // Browsers forbid scripts from setting User-Agent and drop it
       // silently; X-User-Agent is what actually arrives on web.
-      expect(headers['User-Agent'], 'FemFit/0.1.0 (support@example.org)');
+      expect(headers['User-Agent'], 'MenFit/0.1.0 (support@example.org)');
       expect(headers['X-User-Agent'], headers['User-Agent']);
     });
 
@@ -974,10 +974,10 @@ void main() {
 
       await service.findByBarcode(_cheeriosCode);
 
-      expect(adapter.requests.single.headers['User-Agent'], 'FemFit/0.1.0');
+      expect(adapter.requests.single.headers['User-Agent'], 'MenFit/0.1.0');
       expect(
         adapter.requests.single.headers['X-User-Agent'],
-        'FemFit/0.1.0',
+        'MenFit/0.1.0',
       );
     });
 

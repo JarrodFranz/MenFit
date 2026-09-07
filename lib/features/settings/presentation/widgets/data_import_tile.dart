@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:menfit_app/features/data_export/data_export_widgets.dart';
 
 /// The Settings row that restores user data from a previously saved
-/// `femfit-export-*.json` file.
+/// `menfit-export-*.json` file.
 ///
 /// Follows ADR 007 by reaching data_export exclusively through its UI
 /// composition surface (`data_export_widgets.dart`).
@@ -22,7 +22,7 @@ class DataImportTile extends ConsumerWidget {
       subtitle: Text(
         inProgress
             ? 'Restoring your backup…'
-            : 'Restore your data from a femfit-export file',
+            : 'Restore your data from a menfit-export file',
       ),
       trailing: inProgress
           ? const SizedBox.square(

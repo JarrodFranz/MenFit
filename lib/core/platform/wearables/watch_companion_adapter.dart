@@ -43,6 +43,6 @@ abstract class WatchCompanionAdapter {
   Stream<WatchMessage> get messageStream;
 
   /// Fetches any completed workouts recorded offline on the wrist that are
-  /// waiting to be synchronized into FemFit.
+  /// waiting to be synchronized into MenFit.
   Future<List<WatchWristWorkout>> pollOfflineWristWorkouts();
 }

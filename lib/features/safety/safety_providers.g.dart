@@ -383,7 +383,7 @@ final class SafetyMonitorControllerProvider
 }
 
 String _$safetyMonitorControllerHash() =>
-    r'bc3f7e65b0efa92cfbba2e7ffa71ba70d915cf93';
+    r'5d9f40b02e1ca87386a3623e38d497451b614937';
 
 abstract class _$SafetyMonitorController extends $Notifier<SafetyMonitorState> {
   SafetyMonitorState build();

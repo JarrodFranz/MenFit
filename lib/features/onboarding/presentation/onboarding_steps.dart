@@ -45,7 +45,7 @@ class WelcomeStep extends StatelessWidget {
               ),
               child: ClipOval(
                 child: Image.asset(
-                  'assets/images/femfit_logo.png',
+                  'assets/images/menfit_logo.png',
                   fit: BoxFit.cover,
                   errorBuilder: (_, _, _) => ColoredBox(
                     color: colorScheme.primary,
@@ -60,7 +60,7 @@ class WelcomeStep extends StatelessWidget {
             ),
             SizedBox(height: tokens.spacingLg),
             Text(
-              'Welcome to FemFit',
+              'Welcome to MenFit',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             SizedBox(height: tokens.spacingMd),

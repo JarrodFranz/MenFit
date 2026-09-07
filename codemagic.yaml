@@ -8,7 +8,7 @@
 #                                   named as `integrations.app_store_connect` below.
 #   - Signing certificate/profile -> fetched automatically from that key by
 #                                   `xcode-project use-profiles` (ios_signing block).
-#   - ENV_SECRETS_JSON            -> environment variable group `femfit_secrets`,
+#   - ENV_SECRETS_JSON            -> environment variable group `menfit_secrets`,
 #                                   marked Secure; the full JSON body of
 #                                   env/<env>.secrets.json (ADR 006 overlay).
 #   - APP_STORE_APPLE_ID          -> the numeric Apple ID of the app record in
@@ -22,20 +22,20 @@ workflows:
     instance_type: mac_mini_m2
     integrations:
       # Name of the App Store Connect integration created in the Codemagic UI.
-      app_store_connect: femfit-asc
+      app_store_connect: menfit-asc
     environment:
       ios_signing:
         distribution_type: app_store
-        bundle_identifier: com.jarrodfranz.femfit
+        bundle_identifier: com.jarrodfranz.menfit
       groups:
-        - femfit_secrets   # ENV_SECRETS_JSON (Secure), APP_STORE_APPLE_ID
+        - menfit_secrets   # ENV_SECRETS_JSON (Secure), APP_STORE_APPLE_ID
       vars:
         # Which env/<name>.json to compile in. staging = info-level logging,
         # otherwise identical to prod today (ADR 006).
         FLUTTER_ENV: staging
         # Bundle id repeated for scripts below; must equal ios_signing above
         # and android/app/build.gradle.kts applicationId (guard test).
-        BUNDLE_ID: com.jarrodfranz.femfit
+        BUNDLE_ID: com.jarrodfranz.menfit
       # Pinned to the version the repo is validated against
       # (handoff/HANDOFF.md). Bump deliberately, together with the local SDK.
       flutter: 3.47.2

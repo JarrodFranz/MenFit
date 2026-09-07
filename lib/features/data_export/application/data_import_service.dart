@@ -30,7 +30,7 @@ class DataImportService {
   /// modifying persistence.
   ///
   /// Throws `StorageException` if the file cannot be decoded or is not
-  /// a recognized FemFit export.
+  /// a recognized MenFit export.
   Future<DataExportDocument> parseDocument(Uint8List bytes) async {
     try {
       final json = await decode(bytes);

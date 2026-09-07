@@ -31,8 +31,8 @@ void main() {
     test('names the app, the format and both versions', () {
       final json = _document().toJson();
 
-      expect(json['app'], 'FemFit');
-      expect(json['format'], 'femfit-export');
+      expect(json['app'], 'MenFit');
+      expect(json['format'], 'menfit-export');
       expect(json['formatVersion'], 1);
       expect(json['appVersion'], dataExportAppVersion);
       expect(json['schemaVersion'], 24);
@@ -117,7 +117,7 @@ void main() {
       expect(
         _document(exportedAt: DateTime.utc(2026, 9, 4, 10, 30))
             .suggestedFilename,
-        'femfit-export-2026-09-04.json',
+        'menfit-export-2026-09-04.json',
       );
     });
 
@@ -125,7 +125,7 @@ void main() {
       // 2026-09-04 23:30 UTC is already the 5th in some zones and still the
       // 4th in others; the name has to agree with `exportedAt` inside.
       final document = _document(exportedAt: DateTime.utc(2026, 9, 4, 23, 30));
-      expect(document.suggestedFilename, 'femfit-export-2026-09-04.json');
+      expect(document.suggestedFilename, 'menfit-export-2026-09-04.json');
       expect(
         document.toJson()['exportedAt'],
         startsWith('2026-09-04'),
@@ -139,7 +139,7 @@ void main() {
       final decoded =
           jsonDecode(utf8.decode(document.toBytes())) as Map<String, Object?>;
 
-      expect(decoded['app'], 'FemFit');
+      expect(decoded['app'], 'MenFit');
       expect(decoded['schemaVersion'], 24);
       final tables = decoded['tables']! as Map<String, Object?>;
       expect(tables.keys, containsAll(<String>['weight_logs', 'foods']));
@@ -149,7 +149,7 @@ void main() {
       final text = utf8.decode(_document().toBytes());
 
       expect(text, contains('\n'));
-      expect(text, contains('  "app": "FemFit"'));
+      expect(text, contains('  "app": "MenFit"'));
     });
 
     test('survive non-ASCII text in a row', () {

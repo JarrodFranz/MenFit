@@ -61,7 +61,7 @@ void main() {
       await service.export(includeCycleAndWellbeing: true);
 
       expect(seen, isNotNull);
-      expect(seen!['format'], 'femfit-export');
+      expect(seen!['format'], 'menfit-export');
       expect(seen!['schemaVersion'], 24);
       expect(seen!['includesCycleAndWellbeingData'], isTrue);
       expect(seen!['tables'], isA<Map<String, Object?>>());
@@ -77,7 +77,7 @@ void main() {
       final result =
           await service.export(includeCycleAndWellbeing: false) as DataExported;
 
-      expect(result.filename, 'femfit-export-2026-09-04.json');
+      expect(result.filename, 'menfit-export-2026-09-04.json');
       expect(result.summary.tableCount, 1);
       expect(result.summary.rowCount, 1);
     });
@@ -100,7 +100,7 @@ void main() {
 
       expect(viaIsolate, document.toBytes());
       final decoded = jsonDecode(utf8.decode(viaIsolate));
-      expect((decoded! as Map)['format'], 'femfit-export');
+      expect((decoded! as Map)['format'], 'menfit-export');
     });
   });
 }

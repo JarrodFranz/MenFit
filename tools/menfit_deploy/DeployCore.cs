@@ -1,4 +1,4 @@
-// FemFit Deploy - non-UI core: repo discovery, config, preflight, git info,
+// MenFit Deploy - non-UI core: repo discovery, config, preflight, git info,
 // argument building and the child-process runner.
 //
 // Compiled with the .NET Framework 4 csc.exe (C# 5): no string interpolation,
@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading;
 using System.Web.Script.Serialization;
 
-namespace FemFitDeploy
+namespace MenFitDeploy
 {
     /// <summary>Finds the repository root that owns scripts/distribute_android.ps1.</summary>
     public static class RepoLocator

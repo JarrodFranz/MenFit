@@ -69,7 +69,7 @@ class CycleInfoModal extends StatelessWidget {
               iconColor: theme.colorScheme.primary,
               content:
                   'Your cycle predictions are personal to you. Rather than '
-                  'assuming a standard 28-day cycle for everyone, FemFit '
+                  'assuming a standard 28-day cycle for everyone, MenFit '
                   'calculates your rolling median cycle length and bleeding '
                   'duration based on your logged period history.\n\n'
                   'As you log more cycles, the engine adapts to your unique '
@@ -171,7 +171,7 @@ class CycleInfoModal extends StatelessWidget {
                         ),
                         SizedBox(height: tokens.spacingXs),
                         Text(
-                          'FemFit cycle tracking and phase predictions are '
+                          'MenFit cycle tracking and phase predictions are '
                           'for general informational and lifestyle planning '
                           'only. This is not medical advice, diagnostic '
                           'software, or a method of contraception or '

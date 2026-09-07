@@ -180,7 +180,7 @@ class RouteTileCacheService {
             cancelToken: cancelToken,
             options: Options(
               responseType: ResponseType.bytes,
-              headers: {'User-Agent': 'FemFit/0.1.0'},
+              headers: {'User-Agent': 'MenFit/0.1.0'},
             ),
           );
 

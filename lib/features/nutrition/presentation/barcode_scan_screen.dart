@@ -205,7 +205,7 @@ String _errorTitle(scanner.MobileScannerErrorCode code) => switch (code) {
 /// turns a two-second annoyance into a lost feature.
 String _errorBody(scanner.MobileScannerErrorCode code) => switch (code) {
   scanner.MobileScannerErrorCode.permissionDenied =>
-    'FemFit needs camera access to read a barcode. You can turn it on in your '
+    'MenFit needs camera access to read a barcode. You can turn it on in your '
         'device settings — or just type the barcode in instead.',
   scanner.MobileScannerErrorCode.unsupported =>
     "This device doesn't have a camera the scanner can use. Typing the "

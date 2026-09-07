@@ -30,7 +30,7 @@ void main() {
       expect(find.text('42s'), findsOneWidget);
       expect(
         find.text(
-          'FemFit noticed you have stopped moving for several minutes.',
+          'MenFit noticed you have stopped moving for several minutes.',
         ),
         findsOneWidget,
       );

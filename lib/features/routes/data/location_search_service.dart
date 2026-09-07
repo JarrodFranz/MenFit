@@ -280,7 +280,7 @@ class LocationSearchService {
         sendTimeout: const Duration(seconds: 4),
         receiveTimeout: const Duration(seconds: 4),
         headers: {
-          'User-Agent': 'FemFitApp/1.0',
+          'User-Agent': 'MenFitApp/1.0',
         },
       ),
     );

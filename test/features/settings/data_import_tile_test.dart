@@ -54,7 +54,7 @@ void main() {
 
     expect(find.text('Import data from backup'), findsOneWidget);
     expect(
-      find.text('Restore your data from a femfit-export file'),
+      find.text('Restore your data from a menfit-export file'),
       findsOneWidget,
     );
     expect(find.byType(CircularProgressIndicator), findsNothing);

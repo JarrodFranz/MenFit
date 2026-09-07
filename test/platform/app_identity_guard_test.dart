@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 /// (config-only surfaces get guard tests per
 /// `knowledge/engineering/coding_standards.md`).
 ///
-/// `com.jarrodfranz.femfit` was chosen on 2026-09-05 and is registered with
+/// `com.jarrodfranz.menfit` was chosen on 2026-09-05 and is registered with
 /// Apple (TestFlight via Codemagic) and Firebase (App Distribution). It must
 /// stay identical on every platform: a drift between the Android
 /// applicationId, the Gradle namespace, the Kotlin package path, the iOS
@@ -15,7 +15,7 @@ import 'package:flutter_test/flutter_test.dart';
 /// their local health data. See
 /// `knowledge/engineering/release_and_distribution.md`.
 void main() {
-  const appId = 'com.jarrodfranz.femfit';
+  const appId = 'com.jarrodfranz.menfit';
   const placeholder = 'com.example';
 
   group('Android', () {
@@ -100,7 +100,7 @@ void main() {
           .replaceAll('\t', '');
       expect(
         plist,
-        contains('<key>CFBundleDisplayName</key>\n<string>FemFit</string>'),
+        contains('<key>CFBundleDisplayName</key>\n<string>MenFit</string>'),
       );
       expect(plist, isNot(contains('menfit_app')));
     });

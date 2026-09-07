@@ -10,14 +10,14 @@ How tester builds leave the dev machine. Two channels, one identity:
 
 Guarded by `test/platform/app_identity_guard_test.dart`.
 
-## Permanent identity: `com.jarrodfranz.femfit`
+## Permanent identity: `com.jarrodfranz.menfit`
 
 Decided 2026-09-05, replacing the bootstrap placeholder `com.example.menfit_app`
-/ `com.example.femfitApp`. It is registered with Apple and Firebase and is what
+/ `com.example.menfitApp`. It is registered with Apple and Firebase and is what
 every installed copy is keyed on, so it never changes again. It appears in:
 
 - `android/app/build.gradle.kts` - `applicationId` and `namespace`
-- `android/app/src/main/kotlin/com/jarrodfranz/femfit/MainActivity.kt` - package path
+- `android/app/src/main/kotlin/com/jarrodfranz/menfit/MainActivity.kt` - package path
 - `ios/Runner.xcodeproj/project.pbxproj` - `PRODUCT_BUNDLE_IDENTIFIER` (Runner and
   `...RunnerTests`)
 - `codemagic.yaml` - `ios_signing.bundle_identifier` and `BUNDLE_ID`
@@ -38,7 +38,7 @@ backed up off-machine, used for every tester and store build.**
 .\scripts\create_upload_keystore.ps1
 ```
 
-- Writes `%USERPROFILE%\femfit-signing\upload-keystore.jks` (outside the repo,
+- Writes `%USERPROFILE%\menfit-signing\upload-keystore.jks` (outside the repo,
   so `git clean` and re-clones cannot touch it) and `android/key.properties`
   (gitignored) pointing at it. Refuses to overwrite an existing keystore;
   `-PropertiesOnly` rewrites `key.properties` for an existing keystore after
@@ -64,9 +64,9 @@ receive another update.
 
 One-time:
 
-1. Firebase console -> project (the existing `femfit-5e600` GCP project used
+1. Firebase console -> project (the existing `menfit-5e600` GCP project used
    by the FatSecret proxy can host it) -> Add app -> Android -> package name
-   `com.jarrodfranz.femfit`. `google-services.json` is **not** needed for
+   `com.jarrodfranz.menfit`. `google-services.json` is **not** needed for
    distribution alone; only download it if Firebase SDKs are added later.
 2. Copy the **App ID** (`1:<project-number>:android:<hash>`, Project settings ->
    Your apps) into `distribution/android.json` -> `firebaseAppId`. It is a
@@ -99,9 +99,9 @@ ABIs / App Bundle stay the registered fix for store size.
 **Do not** upload a debug-signed APK, ever, even "just to try it". A tester who
 installs it is stranded on the debug certificate (see keystore section).
 
-### FemFit Deploy (GUI)
+### MenFit Deploy (GUI)
 
-`tools/femfit_deploy/bin/FemFitDeploy.exe` is a double-click WinForms wrapper
+`tools/menfit_deploy/bin/MenFitDeploy.exe` is a double-click WinForms wrapper
 around the same script (it never reimplements it). It finds the repo by
 walking up from its own folder, lists `env/*.json`, prefills the release
 notes from `git log`, shows a preflight panel mirroring the script's refusals
@@ -116,11 +116,11 @@ name). The exe is gitignored; rebuild with the Windows-bundled .NET Framework
 compiler (no dotnet SDK):
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File tools/femfit_deploy/build.ps1
-tools\femfit_deploy\bin\FemFitDeploy.exe --dry-run   # self-test, writes bin/dry-run.txt
+powershell -ExecutionPolicy Bypass -File tools/menfit_deploy/build.ps1
+tools\menfit_deploy\bin\MenFitDeploy.exe --dry-run   # self-test, writes bin/dry-run.txt
 ```
 
-Details: `tools/femfit_deploy/README.md`.
+Details: `tools/menfit_deploy/README.md`.
 
 ## iOS: Codemagic -> TestFlight
 
@@ -139,17 +139,17 @@ One-time setup, in this order (Apple Developer Program membership required;
 TestFlight also needs it):
 
 1. **Apple Developer portal** -> Identifiers -> register App ID
-   `com.jarrodfranz.femfit` with capabilities: **HealthKit** (steps/energy
+   `com.jarrodfranz.menfit` with capabilities: **HealthKit** (steps/energy
    sync, ADR 013). Location, camera, Bluetooth and TTS need only
    `Info.plist` strings, not capabilities.
-2. **App Store Connect** -> My Apps -> New app, bundle id above, name FemFit
+2. **App Store Connect** -> My Apps -> New app, bundle id above, name MenFit
    (working title; the store name can be changed until first release). Note
    the numeric **Apple ID** of the app record (App Information page).
 3. **App Store Connect -> Users and Access -> Integrations -> App Store
    Connect API** -> generate a key with the **App Manager** role. Download the
    `.p8` once; note Issuer ID and Key ID.
 4. **Codemagic -> Settings -> Integrations -> Developer Portal** -> add the key,
-   name it **`femfit-asc`** (the name `codemagic.yaml` references). Codemagic
+   name it **`menfit-asc`** (the name `codemagic.yaml` references). Codemagic
    uses it to generate the distribution certificate, fetch profiles, read the
    latest TestFlight build number and upload the build.
 4b. **Signing files must exist in Codemagic before the first build.** The
@@ -157,15 +157,15 @@ TestFlight also needs it):
    signing files already stored under Codemagic -> Settings -> Code signing
    identities; it does not create them (verified against the Codemagic docs
    2026-09-06 after the first build failed with `No matching profiles found
-   for bundle identifier "com.jarrodfranz.femfit" and distribution type
+   for bundle identifier "com.jarrodfranz.menfit" and distribution type
    "app_store"`). Once, no Mac needed: (a) Code signing identities -> iOS
    certificates -> Generate certificate, type Apple Distribution, API key
-   `femfit-asc`, reference name `femfit_distribution`; (b) Apple portal ->
-   Profiles -> + -> App Store Connect -> App ID FemFit -> that certificate ->
-   name `FemFit App Store` -> Generate; (c) Code signing identities -> iOS
+   `menfit-asc`, reference name `menfit_distribution`; (b) Apple portal ->
+   Profiles -> + -> App Store Connect -> App ID MenFit -> that certificate ->
+   name `MenFit App Store` -> Generate; (c) Code signing identities -> iOS
    provisioning profiles -> Fetch profiles -> select it -> Download selected.
    Regenerate the profile (b, c) whenever the App ID's capabilities change.
-5. **Codemagic -> app -> Environment variables**, group **`femfit_secrets`**:
+5. **Codemagic -> app -> Environment variables**, group **`menfit_secrets`**:
    - `APP_STORE_APPLE_ID` = the numeric Apple ID from step 2 (not secure).
    - `ENV_SECRETS_JSON` = the full contents of `env/staging.secrets.json`
      (mark **Secure**). Optional: without it the build runs and the route
@@ -173,7 +173,7 @@ TestFlight also needs it):
 6. **TestFlight** -> Internal Testing -> create group **`Internal testers`**
    with "Enable automatic distribution" left on, and add App Store Connect
    users (invite them under Users and Access first; the **Marketing** role
-   scoped to FemFit only is the least-privileged role that qualifies).
+   scoped to MenFit only is the least-privileged role that qualifies).
    Internal groups need no Apple review, up to 100 testers. External groups
    allow anyone by email but the first build of each version goes through
    Beta App Review.
@@ -225,7 +225,7 @@ above), so Android tester builds get FatSecret-primary-with-OFF-fallback
 lookups (ADR 016) without any script change.
 
 Codemagic's iOS workflow needs the **same JSON pasted into the
-`ENV_SECRETS_JSON` variable** in the `femfit_secrets` group (owner step, see
+`ENV_SECRETS_JSON` variable** in the `menfit_secrets` group (owner step, see
 the iOS section above) — it does not read `env/staging.secrets.json` off the
 dev machine, since nothing in the repo or in Codemagic's config holds a
 secret value.
