@@ -95,7 +95,7 @@ void main() {
   Future<void> goToRoutesScreen(WidgetTester tester) async {
     final navigationBar = find.byType(NavigationBar);
     await tester.tap(
-      find.descendant(of: navigationBar, matching: find.text('Activity')),
+      find.descendant(of: navigationBar, matching: find.text('Train')),
     );
     await tester.pumpAndSettle();
     await tester.tap(find.byIcon(Icons.menu));
@@ -345,7 +345,7 @@ void main() {
 
       final navigationBar = find.byType(NavigationBar);
       await tester.tap(
-        find.descendant(of: navigationBar, matching: find.text('Activity')),
+        find.descendant(of: navigationBar, matching: find.text('Train')),
       );
       await tester.pumpAndSettle();
       await tester.tap(find.text('Route run'));

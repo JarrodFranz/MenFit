@@ -41,9 +41,9 @@ void main() {
       label: 'Home',
     ),
     AdaptiveDestination(
-      icon: Icons.directions_run_outlined,
-      selectedIcon: Icons.directions_run,
-      label: 'Activity',
+      icon: Icons.fitness_center_outlined,
+      selectedIcon: Icons.fitness_center,
+      label: 'Train',
     ),
     AdaptiveDestination(
       icon: Icons.restaurant_outlined,

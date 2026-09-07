@@ -51,7 +51,7 @@ void main() {
 
       for (final label in [
         'Home',
-        'Activity',
+        'Train',
         'Nutrition',
         'Recovery',
         'Settings',
@@ -93,7 +93,7 @@ void main() {
 
       const expectedLabels = [
         'Home',
-        'Activity',
+        'Train',
         'Nutrition',
         'Recovery',
         'Settings',

@@ -9,6 +9,7 @@ import 'package:menfit_app/features/home/presentation/widgets/progress_summary_c
 import 'package:menfit_app/features/home/presentation/widgets/recent_achievement_card.dart';
 import 'package:menfit_app/features/home/presentation/widgets/streak_card.dart';
 import 'package:menfit_app/features/home/presentation/widgets/today_overview_card.dart';
+import 'package:menfit_app/features/home/presentation/widgets/today_session_card.dart';
 import 'package:menfit_app/features/home/presentation/widgets/water_quick_add_card.dart';
 import 'package:menfit_app/features/insights/insights_widgets.dart';
 import 'package:menfit_app/features/recaps/recaps_widgets.dart';
@@ -84,17 +85,21 @@ class HomeScreen extends StatelessWidget {
                       const RecapTriggerListener(),
                       const HomeWelcomeHeader(),
                       SizedBox(height: tokens.spacingMd),
+                      // Strength-first: what to lift today sits above the
+                      // two-column grid, full width, before anything else.
+                      const TodaySessionCard(),
+                      SizedBox(height: tokens.spacingSm),
                       const StreakCard(),
                       const CheckinCard(),
                       SizedBox(height: tokens.spacingSm),
                       HomeCardLayout(
                         twoColumn: twoColumn,
                         cards: const [
-                          StepsRingCard(),
-                          WaterQuickAddCard(),
                           MacrosTodayCard(),
-                          ProgressSummaryCard(),
+                          WaterQuickAddCard(),
                           RecentAchievementCard(),
+                          StepsRingCard(),
+                          ProgressSummaryCard(),
                           TodayOverviewCard(),
                         ],
                       ),

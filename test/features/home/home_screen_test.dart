@@ -12,6 +12,7 @@ import 'package:menfit_app/features/home/presentation/widgets/macros_today_card.
 import 'package:menfit_app/features/home/presentation/widgets/progress_summary_card.dart';
 import 'package:menfit_app/features/home/presentation/widgets/recent_achievement_card.dart';
 import 'package:menfit_app/features/home/presentation/widgets/today_overview_card.dart';
+import 'package:menfit_app/features/home/presentation/widgets/today_session_card.dart';
 import 'package:menfit_app/features/home/presentation/widgets/water_quick_add_card.dart';
 import 'package:menfit_app/features/steps/steps_widgets.dart';
 import 'package:menfit_app/features/streaks/domain/streak_engine.dart';
@@ -105,8 +106,18 @@ void main() {
   }
 
   group('the redesigned dashboard', () {
-    testWidgets("shows today's six cards", (tester) async {
+    testWidgets("shows today's session card above today's six cards", (
+      tester,
+    ) async {
       await pumpDashboard(tester);
+
+      // Strength-first: the session card is the first card on the page,
+      // above the two-column grid.
+      expect(find.byType(TodaySessionCard), findsOneWidget);
+      expect(
+        tester.getTopLeft(find.byType(TodaySessionCard)).dy,
+        lessThan(tester.getTopLeft(find.byType(MacrosTodayCard)).dy),
+      );
 
       expect(find.byType(StepsRingCard), findsOneWidget);
       expect(find.byType(WaterQuickAddCard), findsOneWidget);
@@ -235,13 +246,13 @@ void main() {
       await pumpDashboard(tester, surface: const Size(1000, 1600));
 
       // Cards alternate between the two columns in order, so the first
-      // (Steps) and the second (Water) sit side by side rather than
+      // (Macros) and the second (Water) sit side by side rather than
       // stacked.
-      final steps = tester.getTopLeft(find.byType(StepsRingCard));
+      final macros = tester.getTopLeft(find.byType(MacrosTodayCard));
       final water = tester.getTopLeft(find.byType(WaterQuickAddCard));
 
-      expect(water.dx, greaterThan(steps.dx));
-      expect((water.dy - steps.dy).abs(), lessThan(1));
+      expect(water.dx, greaterThan(macros.dx));
+      expect((water.dy - macros.dy).abs(), lessThan(1));
 
       await flushDriftTimers(tester);
     });
@@ -249,11 +260,11 @@ void main() {
     testWidgets('stacks the cards in one column on a phone', (tester) async {
       await pumpDashboard(tester, surface: const Size(400, 2400));
 
-      final steps = tester.getTopLeft(find.byType(StepsRingCard));
+      final macros = tester.getTopLeft(find.byType(MacrosTodayCard));
       final water = tester.getTopLeft(find.byType(WaterQuickAddCard));
 
-      expect(water.dx, steps.dx);
-      expect(water.dy, greaterThan(steps.dy));
+      expect(water.dx, macros.dx);
+      expect(water.dy, greaterThan(macros.dy));
 
       await flushDriftTimers(tester);
     });
@@ -311,5 +322,25 @@ void main() {
 
       await flushDriftTimers(tester);
     });
+
+    testWidgets(
+      "the session card's empty state opens the Strength hub",
+      (tester) async {
+        // The real (empty) database means no cycle is active, which is the
+        // state that offers 'Start a routine'.
+        await pumpApp(tester);
+
+        final button = find.text('Start a routine');
+        expect(button, findsOneWidget);
+        await tester.ensureVisible(button);
+        await tester.pumpAndSettle();
+        await tester.tap(button);
+        await tester.pumpAndSettle();
+
+        expect(find.text('Strength Hub'), findsOneWidget);
+
+        await flushDriftTimers(tester);
+      },
+    );
   });
 }

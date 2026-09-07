@@ -75,7 +75,7 @@ void main() {
 
     final navigationBar = find.byType(NavigationBar);
     await tester.tap(
-      find.descendant(of: navigationBar, matching: find.text('Activity')),
+      find.descendant(of: navigationBar, matching: find.text('Train')),
     );
     await tester.pumpAndSettle();
   }

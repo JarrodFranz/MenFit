@@ -492,10 +492,13 @@ class AppShellRouteData extends StatefulShellRouteData {
       selectedIcon: Icons.home,
       label: 'Home',
     ),
+    // "Train", not "Activity": the tab leads with strength, and a barbell
+    // says that where a running figure said the opposite. The route path
+    // stays `/activity` - only the label and icon are the product's.
     AdaptiveDestination(
-      icon: Icons.directions_run_outlined,
-      selectedIcon: Icons.directions_run,
-      label: 'Activity',
+      icon: Icons.fitness_center_outlined,
+      selectedIcon: Icons.fitness_center,
+      label: 'Train',
     ),
     AdaptiveDestination(
       icon: Icons.restaurant_outlined,

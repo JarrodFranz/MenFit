@@ -50,11 +50,11 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Activity'),
+        title: const Text('Train'),
         actions: [
           PopupMenuButton<_ActivityMenuOption>(
             icon: const Icon(Icons.menu),
-            tooltip: 'Activity menu',
+            tooltip: 'Train menu',
             onSelected: (option) {
               switch (option) {
                 case _ActivityMenuOption.importFile:
@@ -185,7 +185,16 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
                           },
                         ),
                       ),
-                      ...ActivityType.values.map((type) {
+                      // Strength leads, then everything else in declaration
+                      // order: the first chip after "All" is the one this
+                      // app is about, not whichever type the enum happens
+                      // to list first.
+                      ...[
+                        ActivityType.strength,
+                        ...ActivityType.values.where(
+                          (t) => t != ActivityType.strength,
+                        ),
+                      ].map((type) {
                         return Padding(
                           padding: const EdgeInsets.only(right: 6),
                           child: ChoiceChip(
