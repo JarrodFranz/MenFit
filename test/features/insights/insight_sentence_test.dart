@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:menfit_app/core/domain/local_date.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
 import 'package:menfit_app/features/insights/domain/personal_insight.dart';
 import 'package:menfit_app/features/insights/presentation/insight_sentence.dart';
 
@@ -12,7 +11,6 @@ PersonalInsight _insight({
   double relativeDifference = 0.14,
   int pairedObservations = 24,
   InsightConfidence confidence = InsightConfidence.emerging,
-  CyclePhase? cyclePhase,
 }) {
   return PersonalInsight(
     kind: kind,
@@ -29,7 +27,6 @@ PersonalInsight _insight({
     confidence: confidence,
     rangeStart: LocalDate(2026, 4, 2),
     rangeEnd: LocalDate(2026, 6, 28),
-    cyclePhase: cyclePhase,
   );
 }
 
@@ -57,73 +54,6 @@ void main() {
         'days after you hit your protein target than on days after you '
         "didn't hit your protein target.",
       );
-    });
-
-    test('composes a cycle-phase sentence naming only her own days, and '
-        'calls the phases estimated rather than logged', () {
-      final sentence = composeInsightSentence(
-        _insight(
-          kind: InsightKind.cyclePhaseOutput,
-          metric: InsightMetric.runDistanceMeters,
-          higherGroup: InsightGroup.cyclePhaseFocus,
-          lowerGroup: InsightGroup.otherCyclePhases,
-          relativeDifference: 0.22,
-          pairedObservations: 31,
-          cyclePhase: CyclePhase.follicular,
-        ),
-      );
-
-      expect(
-        sentence,
-        'Across 31 logged days, your run distance was 22% higher on '
-        'your estimated follicular days than on your other estimated '
-        'phases.',
-      );
-    });
-
-    test('never calls an estimated phase a logged one', () {
-      // Only the *period start* is logged; the phase a day falls in is
-      // `CyclePredictionEngine`'s arithmetic over her median cycle length.
-      // `knowledge/domain/womens_health.md` requires that be labelled an
-      // estimate wherever it is shown, and "logged" is the exact word
-      // that would misrepresent it.
-      for (final phase in CyclePhase.values) {
-        for (final group in [
-          InsightGroup.cyclePhaseFocus,
-          InsightGroup.otherCyclePhases,
-        ]) {
-          final sentence = composeInsightSentence(
-            _insight(
-              kind: InsightKind.cyclePhaseOutput,
-              higherGroup: group,
-              lowerGroup: group == InsightGroup.cyclePhaseFocus
-                  ? InsightGroup.otherCyclePhases
-                  : InsightGroup.cyclePhaseFocus,
-              cyclePhase: phase,
-            ),
-          );
-
-          expect(sentence, contains('estimated'));
-          // "Across N logged days" is the sample size, not a phase claim -
-          // no *phase* may be described as logged.
-          expect(sentence, isNot(contains('logged phases')));
-          expect(sentence, isNot(contains('logged ${phase.label}')));
-        }
-      }
-    });
-
-    test('degrades to a vaguer estimate rather than naming "none"', () {
-      final sentence = composeInsightSentence(
-        _insight(
-          kind: InsightKind.cyclePhaseOutput,
-          higherGroup: InsightGroup.cyclePhaseFocus,
-          lowerGroup: InsightGroup.otherCyclePhases,
-          cyclePhase: CyclePhase.none,
-        ),
-      );
-
-      expect(sentence, contains('your estimated cycle days'));
-      expect(sentence.toLowerCase(), isNot(contains('none')));
     });
 
     test('composes a sleep sentence', () {
@@ -157,19 +87,8 @@ void main() {
         for (final kind in InsightKind.values)
           for (final metric in InsightMetric.values)
             composeInsightSentence(_insight(kind: kind, metric: metric)),
-        composeInsightSentence(
-          _insight(
-            kind: InsightKind.cyclePhaseExertion,
-            metric: InsightMetric.perceivedExertion,
-            higherGroup: InsightGroup.otherCyclePhases,
-            lowerGroup: InsightGroup.cyclePhaseFocus,
-            cyclePhase: CyclePhase.menstrual,
-          ),
-        ),
         for (final group in InsightGroup.values)
-          composeInsightSentence(
-            _insight(higherGroup: group, cyclePhase: CyclePhase.luteal),
-          ),
+          composeInsightSentence(_insight(higherGroup: group)),
       ];
 
       for (final sentence in sentences) {

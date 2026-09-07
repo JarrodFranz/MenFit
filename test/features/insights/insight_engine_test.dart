@@ -236,7 +236,6 @@ void expectSameInsights(
     expect(actual[i].effectSize, expected[i].effectSize);
     expect(actual[i].pairedObservations, expected[i].pairedObservations);
     expect(actual[i].confidence, expected[i].confidence);
-    expect(actual[i].cyclePhase, expected[i].cyclePhase);
     expect(actual[i].rangeStart, expected[i].rangeStart);
     expect(actual[i].rangeEnd, expected[i].rangeEnd);
   }

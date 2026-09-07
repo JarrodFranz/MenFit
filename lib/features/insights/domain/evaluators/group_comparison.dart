@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 
 import 'package:menfit_app/core/domain/local_date.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
 import 'package:menfit_app/features/insights/domain/insight_statistics.dart';
 import 'package:menfit_app/features/insights/domain/insight_thresholds.dart';
 import 'package:menfit_app/features/insights/domain/personal_insight.dart';
@@ -45,7 +44,6 @@ PersonalInsight? compareGroups({
   required List<ObservationSample> samplesA,
   required List<ObservationSample> samplesB,
   double minEffectSize = InsightThresholds.minCliffsDelta,
-  CyclePhase? cyclePhase,
 }) {
   final countA = samplesA.length;
   final countB = samplesB.length;
@@ -100,7 +98,6 @@ PersonalInsight? compareGroups({
     ),
     rangeStart: days.first,
     rangeEnd: days.last,
-    cyclePhase: cyclePhase,
   );
 }
 

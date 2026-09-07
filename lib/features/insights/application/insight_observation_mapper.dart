@@ -1,7 +1,6 @@
 import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/features/activity/domain/activity.dart';
 import 'package:menfit_app/features/activity/domain/workout_details.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
 import 'package:menfit_app/features/insights/domain/daily_observation.dart';
 import 'package:menfit_app/features/nutrition/domain/nutrition_entry.dart';
 import 'package:menfit_app/features/nutrition/domain/nutrition_goals.dart';
@@ -11,11 +10,10 @@ import 'package:menfit_app/features/wellbeing/domain/daily_checkin.dart';
 /// How many calendar days of history the insights engine is fed, ending on
 /// (and including) "today".
 ///
-/// Ninety days is roughly three cycles, which is the shortest window in
-/// which `CyclePhaseEvaluator` can plausibly accumulate
-/// `InsightThresholds.minObservationsPerGroup` sessions in a single phase
-/// without stretching so far back that a pattern reflects a training block
-/// the user has long since moved on from.
+/// Ninety days is long enough for the evaluators to plausibly accumulate
+/// `InsightThresholds.minObservationsPerGroup` observations per arm without
+/// stretching so far back that a pattern reflects a training block the user
+/// has long since moved on from.
 const int insightWindowDays = 90;
 
 /// Builds the engine's input from raw per-feature records.
@@ -55,7 +53,6 @@ List<DailyObservation> buildDailyObservations({
   required NutritionGoals? nutritionGoals,
   required Map<LocalDate, int> waterTotalsByDay,
   required List<DailyCheckin> checkins,
-  required Map<LocalDate, CyclePhase> phaseByDay,
   int windowDays = insightWindowDays,
 }) {
   final start = today.addDays(-(windowDays - 1));
@@ -88,7 +85,6 @@ List<DailyObservation> buildDailyObservations({
   for (var day = start; !day.isAfter(today); day = day.addDays(1)) {
     final dayEntries = entriesByDay[day];
     final checkin = checkinByDay[day];
-    final phase = phaseByDay[day];
 
     observations.add(
       DailyObservation(
@@ -108,7 +104,6 @@ List<DailyObservation> buildDailyObservations({
         // is null unless *both* sides are present.
         proteinTargetGrams: proteinTarget,
         waterMl: waterTotalsByDay[day],
-        cyclePhase: phase,
         sessions: sessionsByDay[day] ?? const <ObservedSession>[],
       ),
     );

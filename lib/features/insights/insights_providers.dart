@@ -6,15 +6,13 @@
 /// never `application/` or `presentation/` directly.
 ///
 /// This feature has no `data/` layer of its own and stores nothing: it is
-/// a read-only view assembled from four other features' composition
-/// surfaces (`activity`, `nutrition`, `wellbeing`, `cycle`), the same
-/// derived shape as `progress` and `recaps`.
+/// a read-only view assembled from three other features' composition
+/// surfaces (`activity`, `nutrition`, `wellbeing`), the same derived shape
+/// as `progress` and `recaps`.
 library;
 
 import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/features/activity/activity_providers.dart';
-import 'package:menfit_app/features/cycle/cycle_providers.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
 import 'package:menfit_app/features/insights/application/insight_observation_mapper.dart';
 import 'package:menfit_app/features/insights/domain/daily_observation.dart';
 import 'package:menfit_app/features/insights/domain/insight_engine.dart';
@@ -42,11 +40,10 @@ LocalDate insightsToday(Ref ref) => LocalDate.today();
 ///
 /// One-shot (`Future`, not `Stream`) for the same reason as
 /// `features/recaps/recaps_providers.dart#recapForPeriod`: this walks 90
-/// days of activities, diary entries, water totals, check-ins and cycle
-/// records, and re-running that aggregation on every unrelated log while
-/// Home sits offstage would be pure waste. It refreshes when it is
-/// invalidated or its repositories change, which for a discovery surface is
-/// soon enough.
+/// days of activities, diary entries, water totals and check-ins, and
+/// re-running that aggregation on every unrelated log while Home sits
+/// offstage would be pure waste. It refreshes when it is invalidated or its
+/// repositories change, which for a discovery surface is soon enough.
 ///
 /// Every source is read through the owning feature's composition surface
 /// (ADR 007), never a `data/` import.
@@ -64,7 +61,6 @@ Future<List<DailyObservation>> insightObservations(Ref ref) async {
   final goalsRepository = ref.watch(nutritionGoalsRepositoryProvider);
   final waterRepository = ref.watch(waterRepositoryProvider);
   final wellbeingRepository = ref.watch(wellbeingRepositoryProvider);
-  final cycleRepository = ref.watch(cycleRepositoryProvider);
 
   // Every read below is a genuine one-shot `get`, never a
   // `watchXxx().first` snapshot: `Stream.first` only completes once it has
@@ -85,32 +81,6 @@ Future<List<DailyObservation>> insightObservations(Ref ref) async {
     insightWindowDays,
     today,
   );
-  final cycleRecords = await cycleRepository.getRecords();
-
-  // Phase is derived per day from logged records only. With no records the
-  // map stays empty, every day's phase is `null`, and every cycle
-  // comparison excludes itself — cycle tracking is opt-in and every
-  // consumer of it degrades to silence (`knowledge/domain/womens_health.md`
-  // rule 4).
-  //
-  // `CyclePhase.none` is left **out** of the map rather than stored: it is
-  // the engine's "no phase known for this day" (`getDayStatus` returns it
-  // for any day before the earliest usable anchor), and an absent day is
-  // how every consumer spells "unknown" — `DailyObservation.cyclePhase` is
-  // nullable for exactly that. Storing `none` would make those days look
-  // like a tracked group. Same skip as
-  // `features/recaps/recaps_providers.dart#recapForPeriod`.
-  final phaseByDay = <LocalDate, CyclePhase>{};
-  if (cycleRecords.isNotEmpty) {
-    final engine = CyclePredictionEngine();
-    for (var day = start; !day.isAfter(today); day = day.addDays(1)) {
-      final phase = engine
-          .getDayStatus(date: day, records: cycleRecords, today: today)
-          .phase;
-      if (phase == CyclePhase.none) continue;
-      phaseByDay[day] = phase;
-    }
-  }
 
   return buildDailyObservations(
     today: today,
@@ -119,7 +89,6 @@ Future<List<DailyObservation>> insightObservations(Ref ref) async {
     nutritionGoals: goals,
     waterTotalsByDay: waterTotals,
     checkins: checkins,
-    phaseByDay: phaseByDay,
   );
 }
 

@@ -68,8 +68,6 @@ class InsightCard extends StatelessWidget {
       InsightKind.proteinTargetNextDayOutput => Icons.restaurant_outlined,
       InsightKind.sleepScoreSameDayOutput => Icons.bedtime_outlined,
       InsightKind.energyScoreSameDayOutput => Icons.bolt_outlined,
-      InsightKind.cyclePhaseExertion ||
-      InsightKind.cyclePhaseOutput => Icons.favorite_outline,
       InsightKind.hydrationTargetSameDayOutput => Icons.water_drop_outlined,
     };
   }

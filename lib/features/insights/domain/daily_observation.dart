@@ -1,6 +1,5 @@
 import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/features/activity/domain/activity.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
 import 'package:menfit_app/features/insights/domain/insight_statistics.dart';
 import 'package:menfit_app/features/insights/domain/personal_insight.dart';
 
@@ -48,9 +47,9 @@ class ObservedSession {
 ///
 /// Every field beyond [day] is nullable or empty-able, because every one
 /// of them genuinely can be missing: check-in scores are individually
-/// optional, nutrition may not be logged, cycle tracking is opt-in, and
-/// most days have no session at all. The engine drops incomplete pairs
-/// rather than imputing — see [metricValue].
+/// optional, nutrition may not be logged, and most days have no session at
+/// all. The engine drops incomplete pairs rather than imputing — see
+/// [metricValue].
 ///
 /// S2/S3 data (`knowledge/engineering/security_and_privacy.md`). No
 /// `toString()` override, for the same reason as [PersonalInsight].
@@ -66,7 +65,6 @@ class DailyObservation {
     this.proteinTargetGrams,
     this.waterMl,
     this.waterTargetMl,
-    this.cyclePhase,
     this.sessions = const <ObservedSession>[],
   });
 
@@ -104,19 +102,8 @@ class DailyObservation {
   /// when the user has set no target.
   final int? waterTargetMl;
 
-  /// The phase this day fell in, from
-  /// `features/cycle/domain/cycle_prediction_engine.dart`. `null` or
-  /// [CyclePhase.none] when cycle tracking is off or the day is untracked
-  /// — both are treated identically, and both exclude the day from every
-  /// cycle comparison.
-  final CyclePhase? cyclePhase;
-
   /// Sessions completed on this day. Empty for a rest day.
   final List<ObservedSession> sessions;
-
-  /// Whether this day has a usable cycle phase.
-  bool get hasTrackedPhase =>
-      cyclePhase != null && cyclePhase != CyclePhase.none;
 
   /// Whether the day's protein reached
   /// `InsightThresholds.targetMetFraction` of its target. `null` when

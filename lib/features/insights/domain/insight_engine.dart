@@ -1,5 +1,4 @@
 import 'package:menfit_app/features/insights/domain/daily_observation.dart';
-import 'package:menfit_app/features/insights/domain/evaluators/cycle_phase_evaluator.dart';
 import 'package:menfit_app/features/insights/domain/evaluators/hydration_output_evaluator.dart';
 import 'package:menfit_app/features/insights/domain/evaluators/protein_output_evaluator.dart';
 import 'package:menfit_app/features/insights/domain/evaluators/wellbeing_output_evaluator.dart';
@@ -22,13 +21,11 @@ class InsightEngine {
   const InsightEngine({
     this.proteinEvaluator = const ProteinOutputEvaluator(),
     this.wellbeingEvaluator = const WellbeingOutputEvaluator(),
-    this.cyclePhaseEvaluator = const CyclePhaseEvaluator(),
     this.hydrationEvaluator = const HydrationOutputEvaluator(),
   });
 
   final ProteinOutputEvaluator proteinEvaluator;
   final WellbeingOutputEvaluator wellbeingEvaluator;
-  final CyclePhaseEvaluator cyclePhaseEvaluator;
   final HydrationOutputEvaluator hydrationEvaluator;
 
   /// Finds every pattern in [observations] that clears
@@ -50,7 +47,6 @@ class InsightEngine {
     final found = <PersonalInsight>[
       ...proteinEvaluator.evaluate(dataset),
       ...wellbeingEvaluator.evaluate(dataset),
-      ...cyclePhaseEvaluator.evaluate(dataset),
       ...hydrationEvaluator.evaluate(dataset),
     ];
 

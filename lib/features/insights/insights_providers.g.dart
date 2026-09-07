@@ -83,11 +83,10 @@ String _$insightsTodayHash() => r'775020278e68d0dbe50dc00375fc4be5eea28fae';
 ///
 /// One-shot (`Future`, not `Stream`) for the same reason as
 /// `features/recaps/recaps_providers.dart#recapForPeriod`: this walks 90
-/// days of activities, diary entries, water totals, check-ins and cycle
-/// records, and re-running that aggregation on every unrelated log while
-/// Home sits offstage would be pure waste. It refreshes when it is
-/// invalidated or its repositories change, which for a discovery surface is
-/// soon enough.
+/// days of activities, diary entries, water totals and check-ins, and
+/// re-running that aggregation on every unrelated log while Home sits
+/// offstage would be pure waste. It refreshes when it is invalidated or its
+/// repositories change, which for a discovery surface is soon enough.
 ///
 /// Every source is read through the owning feature's composition surface
 /// (ADR 007), never a `data/` import.
@@ -104,11 +103,10 @@ final insightObservationsProvider = InsightObservationsProvider._();
 ///
 /// One-shot (`Future`, not `Stream`) for the same reason as
 /// `features/recaps/recaps_providers.dart#recapForPeriod`: this walks 90
-/// days of activities, diary entries, water totals, check-ins and cycle
-/// records, and re-running that aggregation on every unrelated log while
-/// Home sits offstage would be pure waste. It refreshes when it is
-/// invalidated or its repositories change, which for a discovery surface is
-/// soon enough.
+/// days of activities, diary entries, water totals and check-ins, and
+/// re-running that aggregation on every unrelated log while Home sits
+/// offstage would be pure waste. It refreshes when it is invalidated or its
+/// repositories change, which for a discovery surface is soon enough.
 ///
 /// Every source is read through the owning feature's composition surface
 /// (ADR 007), never a `data/` import.
@@ -132,11 +130,10 @@ final class InsightObservationsProvider
   ///
   /// One-shot (`Future`, not `Stream`) for the same reason as
   /// `features/recaps/recaps_providers.dart#recapForPeriod`: this walks 90
-  /// days of activities, diary entries, water totals, check-ins and cycle
-  /// records, and re-running that aggregation on every unrelated log while
-  /// Home sits offstage would be pure waste. It refreshes when it is
-  /// invalidated or its repositories change, which for a discovery surface is
-  /// soon enough.
+  /// days of activities, diary entries, water totals and check-ins, and
+  /// re-running that aggregation on every unrelated log while Home sits
+  /// offstage would be pure waste. It refreshes when it is invalidated or its
+  /// repositories change, which for a discovery surface is soon enough.
   ///
   /// Every source is read through the owning feature's composition surface
   /// (ADR 007), never a `data/` import.
@@ -171,7 +168,7 @@ final class InsightObservationsProvider
 }
 
 String _$insightObservationsHash() =>
-    r'7f6e094f8331ec98f3a26eaffaa9de1a2cf54682';
+    r'037e2f813481cb5f44dd3fb31dc3cf50d6fd42b9';
 
 /// Every pattern in the user's own data that clears
 /// `InsightThresholds`, strongest first, capped by the engine at

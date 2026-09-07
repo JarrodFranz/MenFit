@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/features/activity/domain/activity.dart';
 import 'package:menfit_app/features/activity/domain/workout_details.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
 import 'package:menfit_app/features/insights/application/insight_observation_mapper.dart';
 import 'package:menfit_app/features/insights/domain/daily_observation.dart';
 import 'package:menfit_app/features/insights/domain/personal_insight.dart';
@@ -88,7 +87,6 @@ List<DailyObservation> _build({
   NutritionGoals? goals,
   Map<LocalDate, int> water = const {},
   List<DailyCheckin> checkins = const [],
-  Map<LocalDate, CyclePhase> phases = const {},
 }) {
   return buildDailyObservations(
     today: _today,
@@ -97,7 +95,6 @@ List<DailyObservation> _build({
     nutritionGoals: goals,
     waterTotalsByDay: water,
     checkins: checkins,
-    phaseByDay: phases,
   );
 }
 
@@ -152,7 +149,6 @@ void main() {
         goals: _goals(),
         water: {day: 1800},
         checkins: [_checkin(day: day)],
-        phases: {day: CyclePhase.luteal},
       );
 
       final observation = _observationFor(observations, day);
@@ -165,7 +161,6 @@ void main() {
       expect(observation.proteinGrams, 95);
       expect(observation.proteinTargetGrams, 110);
       expect(observation.waterMl, 1800);
-      expect(observation.cyclePhase, CyclePhase.luteal);
       expect(observation.sessions, hasLength(2));
       expect(observation.metricValue(InsightMetric.runDistanceMeters), 5000);
       expect(
@@ -209,7 +204,6 @@ void main() {
         isNull,
         reason: 'absent from the water totals map means never logged',
       );
-      expect(observation.cyclePhase, isNull);
     });
 
     test('a rest day yields null for every output metric, never zero', () {

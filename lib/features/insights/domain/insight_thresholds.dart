@@ -31,12 +31,6 @@
 ///   an outlier is. 0.33 is the conventional "medium" boundary
 ///   (Romano et al., 2006), i.e. the two groups genuinely separate rather
 ///   than overlap.
-/// * [minCliffsDeltaCyclePhase] — 0.474. The cycle-phase evaluator picks
-///   the strongest of up to four phases, which inflates the chance of a
-///   spurious winner roughly fourfold. It therefore has to clear the
-///   "large" boundary instead of the "medium" one. This is a
-///   multiple-comparison correction expressed in effect size, not a
-///   p-value.
 /// * [clearConfidence...] — the bar for calling a pattern *clear* rather
 ///   than *emerging*: twice the minimum sample, a large rank separation,
 ///   and half again the minimum relative difference.
@@ -59,10 +53,6 @@ class InsightThresholds {
 
   /// Minimum absolute Cliff's delta for a two-group comparison.
   static const double minCliffsDelta = 0.33;
-
-  /// Minimum absolute Cliff's delta for a cycle-phase comparison, raised
-  /// to offset selecting the strongest of several phases.
-  static const double minCliffsDeltaCyclePhase = 0.474;
 
   /// Sample size at or above which a pattern may be called *clear*.
   static const int clearConfidenceMinObservations = 20;

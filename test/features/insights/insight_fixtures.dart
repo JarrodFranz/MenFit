@@ -1,6 +1,5 @@
 import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/features/activity/domain/activity.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
 import 'package:menfit_app/features/insights/domain/daily_observation.dart';
 import 'package:menfit_app/features/insights/domain/evaluators/group_comparison.dart';
 
@@ -22,7 +21,6 @@ DailyObservation obs(
   double? proteinTargetGrams,
   int? waterMl,
   int? waterTargetMl,
-  CyclePhase? phase,
   double? runMeters,
   double? tonnageKg,
   int? rpe,
@@ -53,7 +51,6 @@ DailyObservation obs(
     proteinTargetGrams: proteinTargetGrams,
     waterMl: waterMl,
     waterTargetMl: waterTargetMl,
-    cyclePhase: phase,
     sessions: sessions,
   );
 }

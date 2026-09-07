@@ -1,5 +1,4 @@
 import 'package:menfit_app/core/domain/local_date.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
 
 /// Which pairing of the user's own logs an insight was drawn from.
 ///
@@ -15,14 +14,6 @@ enum InsightKind {
 
   /// Days with a higher logged energy score versus a lower one.
   energyScoreSameDayOutput,
-
-  /// One cycle phase's sessions versus every other phase's, measured by
-  /// perceived exertion.
-  cyclePhaseExertion,
-
-  /// One cycle phase's sessions versus every other phase's, measured by
-  /// training output.
-  cyclePhaseOutput,
 
   /// Days whose hydration target was met versus days it was not.
   hydrationTargetSameDayOutput,
@@ -61,13 +52,6 @@ enum InsightGroup {
   lowerEnergyScore,
   hydrationTargetMet,
   hydrationTargetNotMet,
-
-  /// The single cycle phase an insight singled out. Read
-  /// [PersonalInsight.cyclePhase] for which one.
-  cyclePhaseFocus,
-
-  /// Every logged cycle phase other than [cyclePhaseFocus], pooled.
-  otherCyclePhases,
 }
 
 /// How firmly the user's own data separates the two groups.
@@ -103,8 +87,8 @@ enum InsightConfidence {
 /// ## Privacy
 ///
 /// This object is built from S2 and S3 data
-/// (`knowledge/engineering/security_and_privacy.md`) — nutrition logs,
-/// check-in scores, and cycle phase. It deliberately has **no
+/// (`knowledge/engineering/security_and_privacy.md`) — nutrition logs and
+/// check-in scores. It deliberately has **no
 /// `toString()` override**, so an accidental interpolation into a log line
 /// or exception message yields an opaque instance rather than the user's
 /// numbers. Do not add one.
@@ -124,7 +108,6 @@ class PersonalInsight {
     required this.confidence,
     required this.rangeStart,
     required this.rangeEnd,
-    this.cyclePhase,
   });
 
   /// Which pairing this came from.
@@ -174,10 +157,4 @@ class PersonalInsight {
 
   /// Latest day contributing a retained observation.
   final LocalDate rangeEnd;
-
-  /// The phase [higherGroup] or [lowerGroup] refers to when either of them
-  /// is [InsightGroup.cyclePhaseFocus]. Non-null exactly for
-  /// [InsightKind.cyclePhaseExertion] and [InsightKind.cyclePhaseOutput],
-  /// and never [CyclePhase.none].
-  final CyclePhase? cyclePhase;
 }

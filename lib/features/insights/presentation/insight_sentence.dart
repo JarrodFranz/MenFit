@@ -1,6 +1,5 @@
 import 'package:intl/intl.dart';
 import 'package:menfit_app/core/domain/local_date.dart';
-import 'package:menfit_app/features/cycle/domain/cycle_prediction_engine.dart';
 import 'package:menfit_app/features/insights/domain/personal_insight.dart';
 
 /// Turns a [PersonalInsight]'s enum-and-number parts into the one sentence
@@ -31,8 +30,8 @@ import 'package:menfit_app/features/insights/domain/personal_insight.dart';
 /// is exactly why [PersonalInsight.pairedObservations] is exported.
 String composeInsightSentence(PersonalInsight insight) {
   final percent = (insight.relativeDifference * 100).round();
-  final higher = _groupPhrase(insight.higherGroup, insight.cyclePhase);
-  final lower = _groupPhrase(insight.lowerGroup, insight.cyclePhase);
+  final higher = _groupPhrase(insight.higherGroup);
+  final lower = _groupPhrase(insight.lowerGroup);
 
   return 'Across ${insight.pairedObservations} logged days, '
       '${_metricPhrase(insight.metric)} was $percent% higher on '
@@ -63,18 +62,8 @@ String _metricPhrase(InsightMetric metric) {
   };
 }
 
-/// Names one side of the comparison as a set of *her* days.
-///
-/// The cycle phrasings say "your estimated luteal days" / "your other
-/// estimated phases" rather than naming what a phase is or does. Two
-/// things are load-bearing there. They never describe the phase, because
-/// the only defensible statement is which of her own days fell in it. And
-/// they say **estimated**, not "logged": what she logs is a period start,
-/// and everything past "her period is logged now" is
-/// `CyclePredictionEngine`'s arithmetic over her median cycle length —
-/// prediction, which `knowledge/domain/womens_health.md` requires be
-/// labelled as an estimate everywhere it is shown.
-String _groupPhrase(InsightGroup group, CyclePhase? phase) {
+/// Names one side of the comparison as a set of the user's own days.
+String _groupPhrase(InsightGroup group) {
   return switch (group) {
     InsightGroup.proteinTargetMet => 'days after you hit your protein target',
     InsightGroup.proteinTargetNotMet =>
@@ -86,18 +75,7 @@ String _groupPhrase(InsightGroup group, CyclePhase? phase) {
     InsightGroup.hydrationTargetMet => 'days you hit your hydration target',
     InsightGroup.hydrationTargetNotMet =>
       "days you didn't hit your hydration target",
-    InsightGroup.cyclePhaseFocus => 'your estimated ${_phraseFor(phase)} days',
-    InsightGroup.otherCyclePhases => 'your other estimated phases',
   };
-}
-
-/// `PersonalInsight.cyclePhase` is non-null for exactly the two cycle
-/// kinds, so the fallback is unreachable in practice; it exists so a
-/// malformed insight degrades to a vaguer true sentence ("your estimated
-/// cycle days") rather than throwing in a widget build.
-String _phraseFor(CyclePhase? phase) {
-  if (phase == null || phase == CyclePhase.none) return 'cycle';
-  return phase.label.toLowerCase();
 }
 
 String _formatDay(LocalDate day) =>
