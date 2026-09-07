@@ -62,44 +62,39 @@ enum FlareImpact {
 /// (`knowledge/product/stage1_audit.md` §5.2: "WITHOUT requiring
 /// diagnosis"). Never required — the UI frames this as "What kind of
 /// flare-up? (optional)" with a "Prefer not to say" option that maps back
-/// to `null`, not to [custom].
+/// to `null`, not to [other].
 enum FlareCategory {
-  endometriosis,
-  periodSymptoms,
+  injury,
+  illness,
   migraine,
-  pelvicPain,
-  generalHealth,
-  custom;
+  backPain,
+  other;
 
   static FlareCategory? fromStorage(String? value) {
     if (value == null) return null;
     return switch (value) {
-      'endometriosis' => FlareCategory.endometriosis,
-      'periodSymptoms' => FlareCategory.periodSymptoms,
+      'injury' => FlareCategory.injury,
+      'illness' => FlareCategory.illness,
       'migraine' => FlareCategory.migraine,
-      'pelvicPain' => FlareCategory.pelvicPain,
-      'generalHealth' => FlareCategory.generalHealth,
-      'custom' => FlareCategory.custom,
-      _ => null,
+      'backPain' => FlareCategory.backPain,
+      _ => FlareCategory.other,
     };
   }
 
   String toStorage() => switch (this) {
-    FlareCategory.endometriosis => 'endometriosis',
-    FlareCategory.periodSymptoms => 'periodSymptoms',
+    FlareCategory.injury => 'injury',
+    FlareCategory.illness => 'illness',
     FlareCategory.migraine => 'migraine',
-    FlareCategory.pelvicPain => 'pelvicPain',
-    FlareCategory.generalHealth => 'generalHealth',
-    FlareCategory.custom => 'custom',
+    FlareCategory.backPain => 'backPain',
+    FlareCategory.other => 'other',
   };
 
   String get label => switch (this) {
-    FlareCategory.endometriosis => 'Endometriosis',
-    FlareCategory.periodSymptoms => 'Period symptoms',
+    FlareCategory.injury => 'Injury',
+    FlareCategory.illness => 'Illness',
     FlareCategory.migraine => 'Migraine',
-    FlareCategory.pelvicPain => 'Pelvic pain',
-    FlareCategory.generalHealth => 'General health',
-    FlareCategory.custom => 'Something else',
+    FlareCategory.backPain => 'Back pain',
+    FlareCategory.other => 'Other',
   };
 }
 

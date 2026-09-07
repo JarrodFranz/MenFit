@@ -302,8 +302,8 @@ void main() {
       final flare = buildFlare(
         severity: FlareSeverity.severe,
         impact: FlareImpact.unableToTrain,
-        symptoms: [SymptomType.pelvicPain],
-        category: FlareCategory.endometriosis,
+        symptoms: [SymptomType.backPain],
+        category: FlareCategory.injury,
         notes: 'Rough day',
       );
 
@@ -315,8 +315,8 @@ void main() {
                 flares.length == 1 &&
                 flares.single.severity == FlareSeverity.severe &&
                 flares.single.impact == FlareImpact.unableToTrain &&
-                flares.single.symptoms.single == SymptomType.pelvicPain &&
-                flares.single.category == FlareCategory.endometriosis &&
+                flares.single.symptoms.single == SymptomType.backPain &&
+                flares.single.category == FlareCategory.injury &&
                 flares.single.notes == 'Rough day',
           ),
         ),

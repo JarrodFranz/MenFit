@@ -7,7 +7,6 @@
 /// This is a `domain/` import, legal for another feature to depend on per
 /// ADR 007's "features may depend on another feature's domain/" rule.
 enum SymptomType {
-  pelvicPain,
   cramping,
   backPain,
   fatigue,
@@ -20,7 +19,6 @@ enum SymptomType {
   /// unrecognised value.
   static SymptomType fromStorage(String value) {
     return switch (value) {
-      'pelvicPain' => SymptomType.pelvicPain,
       'cramping' => SymptomType.cramping,
       'backPain' => SymptomType.backPain,
       'fatigue' => SymptomType.fatigue,
@@ -33,7 +31,6 @@ enum SymptomType {
 
   /// The persisted string form of this value.
   String toStorage() => switch (this) {
-    SymptomType.pelvicPain => 'pelvicPain',
     SymptomType.cramping => 'cramping',
     SymptomType.backPain => 'backPain',
     SymptomType.fatigue => 'fatigue',
@@ -46,8 +43,7 @@ enum SymptomType {
   /// Warm, plain-English display label (`knowledge/product/terminology.md`:
   /// "UI copy uses plain, warm language").
   String get label => switch (this) {
-    SymptomType.pelvicPain => 'Pelvic pain',
-    SymptomType.cramping => 'Cramping',
+    SymptomType.cramping => 'Muscle cramps',
     SymptomType.backPain => 'Back pain',
     SymptomType.fatigue => 'Fatigue',
     SymptomType.bloating => 'Bloating',

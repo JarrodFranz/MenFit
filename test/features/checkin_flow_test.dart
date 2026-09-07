@@ -74,7 +74,7 @@ void main() {
       await tester.tap(
         find.descendant(
           of: find.byType(CheckinSheet),
-          matching: find.text('Cramping'),
+          matching: find.text('Muscle cramps'),
         ),
       );
       await tester.pump();

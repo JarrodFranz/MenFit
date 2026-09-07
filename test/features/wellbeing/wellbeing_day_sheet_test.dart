@@ -163,7 +163,7 @@ void main() {
     // Check-in: answered scores only, plus the symptoms she picked.
     expect(find.text('4 of 5'), findsOneWidget);
     expect(find.text('2 of 5'), findsOneWidget);
-    expect(find.text('Cramping'), findsOneWidget);
+    expect(find.text('Muscle cramps'), findsOneWidget);
     expect(
       find.text('Sleep'),
       findsNothing,
