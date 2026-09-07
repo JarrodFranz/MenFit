@@ -1,13 +1,13 @@
 # Nutrition Domain Notes
 
-*Initial bootstrap notes, 2026-08-25. Energy-estimation stance added with S1-4, 2026-08-28.*
+*Initial bootstrap notes, 2026-08-25. Energy-estimation stance added with S1-4, 2026-08-28. Fork note (2026-09-07): the women-specific section below was replaced when MenFit forked from FemFit (ADR 017); references to `womens_health.md` now point at `mens_health.md`.*
 
 ## Evidence reviews
 
-- **[Energy-needs estimation (BMR/TDEE)](../research/nutrition_energy_estimates.md)** — why Mifflin-St Jeor, the female-coefficient assumption and its limits, the documented error margins, and the BMR-floor decision. Required by `womens_health.md` rule 2 and **must be read before changing anything in `features/nutrition/domain/energy_estimate.dart` or `calorie_target.dart`.** No nutrition claim is tied to cycle phase; that needs its own review.
+- **[Energy-needs estimation (BMR/TDEE)](../research/nutrition_energy_estimates.md)** — why Mifflin-St Jeor, the female-coefficient assumption and its limits, the documented error margins, and the BMR-floor decision. Required by `mens_health.md` rule 2 and **must be read before changing anything in `features/nutrition/domain/energy_estimate.dart` or `calorie_target.dart`.**
 
 - **[Activity energy expenditure ("calories burnt")](../research/energy_expenditure_estimates.md)**
-  — required by `womens_health.md` rule 2 before any such figure ships. Read it
+  — required by `mens_health.md` rule 2 before any such figure ships. Read it
   before touching activity-energy code. Two conclusions bind this domain
   directly: **there must be no code path from an activity energy estimate to
   `calorie_target.dart`, the diary, or any daily total** (our TDEE already
@@ -19,9 +19,9 @@
 
 ## Core concepts
 
-- **Food:** nutritional definition per serving/100g (calories, protein, carbs, fat; micronutrients later — iron is the first micronutrient worth adding for this audience).
+- **Food:** nutritional definition per serving/100g (calories, protein, carbs, fat; micronutrients later — iron is the first micronutrient tracked; see `knowledge/research/micronutrient_adequacy.md` for adult-male reference intakes).
 - **NutritionEntry:** a logged quantity of a food at a time, assigned to a **Meal** (breakfast/lunch/dinner/snack — user-configurable later).
-- **Goals:** daily calorie and macro targets. Later: cycle-phase-aware hints (evidence-gated).
+- **Goals:** daily calorie and macro targets. Later: bulk/cut/maintain presets and recovery-aware hints (evidence-gated).
 - **Body metrics:** weight over time first; measurements later. Trend-smoothed weight (rolling average) matters more than daily points.
 
 ## Food data sourcing
@@ -33,12 +33,12 @@
 
 - **Lookup order is local-first, always.** A scanned or typed barcode is validated and canonicalised (`domain/barcode.dart`), then looked up in the user's own catalogue (`NutritionRepository.getFoodByBarcode`). A hit goes straight to the log dialog and **makes zero network requests**. Only a miss reaches the provider. Two independent reasons, both load-bearing: barcodes get scanned in supermarket aisles where signal is worst, and the app must not tell a third party about a food it already knows. Where several live rows share a barcode (the column is deliberately non-unique), the most recently updated one wins.
 - **Online lookup is an explicit action, never search-as-you-type.** Typing searches the local catalogue only; sending words to the provider takes a button press or a field submit. **Two independent reasons, either sufficient on its own:** (1) privacy — this is the first feature to send user-*typed* content off-device, and ADR 010 makes that an act rather than a side-effect of typing; (2) rate limits — Open Food Facts documents 10 search requests/minute per IP, which for a client-side app is per end-user, so a live-search box would be blocked within seconds. Both reasons are restated in code comments (`presentation/online_food_search_controller.dart`, `data/open_food_facts_service.dart`) so the behaviour is not "improved" away. Paging is one page per explicit request, ending when a page returns fewer hits than the page size; the provider's total count is a capped estimate and is **never rendered**.
-- **A first-run consent gate, not a notice.** Before the *first* outbound lookup of any kind (text search or barcode fetch), a dialog states what is sent (the words, or the barcode), to whom (the named provider, with its address), what is not sent (nothing identifying — no name, no account, nothing else from the diary), and that a result is only kept if she saves it. **Backing out actually aborts the lookup** — a notice you can only agree to is a delay, not consent. "Already seen" persists in `shared_preferences` (a trivial device preference), and is recorded only after she proceeds.
+- **A first-run consent gate, not a notice.** Before the *first* outbound lookup of any kind (text search or barcode fetch), a dialog states what is sent (the words, or the barcode), to whom (the named provider, with its address), what is not sent (nothing identifying — no name, no account, nothing else from the diary), and that a result is only kept if the user saves it. **Backing out actually aborts the lookup** — a notice you can only agree to is a delay, not consent. "Already seen" persists in `shared_preferences` (a trivial device preference), and is recorded only after the user proceeds.
 - **A search hit is never enough to build a food.** Picking a text-search result triggers a *mandatory* second call, `findByBarcode(summary.barcode)`, before the review screen. Not an optimisation: the provider's search index exposes seven nutriments and **iron is not among them**, so a food built from a summary would be silently missing the one nutrient this app treats as first-class. Search-hit figures are also per 100 g, and are labelled as such wherever they render.
-- **Review before save.** Provider data is a candidate the user checks, never something the app accepts on her behalf. A number the provider did not state seeds a **blank** field, never `0` — existing validation then requires it, which is the intended outcome. The review screen surfaces `ServingBasis` (stated per serving / derived from per-100 g / per 100 g), says so when the record carries no nutrition data at all, and gives a quiet, non-judgemental caution when the record looks thin — a sparse record means nobody has filled the product in, not that the food lacks anything. Saved foods carry `source: openFoodFacts` (even after the user edits every number — provenance records where data *came from*) and the provider's **echoed** barcode.
+- **Review before save.** Provider data is a candidate the user checks, never something the app accepts on their behalf. A number the provider did not state seeds a **blank** field, never `0` — existing validation then requires it, which is the intended outcome. The review screen surfaces `ServingBasis` (stated per serving / derived from per-100 g / per 100 g), says so when the record carries no nutrition data at all, and gives a quiet, non-judgemental caution when the record looks thin — a sparse record means nobody has filled the product in, not that the food lacks anything. Saved foods carry `source: openFoodFacts` (even after the user edits every number — provenance records where data *came from*) and the provider's **echoed** barcode.
 - **Attribution is a licence obligation** (ODbL), not decoration: the online results region and the review screen both name the source and carry its address. Rendered as copyable `SelectableText` because `url_launcher` is not a dependency; making it tappable needs the `package-evaluation` workflow.
-- **A search is scoped to a country and a language (2026-09-03 fix).** Open Food Facts is global and unlocalised by default, so an unfiltered search from Australia came back full of Bulgarian products with Cyrillic names and Cyrillic pack sizes ("500 г"). Text search now sends the user's `FoodSearchRegion` as a country filter (`countries_tags:"en:australia"` appended to Search-a-licious' Lucene `q`; the `tagtype_0/tag_contains_0/tag_0` triple on the legacy CGI path) and her language as `lc`/`langs` plus a `product_name_<lc>` field request, with the mapper preferring that field over the plain `product_name`. The default is the **device locale's country**, overridable in Settings → Data & Privacy ("Food database region": Australia, New Zealand, United Kingdom, United States, Canada, Ireland, or Anywhere; stored in `shared_preferences`, absent meaning "not chosen" so the default keeps following the device). **Barcode lookup is unchanged** — a barcode is global, and a country filter there could only turn a correct answer into "not found" — apart from preferring the localised name. There is deliberately **no script or language heuristic over the results**: locality is decided by the request, and dropping a result because its name is not in her alphabet would hide products she can actually buy. Free-text `serving_size`/`quantity` is displayed verbatim but never parsed when its unit is not one we recognise, so "500 г" yields an *unknown* weight rather than 500 g. Details, wire formats and the privacy note in [ADR 010](../decisions/010_food_data_source.md)'s second 2026-09-03 amendment.
-- **Scope of the hide-calories mode, extended.** The **review/new-food form** joins the goals screen as a documented exception: its calorie *field* stays visible under the preference, for the same reason — you cannot define a food without entering its energy, and blanking it would leave a user unable to finish what she opened the screen for. It is an input, not a total. The **online results list is inside** the preference's scope, exactly as the local picker list already was.
+- **A search is scoped to a country and a language (2026-09-03 fix).** Open Food Facts is global and unlocalised by default, so an unfiltered search from Australia came back full of Bulgarian products with Cyrillic names and Cyrillic pack sizes ("500 г"). Text search now sends the user's `FoodSearchRegion` as a country filter (`countries_tags:"en:australia"` appended to Search-a-licious' Lucene `q`; the `tagtype_0/tag_contains_0/tag_0` triple on the legacy CGI path) and their language as `lc`/`langs` plus a `product_name_<lc>` field request, with the mapper preferring that field over the plain `product_name`. The default is the **device locale's country**, overridable in Settings → Data & Privacy ("Food database region": Australia, New Zealand, United Kingdom, United States, Canada, Ireland, or Anywhere; stored in `shared_preferences`, absent meaning "not chosen" so the default keeps following the device). **Barcode lookup is unchanged** — a barcode is global, and a country filter there could only turn a correct answer into "not found" — apart from preferring the localised name. There is deliberately **no script or language heuristic over the results**: locality is decided by the request, and dropping a result because its name is not in their alphabet would hide products the user can actually buy. Free-text `serving_size`/`quantity` is displayed verbatim but never parsed when its unit is not one we recognise, so "500 г" yields an *unknown* weight rather than 500 g. Details, wire formats and the privacy note in [ADR 010](../decisions/010_food_data_source.md)'s second 2026-09-03 amendment.
+- **Scope of the hide-calories mode, extended.** The **review/new-food form** joins the goals screen as a documented exception: its calorie *field* stays visible under the preference, for the same reason — you cannot define a food without entering its energy, and blanking it would leave a user unable to finish what the user opened the screen for. It is an input, not a total. The **online results list is inside** the preference's scope, exactly as the local picker list already was.
 
 ## Shipped after S1-5
 
@@ -48,8 +48,8 @@
   (see ADR 010), but that is a transport detail inside the data layer: the UI
   shows no banner, no caveat and no hint about which route served a result,
   because the user has no decision to make about it. Everything else is
-  unchanged — typing still searches only her own foods, nothing leaves the
-  device until she presses Search, results are still per-100 g summaries that
+  unchanged — typing still searches only their own foods, nothing leaves the
+  device until the user presses Search, results are still per-100 g summaries that
   must pass through the review screen, and the first-run notice still gates
   every outbound request. Copy telling web users to use a barcode instead has
   been removed from the picker *and* from the error-message table.
@@ -59,19 +59,19 @@
   `nutrition_goals.macro_target_mode` (default `'grams'`) names which stored
   set is authoritative. Both sets persist side by side and neither is written
   from the other, so switching representation never destroys what was typed in
-  the mode she left. Percent-mode grams are **derived on demand**
+  the mode the user left. Percent-mode grams are **derived on demand**
   (`domain/macro_targets.dart`), never stored, so a changed calorie target
   moves them instead of leaving a stale snapshot. Atwater factors (protein 4,
   carbohydrate 4, fat 9 kcal/g) are used purely as a unit conversion:
   **there is no default or suggested split**, no ratio is described as
-  balanced or recommended, and the fields start blank (`womens_health.md`
-  rule 1). The basis is her own calorie target when set, otherwise the
+  balanced or recommended, and the fields start blank (`mens_health.md`
+  rule 1). The basis is their own calorie target when set, otherwise the
   resolved target with the BMR floor already applied; with neither, there is
   no basis at all and that is a typed outcome the screen explains rather than
   a set of zero-gram targets. Validation states arithmetic and never judges:
   "These come to 96% — they need to add up to 100% between them." That is the
   one message in `nutrition_validation.dart` permitted to quote a number the
-  user typed — a split is a shape she chose, not a logged intake — and it
+  user typed — a split is a shape the user chose, not a logged intake — and it
   stays UI-only.
 
   **Every surface showing a macro target must go through
@@ -122,7 +122,7 @@
   resulting serving count so one set of limits covers every unit; the typed
   amount is checked only for being positive and finite. Two quantity messages
   were reworded unit-neutrally: copy that says "servings" to someone who just
-  typed grams reads as though the app misunderstood her.
+  typed grams reads as though the app misunderstood them.
 
 ### Food logging round (2026-09-03)
 
@@ -140,7 +140,7 @@
 - **Provenance fix.** `Food.source` is now decided by `FoodFormSeed.source`,
   not by "was there a seed at all". Concretely, `forUnknownBarcode` — the path
   where OFF had no product for a scanned code and the user typed every field
-  herself — is now tagged `FoodSource.custom`. It had been wrongly tagged
+  themself — is now tagged `FoodSource.custom`. It had been wrongly tagged
   `FoodSource.openFoodFacts`, which is exactly the provenance guarantee
   ADR 010 exists to protect: `source` records where the data actually came
   from, and none of it came from OFF on that path. See ADR 010's
@@ -223,7 +223,7 @@ ADR 012 has the decision and the platform detail; this is the *domain*
 half — what a photographed panel is allowed to do to a food definition.
 
 - **A scan fills blank fields and never replaces one.** Where the panel and
-  a number the user already typed disagree, hers stands and the difference
+  a number the user already typed disagree, theirs stands and the difference
   is stated under the review banner ("Kept your value for calories (label
   read 198)."). Same for the amount and unit: the scanned basis is applied
   only while the amount, unit, serving weight and portion description are
@@ -246,7 +246,7 @@ half — what a photographed panel is allowed to do to a food definition.
   honey ~140 g. Copy: "This label is per 100 mL. MenFit records weight —
   enter the grams for 100 mL before saving." The guard is **sticky and
   independent of who set the amount**: a second scan does not clear it, and
-  a weight typed *before* the scan does not count as an answer to it (she
+  a weight typed *before* the scan does not count as an answer to it (the user
   was defining a food by weight and then photographed a drink; the two
   numbers have nothing to do with each other). Touching the amount field
   after the scan is the confirmation.
@@ -261,11 +261,11 @@ half — what a photographed panel is allowed to do to a food definition.
 - **Confidence 0.6** marks a field "check this" (icon plus the semantics
   label "low confidence, please check"). A UI threshold, not a truth
   threshold — everything scanned is reviewed regardless. Only fields taken
-  from the panel are ever marked; a number she typed never is.
+  from the panel are ever marked; a number the user typed never is.
 - **ED-safe copy applies unchanged.** No message blames the photo, the
   label or the user, and none quotes a value except the one deliberate
   exception above, which is UI-only and never logged.
-- A photographed packet saves as `FoodSource.custom`. Her camera supplied
+- A photographed packet saves as `FoodSource.custom`. Their camera supplied
   the data, not a database (ADR 010).
 
 **Parser traps worth not rediscovering** (each is a comment in the code;
@@ -329,11 +329,10 @@ repeated here so they are findable from the domain notes):
     textual `serving_size` measurements.
 
 
-## Women-specific considerations
+## ED-safe design considerations
 
 - Calorie guidance must be handled responsibly: avoid aggressive-deficit defaults; consider eating-disorder-safe design (no shaming, ability to hide calorie numbers, focus on adequacy e.g. protein/iron). This is a product-differentiating safety area — treat with the same seriousness as privacy.
 - **Decided and implemented at S1-4 (2026-08-28):** calories and macros are first-class (MyFitnessPal parity) *with guardrails* — no "over budget" or shaming semantics anywhere; a user-controlled **hide calorie numbers** preference (`nutrition_goals.hide_calorie_numbers`, display-only — calories stay recorded); protein and iron treated as first-class adequacy indicators, with unknown iron stored as `null` rather than `0` so a total is never presented as complete when it isn't; no aggressive-deficit defaults (weight goal defaults to "maintain", requested deficit defaults to 0). Deficits are **allowed but floored at the user's estimated BMR**, with the floor explained rather than silently applied — see the evidence review above. Validation copy in `nutrition_validation.dart` carries an explicit no-shaming/no-moralising rule as a code comment.
-- **UI shipped at S1-4 (2026-08-28), scope of the hide-calories mode:** the preference blanks calorie figures across the **diary** (day totals, meal subtotals, entry rows, the food picker — local *and* online results, added S1-5 — and the log dialog's preview) and nothing else. Two documented exceptions, both **input** surfaces rather than totals: the **goals screen**, which keeps the calorie target field and the energy estimate because that is where the number is entered and where the switch itself lives; and the **new-food/review form** (S1-5), because a food cannot be defined without its energy. Blanking either would leave a user unable to finish what she came for. Any new surface that renders a calorie figure must honour the preference; the day view has a test asserting no calorie text is findable at all in that mode.
-- No user-set **iron target** exists, deliberately: a personal iron number is a clinical figure (`womens_health.md` rule 1). Iron is surfaced as a logged total only.
-- Energy needs vary across the cycle; any recommendation is evidence-gated and disclaimed.
-- Pregnancy/breastfeeding nutrition is out of scope until medical review exists.
+- **UI shipped at S1-4 (2026-08-28), scope of the hide-calories mode:** the preference blanks calorie figures across the **diary** (day totals, meal subtotals, entry rows, the food picker — local *and* online results, added S1-5 — and the log dialog's preview) and nothing else. Two documented exceptions, both **input** surfaces rather than totals: the **goals screen**, which keeps the calorie target field and the energy estimate because that is where the number is entered and where the switch itself lives; and the **new-food/review form** (S1-5), because a food cannot be defined without its energy. Blanking either would leave a user unable to finish what they came for. Any new surface that renders a calorie figure must honour the preference; the day view has a test asserting no calorie text is findable at all in that mode.
+- No user-set **iron target** exists, deliberately: a personal iron number is a clinical figure (`mens_health.md` rule 1). Iron is surfaced as a logged total only.
+- Bulk/cut/maintain calorie-target presets are a roadmap idea (`product/feature_ideas.md`); any such preset is evidence-gated and disclaimed the same as an energy estimate.

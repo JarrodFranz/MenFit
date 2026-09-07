@@ -1,10 +1,16 @@
 # Activity Energy Expenditure ("Calories Burnt") — Evidence Review
 
-*Written 2026-08-28. Required by `../domain/womens_health.md` rule 2: no health
+*Written 2026-08-28. Required by `../domain/mens_health.md` rule 2: no health
 calculation ships without a documented evidence review. Companion to
 `nutrition_energy_estimates.md` (BMR/TDEE), whose conclusions this review
 depends on and must not contradict. Presentation constraints are governed by
-the ED-safe stance in `../domain/nutrition.md`.*
+the ED-safe stance in `../domain/nutrition.md`. Fork note (2026-09-07): this
+review's body is FemFit-era research into MET-equation sex differences and is
+not currently wired to any shipped feature (see `nutrition.md`'s "no code
+path from an activity energy estimate to `calorie_target.dart`" rule). It is
+left as historical evidence rather than rewritten, since MenFit has no
+activity-energy feature to gate; redo this review for an adult-male
+population before ever wiring one up.*
 
 ## The claim this review gates
 
@@ -496,4 +502,4 @@ balance depends entirely on the constraints holding.
 - `nutrition_energy_estimates.md` — the BMR/TDEE review this depends on; §5.3
   reuses its Mifflin-St Jeor estimate and §5.2 concerns its activity multipliers.
 - `../domain/nutrition.md` — the ED-safe stance governing §7.
-- `../domain/womens_health.md` — rule 2, which required this review.
+- `../domain/mens_health.md` — rule 2, which required this review (this review's body predates the fork; see the note at the top of the file).

@@ -1,6 +1,9 @@
 # Energy-Needs Estimation (BMR / TDEE) — Evidence Review
 
-*Written 2026-08-28 for S1-4 (Nutrition core). Required by `../domain/womens_health.md` rule 2: no nutrition recommendation ships without a documented evidence review. Reviewed against: the equation literature below; no cycle-phase claims are in scope here (see "Explicitly out of scope").*
+*Written 2026-08-28 for S1-4 (Nutrition core). Rewritten 2026-09-07 at the
+fork from FemFit (ADR 017) for the male Mifflin-St Jeor coefficient. Required
+by `../domain/mens_health.md` rule 2: no nutrition recommendation ships
+without a documented evidence review.*
 
 ## The claim this review gates
 
@@ -12,15 +15,15 @@ The app estimates a user's **basal metabolic rate (BMR)** and **total daily ener
 
 A linear regression predicting resting energy expenditure from weight, height, age and sex, published by Mifflin, St Jeor and colleagues in 1990 from indirect-calorimetry measurements on 498 healthy adults (roughly half women, ages ~19–78, spanning normal-weight and obese participants).
 
-Published female form:
+Published male form:
 
 ```
-REE = 9.99 × weight(kg) + 6.25 × height(cm) − 4.92 × age(years) − 161
+REE = 9.99 × weight(kg) + 6.25 × height(cm) − 4.92 × age(years) + 5
 ```
 
-Male form differs only in the final term (`+ 5` instead of `− 161`).
+Female form differs only in the final term (`− 161` instead of `+ 5`).
 
-**We implement the conventionally rounded form** — `10 × weight + 6.25 × height − 5 × age − 161` — which is what almost every consumer implementation uses. The difference from the published coefficients is about 2–4 kcal/day for a typical adult (e.g. 65 kg, 30 years: 0.01 × 65 + 0.08 × 30 ≈ 3 kcal), which is two orders of magnitude smaller than the equation's own error. Recorded here so the choice is visible rather than implicit. Implementation: `lib/features/nutrition/domain/energy_estimate.dart`.
+**We implement the conventionally rounded form** — `10 × weight + 6.25 × height − 5 × age + 5` — which is what almost every consumer implementation uses. The difference from the published coefficients is about 2–4 kcal/day for a typical adult, which is two orders of magnitude smaller than the equation's own error. Recorded here so the choice is visible rather than implicit. Implementation: `lib/features/nutrition/domain/energy_estimate.dart`.
 
 TDEE is then `BMR × activity factor`, with the conventional 1.2 / 1.375 / 1.55 / 1.725 / 1.9 multipliers.
 
@@ -39,15 +42,15 @@ TDEE is then `BMR × activity factor`, with the conventional 1.2 / 1.375 / 1.55 
 - That is BMR. **TDEE is less reliable still**: the activity multipliers are coarse, poorly validated bands, and self-selection between "lightly active" and "moderately active" moves the answer by ~13% on its own. Treat the TDEE figure as the roughest number this feature produces.
 - Consequence for the product: never present these as precise. Round generously, never show decimals, always label as an estimate, and never build a UI that implies a user is "over" or "under" a number derived this way. Ranges and "roughly" language are more honest than a single figure.
 
-## The female-coefficient assumption, and its limits
+## The male-coefficient assumption, and its limits
 
-The profile deliberately does not collect sex (`knowledge/product/stage1_audit.md` §5.1). Mifflin-St Jeor requires a sex term. The product decision is to **apply the female variant to everyone**, because this is a women-focused app and its population is women.
+The profile deliberately does not collect sex (`knowledge/domain/mens_health.md`). Mifflin-St Jeor requires a sex term. The product decision is to **apply the male variant to everyone**, because MenFit assumes an adult-male user population.
 
 The limits, stated plainly:
 
-- For any user the female variant does not fit, the estimate is **low by 166 kcal/day** (the difference between −161 and +5). Since a *low* estimate produces a *lower* BMR floor and a *lower* maintenance figure, this error direction is the one that reduces the floor's protective value — it is not a "safe" error.
-- The equation's sex term is a proxy for average body-composition differences, not an identity claim. It does not fit every woman either: it under-predicts for users with high lean mass (well-trained athletes are the obvious case here) and behaves worst at the extremes of the input ranges.
-- It says nothing about, and adjusts for nothing regarding: thyroid conditions, medications affecting metabolism, pregnancy or lactation (out of scope entirely — `../domain/nutrition.md`), menopause, prior or current disordered eating and metabolic adaptation, or age beyond a linear term.
+- For any user the male variant does not fit, the estimate is **high by 166 kcal/day** (the difference between +5 and −161). Since a *high* estimate produces a *higher* BMR floor and a *higher* maintenance figure, this error direction inflates the floor's implied allowance rather than under-protecting it — it is still not a "safe" error to ignore.
+- The equation's sex term is a proxy for average body-composition differences, not an identity claim. It does not fit every man either: it over-predicts for users with low lean mass and behaves worst at the extremes of the input ranges.
+- It says nothing about, and adjusts for nothing regarding: thyroid conditions, medications affecting metabolism, prior or current disordered eating and metabolic adaptation, or age beyond a linear term.
 
 Any future decision to collect sex, or to offer a variant switch, is a product decision with its own privacy implications and needs its own review — not a quiet code change.
 
@@ -66,9 +69,9 @@ Its limits, equally plainly: BMR estimated to ±10% means the floor is estimated
 
 ## Explicitly out of scope
 
-**No claim anywhere in this feature is linked to cycle phase.** Energy needs do vary across the menstrual cycle, and the literature on the size and consistency of that variation is genuinely mixed. Under `../domain/womens_health.md` rule 2, any cycle-phase-linked nutrition guidance needs **its own** documented evidence review and product sign-off before implementation. S1-4 ships none, and the code contains no cycle inputs at all.
+No claim anywhere in this feature is linked to training-cycle phase or recovery status. Any future recovery-linked nutrition guidance (e.g. a bulk/cut/maintain preset that reacts to flare or training load) needs **its own** documented evidence review and product sign-off before implementation. This review's estimate contains no such inputs.
 
-Also out of scope, for the same reason: pregnancy and lactation energy needs, any adjustment for RED-S / low energy availability, and any claim about macronutrient distribution beyond letting the user set their own targets.
+Also out of scope, for the same reason: any adjustment for RED-S / low energy availability, and any claim about macronutrient distribution beyond letting the user set their own targets.
 
 ## Sources
 
@@ -80,5 +83,5 @@ Also out of scope, for the same reason: pregnancy and lactation energy needs, an
 ## Related
 
 - `../domain/nutrition.md` — the ED-safe product stance this feature implements.
-- `../domain/womens_health.md` — rule 2, which required this review.
-- `../product/stage1_audit.md` §S1-4.
+- `../domain/mens_health.md` — rule 2, which required this review.
+- `../decisions/017_fork_from_femfit.md` — the fork that changed the sex-coefficient assumption.

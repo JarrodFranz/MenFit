@@ -1,6 +1,6 @@
 # Running Domain Notes
 
-*Initial bootstrap notes, 2026-08-25. Expand via research tasks before building the running feature.*
+*Initial bootstrap notes, 2026-08-25. Expand via research tasks before building the running feature. Fork note (2026-09-07): the women-specific section below was replaced when MenFit forked from FemFit (ADR 017).*
 
 ## Core concepts
 
@@ -19,11 +19,11 @@
 
 ## Route suggestion (named feature)
 
-- Input: start point + target distance (km), later preferences (loop vs out-and-back, elevation, lit streets, avoid isolated paths — a women's-safety differentiator).
+- Input: start point + target distance (km), later preferences (loop vs out-and-back, elevation, lit streets, avoid isolated paths — a safety differentiator).
 - Requires a routing/graph source: OSM-based services (e.g. OpenRouteService round-trip routing, GraphHopper, Valhalla) are the realistic options vs building a router. Evaluate in a dedicated research task before Phase C/D.
 - Route storage must be independent of activity storage (routes are shareable, reusable).
 
-## Women-specific considerations
+## Recovery and safety considerations
 
-- Performance varies across cycle phases for many users; analytics should be able to annotate activities with cycle phase (join at query time — do not denormalise cycle data into activity records; privacy separation matters).
+- Performance varies with recovery status (sleep, soreness, flares); analytics should be able to annotate activities with recovery context (join at query time — do not denormalise S3 data into activity records; privacy separation matters).
 - Safety features (live tracking, check-ins, lit-route preference) are core running features here, not add-ons.

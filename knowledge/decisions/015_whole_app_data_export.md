@@ -2,6 +2,12 @@
 
 - **Status:** Accepted (2026-09-04; implemented in the same round)
 - **Date:** 2026-09-04
+- **Fork note (2026-09-07):** `cycle_records` (mentioned below) was removed
+  at the fork from FemFit (ADR 017); the S3 opt-in tables are now
+  `daily_checkins`, `flare_events`, `recovery_days` and `wellbeing_events`
+  (`sensitiveHealthTables`), and the export flag is
+  `includesSensitiveHealthData`. The mechanism this ADR describes is
+  otherwise unchanged.
 
 ## Context
 

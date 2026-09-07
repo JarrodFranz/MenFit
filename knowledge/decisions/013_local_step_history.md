@@ -194,7 +194,7 @@ would have the UI ask for step data the app may have no right to.
 `defaultDailyStepTarget` (7 500) now has one home, read through
 `stepsTargetProvider`; it was previously a bare literal inside the home steps
 ring. It is a **display default, not health advice**
-(`knowledge/domain/womens_health.md`).
+(`knowledge/domain/mens_health.md`).
 
 ## Rejected alternatives
 

@@ -1,6 +1,6 @@
 # Feature Parity Inventory — Strava + MyFitnessPal
 
-*Created 2026-08-26 after the product owner confirmed the goal: **all the functionality of Strava and MyFitnessPal**, adapted around women's needs. This is the tracking document — every parity feature maps to a roadmap phase (see `implementation_roadmap.md`). Update status as features ship. Statuses: ⬜ not started · 🔨 in progress · ✅ shipped · 🔁 adapted (deliberately different from the original) · ❌ consciously excluded (with reason).*
+*Created 2026-08-26 after the product owner confirmed the goal: **all the functionality of Strava and MyFitnessPal**, adapted for a strength-first men's audience since the 2026-09-07 fork (ADR 017). This is the tracking document — every parity feature maps to a roadmap phase (see `implementation_roadmap.md`). Update status as features ship. Statuses: ⬜ not started · 🔨 in progress · ✅ shipped · 🔁 adapted (deliberately different from the original) · ❌ consciously excluded (with reason).*
 
 ## Strava parity
 
@@ -16,7 +16,7 @@
 | Treadmill/indoor (non-GPS) mode | E | ⬜ | |
 | Heart-rate recording (sensor/wearable) | K | ⬜ | Via HealthAdapter |
 | Activity edit/delete, titles, descriptions, photos | C/E | 🔨 | Edit/delete/titles/notes shipped 2026-08-26; photos later |
-| Perceived exertion logging | E | ⬜ | Pairs with cycle-aware energy tracking 🔁 |
+| Perceived exertion logging | E | ⬜ | Pairs with recovery-aware energy tracking 🔁 |
 
 ### Analysis & performance
 | Feature | Phase | Status | Notes |
@@ -24,7 +24,7 @@
 | Splits (per km/mi), pace analysis | E | ✅ | Shipped 2026-08-27: interpolated splits + relative pace bars on detail; unit-aware |
 | Elevation profiles | E | 🔨 | Per-split elevation delta shipped; full elevation chart later |
 | Personal records / best efforts (rolling-window) | E | ✅ | Shipped 2026-08-27: dual two-pointer best efforts (1k–marathon) + longest + most climb, brute-force-verified |
-| Training load / fitness & freshness | E, M | ⬜ | v1 simple in E; modelled version in M 🔁 cycle-aware |
+| Training load / fitness & freshness | E, M | ⬜ | v1 simple in E; modelled version in M 🔁 recovery-aware |
 | Weekly/monthly/yearly stats & trends | E | 🔨 | Weekly (12-week chart + this-vs-last tiles) shipped 2026-08-27; monthly/yearly later |
 | Goals (distance, time, frequency) | B/E | ⬜ | Goal skeleton lands with profile |
 | Segments & segment leaderboards | L | ⬜ | Needs backend + community mass; low early priority |
@@ -37,15 +37,15 @@
 | Route suggestion by target distance (km) | H | ⬜ | Named signature feature (goes beyond Strava) 🔁 |
 | Route builder/editor | H | ⬜ | |
 | Saved routes, repeat a route | H | ⬜ | |
-| Safety-aware route preferences (lit streets, avoid isolated paths) | H | ⬜ | Differentiator 🔁 |
+| Safety-aware route preferences (lit streets, avoid isolated paths) | H | ⬜ | Safety differentiator 🔁 |
 
 ### Social & community
 | Feature | Phase | Status | Notes |
 |---|---|---|---|
 | Profiles, followers/following | L | ⬜ | Backend-gated (Phase I first) |
-| Activity feed, kudos→reactions, comments | L | ⬜ | 🔁 female-focused community norms, strong moderation |
+| Activity feed, kudos→reactions, comments | L | ⬜ | 🔁 strong moderation |
 | Clubs/groups | L | ⬜ | |
-| Challenges | L | ⬜ | 🔁 cycle-pause-fair scoring |
+| Challenges | L | ⬜ | 🔁 flare-pause-fair scoring |
 | Activity sharing (links/images) | L | ⬜ | Privacy zones ship FIRST |
 | Privacy zones & default-private activities | L (design in C) | ⬜ | Table stakes; data model prepared early |
 | **Beacon (live location sharing)** | J | ⬜ | 🔁 Elevated: trusted-contact live tracking is a signature feature, not premium |
@@ -76,7 +76,7 @@
 |---|---|---|---|
 | Calorie budget & remaining | G | ⬜ | 🔁 ED-safe design: no shaming, hideable numbers, adequacy focus (domain/nutrition.md) |
 | Macro targets & breakdowns (protein/carbs/fat) | G | ⬜ | |
-| Micronutrients | G+ | ⬜ | Iron first for this audience 🔁 |
+| Micronutrients | G+ | ⬜ | Iron first (see domain/nutrition.md) 🔁 |
 | Exercise-calorie adjustment | G | ⬜ | Links activity data to nutrition — optional/off by default 🔁 |
 | Nutrition reports/trends | G | ⬜ | |
 | Intermittent-fasting tracking | ❌ for now | ❌ | Re-evaluate with medical caution given ED-safety stance |
@@ -87,20 +87,20 @@
 | Weight logging + trend smoothing | G | ⬜ | |
 | Body measurements | G | ⬜ | |
 | Progress photos | G+ | ⬜ | S2 data — local-first |
-| Weight goals | G | ⬜ | 🔁 conservative-deficit defaults, pregnancy-aware guards later |
+| Weight goals | G | ⬜ | 🔁 conservative-deficit defaults |
 
 ### MFP platform features
 | Feature | Phase | Status | Notes |
 |---|---|---|---|
-| Streaks | D | ✅ | 🔁 Signature shipped + review-hardened 2026-08-27: engine with period pausing (bridging, retroactive, satisfied-precedence, midnight rollover), home hero card, opt-out toggle; 5-dimension workflow review, all findings fixed |
+| Streaks | D | ✅ | 🔁 Signature shipped + review-hardened 2026-08-27: engine with flare/recovery-day pausing (bridging, retroactive, satisfied-precedence, midnight rollover), home hero card, opt-out toggle; 5-dimension workflow review, all findings fixed |
 | Reminders/notifications | G/K | ⬜ | Notification adapter |
 | Community/forums | L | ⬜ | Folded into our community design |
 | Premium paywall features | ❌ | ❌ | No monetisation decisions yet — all features unpaywalled for now |
 
 ## Beyond-parity (this product's differentiators — not in Strava/MFP)
-Cycle tracking + phase-aware insights (D), streak pausing (D), trusted-contact live tracking as a core free feature (J), safety-aware routing (H), ED-safe nutrition design (G), cycle-aware training intelligence (M).
+Flare-protected recovery streaks (D), trusted-contact live tracking as a core free feature (J), safety-aware routing (H), ED-safe nutrition design (G), recovery-aware training intelligence (M).
 
 ## Ground rules for this inventory
 - "Parity" means capability parity, not UI cloning; every 🔁 row documents where we deliberately diverge.
 - No feature ships outside its phase without updating this doc and the roadmap.
-- Anything involving health interpretation stays evidence-gated per `domain/womens_health.md`.
+- Anything involving health interpretation stays evidence-gated per `domain/mens_health.md`.

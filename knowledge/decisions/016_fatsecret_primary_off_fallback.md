@@ -128,8 +128,9 @@ secret-management burden for a feature that works without it, and couples a
 core flow to a billing relationship." The proxy removes the first half: the
 client embeds no FatSecret credential, committed or otherwise — only a proxy
 URL, which is not a secret in the same sense (it is a routing detail, not a
-credential; see ADR 006 and the proxy's `X-MenFit-Key` gate for what
-*is* treated as one). The second half — a billing relationship — is not
+credential; see ADR 006 and the proxy's `X-FemFit-Key` gate for what
+*is* treated as one — the header name is the shared proxy's, unchanged by
+the MenFit fork, ADR 017). The second half — a billing relationship — is not
 eliminated, only currently absent: FatSecret is being used on **the tier the
 owner registered for**, and this ADR does not assert a specific price or
 quota, current or future, that has not been confirmed. If that tier's terms

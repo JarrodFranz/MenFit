@@ -100,7 +100,7 @@ Sequences and pose names are activity data (S1 per
 anywhere, included in Delete-my-data from the first commit. **Export:** the app
 has no whole-app export mechanism (only per-activity GPX/TCX and the clipboard
 cycle export) - a gap for every table, tracked in `deferred.md`, not solved here. The chime is a bundled asset; no network. No pose carries health copy:
-names only, no benefit or therapeutic claims (`knowledge/domain/womens_health.md`
+names only, no benefit or therapeutic claims (`knowledge/domain/mens_health.md`
 evidence gate applies to any future "poses for your phase" idea — not built).
 
 ## Per-platform behaviour

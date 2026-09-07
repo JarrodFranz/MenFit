@@ -6,4 +6,4 @@ Conventions:
 - One file per research topic, dated, with sources cited.
 - Record **conclusions and evidence**, not the process.
 - If research led to an ADR, link it.
-- Evidence reviews for women's-health recommendations are mandatory before implementing such features — see `../domain/womens_health.md`.
+- Evidence reviews for men's-health recommendations are mandatory before implementing such features — see `../domain/mens_health.md`.

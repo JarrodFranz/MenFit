@@ -9,7 +9,7 @@ This directory is the **persistent technical memory** of the project. Claude Cod
 | `product/` | Vision, target users, terminology, feature ideas, implementation roadmap, deferred-work registry (`deferred.md`) |
 | `architecture/` | Architecture overview, decisions summary, data architecture, platform architecture |
 | `flutter/` | Flutter-specific learnings, patterns, package decisions, platform notes |
-| `domain/` | Running, fitness, nutrition, and women's-health domain knowledge |
+| `domain/` | Running, fitness, nutrition, and men's-health domain knowledge |
 | `engineering/` | Coding standards, testing strategy, error handling, security & privacy, release & distribution |
 | `decisions/` | Architectural Decision Records (ADRs) — see its README for conventions |
 | `research/` | Findings from research tasks worth keeping |

@@ -2,6 +2,10 @@
 
 - **Status:** Accepted (adopted at first data feature; not wired during bootstrap)
 - **Date:** 2026-08-25
+- **Fork note (2026-09-07):** cycle records (mentioned below) were removed
+  and schema reset to v1 at the fork from FemFit (ADR 017); the SQLCipher
+  path referenced for "cycle-data encryption" now applies to the S3 tier
+  (health check-ins, flares, body weight, location) generally.
 
 ## Context
 Offline-first store for relational fitness data (activities→GPS samples, workouts→sets, foods→entries, cycle records) on iOS/Android/Web/Windows. Sensitive data (cycle) needs an encryption path.

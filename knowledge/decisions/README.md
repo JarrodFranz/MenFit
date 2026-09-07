@@ -57,7 +57,8 @@ Why each serious alternative lost.
 | 012 | On-device nutrition label OCR (google_mlkit_text_recognition behind `OcrAdapter`, Android/iOS only; mandatory review form before save; owner go/no-go pending) | Proposed |
 | 013 | Local daily step history (`daily_step_totals` keyed by day, filled from `HealthPlatformAdapter`; schema v22) | Accepted |
 | 014 | Yoga sequences with timed, cued pose transitions (verified on emulator-5554, 2026-09-04) | Accepted |
-| 015 | Whole-app data export as one JSON file, saved where she chooses (2026-09-04) | Accepted |
+| 015 | Whole-app data export as one JSON file, saved where the user chooses (2026-09-04) | Accepted |
 | 016 | FatSecret primary, Open Food Facts fallback (`FallbackFoodDataProvider`; per-result `source`; supersedes ADR 010's single-provider wiring, not its `FoodDataProvider` port) | Accepted |
+| 017 | MenFit is a subtractive fork of FemFit (cycle tracking removed, `menfit_app`/`com.jarrodfranz.menfit`, schema reset to v1, ADRs 001–016 remain in force) | Accepted |
 
 *(Update this table when adding ADRs.)*

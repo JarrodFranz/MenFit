@@ -1,6 +1,10 @@
 # Data Architecture
 
-*Initial design 2026-08-25. Conceptual — entities are built feature-by-feature, not all at once. Update as schemas land.*
+*Initial design 2026-08-25. Fork note (2026-09-07): cycle tracking and the
+`CycleRecord` entity were removed at the fork from FemFit (ADR 017); S3 now
+means health check-ins, flares, body weight and precise location. Conceptual
+— entities are built feature-by-feature, not all at once. Update as schemas
+land.*
 
 ## Principles
 
@@ -8,7 +12,7 @@
 - **Every row: UUIDv7 id, client-generated at creation.**
 - Syncable tables: `updated_at` (UTC ms), `deleted_at` (soft delete), `sync_status`.
 - Timestamps stored UTC; presentation converts. Units stored canonical metric (m, kg, kcal); presentation converts.
-- Sensitivity tier (see engineering/security_and_privacy.md) is part of each entity's design; S3 (cycle) data is never joined-and-stored into other tables — join at query time.
+- Sensitivity tier (see engineering/security_and_privacy.md) is part of each entity's design; S3 data is never joined-and-stored into other tables — join at query time.
 
 ## Likely entities & relationships (conceptual map)
 
@@ -24,26 +28,26 @@ WorkoutSession(performed) 1—* PerformedSet           WorkoutSession *—1 Work
 Exercise (catalogue, seeded + user-custom)
 Food 1—* NutritionEntry                              NutritionEntry *—1 Meal(slot)
   both carry the same 18 nutrition columns (v21); NutritionEntry's are a log-time snapshot
-WeightLog (body weight time series; S2)              landed schema v18 as `weight_logs`
-BodyMetric (other body metrics; S2, future)
+WeightLog (body weight time series; S3)               landed schema v18 as `weight_logs`
+BodyMetric (other body metrics; S3, future)
 DailyStepTotal (one row per calendar day, day is the PK; S2)  landed schema v22 as `daily_step_totals`
-CycleRecord (period start/end, symptoms, energy; S3)
+DailyCheckin / FlareEvent / RecoveryDay (health check-ins, flares, recovery days; S3)
 StreakState (derived; stores paused-day facts, minimal reason detail)
 HealthMetric (imported HR etc.; S2, future - steps landed at v22, see above)
 SocialPost / Comment / Relationship / Challenge      (future, backend-dependent)
 ```
 
-## Calendar-day semantics (ruled 2026-08-26, for cycle + streaks)
+## Calendar-day semantics (ruled 2026-08-26, for flares + streaks)
 
-Cycle records and streak evaluation operate on **user-local calendar days**, not instants. Day values are stored as ISO-8601 date strings (`YYYY-MM-DD`) captured in the user's local timezone at logging time; they are compared lexically/as dates, never converted through UTC instants (a period that starts "today" starts today regardless of timezone travel). Instant-based data (activities) maps onto days via the user's local timezone at evaluation time.
+Flare/check-in records and streak evaluation operate on **user-local calendar days**, not instants. Day values are stored as ISO-8601 date strings (`YYYY-MM-DD`) captured in the user's local timezone at logging time; they are compared lexically/as dates, never converted through UTC instants (a flare that starts "today" starts today regardless of timezone travel). Instant-based data (activities) maps onto days via the user's local timezone at evaluation time.
 
 ## Analytics semantics (ruled 2026-08-27, Phase E review)
 
 GPS samples persist **including** fixes accepted during pause (full honest route for maps) but carry `isPaused` (schema v4). All analytics (splits, best efforts, PRs) are **segment-aware**: paused samples are excluded, distance/time never accumulate across a pause gap, and a best-effort window never spans a pause (no vehicle-during-pause PRs). Consequence: split sums reconcile with the activity's headline `distanceMeters`/`movingTime`, which use the same reset-across-pause rule at record time. PR ties credit the **earliest** record-setter.
 
-## Body weight: profile value vs history (ruled 2026-09-01, schema v18)
+## Body weight: profile value vs history (ruled 2026-09-01, schema v18; S3)
 
-`user_profiles.weight_kg` stays the app's **current** weight — several features read it directly (activity energy/MET maths, BMR/TDEE estimates, the progress card). `weight_logs` (v18) is the **history**: multiple rows per day allowed (morning/evening weigh-ins are real; a unique-by-day table would silently discard one), ISO day strings, hard delete with no `deleted_at`/`sync_status` (S2, and ED-sensitive: a deleted weigh-in must actually be gone). Ordering on every read is chronological (oldest first) because the consumers are trend/EMA engines and charts, not history lists.
+`user_profiles.weight_kg` stays the app's **current** weight — several features read it directly (activity energy/MET maths, BMR/TDEE estimates, the progress card). `weight_logs` (v18) is the **history**: multiple rows per day allowed (morning/evening weigh-ins are real; a unique-by-day table would silently discard one), ISO day strings, hard delete with no `deleted_at`/`sync_status` (S3, and ED-sensitive: a deleted weigh-in must actually be gone). Ordering on every read is chronological (oldest first) because the consumers are trend/EMA engines and charts, not history lists.
 
 The relationship is **one-way, profile → log**: the v18 migration seeds one `source = 'profile-migration'` row from the profile's existing weight (dated the migration day — the profile carries no measurement date, and back-dating a series would fabricate measurements), and `ProfileController.updateProfile` writes a further `manual` log whenever the profile weight actually changes. Nothing writes back the other way; smoothing/trend resolution lives above the repository.
 
@@ -88,7 +92,7 @@ work:
   accruing number, and the later one supersedes the earlier entirely. So the
   repository upserts by day and today's row is rewritten on every sync.
 - **A missing day has no row — gaps are never zero-filled.** "Nothing was
-  synced" and "she took no steps" are different statements and only the second
+  synced" and "the user took no steps" are different statements and only the second
   is a number this app may make. Zero *is* stored when the platform reports it.
   Same discipline as v21's `null`-means-unknown nutrients.
 - **It is a cache, not the source of truth.** The health platform keeps its own
@@ -125,15 +129,15 @@ timestamps and `deleted_at`. The constraints it sets for later work:
 - **Starters are a domain constant, never rows.** `YogaSequenceStarters` holds
   two sequences under fixed ids (`starter-morning-flow`, `starter-wind-down`);
   `watchSequences()` returns stored rows and nothing else, so an empty list
-  honestly means "she has saved nothing". Accepting a starter saves
-  `starter.copyAsNew()` — a fresh UUIDv7, her row, hers to edit or delete. The
+  honestly means "the user has saved nothing". Accepting a starter saves
+  `starter.copyAsNew()` — a fresh UUIDv7, their row, theirs to edit or delete. The
   fixed ids exist so the offer can identify what is on screen, never as
   database keys.
 - **No index.** Identity is the primary key, emitted inside `CREATE TABLE`,
   which is what made the v23 step re-entrant with zero fixture changes (same
   as v19/v20/v22).
 - **S1-tier, but wiped like the rest.** Self-authored training content, not a
-  health measurement — still hers, so "Delete my data" hard-deletes every row,
+  health measurement — still theirs, so "Delete my data" hard-deletes every row,
   soft-deleted ones included.
 
 ## Derived vs stored
@@ -142,7 +146,7 @@ Splits, PRs, weekly aggregates, streaks are **derived** — recomputable from ra
 
 ## Protected-recovery streaks (signature feature — superseded the paused-only model 2026-08-27, S1-2)
 
-The streak engine walks per-day `DayStatus` (completedActivity / protectedRecovery / unscheduled; planned* statuses arrive with Stage 2 plans). **Protected days** are the union of: explicit recovery days (`recovery_days` table — a user-logged fact, the streaks feature's sanctioned data/ layer), flares with impact "couldn't train", and logged period days iff the opt-in cycle toggle is on (default OFF since S1-2; pre-S1-2 installs with cycle history are grandfathered to ON). Satisfied beats protected; today-pending never breaks; predictions never protect; everything is a pure retroactive recompute — no streak state is ever stored. Protection reasons are not inferable from the home screen (neutral presentation).
+The streak engine walks per-day `DayStatus` (completedActivity / protectedRecovery / unscheduled; planned* statuses arrive with Stage 2 plans). **Protected days** are the union of: explicit recovery days (`recovery_days` table — a user-logged fact, the streaks feature's sanctioned data/ layer) and flares with impact "couldn't train". Satisfied beats protected; today-pending never breaks; predictions never protect; everything is a pure retroactive recompute — no streak state is ever stored. Protection reasons are not inferable from the home screen (neutral presentation).
 
 ## GPS tracks
 
@@ -150,4 +154,4 @@ The streak engine walks per-day `DayStatus` (completedActivity / protectedRecove
 
 ## Sync (when backend arrives — ADR 004)
 
-Outbox drained on foreground/connectivity; per-collection `updated_since` pull cursors; LWW by `updated_at`. Cycle-data sync additionally requires separate consent + the E2E-encryption design from the backend ADR.
+Outbox drained on foreground/connectivity; per-collection `updated_since` pull cursors; LWW by `updated_at`. S3-tier sync additionally requires separate consent + the E2E-encryption design from the backend ADR.

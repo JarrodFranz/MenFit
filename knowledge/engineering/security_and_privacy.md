@@ -1,17 +1,22 @@
 # Security & Privacy
 
-*Established at bootstrap, 2026-08-25. This document sets engineering ground rules. It is not legal advice and does not constitute regulatory compliance (GDPR/HIPAA/state privacy laws need dedicated review before launch).*
+*Established at bootstrap, 2026-08-25. Fork note (2026-09-07): the S3 tier
+was redefined from cycle/reproductive data to health check-ins, flares and
+body weight/location when MenFit forked from FemFit (ADR 017); the
+mechanisms below are unchanged. This document sets engineering ground rules.
+It is not legal advice and does not constitute regulatory compliance
+(GDPR/HIPAA/state privacy laws need dedicated review before launch).*
 
 ## Why this is a core architecture concern
 
-This app will hold GPS/location history, body metrics, nutrition, heart rate, and **menstrual/reproductive-health data** — a combination more sensitive than most banking apps. Users' physical safety (live location) and legal safety (reproductive data) can depend on our choices. Privacy failures here are existential for the product.
+This app holds GPS/location history, body metrics, nutrition, heart rate, and **health check-in and flare data** — a combination more sensitive than most banking apps. Users' physical safety (live location) can depend on our choices. Privacy failures here are existential for the product.
 
 ## Data sensitivity tiers
 
 | Tier | Data | Rules |
 |---|---|---|
-| **S3 — most sensitive** | Cycle/reproductive data, live location streams | Local-first; never in analytics/logs/crash reports; sync only with separate explicit consent and (for cycle data) end-to-end encryption as the design goal; deletable independently. |
-| **S2 — sensitive** | GPS tracks/routes, body weight/metrics, HR, nutrition logs, health-platform data | Never in logs/analytics payloads; explicit permission per source; privacy zones for shared routes; deletable/exportable. |
+| **S3 — most sensitive** | Health check-ins, injury/illness flares, body weight, precise location streams | Local-first; never in analytics/logs/crash reports; sync only with separate explicit consent and end-to-end encryption as the design goal; deletable independently. |
+| **S2 — sensitive** | GPS tracks/routes, nutrition logs, health-platform data | Never in logs/analytics payloads; explicit permission per source; privacy zones for shared routes; deletable/exportable. |
 | **S1 — personal** | Profile, goals, social content, trusted-contact list | Standard auth-protected handling; user-controlled visibility. |
 | **S0 — non-personal** | App settings, feature flags, anonymous diagnostics (if any) | Normal handling. |
 
@@ -32,13 +37,13 @@ This app will hold GPS/location history, body metrics, nutrition, heart rate, an
 
 - **Live tracking links**: must be unguessable (high-entropy token), time-limited, revocable, and served over TLS. A leaked live-tracking link is a physical-safety issue.
 - **Route sharing**: repeated routes reveal home address — privacy zones + default-private activities.
-- **Cycle data subpoena/extraction risk**: strongest protection is not holding it server-side in readable form at all (local-first, E2E-encrypted sync if synced).
+- **Health data subpoena/extraction risk**: strongest protection is not holding S3 data server-side in readable form at all (local-first, E2E-encrypted sync if synced).
 - **Stalker-adjacent misuse**: trusted-contact tracking must be visibly consented, easily paused, and auditable by the user (who watched, when — if technically feasible).
 
 ## Open questions (need decisions later)
 
-- SQLCipher / OS-level DB encryption for the local database (revisit at first cycle-data storage implementation).
-- E2E encryption design for cycle-data sync (decide with backend ADR).
+- SQLCipher / OS-level DB encryption for the local database (revisit at first S3-data storage implementation).
+- E2E encryption design for S3-data sync (decide with backend ADR).
 - Regulatory review scope (GDPR, UK/AUS privacy law, US state laws) before public launch.
 
 
@@ -47,36 +52,37 @@ This app will hold GPS/location history, body metrics, nutrition, heart rate, an
 - The PROGRESS CODE is structurally minimal: challenge id, self-chosen
   name, one percentage, as-of date, and a random per-challenge author tag
   - the encode API cannot express more (challenge_codes.dart, byte-level
-  privacy test). Raw work, adjusted targets and anything cycle-derived
+  privacy test). Raw work, adjusted targets and anything protection-derived
   never cross devices. The author tag is RNG output, carries nothing about
-  her, and exists only so a device can refuse to import its own code back
-  over the buddy snapshot.
+  the user, and exists only so a device can refuse to import its own code
+  back over the buddy snapshot.
 - CORRECTION (2026-09-02): this section previously recorded, as a
   considered and accepted residual, that the challenge DETAIL screen shows
-  raw work beside her percentage. That was wrong to accept, and the
+  raw work beside the user's percentage. That was wrong to accept, and the
   residual is CLOSED - the raw "so far" line is gone from every challenge
   surface (and `challengeSoFarLine` / `formatDistanceSoFar` are deleted).
   The reasoning that was missing: it is not raw / percent alone. Raw,
   percent, the NOMINAL TARGET and the WINDOW are all four on that screen,
-  and together they resolve her PROTECTED-DAY COUNT uniquely -
+  and together they resolve the user's PROTECTED-DAY COUNT uniquely -
   `protectedDays = windowDays - round(windowDays x (raw / percent) /
   target)`; 42.3 km + 50% + 100 km + 30 days is exactly 5, i.e. a
-  screenshot states when her period was. Her raw distance still lives in
-  her activity history, on a screen that says nothing about a challenge.
+  screenshot states when a flare or recovery day fell. The raw distance
+  still lives in the user's activity history, on a screen that says
+  nothing about a challenge.
 - THE RULE THAT REPLACED IT (mechanical, not remembered): no challenge
-  surface may render her raw work AND her adjusted percentage AND the
-  nominal target AND the window. Any three are fine. Swept across the
+  surface may render the user's raw work AND their adjusted percentage AND
+  the nominal target AND the window. Any three are fine. Swept across the
   list card, the Progress card, the detail screen, both sheets and both
   dialogs by `test/features/challenges/challenge_surfaces_privacy_test.dart`
   with a five-protected-day fixture and a positive control. The percentage
-  stays: the pro-rated experience IS the feature, and hiding her own
-  standing from her would be the worse app.
+  stays: the pro-rated experience IS the feature, and hiding a user's own
+  standing from them would be the worse app.
 - Three forbidden-vocabulary lists now exist BY DESIGN (weight,
   achievements, challenges) guarding different risks: weight bans
   valence/goal language; achievements bans goal/target/completion
   framing; challenges PERMITS goal/target (a challenge is a shared
   target) but bans the entire ranking lexicon (win/lose/ahead/behind/
-  beat/vs) and the cycle lexicon. Do not merge them.
+  beat/vs) and any health-detail lexicon. Do not merge them.
 - The vocabulary sweeps skip ONE string: the opaque code body itself
   (`challengeCodeTextKey`). base64url of a ~47-byte payload contains a
   three-letter entry like "pms" or "bmi" roughly once in a few hundred
@@ -106,8 +112,8 @@ the rule is that it does not survive the call that takes it.
   `pickImage` future then never completes, so the `finally` never runs and
   the JPEG stays in the cache. `captureAndRecognizeLabel` therefore begins
   with `ImagePicker().retrieveLostData()` and **deletes** whatever it
-  recovers without recognising it — a stale picture of the last thing she
-  photographed is owed nothing but deletion. Android-only; the call throws
+  recovers without recognising it — a stale picture of the last thing the
+  user photographed is owed nothing but deletion. Android-only; the call throws
   elsewhere and the throw is swallowed, because best-effort cleanup must
   never be why a capture fails to start.
 - `requestFullMetadata: false` on iOS, so the plugin does not reach into
@@ -144,31 +150,34 @@ the exporter test).
   Drift's own `toJson()` maps with nothing reformatted or derived - epoch-ms
   columns stay epoch ms. Envelope: app, format (`menfit-export`),
   formatVersion, appVersion, `AppDatabase.schemaVersion`, `exportedAt`
-  (ISO-8601 UTC), `includesCycleAndWellbeingData`, then `tables`.
-- **The S3 opt-in.** `cycle_records`, `daily_checkins`, `flare_events` and
-  `recovery_days` are excluded unless she ticks "Include cycle and wellbeing
-  data", which is **off by default** - the same four tables, in the same
-  grouping, that `DeleteMyDataService` wipes first. A file without them is a
-  different object to hand to a coach or a cloud drive, and an opt-out she has
-  to notice is not a decision she made. The flag is written into the file, so
-  absent-because-she-said-no and absent-because-she-logged-none are
+  (ISO-8601 UTC), `includesSensitiveHealthData`, then `tables`.
+- **The S3 opt-in.** `daily_checkins`, `flare_events`, `recovery_days` and
+  `wellbeing_events` (`sensitiveHealthTables`,
+  `lib/features/data_export/domain/data_export_tables.dart`) are excluded
+  unless the user ticks "Include sensitive health data", which is **off by
+  default** - the same tables, in the same grouping, that
+  `DeleteMyDataService` wipes first. A file without them is a different
+  object to hand to a coach or a cloud drive, and an opt-out the user has to
+  notice is not a decision they made. The flag
+  (`includesSensitiveHealthData`) is written into the file, so
+  absent-because-declined and absent-because-nothing-logged are
   distinguishable.
 - **The generic read is safe because the classification is guarded, not
   because it is careful.** `test/features/data_export/data_export_table_coverage_test.dart`
   holds a hand-maintained inventory: a table that is neither in it nor in
-  `cycleAndWellbeingTables` fails by name, so a new table forces a tier
+  `sensitiveHealthTables` fails by name, so a new table forces a tier
   decision even though the exporter would have included it anyway.
 - **Soft-deleted rows are included**, and the notice says so. A row the app
-  has stopped showing her is still hers until it is purged; a "copy of your
-  data" that quietly omits them is not one.
+  has stopped showing the user is still theirs until it is purged; a "copy
+  of your data" that quietly omits them is not one.
 - **Nothing on this path logs.** Failures wrap to `StorageException` with the
   static message `'Failed to read local data for export'` (no table name, no
   row), and the controller surfaces only `userMessageFor(error)` - a fixed
   sentence, so an underlying error's text (a path, a row) can never reach a
   SnackBar and from there a log.
 - The notice dialog is shown **every time**, not remembered like the online-
-  lookup one: each export is a separate file going somewhere she picks that
-  day, not consent to an ongoing behaviour.
+  lookup one: each export is a separate file going somewhere the user picks
+  that day, not consent to an ongoing behaviour.
 
 ## Native sharing (ADR 011, 2026-09-02)
 
@@ -179,7 +188,7 @@ would put on the clipboard (tests enforce this), so the native share path
 cannot leak anything the clipboard path doesn't already carry. The adapter
 never logs share text or platform errors (`ShareOutcome` and thrown
 exceptions are handled and mapped to a fallback, not written to any log).
-Cycle export deliberately stays clipboard-only rather than gaining a share
-button: a share sheet would put her complete period history one tap away
-from every installed app, which the clipboard-only path does not (see the
-dartdoc on `_showExportDialog`).
+Any S3 export path deliberately stays clipboard-only rather than gaining a
+share button: a share sheet would put the user's complete health-check-in
+history one tap away from every installed app, which the clipboard-only
+path does not.

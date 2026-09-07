@@ -30,7 +30,7 @@ stores, and renaming it would touch hundreds of files for no benefit.
 
 Android refuses to install an update whose signing certificate differs from
 the installed app's. A tester on a build signed with key A cannot update to key
-B; they must uninstall, and uninstalling deletes their local health, cycle and
+B; they must uninstall, and uninstalling deletes their local health, flare and
 activity data (the app is local-first, ADR 003). So: **one key, created once,
 backed up off-machine, used for every tester and store build.**
 
