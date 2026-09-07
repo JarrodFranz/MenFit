@@ -71,7 +71,7 @@ async function getAccessToken() {
 app.get('/health', (req, res) => {
   res.json({
     status: 'ok',
-    service: 'menfit-fatsecret-proxy',
+    service: 'femfit-fatsecret-proxy',
     configured: Boolean(clientId && clientSecret),
     timestamp: new Date().toISOString(),
   });
@@ -80,7 +80,7 @@ app.get('/health', (req, res) => {
 app.get('/', (req, res) => {
   res.json({
     status: 'ok',
-    service: 'menfit-fatsecret-proxy',
+    service: 'femfit-fatsecret-proxy',
     version: '1.0.0',
   });
 });
@@ -88,10 +88,10 @@ app.get('/', (req, res) => {
 // Proxy route for FatSecret REST API
 app.post('/rest/server.api', async (req, res) => {
   if (proxyApiKey) {
-    const headerKey = req.headers['x-menfit-key'];
+    const headerKey = req.headers['x-femfit-key'];
     if (headerKey !== proxyApiKey) {
       return res.status(401).json({
-        error: { code: 401, message: 'Invalid or missing X-MenFit-Key' },
+        error: { code: 401, message: 'Invalid or missing X-FemFit-Key' },
       });
     }
   }
@@ -139,5 +139,5 @@ app.post('/rest/server.api', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`MenFit FatSecret proxy running on port ${port}`);
+  console.log(`FemFit FatSecret proxy running on port ${port}`);
 });

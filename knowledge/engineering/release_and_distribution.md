@@ -64,9 +64,9 @@ receive another update.
 
 One-time:
 
-1. Firebase console -> project (the existing `menfit-5e600` GCP project used
-   by the FatSecret proxy can host it) -> Add app -> Android -> package name
-   `com.jarrodfranz.menfit`. `google-services.json` is **not** needed for
+1. Firebase console -> project `menfit-f17b3` (MenFit's own project; the
+   FatSecret proxy VM stays in FemFit's `femfit-5e600` project and is shared)
+   -> Add app -> Android -> package name `com.jarrodfranz.menfit`. `google-services.json` is **not** needed for
    distribution alone; only download it if Firebase SDKs are added later.
 2. Copy the **App ID** (`1:<project-number>:android:<hash>`, Project settings ->
    Your apps) into `distribution/android.json` -> `firebaseAppId`. It is a

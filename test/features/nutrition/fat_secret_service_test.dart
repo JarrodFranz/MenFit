@@ -556,7 +556,7 @@ void main() {
 
     group('proxy mode', () {
       test(
-        'attaches X-MenFit-Key header and routes to custom proxy URL '
+        'attaches X-FemFit-Key header and routes to custom proxy URL '
         'without requiring tokenManager',
         () async {
           adapter = _ScriptedAdapter((options) async {
@@ -565,7 +565,7 @@ void main() {
               equals('https://proxy.example.com/rest/server.api'),
             );
             expect(
-              options.headers['X-MenFit-Key'],
+              options.headers['X-FemFit-Key'],
               equals('test_proxy_key_secret'),
             );
             expect(options.headers.containsKey('Authorization'), isFalse);

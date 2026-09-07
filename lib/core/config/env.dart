@@ -195,7 +195,9 @@ class AppEnv {
     'FATSECRET_PROXY_URL',
   );
 
-  /// Optional secret key passed to the FatSecret proxy via X-MenFit-Key.
+  /// Optional secret key passed to the FatSecret proxy as `X-FemFit-Key`.
+  /// The proxy is shared with FemFit and deployed in that project, so the
+  /// header name is whatever the running server checks.
   static const String _fatSecretProxyKey = String.fromEnvironment(
     'FATSECRET_PROXY_KEY',
   );
