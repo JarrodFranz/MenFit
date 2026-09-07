@@ -448,3 +448,32 @@
   found!**, full suite **3493 passed, 0 failed** (was 3490; +3 new tests).
   Committed `8b488d3` (16 files, +285 / -31).
 
+
+## 2026-09-08 — Task 13: knowledge, instructions and tooling docs
+
+- Rewrote the knowledge/product, knowledge/domain, knowledge/architecture and
+  knowledge/engineering docs, `CLAUDE.md`/`AGENTS.md`/`README.md`,
+  `.claude/agents`/`.claude/skills`, and privacy-policy HTML for MenFit's
+  strength-first framing. Added `knowledge/domain/mens_health.md`, ADR 017
+  (fork record), and `TASKS_TO_DO.md`; deleted `knowledge/domain/womens_health.md`
+  and `knowledge/product/stage1_audit.md`. Redefined the S3 privacy tier as
+  health check-ins/flares/body weight/location; rewrote the micronutrient and
+  energy-estimate research reviews against adult-male DRI/Mifflin values.
+  Repointed the four test files and one lib dartdoc still citing
+  `womens_health.md`/a deleted migration doc.
+- Validation: `dart format .` (0 changed), `flutter analyze --fatal-infos`
+  (No issues found!), scoped suite
+  `test/features/achievements test/features/activity test/features/insights
+  test/features/weight test/core/db` — 926 tests passed. Full suite not
+  re-run (doc/comment-only change, per task instructions).
+- Committed as three commits: `5ef830c` (knowledge/), `c84fbe2`
+  (instructions + README + tracker + privacy pages), `60c5720` (test/lib
+  comment fixes).
+- Left out of scope, flagged as residuals in `.git/sdd/task-13-report.md`:
+  `knowledge/engineering/play_store_declarations.md` (still FemFit/menstrual
+  Play Store declarations — wasn't in the task's file list) and
+  `knowledge/research/energy_expenditure_estimates.md` (women's-specific MET
+  research, not wired to any shipped feature; given a fork note rather than
+  rewritten). Also: body-weight tier is now S3 in the knowledge docs but
+  `lib/core/db/tables/weight_logs.dart`'s own dartdoc still says S2 — a
+  doc/code-comment mismatch, not a behavioural change.

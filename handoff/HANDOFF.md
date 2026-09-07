@@ -1,17 +1,26 @@
 # Handoff — MenFit (men's training + nutrition app)
 
-*Live state. Rewritten and pruned on every material change. Last updated 2026-09-08 (Task 10).*
+*Live state. Rewritten and pruned on every material change. Last updated 2026-09-08 (Task 13).*
 
 ## State
 
-- Branch `fork-femfit`, HEAD `8b488d3` (Task 10). Earlier: docs/audit+spec,
+- Branch `fork-femfit`, HEAD `60c5720` (Task 13). Earlier: docs/audit+spec,
   implementation plan, Task 1 (tree copy + package rename), Task 2 (app
   identity sweep, `ee397ae`), Task 3 (cycle removal, `31351c8`), Task 4
   (insights cycle-phase removal, `11cfa9d`), Task 5 (recaps month-end only,
   `5760afb`), Task 6 (achievements/activity cycle-phase removal, `fdf9079`),
   Task 7 (male nutrition constants + weight chart overlay removal, `82249d0`
   — **the tree compiles again and the full suite is green as of this
-  commit**), Task 8 (Drift schema reset to v1, `ec76444`).
+  commit**), Task 8 (Drift schema reset to v1, `ec76444`), Tasks 9-12 (not
+  detailed here — see their own SDD reports under `.git/sdd/`), **Task 13
+  done** (`5ef830c`, `c84fbe2`, `60c5720`, see `.git/sdd/task-13-report.md`):
+  full knowledge/CLAUDE.md/AGENTS.md/README.md/.claude rewrite for MenFit —
+  new `knowledge/domain/mens_health.md` + ADR 017 (fork record), S3 privacy
+  tier redefined to health check-ins/flares/weight/location, male DRI/Mifflin
+  research reviews, `TASKS_TO_DO.md` tracker, privacy-policy HTML rewrite.
+  `dart format .` / `flutter analyze --fatal-infos` clean; scoped suite
+  (achievements/activity/insights/weight/core-db, 926 tests) green — a full
+  suite run was not required for this doc/comment-only task.
   `main` branch also exists but is behind; work is happening on `fork-femfit`
   per the SDD task sequence in `.git/sdd/`.
 - Source app: FemFit at `D:\Documents\Claude\Projects\Female running app`,
@@ -24,8 +33,8 @@
   applicationId/namespace (`com.jarrodfranz.menfit`) + Kotlin package dir,
   iOS bundle id + `CFBundleDisplayName`/`CFBundleName`, web manifest/index,
   Windows runner strings, Dart-side `AppEnv.appName` default, DB name
-  (`menfit`), method channel (`com.menfit.app/wearables`), proxy header
-  (`X-MenFit-Key`), export filename prefix (`menfit-`), GPX/share-card
+  (`menfit`), method channel (`com.menfit.app/wearables`), export filename
+  prefix (`menfit-`), GPX/share-card
   creator strings, `tools/femfit_deploy` -> `tools/menfit_deploy` (+
   `FemFitDeploy.cs` -> `MenFitDeploy.cs`), `scripts/*.ps1`,
   `backend/fatsecret-proxy/*`, `docs/privacy_policy.html`,
@@ -162,15 +171,26 @@
 
 ## In flight
 
-- Nothing mid-task. Task 10 is complete and committed. Remaining work per
-  the implementation plan (`docs/superpowers/plans/2026-09-07-menfit-fork.md`)
-  and the SDD briefs under `.git/sdd/`: Forge theme, docs rewrite (Task 13),
-  and whatever Tasks 11-12 hold (their briefs not read this session).
+- Nothing mid-task. Task 13 (docs/knowledge/instructions rewrite) is
+  complete and committed. Known residual, not fixed in Task 13 because it
+  was out of that task's explicit file scope:
+  `knowledge/engineering/play_store_declarations.md` and
+  `knowledge/research/energy_expenditure_estimates.md` still contain
+  FemFit-era women's-health/menstrual-cycle content (the latter only in its
+  historical research body, now flagged with a fork note). See
+  `.git/sdd/task-13-report.md`'s residual-grep section for the full list
+  and justification for each.
+- `lib/core/db/tables/weight_logs.dart` and other S2/S3-tagged dartdoc
+  comments in `lib/` still say "S2" for body weight; Task 13 redefined the
+  security_and_privacy.md tier table so body weight is S3 (per the task's
+  own instructions). This is a doc/code-comment inconsistency, not a
+  behavioural one — nothing in the S3/S2 label changes actual code paths.
 
 ## Next
 
-1. Task 11 onward: read `.git/sdd/task-11-brief.md` first. Then the Forge
-   theme and the docs rewrite (Task 13).
+1. Check whether a later task should fix
+   `play_store_declarations.md`/`energy_expenditure_estimates.md` (flagged
+   above) and the S2→S3 weight-tier dartdoc comments.
 2. Keep running `flutter analyze --fatal-infos` after each task — see Traps
    below for rename-fallout gotchas that cost time in Tasks 1 and 2.
 3. Owner: add Firebase testers, create upload keystore, Codemagic iOS app,
