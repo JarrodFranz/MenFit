@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 /// place.
 ///
 /// Body weight is the most eating-disorder-sensitive surface in the app
-/// (`knowledge/domain/womens_health.md`), and the cheapest way to stop a
+/// (`knowledge/domain/mens_health.md`), and the cheapest way to stop a
 /// well-meaning edit turning a description into a verdict is to make the
 /// verdict vocabulary fail the build. Two gates read this one list:
 ///
@@ -65,7 +65,7 @@ void expectNoJudgementVocabulary(String text, {required String source}) {
       isNot(contains(word)),
       reason:
           '"$word" in $source turns a measurement into a judgement '
-          '(knowledge/domain/womens_health.md)',
+          '(knowledge/domain/mens_health.md)',
     );
   }
 }

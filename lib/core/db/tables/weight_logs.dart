@@ -8,7 +8,7 @@ import 'package:drift/drift.dart';
 /// estimates, activity-energy MET maths, the progress card). The profile
 /// column is not derived from this table and this table is not derived from
 /// it; the migration seeds one row from the profile so the history starts
-/// non-empty (see `core/db/app_database.dart`'s v18 migration doc).
+/// non-empty.
 ///
 /// [day] is stored as an ISO-8601 date string (`YYYY-MM-DD`), captured in
 /// the user's local timezone at logging time — calendar days, not UTC

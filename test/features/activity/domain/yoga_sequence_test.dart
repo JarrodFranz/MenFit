@@ -304,7 +304,7 @@ void main() {
 
     test('carries no benefit or medical language', () {
       // The catalogue is names only - a claim about what a pose does to a
-      // body is exactly what this app does not make (womens_health.md).
+      // body is exactly what this app does not make (mens_health.md).
       const banned = [
         'burn',
         'detox',

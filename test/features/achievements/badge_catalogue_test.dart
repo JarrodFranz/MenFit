@@ -197,7 +197,7 @@ void main() {
           reason:
               '${badge.id}: attaching a reward to stepping on a scale '
               'manufactures the compulsion the weight feature avoids '
-              '(knowledge/domain/womens_health.md)',
+              '(knowledge/domain/mens_health.md)',
         );
       }
     });

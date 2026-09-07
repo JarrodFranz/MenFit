@@ -118,7 +118,7 @@ void main() {
     expect(
       find.textContaining('not medical advice'),
       findsOneWidget,
-      reason: 'cycle-phase findings can surface here (womens_health.md)',
+      reason: 'health-adjacent findings can surface here (mens_health.md)',
     );
   });
 
