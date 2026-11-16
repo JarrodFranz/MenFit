@@ -1,6 +1,6 @@
 # Handoff — MenFit (men's training + nutrition app)
 
-*Live state. Last updated 2026-11-16 (Keto + Frelia ports on `main`, pushed; build 0.1.0 (3) distributed to Firebase group `main`).*
+*Live state. Last updated 2026-11-16 22:20 AEST (Health area committed on `feat/health`, unmerged; `main` unchanged: Keto + Frelia ports, build 0.1.0 (3) on Firebase group `main`).*
 
 ## State
 
@@ -35,21 +35,53 @@
 
 ## In flight
 
-- **Health area started 2026-11-16 on branch `feat/health`, worktree
-  `../MenFit-health`** (a separate checkout so the widget port on
-  `feat/home-widgets` is undisturbed; a fresh worktree has no CRLF phantom
-  diffs). Contract: `docs/superpowers/specs/2026-11-16-health-tab-design.md`.
-  Schema goes v3 → v4 (`blood_pressure_readings`, `blood_marker_readings`).
-  Owner decided (2026-11-16, relayed by the parent session): Heart Foundation
-  of Australia 2016 categories; Health takes the Settings tab slot and
-  Settings moves behind the Home gear (`/home/settings/...`); blood markers
-  show sourced reference ranges, evidence-reviewed per marker. Evidence:
-  `knowledge/research/blood_pressure_classification.md`,
-  `knowledge/research/blood_glucose_reference_ranges.md` (being written).
-  Stage: five subagent workstreams in flight in the one worktree (A data,
-  B watch vitals, C1 blood-pressure UI, D navigation + screen, glucose
-  evidence review); C2 glucose UI not started. Nothing verified, no test run
-  yet. Nothing committed, merged, pushed or distributed.
+- **Health area built on branch `feat/health` (worktree `../MenFit-health`),
+  commits `7f3c2f4` + `21ceb73`. NOT merged to `main`, NOT pushed, NOT
+  distributed** - each needs the owner's say-so. A separate checkout was used
+  so the widget port on `feat/home-widgets` is undisturbed.
+  - What it is: sixth tab **Health** (`/health`) with read-on-demand watch
+    vitals (heart rate, resting HR, SpO2, sleep, HRV, respiratory rate; never
+    persisted; separate READ-only Health Connect request), manual blood
+    pressure log (Heart Foundation AU 2016 category per reading, 7-day-average
+    headline, chart) and manual blood glucose log (RCPA reference range and
+    neutral position for fasting and 2 h+ after eating only). **Schema v4**
+    (`blood_pressure_readings`, `blood_marker_readings`, both S3). The
+    Settings tab is gone: Settings lives at `/home/settings/...` behind the
+    Home gear. Contract and owner decisions:
+    `docs/superpowers/specs/2026-11-16-health-tab-design.md`. Evidence:
+    `knowledge/research/blood_pressure_classification.md`,
+    `knowledge/research/blood_glucose_reference_ranges.md`.
+  - **Validation, run centrally 2026-11-16 22:12-22:15 AEST:** `dart format`
+    0 changed (1,139 files); `flutter test` **3,940 passed, 0 failed**
+    (2m05s). Afterwards two lint infos in one test were fixed (test name and
+    a raw string only): `flutter analyze --fatal-infos` No issues found, and
+    that file re-run 15/15. The full suite was not re-run after that edit.
+  - **Emulator smoke test (throwaway AVD `MenFit_HealthQA`, port 5586, API 36,
+    release APK of `7f3c2f4`, CN=MenFit Upload Key):** installed the
+    schema-v3 build first, onboarded, saved a ketone reading, then installed
+    the new APK over it - profile and ketone reading survived the v3 -> v4
+    upgrade. Health Connect sheet listed exactly the six vitals types; after
+    Allow the card showed "No recent watch data.". Blood pressure add / edit /
+    delete, categories (128/82 Normal, 135/82 High-normal, 185/112 Grade 3 +
+    the 000 line), glucose add in mmol/L and mg/dL, position label, Home gear
+    -> Settings -> back, all worked; data survived force-stop + relaunch;
+    logcat had 0 FATAL / E-flutter lines. The two fixes in `21ceb73` came
+    from this test. The rebuilt APK of `21ceb73` was installed over it:
+    readings still there, chart order now correct, 0 FATAL / E-flutter; the
+    shortened dropdown hint was not looked at again. AVD deleted afterwards.
+  - **Not verified:** real watch data on a physical device (sleep-stage and
+    SpO2-unit handling rest on plugin source); anything iOS; export/import
+    and Delete my data on a device (tests only); upgrade from the Firebase
+    build 3 APK itself (the v3 build used was the widget session's 21:43
+    rebuild of the same schema); web and Windows builds (the watch card's
+    unsupported state is covered by widget tests only).
+  - **Merge notes for `feat/home-widgets`:** both branches edit
+    `delete_my_data_service.dart` + `settings_providers.dart` (each adds a
+    required constructor field), `AndroidManifest.xml` (this branch: six
+    `uses-permission` lines only), `lib/app/router/routes.dart` (this branch
+    moved the Settings subtree under Home and added the Health branch) and
+    both handoff files. Any widget deep link or test that assumes a Settings
+    tab or a `/settings` path must become `/home/settings`.
 
 - Nothing mid-edit. **Build 0.1.0 (3) is on Firebase App Distribution**
   (2026-11-16, project `menfit-f17b3`, group `main`, 1 tester at upload time;
@@ -79,23 +111,21 @@
   life-event name fixes). Ledger of ported vs unported:
   `docs/superpowers/specs/2026-11-16-frelia-port-and-keto-design.md`
   ("Implementation ledger"). Evidence note: `knowledge/research/keto_tracking.md`.
-- **Validation re-run centrally 2026-11-16 16:12 AEST on the committed tree:**
-  `dart format` 0 changed (1,091 files); `flutter analyze --fatal-infos`
-  No issues found; `flutter test` **3,666 passed, 0 failed** (2m09s).
-- **Release APK** (`build/app/outputs/flutter-apk/app-release.apk`, 128.9 MB,
-  built 15:56, no source newer): apksigner CN=MenFit Upload Key; aapt
-  `com.jarrodfranz.menfit` versionCode 2.
-- **Emulator smoke test (API 36, fresh install of that APK):** onboarding
-  completes; all six tabs render; Blood 1.4 and Breath 40 readings saved with
-  correct units and survived force-stop + relaunch; no FATAL/E-flutter in
-  logcat. **Not exercised:** Urine entry, edit/delete, export/import,
-  v1 → v3 upgrade on a device with real data (covered by tests only), food
-  search, workout permission prompts, anything iOS.
+- Build-2/3 validation, APK and emulator details for `d87bc68`: see
+  `handoff/session-log.md` (2026-11-16 entries). Never exercised on a
+  device: Urine entry, ketone edit/delete, export/import, food search,
+  workout permission prompts, anything iOS.
 - Live FatSecret proxy returned HTTP 401 (no local key): live search
   unverified; OFF fallback and manual entry unaffected.
 
 ## Next
 
+-1. **Health (`feat/health`):** owner to decide merge / push / tester build
+   (`0.1.0+4`). Before merging, merge or rebase against `feat/home-widgets`
+   (see merge notes under In flight) and re-run the full suite on the result.
+   On a physical Android phone with a watch: grant the six vitals, check
+   sleep, SpO2 and HRV values against the watch's own app. Full device, Mac and web/Windows checklist: end of
+   `docs/superpowers/specs/2026-11-16-health-tab-design.md`.
 0. Install build 0.1.0 (3) from Firebase on a physical Android device and
    smoke-test it (this exact rebuild was not run on an emulator).
 1. Next tester build needs `0.1.0+4`. Never distribute a debug-signed build.
@@ -114,9 +144,32 @@
 
 ## Open questions
 
+- **Health, for the owner:** (1) confirm the RCPA glucose reference interval in a
+  browser (https://www.rcpa.edu.au/Manuals/RCPA-Manual/Pathology-Tests/G/Glucose) -
+  the live page is behind bot verification, the numbers 3.0-5.4 fasting and
+  3.0-7.7 non-fasting came from an archived copy of 4 Oct 2024; (2) whether a
+  glucose reading of 15.0 mmol/L or more should show a "contact a doctor
+  today" line (not built: the trigger is only sourced for people with
+  diabetes); (3) whether "before a meal" should use the non-fasting range
+  (not built: inferred, not sourced); (4) named hypertension grades, the 000
+  line and glucose ranges sit close to the regulated-medical-software line
+  (TGA / FDA wellness exclusions) - fine for private testers, needs a proper
+  look before a public store release.
 - No blocking product question: owner chose measurement selection. Historical fork decisions remain strength-first, Recovery tab kept, MenFit identity, Forge theme, no sex field and safety retained. The shipped v1 baseline must now be migrated forward, not reset.
 
 ## Traps
+
+- **A widget test that pumps the real `App` with an in-memory Drift database
+  must unmount the tree and pump 1 ms inside the test body.** Doing it in
+  `addTearDown` fails with "A Timer is still pending even after the widget
+  tree was disposed". See `knowledge/engineering/testing_strategy.md`.
+- **A session isolated in a worktree cannot run compound shell lines that
+  mention `git`** (the harness refuses them). Run git commands alone.
+- **`health` 13.3.2 facts** (per-type reads, sleep value semantics, RMSSD vs
+  SDNN, SpO2 scale): `knowledge/flutter/platform_notes.md`.
+- Several agents in one worktree: `dart format <dir>` reformats other
+  agents' files, and a spec example is copied into tests verbatim - a wrong
+  example ("128/82 is High-normal"; it is Normal) became a failing test.
 
 - **Check `firebase projects:list` shows `menfit-f17b3` before uploading.** The
   CLI uploads the entire APK first and only then reports a 403 — half an hour
@@ -205,6 +258,19 @@
   revert anything beyond the import reordering you intended.
 
 ## Corrections
+
+- **2026-11-16 (Health):** the owner asked for blood pressure judged "given my
+  age and gender". No adult guideline (Heart Foundation AU 2016, ACC/AHA,
+  ESC 2024, ESH 2023) varies its categories by age or sex; only treatment
+  targets vary. The app therefore uses one table and says so on screen. Do
+  not add age- or sex-specific categories or population percentiles.
+- **2026-11-16 (Health):** my own recommendation was store-and-chart for
+  glucose; the owner chose to show reference ranges. Diabetes Australia's
+  4.0-7.8 was rejected as the range (no fasting value; 4.0 is the hypo
+  threshold for people with diabetes).
+- **2026-11-16:** `CLAUDE.md` still calls the shell five tabs with Settings
+  in places and tells sessions to arm a PowerShell watchdog; the shell is
+  Home, Train, Nutrition, Keto, Health, Recovery and this host is Linux.
 
 - **2026-11-16 (later):** the previous handoff said the signing keystore lives
   at `%USERPROFILE%\menfit-signing\`. On this Linux host

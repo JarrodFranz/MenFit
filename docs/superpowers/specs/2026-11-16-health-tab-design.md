@@ -335,3 +335,21 @@ ReferencePosition positionInReference(BloodMarkerReference ref, double value, Bl
 | C1 — BP UI | `domain/blood_pressure_category.dart`, `presentation/blood_pressure_*.dart`, their tests | none (no new annotated code; do not run build_runner) |
 | C2 — glucose UI | `domain/blood_marker_reference.dart`, `presentation/blood_glucose_section.dart`, `presentation/blood_marker_*.dart`, their tests | none |
 | D — navigation | `lib/app/router/routes.dart` (+ `.g.dart`), `presentation/health_screen.dart`, Home gear wiring, shell/a11y/route tests, README tab list | runs build_runner |
+
+## Device and Mac verification checklist (not done on the Linux host)
+
+Android phone with a watch:
+- [ ] Health Connect shows the six vitals in one sheet; the existing steps/workout request still works.
+- [ ] Sleep from a real source (Samsung, Pixel, Garmin): stage durations and the chosen source match the watch's own app.
+- [ ] Resting heart rate, SpO2, HRV and respiratory rate values match the watch's own app.
+- [ ] After two denials Health Connect stops showing the sheet: check that "Connect watch data" does not appear dead.
+- [ ] Upgrade install over the Firebase build 0.1.0 (3) keeps existing data (schema v3 -> v4).
+
+Mac / iPhone:
+- [ ] iOS build accepts the widened `NSHealthShareUsageDescription`.
+- [ ] HealthKit prompt lists the new types; an empty read before granting shows the connect prompt once, then the empty state.
+- [ ] SpO2 arrives as a 0-1 fraction (the code multiplies values of 1 or less by 100).
+- [ ] HRV is SDNN and labelled so; sleep is rebuilt from stage samples across iPhone and Watch sources.
+
+Web / Windows:
+- [ ] `flutter build web` and a Windows build succeed; the watch card shows the unsupported text and the manual logs work.
