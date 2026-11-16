@@ -96,6 +96,22 @@ void main() {
     expect(find.text(bpChartCaption), findsOneWidget);
   });
 
+  testWidgets('same-minute readings: the later entry is the chart latest', (
+    tester,
+  ) async {
+    final first = reading(0, 128, 82);
+    final second = reading(0, 185, 112).copyWith(
+      createdAt: first.createdAt.add(const Duration(seconds: 20)),
+      updatedAt: first.createdAt.add(const Duration(seconds: 20)),
+    );
+    // Repository order: newest first.
+    await pump(tester, [second, first]);
+    expect(
+      find.bySemanticsLabel(RegExp('First 128/82 mmHg.*Latest 185/112 mmHg')),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('one reading shows the too-few text instead of a chart', (
     tester,
   ) async {

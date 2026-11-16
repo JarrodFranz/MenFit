@@ -31,7 +31,12 @@ class BloodMarkerChart extends StatelessWidget {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
     final sorted = [...readings]
-      ..sort((a, b) => a.measuredAt.compareTo(b.measuredAt));
+      // Same-minute readings tie on measuredAt: fall back to entry order so
+      // "latest" here matches the history list.
+      ..sort((a, b) {
+        final byTime = a.measuredAt.compareTo(b.measuredAt);
+        return byTime != 0 ? byTime : a.createdAt.compareTo(b.createdAt);
+      });
     final start = sorted.first.measuredAt;
     double xOf(BloodMarkerReading r) =>
         r.measuredAt.difference(start).inMinutes / Duration.minutesPerDay;

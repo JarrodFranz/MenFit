@@ -14,7 +14,9 @@ const glucoseRangeEmpty = 'No readings in this range.';
 const glucoseChartTooFew =
     'Log at least 2 readings in this range to see a chart.';
 const glucoseReferenceTitle = 'Reference ranges';
-const glucoseContextHint = 'Choose when this was measured';
+// Short: the field label already says what this is, and a longer hint is
+// cut off at phone width.
+const glucoseContextHint = 'Not set';
 
 const glucoseRangeFastingMmol = 'Reference range, fasting: 3.0–5.4 mmol/L';
 // mg/dL bounds are the outermost whole values the 1 dp mmol/L rule counts

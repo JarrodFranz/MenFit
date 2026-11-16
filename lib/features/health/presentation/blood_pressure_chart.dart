@@ -33,7 +33,12 @@ class BloodPressureChart extends StatelessWidget {
     final colors = theme.colorScheme;
     final tokens = theme.extension<AppTokens>()!;
     final sorted = [...readings]
-      ..sort((a, b) => a.measuredAt.compareTo(b.measuredAt));
+      // Same-minute readings tie on measuredAt: fall back to entry order so
+      // "latest" here matches the history list.
+      ..sort((a, b) {
+        final byTime = a.measuredAt.compareTo(b.measuredAt);
+        return byTime != 0 ? byTime : a.createdAt.compareTo(b.createdAt);
+      });
     final start = sorted.first.measuredAt;
     double xOf(BloodPressureReading r) =>
         r.measuredAt.difference(start).inMinutes / Duration.minutesPerDay;
