@@ -465,3 +465,9 @@ cost an hour is in `handoff/HANDOFF.md`'s Traps and Corrections.*
 - Mistake: installed the APK on and launched MenFit once on emulator-5554 before noticing another session's `agenthq` UI test was driving it. Stopped touching it. Smoke-tested on a throwaway AVD (`MenFit_Smoke`, port 5580, since deleted): onboarding, six tabs, Blood and Breath readings saved and persisted across restart, no crash in logcat.
 - Docs: README tab list now six with Keto; `architecture_overview.md` schema/feature lines corrected (still said schema v8 and listed `cycle`).
 - Committed as `d87bc68` with `git -c core.autocrlf=true` so the ~1,200 CRLF-only phantom modifications stayed out (178 files, +10,534/-2,100). Not merged, not pushed, not distributed.
+
+## 2026-11-16 - Merge, push, build 3; Firebase upload refused
+
+- Owner said "Merge and push", then "once done push to firebase". Fast-forwarded `main` to `codex/frelia-ports-keto`; re-ran analyzer (clean) and the full suite (3,666 passed, 2m56s) on merged `main`; bumped to `0.1.0+3` (`8490d46`); pushed `18025b4..8490d46`.
+- Built release APK from `8490d46` with staging env + secrets overlay: CN=MenFit Upload Key, versionCode 3. Not re-smoke-tested after the rebuild.
+- Upload ran ~35 min then failed with HTTP 403: this host's Firebase CLI account has no access to `menfit-f17b3`. Not worked around; owner must log in with the right account. Nothing distributed.

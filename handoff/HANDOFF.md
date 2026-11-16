@@ -1,12 +1,12 @@
 # Handoff — MenFit (men's training + nutrition app)
 
-*Live state. Last updated 2026-11-16 (Frelia ports and Keto committed on `codex/frelia-ports-keto` at `d87bc68`; verified, not merged or pushed).*
+*Live state. Last updated 2026-11-16 17:15 AEST (Keto + Frelia ports merged to `main` and pushed; build 0.1.0 (3) built but NOT on Firebase — upload refused with HTTP 403).*
 
 ## State
 
 - **Flutter 3.47.2 / Dart 3.13.2.** `main` == `fork-femfit`, pushed to `https://github.com/JarrodFranz/MenFit` (2026-09-08).
-- **Schema is v3 and the shell has six tabs** on `codex/frelia-ports-keto`
-  (`d87bc68`); `main` is still v1 / five tabs. Details under In flight.
+- **`main` is schema v3 with six tabs** (Keto added) since `d87bc68`, pushed
+  2026-11-16. `pubspec.yaml` is `0.1.0+3`. Details under In flight.
 - **Fork complete (2026-09-08):** all 14 plan tasks done
   (`docs/superpowers/plans/2026-09-07-menfit-fork.md`, ledger in
   `.git/sdd/progress.md`). Cycle tracking removed; tabs Home / Train /
@@ -22,8 +22,6 @@
   `dart run build_runner build` wrote 1212 outputs; `dart format .` 0 changed;
   `flutter analyze --fatal-infos` **No issues found!**; `flutter test`
   **3,509 passed, 0 failed** (1m54s, one process).
-- `pubspec.yaml` is now **0.1.0+2** — the next tester build gets a fresh build
-  number; 0.1.0 (1) is already on Firebase App Distribution.
 - **First tester build shipped (2026-09-08):** `scripts/distribute_android.ps1`
   built `app-release.apk` (122.7 MB, staging env + secrets overlay) and
   uploaded releases **0.1.0 (1)** and, after the final-review fixes, **0.1.0 (2)** (`versionCode 2`) to Firebase App Distribution, project
@@ -37,9 +35,23 @@
 
 ## In flight
 
-- Nothing mid-edit. Branch `codex/frelia-ports-keto` holds one feature commit,
-  `d87bc68`, on top of `main` (`18025b4`). **Not merged, not pushed, not
-  distributed.**
+- **Build 0.1.0 (3) is NOT distributed.** `firebase appdistribution:distribute`
+  uploaded the whole 129 MB APK (~35 min at ~52 KB/s) and then failed:
+  `HTTP Error: 403, The caller does not have permission`. The Firebase CLI
+  account logged in on this Linux host sees only two unrelated projects
+  (`firebase projects:list`), not `menfit-f17b3`. Owner must run
+  `firebase login:add` (or `firebase login --reauth`) with the account that
+  owns `menfit-f17b3`, then re-run:
+  `firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk --app <firebaseAppId from distribution/android.json> --groups main --release-notes "..."`.
+  Do not use `scripts/distribute_android.ps1` on Linux as-is: it sets
+  `NODE_TLS_REJECT_UNAUTHORIZED=0` (an Avast workaround for the Windows host).
+- `main` == `origin/main` == `8490d46` (fast-forward of
+  `codex/frelia-ports-keto` + build-number bump). Suite re-run on merged
+  `main` before the push: analyzer clean, **3,666 passed** (2m56s).
+- APK for build 3 (built 16:30 from `8490d46`, staging env + secrets overlay):
+  apksigner CN=MenFit Upload Key; aapt `com.jarrodfranz.menfit` versionCode 3.
+  The emulator smoke test below was done on the build-2-numbered APK of the
+  same source, not on this rebuild.
 - What `d87bc68` contains: sixth tab `/keto` (diary macros + manual
   Blood mmol/L / Urine as-printed / Breath ppm log, no conversion, no net
   carbs); schema v1 → v2 (ketone readings + day index) → v3 (food provider
@@ -66,10 +78,10 @@
 
 ## Next
 
-0. Owner decides: merge `codex/frelia-ports-keto` into `main` and push.
-1. Before distributing a new tester build, bump `pubspec.yaml` to `0.1.0+3` —
-   versionCode 2 is already on Firebase and the current APK is also 2. Rebuild
-   after the bump. Never distribute a debug-signed build.
+0. Owner: log the Firebase CLI in with the `menfit-f17b3` account, then upload
+   the already-built build 0.1.0 (3) APK (see In flight). The APK is current
+   only while `main` stays at the commit it was built from (`8490d46` source;
+   later commits are handoff-only). Never distribute a debug-signed build.
 2. On a physical Android device: upgrade install over build 2 (real v1 data →
    v3), workout permission prompts (Health Connect), nutrition search once the
    proxy key is available.
@@ -88,6 +100,10 @@
 - No blocking product question: owner chose measurement selection. Historical fork decisions remain strength-first, Recovery tab kept, MenFit identity, Forge theme, no sex field and safety retained. The shipped v1 baseline must now be migrated forward, not reset.
 
 ## Traps
+
+- **Check `firebase projects:list` shows `menfit-f17b3` before uploading.** The
+  CLI uploads the entire APK first and only then reports a 403 — half an hour
+  wasted on 2026-11-16.
 
 - **Linux checkout shows ~1,200 phantom modified files** (worktree CRLF, index
   LF, no `core.autocrlf` on this host). Use
