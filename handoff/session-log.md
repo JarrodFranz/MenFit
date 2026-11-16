@@ -420,3 +420,48 @@ cost an hour is in `handoff/HANDOFF.md`'s Traps and Corrections.*
   not strength-first, hub route defaulted to run) + minors fixed in 998c308/3466e5e;
   suite 3,509 green re-run centrally. Build 0.1.0 (2) uploaded to Firebase.
   `fork-femfit` fast-forwarded into `main`; both pushed.
+
+## 2026-11-16 - Frelia comparison and keto design
+
+- Read required handoff/Corrections, CLAUDE and architecture, coding, privacy and domain guidance. Used brainstorming/Ponytail; delegated read-only feature and nutrition audits as required by CLAUDE.
+- Compared local Frelia history/code: major divergence (570 vs 983 non-generated Dart files), with both portable fixes and whole new subsystems. Recorded source commits and integration boundaries in `docs/superpowers/specs/2026-11-16-frelia-port-and-keto-design.md`.
+- Proposed Keto inside Nutrition using existing diary and user macro targets, no default prescription, no automatic net-carb calculation. Optional owner scope question sent. Wrote `knowledge/research/keto_tracking.md` with FSANZ/FDA label-convention sources and Healthdirect context.
+- Found relevant source fixes for strength inputs/distance, workout permissions, Android backup exclusions, event selection, food search/OCR/hydration, fail-closed hidden calories, percent targets and import-error sanitization. No fixes ported yet. Large plans/sync/widgets/safety systems remain explicitly tracked.
+- Environment: Linux; Flutter 3.47.2/Dart 3.13.2 verified. Old Windows-only watchdog inspected, not started; read-only process check only. Baseline modifications are line endings; preserved.
+- Validation: code/history inspection and documentation review only. No codegen, analyzer, Flutter tests, app builds, commits, deployment or device smoke tests. Await design approval before implementation under the invoked brainstorming skill.
+
+## 2026-11-16 - Owner chose separate Keto tab and manual ketones
+
+- Incorporated owner answer: separate main Keto tab with macros and manual ketone readings. Revised the proposal and evidence note; original Frelia-port objective remains.
+- Inspected existing router/adaptive scaffold, weight-log pattern, sensitive export set and import path. Design now includes typed /keto branch, six-destination layout checks, S3 reading history with edit/hard delete, forward migration, sensitive export opt-in, import validation and full deletion coverage.
+- Asked required measurement-format question: blood (mmol/L), urine strips, or breath (ppm). Pending; no guessed default or cross-method conversion. Earlier independent macro-only review does not cover the new storage design.
+- Documentation only. No app edits, codegen, analyzer, tests, build, commit or deployment. Revised design gate remains pending after measurement selection.
+
+## 2026-11-16 - Implementation and integration underway
+
+- Owner said "have a selection": all three measurement methods included. Created `codex/frelia-ports-keto`; no further product permission question needed. Wrote bounded implementation plan.
+- Delegated Keto, activity/platform, nutrition and wellbeing implementations with disjoint allowlists; root owns DB/router/import/export/delete/config. Workers did not run Flutter tests.
+- Repaired local package_config Windows paths via flutter pub get (no dependency upgrade). Captured actual shipped-v1 SQL through one successful root Flutter test before DB edits.
+- Integrated v2/v3 migration, S3 ketone lifecycle, six-tab routing, safe import errors/row validation, food identity repair after old imports, and custom-name deletion.
+- Independent review produced six findings; corrected missing day index, unresolved percentage target message, early custom-name cleanup with deferred failure; workers fixed iOS unknown permission, historical saved-name resurrection and scan-after-search identity reuse.
+- Codegen runs completed; full format ran. First global analyzer failures being resolved; final analysis/full tests/build next. Configured shared food proxy responded HTTP 401 to synthetic public-food compatibility check; no credentials copied or network user data sent.
+
+## 2026-11-16 - Central validation fixes
+
+- Global analyzer passes. First full suite reached 3,647 passes and 14 failures; old calendar visibility assumptions, CRLF-sensitive plist guards, stale nutrition fixtures and repository-generated timestamps caused failures. Corrected fixtures while retaining real assertions. Wearable permission regression compiled during final source edits; stable rerun required.
+- Failed UI fixtures held database subscriptions open during teardown and wedged the remaining four test workers. Stopped only the owned test process group after confirming no progress/CPU; added failure-safe widget teardown before closing databases. Scoped rerun in progress.
+- Pixel 6 Pro API 36 emulator booted headless for subsequent smoke test. No app installed or deployed yet.
+
+## 2026-11-16 - Verified implementation; final date fix
+
+- Stable full suite passed 3,664 tests in 2m14s, with clean analyzer. All independent review fixes are verified by the suite.
+- Final code inspection caught date pickers asserting when a shared selected day is in the future after clock correction. Both Keto pickers now clamp only their initial highlight; Cancel preserves the original selection/reading. Two targeted widget tests pass; final whole-suite rerun underway, analyzer still clean.
+- No dependencies added, no credentials copied, no deployment. Source-port ledger explicitly records larger unported Frelia integrations.
+
+## 2026-11-16 - Claude picked up from Codex: verify, smoke test, commit
+
+- Found everything implemented but uncommitted; release APK already built (15:56), no source newer. Re-ran centrally rather than trusting the log: `dart format` 0 changed, `flutter analyze --fatal-infos` clean, `flutter test` 3,666 passed (2m09s).
+- APK verified: CN=MenFit Upload Key, `com.jarrodfranz.menfit`, versionCode 2 (same code as the build already on Firebase; bump before distributing).
+- Mistake: installed the APK on and launched MenFit once on emulator-5554 before noticing another session's `agenthq` UI test was driving it. Stopped touching it. Smoke-tested on a throwaway AVD (`MenFit_Smoke`, port 5580, since deleted): onboarding, six tabs, Blood and Breath readings saved and persisted across restart, no crash in logcat.
+- Docs: README tab list now six with Keto; `architecture_overview.md` schema/feature lines corrected (still said schema v8 and listed `cycle`).
+- Committed as `d87bc68` with `git -c core.autocrlf=true` so the ~1,200 CRLF-only phantom modifications stayed out (178 files, +10,534/-2,100). Not merged, not pushed, not distributed.

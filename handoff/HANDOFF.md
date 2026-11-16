@@ -1,10 +1,12 @@
 # Handoff — MenFit (men's training + nutrition app)
 
-*Live state. Rewritten and pruned on every material change. Last updated 2026-09-08 (final review fixes).*
+*Live state. Last updated 2026-11-16 (Frelia ports and Keto committed on `codex/frelia-ports-keto` at `d87bc68`; verified, not merged or pushed).*
 
 ## State
 
 - **Flutter 3.47.2 / Dart 3.13.2.** `main` == `fork-femfit`, pushed to `https://github.com/JarrodFranz/MenFit` (2026-09-08).
+- **Schema is v3 and the shell has six tabs** on `codex/frelia-ports-keto`
+  (`d87bc68`); `main` is still v1 / five tabs. Details under In flight.
 - **Fork complete (2026-09-08):** all 14 plan tasks done
   (`docs/superpowers/plans/2026-09-07-menfit-fork.md`, ledger in
   `.git/sdd/progress.md`). Cycle tracking removed; tabs Home / Train /
@@ -35,31 +37,73 @@
 
 ## In flight
 
-- Nothing. Fork shipped; `main` == `fork-femfit` and both are pushed.
+- Nothing mid-edit. Branch `codex/frelia-ports-keto` holds one feature commit,
+  `d87bc68`, on top of `main` (`18025b4`). **Not merged, not pushed, not
+  distributed.**
+- What `d87bc68` contains: sixth tab `/keto` (diary macros + manual
+  Blood mmol/L / Urine as-printed / Breath ppm log, no conversion, no net
+  carbs); schema v1 → v2 (ketone readings + day index) → v3 (food provider
+  identity backfill); S3 export/import/deletion for readings; Frelia ports
+  (strength inputs/distance, workout permissions, Android backup exclusions,
+  OCR/search/serving/attribution, hidden calories, percent targets, hydration,
+  life-event name fixes). Ledger of ported vs unported:
+  `docs/superpowers/specs/2026-11-16-frelia-port-and-keto-design.md`
+  ("Implementation ledger"). Evidence note: `knowledge/research/keto_tracking.md`.
+- **Validation re-run centrally 2026-11-16 16:12 AEST on the committed tree:**
+  `dart format` 0 changed (1,091 files); `flutter analyze --fatal-infos`
+  No issues found; `flutter test` **3,666 passed, 0 failed** (2m09s).
+- **Release APK** (`build/app/outputs/flutter-apk/app-release.apk`, 128.9 MB,
+  built 15:56, no source newer): apksigner CN=MenFit Upload Key; aapt
+  `com.jarrodfranz.menfit` versionCode 2.
+- **Emulator smoke test (API 36, fresh install of that APK):** onboarding
+  completes; all six tabs render; Blood 1.4 and Breath 40 readings saved with
+  correct units and survived force-stop + relaunch; no FATAL/E-flutter in
+  logcat. **Not exercised:** Urine entry, edit/delete, export/import,
+  v1 → v3 upgrade on a device with real data (covered by tests only), food
+  search, workout permission prompts, anything iOS.
+- Live FatSecret proxy returned HTTP 401 (no local key): live search
+  unverified; OFF fallback and manual entry unaffected.
 
 ## Next
 
-1. Owner: add tester emails to Firebase groups `main`/`testers`
+0. Owner decides: merge `codex/frelia-ports-keto` into `main` and push.
+1. Before distributing a new tester build, bump `pubspec.yaml` to `0.1.0+3` —
+   versionCode 2 is already on Firebase and the current APK is also 2. Rebuild
+   after the bump. Never distribute a debug-signed build.
+2. On a physical Android device: upgrade install over build 2 (real v1 data →
+   v3), workout permission prompts (Health Connect), nutrition search once the
+   proxy key is available.
+3. Owner: add tester emails to Firebase groups `main`/`testers`
    (`firebase appdistribution:testers:add <email> --project menfit-f17b3 --group-alias main`);
-   both groups had 0 testers when builds 1 and 2 were uploaded, so nobody has
-   been emailed yet. Back up `%USERPROFILE%\menfit-signing\upload-keystore.jks`
-   and the password in `android/key.properties` off-machine.
-2. Install build 0.1.0 (2) on a device and smoke-test: Train tab opens
-   strength-first, Recovery tab, nutrition search via the shared FatSecret
-   proxy, GPS record.
-3. Replace placeholder artwork (overwrite `assets/images/app_icon.png`, run
+   both groups had 0 testers when builds 1 and 2 were uploaded. Back up the
+   upload keystore and the password in `android/key.properties` off-machine.
+4. Replace placeholder artwork (overwrite `assets/images/app_icon.png`, run
    `python scripts/generate_brand_assets.py`).
-4. Deferred Minors from the final review (all doc/test hygiene): see
-   `.git/sdd/progress.md` and `TASKS_TO_DO.md`.
-5. iOS lane: Codemagic app + Apple bundle id for `com.jarrodfranz.menfit`.
+5. Deferred Minors from the September final review: `.git/sdd/progress.md` and
+   `TASKS_TO_DO.md`. Unported Frelia subsystems: see the spec ledger.
+6. iOS lane: Codemagic app + Apple bundle id for `com.jarrodfranz.menfit`.
 
 ## Open questions
 
-- None blocking. Decisions recorded in the spec: strength-first, Recovery
-  tab kept, MenFit identity, Forge theme, faithful fork, schema reset to v1,
-  no sex field, safety kept.
+- No blocking product question: owner chose measurement selection. Historical fork decisions remain strength-first, Recovery tab kept, MenFit identity, Forge theme, no sex field and safety retained. The shipped v1 baseline must now be migrated forward, not reset.
 
 ## Traps
+
+- **Linux checkout shows ~1,200 phantom modified files** (worktree CRLF, index
+  LF, no `core.autocrlf` on this host). Use
+  `git -c core.autocrlf=true status|diff|add|commit` — then only real changes
+  appear and blobs are stored LF. Plain `git diff --cached` can still *display*
+  whole-file diffs (it reads the CRLF worktree file when stat-clean); the
+  stored blobs are fine — check with `git diff <blobA> <blobB>`.
+- **The `Pixel_6_Pro_API_36` emulator (emulator-5554) is shared with other
+  agent sessions** (an `agenthq` UI test was driving it on 2026-11-16). Do not
+  install/launch/tap on it without checking the foreground app. A second
+  instance of the same AVD is refused unless every instance was started
+  `-read-only`; create a throwaway AVD instead. `avdmanager` writes to
+  `~/.config/.android/avd`, the emulator reads `~/.android/avd` — launch with
+  `ANDROID_AVD_HOME=$HOME/.config/.android/avd`.
+- `pkill -f '<pattern>'` kills the calling shell when the pattern appears in
+  its own command line (exit 144). Use `adb -s <serial> emu kill`.
 
 - **`workout_share_dialog_test.dart`'s `settleCardCapture` helper used a
   single fixed 50ms `tester.runAsync` wait for the real (non-fake-async)
@@ -128,6 +172,16 @@
   revert anything beyond the import reordering you intended.
 
 ## Corrections
+
+- **2026-11-16 (later):** the previous handoff said the signing keystore lives
+  at `%USERPROFILE%\menfit-signing\`. On this Linux host
+  `android/key.properties` points at `/home/jarrod/menfit-signing/upload-keystore.jks`
+  and release signing works here. The earlier "Android release build running"
+  note is resolved: the build finished and is verified above.
+
+- **2026-11-16:** This host is Linux, not the Windows host described below. Flutter 3.47.2 / Dart 3.13.2 is available. Central Flutter KB: `/run/media/jarrod/Second M.2/Documents/Claude/Flutter development knowledge/`. The old watchdog uses Windows CIM and broad process matching; inspected, not launched. No process was killed.
+- **2026-11-16:** MenFit has 1,222 pre-existing modified tracked files but `git diff --ignore-space-at-eol --stat` was empty before this session's documentation edits. Preserve the line-ending changes; they are not 1,222 substantive app changes.
+- **2026-11-16:** Frelia is schema v37, MenFit v1. Do not copy its migration chain. Neither app records carbohydrate basis, and OFF imports do not currently populate fibre: a blanket carbs-minus-fibre calculation is not valid net-carb tracking.
 
 - **2026-09-08 (final review):** `lib/core/db/tables/weight_logs.dart`'s
   dartdoc claimed "the migration seeds one row from the profile so the

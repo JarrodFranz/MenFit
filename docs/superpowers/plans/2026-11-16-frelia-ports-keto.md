@@ -61,5 +61,5 @@ Files limited to nutrition, its relevant Home/recap rendering callers and matchi
 
 - [x] Run `dart run build_runner build` once after workers finish codegen-affecting changes.
 - [x] Run `dart format .`, `flutter analyze --fatal-infos`, then one `flutter test` invocation. Fix failures and repeat only affected checks plus the required final suite when justified.
-- [ ] Build Android release for native changes if signing/toolchain available; report unavailable host/device checks honestly. Never distribute a debug-signed build.
-- [ ] Update architecture/privacy/evidence notes and handoff/session log with actual implementation, source-port ledger, tests and remaining work. Do not claim all Frelia parity or a deployment without evidence.
+- [x] Build Android release for native changes if signing/toolchain available; report unavailable host/device checks honestly. Never distribute a debug-signed build.
+- [x] Update architecture/privacy/evidence notes and handoff/session log with actual implementation, source-port ledger, tests and remaining work. Do not claim all Frelia parity or a deployment without evidence.
