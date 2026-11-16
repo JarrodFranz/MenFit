@@ -471,3 +471,4 @@ cost an hour is in `handoff/HANDOFF.md`'s Traps and Corrections.*
 - Owner said "Merge and push", then "once done push to firebase". Fast-forwarded `main` to `codex/frelia-ports-keto`; re-ran analyzer (clean) and the full suite (3,666 passed, 2m56s) on merged `main`; bumped to `0.1.0+3` (`8490d46`); pushed `18025b4..8490d46`.
 - Built release APK from `8490d46` with staging env + secrets overlay: CN=MenFit Upload Key, versionCode 3. Not re-smoke-tested after the rebuild.
 - Upload ran ~35 min then failed with HTTP 403: this host's Firebase CLI account has no access to `menfit-f17b3`. Not worked around; owner must log in with the right account. Nothing distributed.
+- Owner added a second Firebase CLI account. Verified it lists `menfit-f17b3` and the tester groups, then re-ran the upload with `--account`: release 0.1.0 (3) uploaded and distributed to group `main` (1 tester). Default CLI login left unchanged.

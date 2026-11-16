@@ -1,6 +1,6 @@
 # Handoff — MenFit (men's training + nutrition app)
 
-*Live state. Last updated 2026-11-16 17:15 AEST (Keto + Frelia ports merged to `main` and pushed; build 0.1.0 (3) built but NOT on Firebase — upload refused with HTTP 403).*
+*Live state. Last updated 2026-11-16 (Keto + Frelia ports on `main`, pushed; build 0.1.0 (3) distributed to Firebase group `main`).*
 
 ## State
 
@@ -35,14 +35,16 @@
 
 ## In flight
 
-- **Build 0.1.0 (3) is NOT distributed.** `firebase appdistribution:distribute`
-  uploaded the whole 129 MB APK (~35 min at ~52 KB/s) and then failed:
-  `HTTP Error: 403, The caller does not have permission`. The Firebase CLI
-  account logged in on this Linux host sees only two unrelated projects
-  (`firebase projects:list`), not `menfit-f17b3`. Owner must run
-  `firebase login:add` (or `firebase login --reauth`) with the account that
-  owns `menfit-f17b3`, then re-run:
-  `firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk --app <firebaseAppId from distribution/android.json> --groups main --release-notes "..."`.
+- Nothing mid-edit. **Build 0.1.0 (3) is on Firebase App Distribution**
+  (2026-11-16, project `menfit-f17b3`, group `main`, 1 tester at upload time;
+  CLI: "uploaded new release 0.1.0 (3) successfully", "distributed to
+  testers/groups successfully"). Release:
+  https://console.firebase.google.com/project/menfit-f17b3/appdistribution/app/android:com.jarrodfranz.menfit/releases/5s8beea9q7kkg
+- On this Linux host the Firebase CLI's default account has no access to
+  `menfit-f17b3`; a second account that does was added by the owner. Pass
+  `--account <owner's menfit account>` (see `firebase login:list`) on every
+  `firebase` command for this project. Upload command used:
+  `firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk --account <account> --app <firebaseAppId from distribution/android.json> --groups main --release-notes "..."`.
   Do not use `scripts/distribute_android.ps1` on Linux as-is: it sets
   `NODE_TLS_REJECT_UNAUTHORIZED=0` (an Avast workaround for the Windows host).
 - `main` == `origin/main` == `8490d46` (fast-forward of
@@ -78,10 +80,9 @@
 
 ## Next
 
-0. Owner: log the Firebase CLI in with the `menfit-f17b3` account, then upload
-   the already-built build 0.1.0 (3) APK (see In flight). The APK is current
-   only while `main` stays at the commit it was built from (`8490d46` source;
-   later commits are handoff-only). Never distribute a debug-signed build.
+0. Install build 0.1.0 (3) from Firebase on a physical Android device and
+   smoke-test it (this exact rebuild was not run on an emulator).
+1. Next tester build needs `0.1.0+4`. Never distribute a debug-signed build.
 2. On a physical Android device: upgrade install over build 2 (real v1 data →
    v3), workout permission prompts (Health Connect), nutrition search once the
    proxy key is available.
@@ -103,7 +104,7 @@
 
 - **Check `firebase projects:list` shows `menfit-f17b3` before uploading.** The
   CLI uploads the entire APK first and only then reports a 403 — half an hour
-  wasted on 2026-11-16.
+  wasted on 2026-11-16. With the right `--account` the same upload succeeded.
 
 - **Linux checkout shows ~1,200 phantom modified files** (worktree CRLF, index
   LF, no `core.autocrlf` on this host). Use
