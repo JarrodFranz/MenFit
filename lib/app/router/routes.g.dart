@@ -669,6 +669,15 @@ RouteBase get $appShellRouteData => StatefulShellRouteData.$route(
     StatefulShellBranchData.$branch(
       routes: [
         GoRouteData.$route(
+          path: '/keto',
+          hasOverriddenOnExit: false,
+          factory: $KetoRouteData._fromState,
+        ),
+      ],
+    ),
+    StatefulShellBranchData.$branch(
+      routes: [
+        GoRouteData.$route(
           path: '/recovery',
           hasOverriddenOnExit: false,
           factory: $WellbeingRouteData._fromState,
@@ -1003,6 +1012,26 @@ mixin $NutritionNewFoodRouteData on GoRouteData {
   @override
   void replace(BuildContext context) =>
       context.replace(location, extra: _self.$extra);
+}
+
+mixin $KetoRouteData on GoRouteData {
+  static KetoRouteData _fromState(GoRouterState state) => const KetoRouteData();
+
+  @override
+  String get location => GoRouteData.$location('/keto');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
 }
 
 mixin $WellbeingRouteData on GoRouteData {

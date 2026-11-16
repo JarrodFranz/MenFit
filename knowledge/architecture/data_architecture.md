@@ -155,3 +155,22 @@ The streak engine walks per-day `DayStatus` (completedActivity / protectedRecove
 ## Sync (when backend arrives — ADR 004)
 
 Outbox drained on foreground/connectivity; per-collection `updated_since` pull cursors; LWW by `updated_at`. S3-tier sync additionally requires separate consent + the E2E-encryption design from the backend ADR.
+
+
+## MenFit schema v2/v3 (2026-11-16)
+
+The earlier numbered migrations in this document describe the source app;
+MenFit shipped its own v1 baseline. v2 adds `ketone_readings`, v3 adds nullable
+`foods.provider_food_id` plus the nonunique `(source, provider_food_id)` index.
+A fixture captured from shipped v1 verifies forward migration preserves data.
+
+Ketone readings are a separate S3 log with UUIDv7 id, captured local day,
+measurement UTC instant, measurement method/result text and creation/update UTC
+instants. Multiple readings per day are retained. Numeric text preserves entered
+precision and literal LO/HI; urine retains its printed scale. No cross-method
+conversion or derived physiology is persisted. No soft-deletion/sync columns
+until a real sync design exists.
+
+Food provider identity is separate from the retail barcode. The v3 repair moves
+unambiguous old FatSecret ids out of barcode, preserves ambiguous codes, and is
+idempotent. The same repair runs after restoring food rows from older backups.

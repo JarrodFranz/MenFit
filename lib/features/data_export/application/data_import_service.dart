@@ -35,18 +35,16 @@ class DataImportService {
     try {
       final json = await decode(bytes);
       return DataExportDocument.fromJson(json);
-    } on FormatException catch (e, stackTrace) {
+    } on FormatException catch (_, stackTrace) {
       throw StorageException(
-        message: 'Invalid export format: ${e.message}',
+        message: 'Invalid export format',
         userMessageKey: 'error.importRead',
-        cause: e,
         stackTrace: stackTrace,
       );
-    } on Object catch (e, stackTrace) {
+    } on Object catch (_, stackTrace) {
       throw StorageException(
         message: 'Failed to decode export file',
         userMessageKey: 'error.importRead',
-        cause: e,
         stackTrace: stackTrace,
       );
     }

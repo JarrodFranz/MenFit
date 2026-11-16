@@ -47,8 +47,7 @@ class _ManageFoodsScreenState extends ConsumerState<ManageFoodsScreen> {
   Widget build(BuildContext context) {
     final tokens = Theme.of(context).extension<AppTokens>()!;
     final foodsAsync = ref.watch(foodsProvider);
-    final hideCalories =
-        ref.watch(nutritionGoalsProvider).value?.hideCalorieNumbers ?? false;
+    final hideCalories = ref.watch(hideCalorieNumbersProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('My foods')),

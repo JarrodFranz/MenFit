@@ -85,7 +85,7 @@ void main() {
     expect(exportedByDefault.intersection(sensitiveHealthTables), isEmpty);
   });
 
-  test('the S3 opt-in set is exactly the four the delete flow wipes first', () {
+  test('the S3 opt-in set matches the first deleted health tables', () {
     // Pinned rather than derived: `DeleteMyDataService.run()` deletes
     // wellbeing (check-ins, flares, events) and recovery days first as the most
     // sensitive tier, and export must draw its opt-in line in the same
@@ -95,6 +95,7 @@ void main() {
       'flare_events',
       'recovery_days',
       'wellbeing_events',
+      'ketone_readings',
     });
   });
 }

@@ -37,6 +37,7 @@ ParsedServing? parseServing(List<OcrRow> rows) {
   double? grams;
   double? millilitres;
   double? servingsPerPackage;
+  var gramFiguresCount = 0;
 
   for (final row in rows) {
     final text = row.text;
@@ -52,8 +53,9 @@ ParsedServing? parseServing(List<OcrRow> rows) {
         for (final quantity in _quantityPattern.allMatches(tail)) {
           final token = parseNumericToken(quantity.group(0)!);
           if (token == null) continue;
-          if (token.unit == UnitKind.gram && grams == null) {
-            grams = token.value;
+          if (token.unit == UnitKind.gram) {
+            gramFiguresCount++;
+            grams ??= token.value;
           } else if (token.unit == UnitKind.millilitre && millilitres == null) {
             millilitres = token.value;
           }
@@ -83,5 +85,6 @@ ParsedServing? parseServing(List<OcrRow> rows) {
     grams: grams,
     millilitres: millilitres,
     servingsPerPackage: servingsPerPackage,
+    hasMultipleGramFigures: gramFiguresCount > 1,
   );
 }

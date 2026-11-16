@@ -108,6 +108,15 @@ class FallbackFoodDataProvider implements FoodDataProvider {
     }
   }
 
+  /// Routed to the provider that produced [hit] — see
+  /// [FoodDataProvider.fetchDetails]. No fallback: an id from one catalogue
+  /// means nothing in the other.
+  @override
+  Future<ProviderFood?> fetchDetails(
+    ProviderFoodSummary hit, {
+    FoodSearchScope scope = FoodSearchScope.anywhereInEnglish,
+  }) => providerFor(hit.source).fetchDetails(hit, scope: scope);
+
   @override
   Future<List<ProviderFoodSummary>> search(
     String query, {

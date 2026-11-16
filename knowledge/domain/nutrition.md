@@ -336,3 +336,19 @@ repeated here so they are findable from the domain notes):
 - **UI shipped at S1-4 (2026-08-28), scope of the hide-calories mode:** the preference blanks calorie figures across the **diary** (day totals, meal subtotals, entry rows, the food picker — local *and* online results, added S1-5 — and the log dialog's preview) and nothing else. Two documented exceptions, both **input** surfaces rather than totals: the **goals screen**, which keeps the calorie target field and the energy estimate because that is where the number is entered and where the switch itself lives; and the **new-food/review form** (S1-5), because a food cannot be defined without its energy. Blanking either would leave a user unable to finish what they came for. Any new surface that renders a calorie figure must honour the preference; the day view has a test asserting no calorie text is findable at all in that mode.
 - No user-set **iron target** exists, deliberately: a personal iron number is a clinical figure (`mens_health.md` rule 1). Iron is surfaced as a logged total only.
 - Bulk/cut/maintain calorie-target presets are a roadmap idea (`product/feature_ideas.md`); any such preset is evidence-gated and disclaimed the same as an energy estimate.
+
+
+### Keto and source correctness (2026-11-16)
+
+The separate Keto tab reads existing diary snapshots and resolved optional macro
+targets. Recorded carbs are not relabelled as net carbs; carbohydrate conventions
+and incomplete fibre data prevent an automatic universal subtraction. Manual
+blood/urine/breath ketones are uninterpreted S3 measurements, never adequacy,
+ketosis or safety scores. See `../research/keto_tracking.md`.
+
+Food provider ids are distinct from barcodes; search picks fetch details by
+provider identity. The app uses the configured FatSecret proxy only (upstream
+OAuth secrets stay on its server), or Open Food Facts when no proxy is configured.
+Calorie displays stay hidden while the preference is unknown; a previously
+loaded choice is retained during refresh or refresh failure. Percentage
+macro targets resolve consistently for diary, fueling consistency and recaps.

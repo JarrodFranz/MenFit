@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:health/health.dart';
 import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/core/platform/health/health_data_snapshot.dart';
@@ -17,18 +18,37 @@ class IoHealthPlatformAdapter implements HealthPlatformAdapter {
 
   final Health _health;
 
-  static const List<HealthDataType> _dataTypes = [
+  static const List<HealthDataType> _commonDataTypes = [
     HealthDataType.STEPS,
     HealthDataType.ACTIVE_ENERGY_BURNED,
     HealthDataType.TOTAL_CALORIES_BURNED,
     HealthDataType.WORKOUT,
   ];
 
-  static const List<HealthDataAccess> _permissions = [
-    HealthDataAccess.READ,
-    HealthDataAccess.READ,
-    HealthDataAccess.READ,
-    HealthDataAccess.READ,
+  /// Every type requested, per platform. `DISTANCE_DELTA` is Android-only
+  /// (HealthKit has no such type and the plugin throws for it on iOS); on
+  /// Android it is mandatory for workouts — see [workoutReadTypes].
+  static List<HealthDataType> get _dataTypes => [
+    ..._commonDataTypes,
+    if (Platform.isAndroid) HealthDataType.DISTANCE_DELTA,
+  ];
+
+  /// The types a Health Connect / HealthKit workout read depends on.
+  ///
+  /// On Android, `health 13.3.2`'s `handleWorkoutData` reads
+  /// `DistanceRecord` (plus total calories and steps) inside every
+  /// `ExerciseSessionRecord` window, with no permission check: a missing
+  /// distance grant throws a `SecurityException`, which the plugin turns
+  /// into an **empty list** for the whole WORKOUT query. So workouts are
+  /// only readable when all of these are granted.
+  @visibleForTesting
+  static List<HealthDataType> workoutReadTypes({required bool android}) => [
+    HealthDataType.WORKOUT,
+    if (android) ...[
+      HealthDataType.DISTANCE_DELTA,
+      HealthDataType.TOTAL_CALORIES_BURNED,
+      HealthDataType.STEPS,
+    ],
   ];
 
   @override
@@ -56,7 +76,8 @@ class IoHealthPlatformAdapter implements HealthPlatformAdapter {
       // first.
       return await hasStepsPermission() ||
           await _hasReadPermission(HealthDataType.ACTIVE_ENERGY_BURNED) ||
-          await _hasReadPermission(HealthDataType.TOTAL_CALORIES_BURNED);
+          await _hasReadPermission(HealthDataType.TOTAL_CALORIES_BURNED) ||
+          await _hasReadPermission(HealthDataType.WORKOUT);
     } on Object catch (_) {
       return false;
     }
@@ -64,6 +85,18 @@ class IoHealthPlatformAdapter implements HealthPlatformAdapter {
 
   @override
   Future<bool> hasStepsPermission() => _hasReadPermission(HealthDataType.STEPS);
+
+  @override
+  Future<bool?> hasWorkoutPermission() async {
+    if (!Platform.isAndroid && !Platform.isIOS) return false;
+    // HealthKit never discloses read grants; preserve unknown so explicit
+    // workout sync can request authorization on its first use.
+    if (Platform.isIOS) return null;
+    for (final type in workoutReadTypes(android: Platform.isAndroid)) {
+      if (!await _hasReadPermission(type)) return false;
+    }
+    return true;
+  }
 
   /// READ authorization for one data type, with the platform's
   /// "unknown" answer resolved per platform.
@@ -108,9 +141,10 @@ class IoHealthPlatformAdapter implements HealthPlatformAdapter {
   Future<bool> requestPermissions() async {
     if (!Platform.isAndroid && !Platform.isIOS) return false;
     try {
+      final types = _dataTypes;
       final granted = await _health.requestAuthorization(
-        _dataTypes,
-        permissions: _permissions,
+        types,
+        permissions: [for (final _ in types) HealthDataAccess.READ],
       );
       return granted;
     } on Object catch (_) {
@@ -303,8 +337,10 @@ class IoHealthPlatformAdapter implements HealthPlatformAdapter {
     if (start.isAfter(end)) return const [];
 
     try {
-      final hasPerm = await hasPermissions();
-      if (!hasPerm) return const [];
+      // Workout-specific, not the OR in `hasPermissions`: with steps granted
+      // but exercise/distance not, the read below returns an empty list that
+      // is indistinguishable from "no workouts".
+      if (await hasWorkoutPermission() == false) return const [];
 
       final dataPoints = await _health.getHealthDataFromTypes(
         types: [HealthDataType.WORKOUT],
@@ -331,9 +367,23 @@ class IoHealthPlatformAdapter implements HealthPlatformAdapter {
           final ws = dp.workoutSummary!;
           distance = ws.totalDistance.toDouble();
           energy = ws.totalEnergyBurned.toDouble();
+          if (ws.workoutType.isNotEmpty) {
+            try {
+              workoutType = HealthWorkoutActivityType.values.firstWhere(
+                (e) => e.name.toLowerCase() == ws.workoutType.toLowerCase(),
+                orElse: () => HealthWorkoutActivityType.OTHER,
+              );
+            } on Object catch (_) {}
+          }
         }
 
-        final mappedType = _mapWorkoutActivityType(workoutType);
+        var mappedType = mapWorkoutActivityType(workoutType);
+        if (mappedType == ActivityType.other) {
+          mappedType = detectActivityTypeFallback(
+            wsType: dp.workoutSummary?.workoutType,
+            sourceName: dp.sourceName,
+          );
+        }
         final sessionTitle = _buildWorkoutTitle(dp.sourceName, mappedType);
 
         sessions.add(
@@ -343,7 +393,7 @@ class IoHealthPlatformAdapter implements HealthPlatformAdapter {
             title: sessionTitle,
             startedAt: dp.dateFrom.toUtc(),
             endedAt: dp.dateTo.toUtc(),
-            distanceMeters: distance,
+            distanceMeters: workoutDistanceMeters(mappedType, distance),
             totalEnergyKcal: energy,
             sourceName: dp.sourceName.isNotEmpty
                 ? dp.sourceName
@@ -360,22 +410,78 @@ class IoHealthPlatformAdapter implements HealthPlatformAdapter {
     }
   }
 
-  static ActivityType _mapWorkoutActivityType(HealthWorkoutActivityType type) {
+  @visibleForTesting
+  static ActivityType mapWorkoutActivityType(HealthWorkoutActivityType type) {
     return switch (type) {
-      HealthWorkoutActivityType.RUNNING => ActivityType.run,
-      HealthWorkoutActivityType.WALKING => ActivityType.walk,
+      HealthWorkoutActivityType.RUNNING ||
+      HealthWorkoutActivityType.RUNNING_TREADMILL => ActivityType.run,
+      HealthWorkoutActivityType.WALKING ||
+      HealthWorkoutActivityType.WALKING_TREADMILL => ActivityType.walk,
       HealthWorkoutActivityType.HIKING => ActivityType.hike,
-      HealthWorkoutActivityType.BIKING => ActivityType.ride,
-      HealthWorkoutActivityType.SWIMMING => ActivityType.swim,
+      HealthWorkoutActivityType.BIKING ||
+      HealthWorkoutActivityType.BIKING_STATIONARY => ActivityType.ride,
+      HealthWorkoutActivityType.SWIMMING ||
+      HealthWorkoutActivityType.SWIMMING_OPEN_WATER ||
+      HealthWorkoutActivityType.SWIMMING_POOL => ActivityType.swim,
       HealthWorkoutActivityType.YOGA => ActivityType.yoga,
       HealthWorkoutActivityType.PILATES => ActivityType.pilates,
       HealthWorkoutActivityType.HIGH_INTENSITY_INTERVAL_TRAINING =>
         ActivityType.hiit,
       HealthWorkoutActivityType.TRADITIONAL_STRENGTH_TRAINING ||
-      HealthWorkoutActivityType.FUNCTIONAL_STRENGTH_TRAINING =>
-        ActivityType.strength,
+      HealthWorkoutActivityType.FUNCTIONAL_STRENGTH_TRAINING ||
+      HealthWorkoutActivityType.STRENGTH_TRAINING ||
+      HealthWorkoutActivityType.WEIGHTLIFTING ||
+      HealthWorkoutActivityType.CALISTHENICS => ActivityType.strength,
       _ => ActivityType.other,
     };
+  }
+
+  @visibleForTesting
+  static ActivityType detectActivityTypeFallback({
+    String? wsType,
+    String? sourceName,
+  }) {
+    final lowerWs = (wsType ?? '').toLowerCase();
+    if (lowerWs.contains('strength') ||
+        lowerWs.contains('weight') ||
+        lowerWs.contains('lift') ||
+        lowerWs.contains('gym')) {
+      return ActivityType.strength;
+    }
+    if (lowerWs.contains('run') || lowerWs.contains('jog')) {
+      return ActivityType.run;
+    }
+    if (lowerWs.contains('walk')) {
+      return ActivityType.walk;
+    }
+    if (lowerWs.contains('bike') ||
+        lowerWs.contains('cycl') ||
+        lowerWs.contains('ride')) {
+      return ActivityType.ride;
+    }
+    if (lowerWs.contains('swim')) {
+      return ActivityType.swim;
+    }
+    if (lowerWs.contains('yoga')) {
+      return ActivityType.yoga;
+    }
+    if (lowerWs.contains('pilates')) {
+      return ActivityType.pilates;
+    }
+    if (lowerWs.contains('hiit') || lowerWs.contains('interval')) {
+      return ActivityType.hiit;
+    }
+    if (lowerWs.contains('hike')) {
+      return ActivityType.hike;
+    }
+    return ActivityType.other;
+  }
+
+  @visibleForTesting
+  static double? workoutDistanceMeters(ActivityType type, double? rawMeters) {
+    if (!type.tracksDistance) return null;
+    if (rawMeters == null || !rawMeters.isFinite || rawMeters <= 0) return null;
+    return rawMeters;
   }
 
   static String _buildWorkoutTitle(String sourceName, ActivityType type) {

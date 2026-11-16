@@ -11,8 +11,8 @@ void main() {
 
   tearDown(() => db.close());
 
-  test('schema version is 1 (fresh app, no migration chain)', () {
-    expect(db.schemaVersion, 1);
+  test('schema version includes Keto and provider identity migrations', () {
+    expect(db.schemaVersion, 3);
   });
 
   test('onCreate creates every table the app uses', () async {
@@ -40,6 +40,7 @@ void main() {
       'daily_step_totals',
       'yoga_sequences',
       'wellbeing_events',
+      'ketone_readings',
     };
     expect(
       names.containsAll(expected),

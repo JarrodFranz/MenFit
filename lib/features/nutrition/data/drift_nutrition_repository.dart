@@ -223,6 +223,39 @@ class DriftNutritionRepository implements NutritionRepository {
     }
   }
 
+  /// Indexed on `(source, provider_food_id)`
+  /// (`idx_foods_provider_food_id`, schema v35).
+  @override
+  Future<Food?> getFoodByProviderId(
+    FoodSource source,
+    String providerFoodId,
+  ) async {
+    final id = providerFoodId.trim();
+    if (id.isEmpty) return null;
+    try {
+      final row =
+          await (_db.select(_db.foods)
+                ..where(
+                  (t) =>
+                      t.source.equals(source.toStorage()) &
+                      t.providerFoodId.equals(id) &
+                      t.deletedAt.isNull(),
+                )
+                ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)])
+                ..limit(1))
+              .getSingleOrNull();
+      return row == null ? null : foodToEntity(row);
+    } catch (e, st) {
+      // Static message: a provider id names a product she is about to eat
+      // (S2), exactly as a barcode does.
+      throw StorageException(
+        message: 'Failed to read food by provider id',
+        cause: e,
+        stackTrace: st,
+      );
+    }
+  }
+
   @override
   Future<void> saveFood(Food food) async {
     final now = DateTime.now().toUtc();
@@ -278,6 +311,7 @@ class DriftNutritionRepository implements NutritionRepository {
                 vitaminCMg: Value(food.perServing.vitaminCMg),
                 barcode: Value(food.barcode),
                 source: Value(food.source.toStorage()),
+                providerFoodId: Value(food.providerFoodId),
                 // Re-saving a soft-deleted food restores it: an edit is an
                 // intent to use the food, and leaving `deleted_at` set
                 // would silently swallow the save.

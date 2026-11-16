@@ -582,6 +582,134 @@ OcrResult fsanzBareCaloriesPanel() => panelOf([
   row(100, [('Carbohydrate', 10), ('18.6', 200), ('g', 229)]),
 ]);
 
+/// An Australian/NZ FSANZ panel with stacked multi-line headers and a middle %DI column:
+/// Line 1: Quantity Per (180), %DI* Per (280), Quantity Per (350)
+/// Line 2: Serving 85g (180), Serving (280), 100g (350)
+List<List<OcrElement>> fsanzThreeColumnStackedRows({
+  double? confidence = 0.95,
+}) => [
+  row(0, [('NUTRITION', 10), ('INFORMATION', 90)], confidence: confidence),
+  row(20, [
+    ('Servings', 10),
+    ('per', 70),
+    ('package:', 95),
+    ('2', 160),
+  ], confidence: confidence),
+  row(40, [
+    ('Serving', 10),
+    ('size:', 65),
+    ('85g', 105),
+  ], confidence: confidence),
+  row(60, [
+    ('Quantity', 180),
+    ('Per', 235),
+    ('%DI*', 280),
+    ('Per', 315),
+    ('Quantity', 350),
+    ('Per', 405),
+  ], confidence: confidence),
+  row(75, [
+    ('Serving', 180),
+    ('85g', 230),
+    ('Serving', 280),
+    ('100g', 350),
+  ], confidence: confidence),
+  row(95, [
+    ('Energy', 10),
+    ('720', 190),
+    ('kJ', 220),
+    ('8%', 285),
+    ('847', 360),
+    ('kJ', 390),
+  ], confidence: confidence),
+  row(115, [
+    ('Protein', 10),
+    ('15.0', 190),
+    ('g', 220),
+    ('30%', 285),
+    ('17.6', 360),
+    ('g', 390),
+  ], confidence: confidence),
+  row(135, [
+    ('Fat,', 10),
+    ('total', 45),
+    ('1.5', 190),
+    ('g', 220),
+    ('2%', 285),
+    ('1.8', 360),
+    ('g', 390),
+  ], confidence: confidence),
+  row(155, [
+    ('-', 20),
+    ('saturated', 30),
+    ('0.4', 190),
+    ('g', 220),
+    ('2%', 285),
+    ('0.5', 360),
+    ('g', 390),
+  ], confidence: confidence),
+  row(175, [
+    ('Carbohydrate', 10),
+    ('22.0', 190),
+    ('g', 225),
+    ('7%', 285),
+    ('25.9', 360),
+    ('g', 395),
+  ], confidence: confidence),
+  row(195, [
+    ('-', 20),
+    ('sugars', 30),
+    ('1.2', 190),
+    ('g', 220),
+    ('1%', 285),
+    ('1.4', 360),
+    ('g', 390),
+  ], confidence: confidence),
+  row(215, [
+    ('Sodium', 10),
+    ('320', 190),
+    ('mg', 220),
+    ('14%', 285),
+    ('376', 360),
+    ('mg', 395),
+  ], confidence: confidence),
+];
+
+OcrResult fsanzThreeColumnStacked() => panelOf(fsanzThreeColumnStackedRows());
+
+/// Three columns whose heading row could not be read at all — the
+/// fallback that infers 3 columns (perServing, percentDaily, per100g)
+/// and isolates the middle column so %DI values don't contaminate macros.
+OcrResult headerlessThreeColumn() => panelOf([
+  row(0, [('NUTRITION', 10), ('INFORMATION', 90)]),
+  row(60, [('Qly', 190), ('Amt', 285), ('Total', 360)]),
+  row(80, [
+    ('Energy', 10),
+    ('720', 190),
+    ('kJ', 220),
+    ('8', 285),
+    ('847', 360),
+    ('kJ', 390),
+  ]),
+  row(120, [
+    ('Protein', 10),
+    ('15.0', 190),
+    ('g', 220),
+    ('30', 285),
+    ('17.6', 360),
+    ('g', 390),
+  ]),
+  row(140, [
+    ('Fat,', 10),
+    ('total', 45),
+    ('1.5', 190),
+    ('g', 220),
+    ('2', 285),
+    ('1.8', 360),
+    ('g', 390),
+  ]),
+]);
+
 OcrResult receipt() => panelOf([
   row(0, [('WOOLWORTHS', 10), ('METRO', 90)]),
   row(20, [('MELBOURNE', 10), ('CENTRAL', 90)]),

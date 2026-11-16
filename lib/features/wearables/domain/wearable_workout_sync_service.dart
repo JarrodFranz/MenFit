@@ -46,9 +46,17 @@ class WearableWorkoutSyncService {
   final WatchCompanionAdapter watchAdapter;
   final ActivityRepository activityRepository;
 
+  static const workoutPermissionMissingMessage =
+      'Workout access is not granted. Allow Exercise and Distance for '
+      'MenFit in Health Connect / Apple Health, then sync again.';
+
   /// Syncs completed workouts from Health Connect / Apple Health and connected
   /// watch companions.
-  Future<WearableSyncResult> syncAll({DateTime? since}) async {
+  /// Only user-initiated sync may request missing permissions.
+  Future<WearableSyncResult> syncAll({
+    DateTime? since,
+    bool requestPermissionIfMissing = false,
+  }) async {
     try {
       final now = DateTime.now().toUtc();
       final startTime = since ?? now.subtract(const Duration(days: 30));
@@ -69,10 +77,25 @@ class WearableWorkoutSyncService {
       final importedTitles = <String>[];
 
       // 1. Sync completed workouts from HealthPlatform (Garmin Connect / HealthKit / Health Connect)
-      final healthWorkouts = await healthAdapter.getCompletedWorkouts(
-        start: startTime,
-        end: now,
-      );
+      String? permissionNotice;
+      var healthWorkouts = const <HealthWorkoutSession>[];
+      if (await healthAdapter.isSupported()) {
+        var canRead = await healthAdapter.hasWorkoutPermission();
+        if (canRead != true && requestPermissionIfMissing) {
+          final requested = await healthAdapter.requestPermissions();
+          canRead = requested
+              ? await healthAdapter.hasWorkoutPermission()
+              : false;
+        }
+        if (canRead != false) {
+          healthWorkouts = await healthAdapter.getCompletedWorkouts(
+            start: startTime,
+            end: now,
+          );
+        } else {
+          permissionNotice = workoutPermissionMissingMessage;
+        }
+      }
 
       for (final session in healthWorkouts) {
         if (_isDuplicateHealthWorkout(
@@ -125,6 +148,7 @@ class WearableWorkoutSyncService {
         duplicatesSkippedCount: skippedCount,
         syncedAt: now,
         importedActivityTitles: importedTitles,
+        errorMessage: permissionNotice,
       );
     } on Object catch (e) {
       return WearableSyncResult(
@@ -199,7 +223,9 @@ class WearableWorkoutSyncService {
       startedAt: session.startedAt,
       movingTime: session.duration,
       elapsedTime: session.duration,
-      distanceMeters: session.distanceMeters ?? 0.0,
+      distanceMeters: session.activityType.countedDistanceMeters(
+        session.distanceMeters ?? 0.0,
+      ),
       avgHeartRate: session.avgHeartRate,
       source: ActivitySource.recorded,
       workoutDetails: details,
@@ -239,7 +265,9 @@ class WearableWorkoutSyncService {
       startedAt: workout.startedAt,
       movingTime: workout.duration,
       elapsedTime: workout.duration,
-      distanceMeters: workout.totalDistanceMeters,
+      distanceMeters: workout.activityType.countedDistanceMeters(
+        workout.totalDistanceMeters,
+      ),
       avgHeartRate: workout.avgHeartRate,
       source: ActivitySource.recorded,
       workoutDetails: details,

@@ -18,6 +18,7 @@ import 'package:menfit_app/features/wellbeing/domain/daily_checkin.dart';
 import 'package:menfit_app/features/wellbeing/presentation/checkin_sheet.dart';
 import 'package:menfit_app/features/wellbeing/presentation/flare_dialog.dart';
 import 'package:menfit_app/features/wellbeing/presentation/wellbeing_screen.dart';
+import 'package:menfit_app/features/wellbeing/presentation/widgets/history_tiles.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// End-to-end coverage for the §5.9 recovery-decision prompt: a check-in
@@ -62,6 +63,10 @@ void main() {
     final resolvedDatabase =
         database ?? db.AppDatabase.forTesting(NativeDatabase.memory());
     addTearDown(resolvedDatabase.close);
+    addTearDown(() async {
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(const Duration(milliseconds: 1));
+    });
 
     await tester.pumpWidget(
       ProviderScope(
@@ -247,6 +252,10 @@ void main() {
       final prefs = await SharedPreferences.getInstance();
       final database = db.AppDatabase.forTesting(NativeDatabase.memory());
       addTearDown(database.close);
+      addTearDown(() async {
+        await tester.pumpWidget(const SizedBox.shrink());
+        await tester.pump(const Duration(milliseconds: 1));
+      });
 
       final now = DateTime.now().toUtc();
       await DriftActivityRepository(database).saveActivity(
@@ -401,6 +410,10 @@ void main() {
       final prefs = await SharedPreferences.getInstance();
       final database = db.AppDatabase.forTesting(NativeDatabase.memory());
       addTearDown(database.close);
+      addTearDown(() async {
+        await tester.pumpWidget(const SizedBox.shrink());
+        await tester.pump(const Duration(milliseconds: 1));
+      });
 
       final yesterday = LocalDate.today().addDays(-1);
       final now = DateTime.now().toUtc();
@@ -434,17 +447,22 @@ void main() {
       await tester.tap(find.text('History'));
       await tester.pumpAndSettle();
       expect(find.byType(WellbeingScreen), findsOneWidget);
-      // Scoped to `WellbeingScreen` (not a bare `find.byType(ListTile)`):
-      // `SettingsScreen` also contains `ListTile`s, and go_router's
-      // `StatefulShellRoute.indexedStack` branches (`app/router/`) can keep
-      // an inactive branch mounted offstage rather than disposing it.
+      await tester.scrollUntilVisible(
+        find.byType(CheckinTile),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+      await Scrollable.ensureVisible(
+        tester.element(find.byType(CheckinTile)),
+        alignment: 0.5,
+      );
+      await tester.pumpAndSettle();
       await tester.tap(
-        find
-            .descendant(
-              of: find.byType(WellbeingScreen),
-              matching: find.byType(ListTile),
-            )
-            .first,
+        find.descendant(
+          of: find.byType(CheckinTile),
+          matching: find.byType(ListTile),
+        ),
       );
       await tester.pumpAndSettle();
 

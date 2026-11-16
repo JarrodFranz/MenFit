@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:drift/native.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -44,6 +45,11 @@ class RecordingFoodDataProvider implements FoodDataProvider {
   /// Every barcode this provider was asked about, in order. Empty is the
   /// assertion in the local-first and declined-notice tests.
   final List<String> barcodeLookups = [];
+
+  /// Every search hit whose full record was fetched (by its
+  /// `providerFoodId`, via [fetchDetails]), in order. Kept apart from
+  /// [barcodeLookups] because a hit's id is never a barcode (B23).
+  final List<String> detailFetches = [];
 
   /// Every query this provider was asked to search, in order.
   final List<String> searches = [];
@@ -94,6 +100,21 @@ class RecordingFoodDataProvider implements FoodDataProvider {
     // real client would throw; the analyzer's `only_throw_errors` rule is
     // about production code, and every value assigned here is an
     // `AppException`.
+    // ignore: only_throw_errors
+    if (error != null) throw error;
+    return product;
+  }
+
+  @override
+  Future<ProviderFood?> fetchDetails(
+    ProviderFoodSummary hit, {
+    FoodSearchScope scope = FoodSearchScope.anywhereInEnglish,
+  }) async {
+    detailFetches.add(hit.providerFoodId);
+    scopes.add(scope);
+    await gate?.future;
+    final error = barcodeError;
+    // Rethrown as-is, for the same reason as [findByBarcode]'s.
     // ignore: only_throw_errors
     if (error != null) throw error;
     return product;
@@ -174,7 +195,8 @@ void main() {
   });
 
   ProviderFood providerFood({
-    String barcode = _ean13,
+    String? barcode = _ean13,
+    String? providerFoodId,
     String name = 'Porridge oats',
     double? caloriesKcal = 372,
     double? proteinGrams = 11.6,
@@ -188,6 +210,7 @@ void main() {
   }) {
     return ProviderFood(
       source: source,
+      providerFoodId: providerFoodId,
       barcode: barcode,
       name: name,
       servingDescription: '40 g',
@@ -582,6 +605,43 @@ void main() {
   );
 
   testWidgets(
+    'scanning a search-saved provider food reuses its edited local definition',
+    (tester) async {
+      await saveFood(
+        Food(
+          id: 'search-saved',
+          name: 'My edited oats',
+          servingDescription: 'My bowl',
+          perServing: const NutritionFacts(caloriesKcal: 123),
+          source: FoodSource.fatSecret,
+          providerFoodId: '27365861',
+          createdAt: now,
+          updatedAt: now,
+        ),
+      );
+      dataProvider.product = providerFood(
+        source: FoodSource.fatSecret,
+        providerFoodId: '27365861',
+      );
+      await pumpApp(tester);
+      await openPicker(tester);
+      await typeBarcode(tester, _ean13);
+      await acceptNotice(tester);
+
+      expect(dataProvider.barcodeLookups, [_ean13]);
+      expect(find.text('Add to your day'), findsOneWidget);
+      expect(find.text('My edited oats'), findsWidgets);
+      expect(find.byType(FoodFormScreen), findsNothing);
+      final saved = await database.select(database.foods).getSingle();
+      expect(saved.id, 'search-saved');
+      expect(saved.name, 'My edited oats');
+      expect(saved.caloriesKcal, 123);
+      expect(saved.barcode, isNull);
+      await flushDriftTimers(tester);
+    },
+  );
+
+  testWidgets(
     'a provider whose canonical code differs from ours still resolves to '
     'the saved row instead of duplicating it',
     (tester) async {
@@ -630,6 +690,7 @@ void main() {
         ..hits = const [
           ProviderFoodSummary(
             source: FoodSource.openFoodFacts,
+            providerFoodId: _ean13,
             barcode: _ean13,
             name: 'Porridge oats',
             brand: 'Quaker',
@@ -659,12 +720,15 @@ void main() {
       await scrollTo(tester, find.text('Porridge oats · Quaker'));
       expect(find.textContaining('kcal'), findsNothing);
       expect(find.textContaining('Serving: 40 g'), findsWidgets);
-      expect(find.text('P 5 g · C 24 g · F 3 g'), findsOneWidget);
+      // The full record states these macros per 40 g serving; the search
+      // index's per-100 g values must not replace that serving definition.
+      expect(find.text('P 12 g · C 60 g · F 8 g'), findsOneWidget);
 
       // Picking a hit fetches the FULL record and opens log dialog
       await tester.tap(find.text('Porridge oats · Quaker'));
       await settleRealAsync(tester);
-      expect(dataProvider.barcodeLookups, [_ean13, _ean13]);
+      expect(dataProvider.detailFetches, [_ean13, _ean13]);
+      expect(dataProvider.barcodeLookups, isEmpty);
 
       // Tapping "Edit food details & macros" opens the review screen
       expect(find.text('Edit food details & macros'), findsOneWidget);
@@ -694,6 +758,7 @@ void main() {
         ..hits = const [
           ProviderFoodSummary(
             source: FoodSource.openFoodFacts,
+            providerFoodId: _ean13,
             barcode: _ean13,
             name: 'Porridge oats',
           ),
@@ -759,6 +824,7 @@ void main() {
         ..hits = const [
           ProviderFoodSummary(
             source: FoodSource.openFoodFacts,
+            providerFoodId: _ean13,
             barcode: _ean13,
             name: 'Porridge oats',
             brand: 'Quaker',
@@ -777,7 +843,11 @@ void main() {
       await acceptNotice(tester);
       expect(dataProvider.searches, ['oats']);
 
-      await tester.tap(find.text('Porridge oats · Quaker'));
+      // Local edits include clearing the brand; select the online result
+      // by identity instead of expecting the provider's stale brand.
+      final onlineHit = find.byKey(const Key('online-openFoodFacts-$_ean13'));
+      await scrollTo(tester, onlineHit);
+      await tester.tap(onlineHit);
       await settleRealAsync(tester);
 
       // Straight to logging the food they already have - not through the
@@ -786,6 +856,7 @@ void main() {
       expect(find.byType(FoodFormScreen), findsNothing);
       // No second request: the catalogue answered.
       expect(dataProvider.barcodeLookups, isEmpty);
+      expect(dataProvider.detailFetches, isEmpty);
       // And, the actual defect this guards: still ONE row for this product.
       // Reaching a food by searching rather than by scanning must not change
       // what ends up stored.
@@ -810,7 +881,11 @@ void main() {
       expect(dataProvider.barcodeLookups, [_ean13]);
       // Framed as something to add, never as a failure.
       expect(find.text('Add this food'), findsOneWidget);
-      expect(find.textContaining('Nothing found for this one'), findsOneWidget);
+      expect(find.text(foodNotFoundOnlineCopy), findsOneWidget);
+      // B23: the not-found copy names no food database — public UI is
+      // unbranded (2026-09-29).
+      expect(find.textContaining('FatSecret'), findsNothing);
+      expect(find.textContaining('Open Food Facts'), findsNothing);
       // Nothing was attributed, because no provider data was used.
       expect(find.textContaining('Food data from'), findsNothing);
 
@@ -892,6 +967,7 @@ void main() {
         ..hits = const [
           ProviderFoodSummary(
             source: FoodSource.openFoodFacts,
+            providerFoodId: _ean13,
             barcode: _ean13,
             name: 'Porridge oats',
             brand: 'Quaker',
@@ -899,6 +975,7 @@ void main() {
           ),
           ProviderFoodSummary(
             source: FoodSource.openFoodFacts,
+            providerFoodId: _upcAEchoed,
             barcode: _upcAEchoed,
             name: 'Honey Nut Cheerios',
             brand: 'Cheerios',
@@ -958,7 +1035,7 @@ void main() {
       await settleRealAsync(tester);
 
       expect(
-        dataProvider.barcodeLookups,
+        dataProvider.detailFetches,
         [_ean13, _upcAEchoed, _ean13],
       );
       expect(find.text('Add to your day'), findsOneWidget);
@@ -984,13 +1061,14 @@ void main() {
         hits: [
           const ProviderFoodSummary(
             source: FoodSource.fatSecret,
-            barcode: fatSecretFoodId,
+            providerFoodId: fatSecretFoodId,
             name: 'Porridge oats',
           ),
         ],
         product: providerFood(
           source: FoodSource.fatSecret,
-          barcode: fatSecretFoodId,
+          barcode: null,
+          providerFoodId: fatSecretFoodId,
         ),
       );
       final openFoodFacts = RecordingFoodDataProvider();
@@ -1015,8 +1093,10 @@ void main() {
       // Enrichment (`OnlineFoodSearchController._fetchPage`) resolved the
       // provider that produced this hit — the FatSecret leg — and never
       // touched the OFF one.
-      expect(fatSecret.barcodeLookups, [fatSecretFoodId]);
+      expect(fatSecret.detailFetches, [fatSecretFoodId]);
+      expect(fatSecret.barcodeLookups, isEmpty);
       expect(openFoodFacts.barcodeLookups, isEmpty);
+      expect(openFoodFacts.detailFetches, isEmpty);
 
       // Picking the hit fetches the FULL record
       // (`BarcodeLookupController.fetchFullRecord`) — same requirement.
@@ -1026,12 +1106,145 @@ void main() {
       await tester.tap(find.text('Porridge oats · Quaker'));
       await settleRealAsync(tester);
 
-      expect(fatSecret.barcodeLookups, [fatSecretFoodId, fatSecretFoodId]);
+      expect(fatSecret.detailFetches, [fatSecretFoodId, fatSecretFoodId]);
+      expect(fatSecret.barcodeLookups, isEmpty);
       expect(openFoodFacts.barcodeLookups, isEmpty);
+      expect(openFoodFacts.detailFetches, isEmpty);
       expect(find.text('Add to your day'), findsOneWidget);
 
       await flushDriftTimers(tester);
     },
+  );
+
+  testWidgets(
+    'B23: tapping a FatSecret hit whose id passes the EAN-8 check digit opens '
+    'the food with its nutrition, never the not-found form, and the id never '
+    'becomes a barcode',
+    (tester) async {
+      // The owner's real case: "crumbed hoki", FatSecret food 27365861. Those
+      // eight digits pass the EAN-8 check digit, so the old pick path looked
+      // the id up as a barcode, missed, and opened "Add this food" with the
+      // id in the barcode field.
+      const hokiId = '27365861';
+      final fatSecret = RecordingFoodDataProvider(
+        foodSource: FoodSource.fatSecret,
+        hits: const [
+          ProviderFoodSummary(
+            source: FoodSource.fatSecret,
+            providerFoodId: hokiId,
+            name: 'New Zealand Wild Hoki',
+            brand: "Talley's",
+          ),
+        ],
+        product: const ProviderFood(
+          source: FoodSource.fatSecret,
+          barcode: null,
+          providerFoodId: hokiId,
+          name: 'New Zealand Wild Hoki',
+          brand: "Talley's",
+          servingDescription: '1 piece (120 g)',
+          servingBasis: ServingBasis.statedPerServing,
+          servingGrams: 120,
+          caloriesKcal: 250,
+          proteinGrams: 14,
+          carbsGrams: 20,
+          fatGrams: 12,
+        ),
+      );
+      final openFoodFacts = RecordingFoodDataProvider();
+      final composite = FallbackFoodDataProvider(
+        primary: fatSecret,
+        fallback: openFoodFacts,
+      );
+
+      await pumpApp(
+        tester,
+        provider: composite,
+        preferences: {'nutrition_online_lookup_notice_seen': true},
+      );
+      await openPicker(tester);
+
+      await tester.enterText(
+        find.byKey(const Key('foodSearchField')),
+        'crumbed hoki',
+      );
+      await tester.pump();
+      await scrollTo(tester, find.byKey(const Key('onlineSearchButton')));
+      await tester.tap(find.byKey(const Key('onlineSearchButton')));
+      await settleRealAsync(tester);
+
+      await scrollTo(tester, find.text("New Zealand Wild Hoki · Talley's"));
+      await tester.tap(find.text("New Zealand Wild Hoki · Talley's"));
+      await settleRealAsync(tester);
+
+      // Fetched by id, from FatSecret only — never as a barcode, anywhere.
+      expect(fatSecret.detailFetches, [hokiId, hokiId]);
+      expect(fatSecret.barcodeLookups, isEmpty);
+      expect(openFoodFacts.barcodeLookups, isEmpty);
+      expect(openFoodFacts.detailFetches, isEmpty);
+
+      // The normal log flow for the food itself, not the not-found form.
+      expect(find.text('Add to your day'), findsOneWidget);
+      expect(find.text(foodNotFoundOnlineCopy), findsNothing);
+      expect(find.text('Add this food'), findsNothing);
+
+      // Its review screen carries the name and macros, and an EMPTY barcode
+      // field: FatSecret stated no barcode, and an id is not one.
+      await tester.tap(find.text('Edit food details & macros'));
+      await settleRealAsync(tester);
+      expect(fieldText(tester, 'foodNameField'), 'New Zealand Wild Hoki');
+      expect(fieldText(tester, 'caloriesField'), '250');
+      expect(fieldText(tester, 'proteinField'), '14');
+      expect(fieldText(tester, 'carbsField'), '20');
+      expect(fieldText(tester, 'fatField'), '12');
+      await scrollTo(tester, find.byKey(const Key('foodBarcodeField')));
+      expect(fieldText(tester, 'foodBarcodeField'), '');
+      expect(find.text(hokiId), findsNothing);
+
+      await flushDriftTimers(tester);
+    },
+    timeout: const Timeout(Duration(seconds: 90)),
+  );
+
+  testWidgets(
+    'B23: a hit whose provider DID state a real barcode carries it into the '
+    'barcode field',
+    (tester) async {
+      dataProvider
+        ..hits = const [
+          ProviderFoodSummary(
+            source: FoodSource.openFoodFacts,
+            providerFoodId: _ean13,
+            barcode: _ean13,
+            name: 'Porridge oats',
+            brand: 'Quaker',
+          ),
+        ]
+        ..product = providerFood();
+      await pumpApp(
+        tester,
+        preferences: {'nutrition_online_lookup_notice_seen': true},
+      );
+      await openPicker(tester);
+
+      await tester.enterText(find.byKey(const Key('foodSearchField')), 'oats');
+      await tester.pump();
+      await scrollTo(tester, find.byKey(const Key('onlineSearchButton')));
+      await tester.tap(find.byKey(const Key('onlineSearchButton')));
+      await settleRealAsync(tester);
+      await scrollTo(tester, find.text('Porridge oats · Quaker'));
+      await tester.tap(find.text('Porridge oats · Quaker'));
+      await settleRealAsync(tester);
+
+      expect(find.text('Add to your day'), findsOneWidget);
+      await tester.tap(find.text('Edit food details & macros'));
+      await settleRealAsync(tester);
+      await scrollTo(tester, find.byKey(const Key('foodBarcodeField')));
+      expect(fieldText(tester, 'foodBarcodeField'), _ean13);
+
+      await flushDriftTimers(tester);
+    },
+    timeout: const Timeout(Duration(seconds: 90)),
   );
 
   testWidgets(

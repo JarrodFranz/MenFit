@@ -1,5 +1,6 @@
 import 'package:drift/native.dart';
 import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -361,6 +362,44 @@ void main() {
         // numbers are, not how well they were read.
         expect(find.byKey(const Key('labelScanBanner')), findsOneWidget);
         expect(find.text(labelScanBannerText), findsOneWidget);
+      });
+    });
+
+    testWidgets('offers a basis switch selector when both columns exist', (
+      tester,
+    ) async {
+      await onPlatform(TargetPlatform.android, () async {
+        await openForm(tester, fakeCapture(result: fsanzTwoColumn()));
+        await tapScan(tester);
+
+        // Initially defaults to per serving (198 kcal, 5.2g protein,
+        // 30g basis).
+        expect(fieldText(tester, 'caloriesField'), '198');
+        expect(fieldText(tester, 'proteinField'), '5.2');
+        expect(fieldText(tester, 'carbsField'), '18.6');
+        expect(fieldText(tester, 'fatField'), '10.2');
+
+        final selector = find.byKey(const Key('labelScanBasisSelector'));
+        expect(selector, findsOneWidget);
+        expect(find.text('Per Serving (30g)'), findsOneWidget);
+        expect(find.text('Per 100 g'), findsOneWidget);
+
+        // Tap "Per 100 g"
+        await tester.tap(find.text('Per 100 g'));
+        await tester.pumpAndSettle();
+
+        // Values switch to 100g numbers
+        expect(fieldText(tester, 'caloriesField'), '662');
+        expect(fieldText(tester, 'proteinField'), '17.3');
+        expect(fieldText(tester, 'carbsField'), '62');
+        expect(fieldText(tester, 'fatField'), '34');
+
+        // Tap "Per Serving (30g)" back
+        await tester.tap(find.text('Per Serving (30g)'));
+        await tester.pumpAndSettle();
+
+        expect(fieldText(tester, 'caloriesField'), '198');
+        expect(fieldText(tester, 'proteinField'), '5.2');
       });
     });
 

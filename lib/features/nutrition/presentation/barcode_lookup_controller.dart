@@ -18,8 +18,8 @@ sealed class BarcodeLookupResult {
   const BarcodeLookupResult();
 }
 
-/// The catalogue already had this product. **Nothing was sent anywhere** —
-/// see [BarcodeLookupController.lookUp].
+/// The catalogue already had this product. Barcode matches need no network;
+/// a provider-id match can follow a lookup that identifies a search-saved food.
 final class LocalFoodMatched extends BarcodeLookupResult {
   const LocalFoodMatched(this.food);
 
@@ -151,6 +151,19 @@ class BarcodeLookupController extends _$BarcodeLookupController {
         return ProviderHasNoProduct(barcode.digits);
       }
 
+      // Search-saved foods may have no barcode, but keep their provider id.
+      final providerId = found.providerFoodId;
+      if (providerId != null) {
+        final savedById = await repository.getFoodByProviderId(
+          found.source,
+          providerId,
+        );
+        if (savedById != null) {
+          _set(const BarcodeLookupState());
+          return LocalFoodMatched(savedById);
+        }
+      }
+
       // Step 2 asked the catalogue for **our** canonical spelling; a row
       // saved from a provider result is keyed on the **provider's** echoed
       // one (`domain/provider_food.dart`). Those two agree with Open Food
@@ -161,8 +174,9 @@ class BarcodeLookupController extends _$BarcodeLookupController {
       // match ours: if they ever diverge, or a second provider arrives
       // behind the same port, the local-first check above could never hit
       // the row it created and every scan would fetch and save another one.
-      if (found.barcode != barcode.digits) {
-        final echoed = await repository.getFoodByBarcode(found.barcode);
+      final echoedCode = found.barcode;
+      if (echoedCode != null && echoedCode != barcode.digits) {
+        final echoed = await repository.getFoodByBarcode(echoedCode);
         if (echoed != null) {
           _set(const BarcodeLookupState());
           return LocalFoodMatched(echoed);
@@ -192,41 +206,22 @@ class BarcodeLookupController extends _$BarcodeLookupController {
   /// [ProviderHasNoProduct] when the record vanished between the search and
   /// this call, which sends the user to the same add-it-yourself form.
   ///
-  /// Consults the catalogue first, exactly as [lookUp] does. That is not
-  /// only the round trip saved and the request not made: without it, picking
-  /// a search hit for a product the user *already has* would walk their
-  /// through the review screen again and save a **second** catalogue row for
-  /// the same food — a duplicate the barcode path is already careful not to
-  /// create. Reaching a food by searching for it rather than by scanning it
-  /// must not change what ends up stored.
-  ///
-  /// Re-entrant calls are refused while one is in flight — see [lookUp].
-  /// Result tiles are what this guards: tapping two of them in quick
-  /// succession must not send two requests and stack two review screens.
-  ///
-  /// Unlike [lookUp] there is no echoed-code re-check here, and none is
-  /// needed: this queries with the provider's own code, which is the string
-  /// a saved row is keyed on.
-  ///
-  /// [source] is the summary's own [ProviderFoodSummary.source] — required,
-  /// not inferred — so the fetch is resolved to the specific provider that
-  /// produced the hit (`FoodDataProvider.providerFor`) rather than to
-  /// whichever one the composite happens to be pointed at. A FatSecret hit's
-  /// [barcode] is a FatSecret `food_id`, not a GTIN; asking the composite
-  /// would pad it into a barcode shape, miss on FatSecret, and fall back to
-  /// Open Food Facts under a code that means nothing there.
+  /// Looks up the source/id pair locally before any network request.
   Future<BarcodeLookupResult?> fetchFullRecord(
-    String barcode, {
-    required FoodSource source,
+    ProviderFoodSummary hit, {
     required Future<bool> Function() confirmOnlineLookup,
   }) async {
     if (state.isLookingUp) return null;
-
     try {
       _set(const BarcodeLookupState(isLookingUp: true));
-      final saved = await ref
-          .read(nutritionRepositoryProvider)
-          .getFoodByBarcode(barcode);
+      final repository = ref.read(nutritionRepositoryProvider);
+      final barcode = hit.barcode;
+      final saved =
+          await repository.getFoodByProviderId(
+            hit.source,
+            hit.providerFoodId,
+          ) ??
+          (barcode == null ? null : await repository.getFoodByBarcode(barcode));
       if (saved != null) {
         _set(const BarcodeLookupState());
         return LocalFoodMatched(saved);
@@ -238,12 +233,12 @@ class BarcodeLookupController extends _$BarcodeLookupController {
 
       final found = await ref
           .read(foodDataProviderProvider)
-          .providerFor(source)
-          .findByBarcode(barcode, scope: ref.read(foodSearchScopeProvider));
+          .fetchDetails(hit, scope: ref.read(foodSearchScopeProvider));
       _set(const BarcodeLookupState());
-      return found == null
-          ? ProviderHasNoProduct(barcode)
-          : ProviderFoodFetched(found);
+      if (found != null) return ProviderFoodFetched(found);
+      // The record vanished between the search and this call. Only a real
+      // barcode may seed the add-it-yourself form — never the id.
+      return ProviderHasNoProduct(barcode ?? '');
     } on Object catch (error) {
       _set(BarcodeLookupState(errorMessage: userMessageFor(error)));
       return null;

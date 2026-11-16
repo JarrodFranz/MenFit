@@ -150,7 +150,7 @@ final class BarcodeLookupControllerProvider
 }
 
 String _$barcodeLookupControllerHash() =>
-    r'8d48ebd86154cbb474c78ae88f1bd4802ed83e54';
+    r'7caa659f03c04cbeb5b257086dd73d4382c1f103';
 
 /// Turns a scanned or typed barcode into somewhere to go.
 ///

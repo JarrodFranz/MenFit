@@ -1,4 +1,5 @@
 import 'package:menfit_app/core/domain/local_date.dart';
+import 'package:menfit_app/features/streaks/streaks_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'nutrition_day_controller.g.dart';
@@ -11,13 +12,15 @@ part 'nutrition_day_controller.g.dart';
 @riverpod
 class SelectedNutritionDay extends _$SelectedNutritionDay {
   @override
-  LocalDate build() => LocalDate.today();
+  LocalDate build() {
+    return ref.watch(localDayProvider).value ?? LocalDate.today();
+  }
 
   /// Selects [day], clamped to today. Silently clamping rather than
   /// rejecting is right here because nothing the user can press asks for a
   /// future day — this only guards a stale in-memory day across midnight.
   void select(LocalDate day) {
-    final today = LocalDate.today();
+    final today = ref.read(localDayProvider).value ?? LocalDate.today();
     state = day.isAfter(today) ? today : day;
   }
 
@@ -25,5 +28,6 @@ class SelectedNutritionDay extends _$SelectedNutritionDay {
 
   void nextDay() => select(state.addDays(1));
 
-  void goToToday() => select(LocalDate.today());
+  void goToToday() =>
+      select(ref.read(localDayProvider).value ?? LocalDate.today());
 }

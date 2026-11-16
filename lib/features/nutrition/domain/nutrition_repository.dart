@@ -99,6 +99,9 @@ abstract interface class NutritionRepository {
   /// the one an edit would have just touched.
   Future<Food?> getFoodByBarcode(String barcode);
 
+  /// Latest live saved definition matching a source-scoped catalogue id.
+  Future<Food?> getFoodByProviderId(FoodSource source, String providerFoodId);
+
   /// Upserts [food] by id, preserving the existing row's `createdAt` across
   /// an update (the persisted `updatedAt` is always stamped to UTC-now).
   ///

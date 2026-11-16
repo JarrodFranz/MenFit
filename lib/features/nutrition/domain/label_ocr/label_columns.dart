@@ -6,6 +6,7 @@
 /// declared to the user and always costs confidence.
 library;
 
+import 'package:menfit_app/core/domain/ocr/ocr_text.dart';
 import 'package:menfit_app/features/nutrition/domain/label_ocr/label_lexicon.dart';
 import 'package:menfit_app/features/nutrition/domain/label_ocr/label_rows.dart';
 
@@ -47,6 +48,7 @@ class ColumnLayout {
     required this.columns,
     required this.fromHeaders,
     this.headerRowIndex,
+    this.headerRowIndices = const {},
   });
 
   final List<LabelColumn> columns;
@@ -59,6 +61,12 @@ class ColumnLayout {
   /// Index into the row list of the heading row, so nutrient scanning can
   /// start below it.
   final int? headerRowIndex;
+
+  /// All row indices that contributed to the header (e.g. multi-line headers).
+  final Set<int> headerRowIndices;
+
+  bool isHeaderRow(int i) =>
+      headerRowIndices.contains(i) || i == headerRowIndex;
 
   bool get isEmpty => columns.isEmpty;
 
@@ -109,8 +117,14 @@ const _headerKeys = <(ColumnKind, String)>[
   (ColumnKind.percentDaily, '%di'),
   (ColumnKind.percentDaily, '%dv'),
   (ColumnKind.percentDaily, '%ri'),
+  (ColumnKind.per100ml, 'quantity per 100 ml'),
+  (ColumnKind.per100ml, 'qty per 100 ml'),
   (ColumnKind.per100ml, 'per 100 ml'),
   (ColumnKind.per100ml, '100 ml'),
+  (ColumnKind.per100g, 'quantity per 100 g'),
+  (ColumnKind.per100g, 'quantity per 100'),
+  (ColumnKind.per100g, 'qty per 100 g'),
+  (ColumnKind.per100g, 'qty per 100'),
   (ColumnKind.per100g, 'per 100 g'),
   (ColumnKind.per100g, 'per 100 grams'),
   (ColumnKind.per100g, '100 g'),
@@ -165,35 +179,113 @@ List<LabelColumn> _scanRow(OcrRow row) {
   return [for (final index in indices) found[index]!];
 }
 
+/// Combines two adjacent rows into vertical column bands to recognise
+/// multi-line stacked headers (common in FSANZ panels, e.g. "Quantity Per"
+/// on line 1 over "Serving 85g" on line 2, and "%DI* Per" over "Serving").
+List<LabelColumn> _scanRowPair(OcrRow top, OcrRow bottom) {
+  final dy = bottom.centerY - top.centerY;
+  if (dy <= 0) return const [];
+
+  final allElements = [...top.elements, ...bottom.elements];
+  if (allElements.isEmpty) return const [];
+
+  final heights = allElements.map((e) => e.box.height).toList()..sort();
+  final medianH = heights[heights.length ~/ 2];
+  if (medianH > 0 && dy > medianH * 3.5) return const [];
+
+  final mergeThreshold = medianH > 0 ? medianH * 0.75 : 10.0;
+
+  final sorted = [...allElements]
+    ..sort((a, b) => a.box.left.compareTo(b.box.left));
+  final bands = <_HorizontalBand>[];
+  for (final el in sorted) {
+    if (bands.isEmpty) {
+      bands.add(_HorizontalBand(el.box.left, el.box.right, [el]));
+      continue;
+    }
+    final last = bands.last;
+    if (el.box.left - last.right <= mergeThreshold) {
+      if (el.box.right > last.right) last.right = el.box.right;
+      last.elements.add(el);
+    } else {
+      bands.add(_HorizontalBand(el.box.left, el.box.right, [el]));
+    }
+  }
+
+  final found = <LabelColumn>[];
+  for (final band in bands) {
+    final topEls = band.elements.where(top.elements.contains).toList()
+      ..sort((a, b) => a.box.left.compareTo(b.box.left));
+    final botEls = band.elements.where(bottom.elements.contains).toList()
+      ..sort((a, b) => a.box.left.compareTo(b.box.left));
+
+    final combinedText = normaliseHeaderText(
+      [...topEls.map((e) => e.text), ...botEls.map((e) => e.text)].join(),
+    );
+    if (combinedText.isEmpty) continue;
+
+    for (final key in _foldedHeaderKeys) {
+      if (combinedText.contains(key.$2)) {
+        final anchor =
+            band.elements.map((e) => e.box.centerX).reduce((a, b) => a + b) /
+            band.elements.length;
+        found.add(LabelColumn(kind: key.$1, anchorX: anchor));
+        break;
+      }
+    }
+  }
+
+  found.sort((a, b) => a.anchorX.compareTo(b.anchorX));
+  return found;
+}
+
+class _HorizontalBand {
+  _HorizontalBand(this.left, this.right, this.elements);
+  double left;
+  double right;
+  final List<OcrElement> elements;
+}
+
 /// Find the heading row and the columns it defines, or `null` when the
 /// panel has no heading this parser recognises.
 ///
 /// The heading row is the one carrying the most phrases; ties go to the
 /// topmost, because a panel's real heading sits above its numbers.
 ColumnLayout? detectHeaderColumns(List<OcrRow> rows) {
-  var bestIndex = -1;
+  var bestIndices = <int>{};
   var best = <LabelColumn>[];
-  for (var i = 0; i < rows.length; i++) {
-    final found = _scanRow(rows[i]);
+
+  void consider(List<LabelColumn> found, Set<int> rowIndices) {
     final quantityColumns = found
         .where((c) => c.kind != ColumnKind.percentDaily)
         .length;
-    if (quantityColumns == 0) continue;
+    if (quantityColumns == 0) return;
     final bestQuantity = best
         .where((c) => c.kind != ColumnKind.percentDaily)
         .length;
     if (found.length > best.length ||
         (found.length == best.length && quantityColumns > bestQuantity)) {
       best = found;
-      bestIndex = i;
+      bestIndices = rowIndices;
+    }
+  }
+
+  for (var i = 0; i < rows.length; i++) {
+    consider(_scanRow(rows[i]), {i});
+    if (i + 1 < rows.length) {
+      consider(_scanRowPair(rows[i], rows[i + 1]), {i, i + 1});
     }
   }
   if (best.isEmpty) return null;
   final deduped = _dedupeColumns(best);
+  final primaryIndex = bestIndices.isEmpty
+      ? null
+      : bestIndices.reduce((a, b) => a > b ? a : b);
   return ColumnLayout(
     columns: deduped,
     fromHeaders: true,
-    headerRowIndex: bestIndex,
+    headerRowIndex: primaryIndex,
+    headerRowIndices: bestIndices,
   );
 }
 

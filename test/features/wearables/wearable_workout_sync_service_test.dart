@@ -93,6 +93,164 @@ void main() {
       },
     );
 
+    group('workout permission gap (steps granted, exercise not)', () {
+      HealthWorkoutSession strength() => HealthWorkoutSession(
+        externalId: 'garmin-strength-1',
+        activityType: ActivityType.strength,
+        title: 'Garmin Strength',
+        startedAt: DateTime.now().toUtc().subtract(const Duration(hours: 3)),
+        endedAt: DateTime.now().toUtc().subtract(const Duration(hours: 2)),
+        sourceName: 'Garmin Connect',
+      );
+
+      test('background sync does not prompt and reports the gap', () async {
+        healthAdapter
+          ..workoutPermissionGranted = false
+          ..workoutsToReturn = [strength()];
+
+        final result = await service.syncAll();
+
+        expect(healthAdapter.requestPermissionsCallCount, 0);
+        expect(result.syncedCount, 0);
+        expect(healthAdapter.workoutReadCallCount, 0);
+        expect(result.isSuccess, isFalse);
+        expect(
+          result.errorMessage,
+          WearableWorkoutSyncService.workoutPermissionMissingMessage,
+        );
+        expect(await activityRepo.getActivities(), isEmpty);
+      });
+
+      test('user-initiated sync requests access, then imports', () async {
+        healthAdapter
+          ..workoutPermissionGranted = false
+          ..workoutsToReturn = [strength()];
+
+        final result = await service.syncAll(requestPermissionIfMissing: true);
+
+        expect(healthAdapter.requestPermissionsCallCount, 1);
+        expect(healthAdapter.workoutReadCallCount, 1);
+        expect(result.isSuccess, isTrue);
+        expect(result.syncedCount, 1);
+        final saved = await activityRepo.getActivities();
+        expect(saved.single.activityType, ActivityType.strength);
+      });
+
+      test(
+        'user refuses the sheet: reports the gap, imports nothing',
+        () async {
+          healthAdapter
+            ..workoutPermissionGranted = false
+            ..denyWorkoutOnRequest = true
+            ..workoutsToReturn = [strength()];
+
+          final result = await service.syncAll(
+            requestPermissionIfMissing: true,
+          );
+
+          expect(healthAdapter.requestPermissionsCallCount, 1);
+          expect(healthAdapter.workoutReadCallCount, 0);
+          expect(result.isSuccess, isFalse);
+          expect(await activityRepo.getActivities(), isEmpty);
+        },
+      );
+
+      test('undisclosed iOS access requests only on explicit sync', () async {
+        healthAdapter
+          ..workoutPermissionGranted = null
+          ..workoutsToReturn = [strength()];
+
+        final background = await service.syncAll();
+        expect(background.syncedCount, 1);
+        expect(healthAdapter.requestPermissionsCallCount, 0);
+        expect(healthAdapter.workoutReadCallCount, 1);
+
+        await service.syncAll(requestPermissionIfMissing: true);
+        expect(healthAdapter.requestPermissionsCallCount, 1);
+        expect(healthAdapter.workoutReadCallCount, 2);
+        expect(await healthAdapter.hasWorkoutPermission(), isNull);
+
+        await service.syncAll(requestPermissionIfMissing: true);
+        expect(healthAdapter.requestPermissionsCallCount, 2);
+        expect(healthAdapter.workoutReadCallCount, 3);
+      });
+
+      test(
+        'undisclosed denied access stays an empty read after requesting',
+        () async {
+          healthAdapter
+            ..workoutPermissionGranted = null
+            ..denyWorkoutOnRequest = true;
+
+          final result = await service.syncAll(
+            requestPermissionIfMissing: true,
+          );
+          expect(healthAdapter.requestPermissionsCallCount, 1);
+          expect(healthAdapter.workoutReadCallCount, 1);
+          expect(result.syncedCount, 0);
+          expect(await activityRepo.getActivities(), isEmpty);
+        },
+      );
+
+      test(
+        'failed authorization with unknown access skips the health read',
+        () async {
+          healthAdapter
+            ..workoutPermissionGranted = null
+            ..permissionRequestSucceeds = false
+            ..workoutsToReturn = [strength()];
+
+          final result = await service.syncAll(
+            requestPermissionIfMissing: true,
+          );
+
+          expect(healthAdapter.requestPermissionsCallCount, 1);
+          expect(await healthAdapter.hasWorkoutPermission(), isNull);
+          expect(healthAdapter.workoutReadCallCount, 0);
+          expect(result.isSuccess, isFalse);
+          expect(
+            result.errorMessage,
+            WearableWorkoutSyncService.workoutPermissionMissingMessage,
+          );
+          expect(result.syncedCount, 0);
+          expect(await activityRepo.getActivities(), isEmpty);
+        },
+      );
+
+      test('already granted: never re-prompts', () async {
+        healthAdapter.workoutsToReturn = [strength()];
+
+        await service.syncAll(requestPermissionIfMissing: true);
+
+        expect(healthAdapter.requestPermissionsCallCount, 0);
+      });
+    });
+
+    test(
+      'unsupported health skips permissions and still imports wrist strength',
+      () async {
+        healthAdapter
+          ..supported = false
+          ..workoutPermissionGranted = false;
+        watchAdapter.wristWorkouts = [
+          WatchWristWorkout(
+            externalId: 'wrist-strength',
+            activityType: ActivityType.strength,
+            startedAt: DateTime.utc(2026, 9, 4, 6),
+            endedAt: DateTime.utc(2026, 9, 4, 7),
+            totalDistanceMeters: 130,
+            source: 'Watch',
+          ),
+        ];
+        final result = await service.syncAll(requestPermissionIfMissing: true);
+        expect(result.isSuccess, isTrue);
+        expect(result.syncedCount, 1);
+        expect(healthAdapter.requestPermissionsCallCount, 0);
+        expect(healthAdapter.workoutReadCallCount, 0);
+        expect((await activityRepo.getActivities()).single.distanceMeters, 0);
+      },
+    );
+
     test('deduplicates already ingested workouts by externalId', () async {
       healthAdapter.workoutsToReturn = [
         HealthWorkoutSession(
@@ -163,6 +321,49 @@ void main() {
         final samples = await activityRepo.getSamples(saved.first.id);
         expect(samples.length, 2);
         expect(samples.first.heartRate, 140);
+      },
+    );
+
+    test(
+      'a strength session carrying overlapping step distance is imported '
+      'with no distance; a run in the same sync keeps its distance',
+      () async {
+        final start = DateTime.now().toUtc().subtract(const Duration(hours: 5));
+        healthAdapter.workoutsToReturn = [
+          HealthWorkoutSession(
+            externalId: 'garmin-strength-distance',
+            activityType: ActivityType.strength,
+            title: 'Garmin Strength',
+            startedAt: start,
+            endedAt: start.add(const Duration(minutes: 38, seconds: 42)),
+            distanceMeters: 130,
+            sourceName: 'Garmin Connect',
+          ),
+          HealthWorkoutSession(
+            externalId: 'garmin-run-distance',
+            activityType: ActivityType.run,
+            title: 'Garmin Run',
+            startedAt: start.add(const Duration(hours: 2)),
+            endedAt: start.add(const Duration(hours: 2, minutes: 30)),
+            distanceMeters: 5000,
+            sourceName: 'Garmin Connect',
+          ),
+        ];
+
+        final result = await service.syncAll();
+        expect(result.syncedCount, 2);
+
+        final saved = await activityRepo.getActivities();
+        final strength = saved.singleWhere(
+          (a) => a.activityType == ActivityType.strength,
+        );
+        final run = saved.singleWhere(
+          (a) => a.activityType == ActivityType.run,
+        );
+        expect(strength.distanceMeters, 0);
+        expect(strength.hasDistance, isFalse);
+        expect(strength.avgPaceSecondsPerKm, isNull);
+        expect(run.distanceMeters, 5000);
       },
     );
   });

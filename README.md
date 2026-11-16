@@ -42,10 +42,10 @@ flutter run -d windows     # or: -d chrome, -d <android device>
 
 No `--dart-define` needed for dev (defaults apply). Other environments: `flutter run --dart-define-from-file=env/staging.json`. Env files in `env/` contain **no secrets** (see ADR 006); local secrets (e.g. `ORS_API_KEY` for route suggestions) go in the gitignored `env/dev.secrets.json` — `scripts/run.ps1` passes both files. Route suggestion is the only feature that needs a key; everything else works without one.
 
-## Five tabs
+## Six tabs
 
 Home (strength-first dashboard), Train (`/activity` — GPS recording, strength
-workouts, exercise hubs), Nutrition, Recovery (`/recovery` — check-ins, flare
+workouts, exercise hubs), Nutrition, Keto (`/keto` — diary macros plus a manual blood/urine/breath ketone log), Recovery (`/recovery` — check-ins, flare
 logging, protected-recovery history), Settings.
 
 ## Distribute to testers

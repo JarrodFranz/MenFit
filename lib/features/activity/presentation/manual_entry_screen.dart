@@ -507,8 +507,15 @@ class _StrengthInputSection extends StatelessWidget {
                       ...exercise.sets.asMap().entries.map((sEntry) {
                         final sIndex = sEntry.key;
                         final s = sEntry.value;
+                        // TextFormField reads initialValue once; keying on
+                        // the list shape re-seeds the fields when a set or
+                        // exercise is removed, so rows never show the
+                        // removed row's numbers.
+                        final rowKey =
+                            '$eIndex-$sIndex-${exercise.sets.length}-'
+                            '${state.strengthExercises.length}';
                         return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 2),
+                          padding: const EdgeInsets.symmetric(vertical: 6),
                           child: Row(
                             children: [
                               Text(
@@ -517,10 +524,14 @@ class _StrengthInputSection extends StatelessWidget {
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
-                              const Spacer(),
-                              SizedBox(
-                                width: 56,
+                              const SizedBox(width: 12),
+                              // Expanded with a floating label, not a fixed
+                              // 56dp box with a "reps" suffix: the suffix
+                              // used the whole width and left the input 0dp
+                              // wide, so it took no input (B1).
+                              Expanded(
                                 child: TextFormField(
+                                  key: ValueKey('reps-$rowKey'),
                                   initialValue: '${s.reps}',
                                   keyboardType: TextInputType.number,
                                   inputFormatters: [
@@ -528,11 +539,11 @@ class _StrengthInputSection extends StatelessWidget {
                                   ],
                                   decoration: const InputDecoration(
                                     isDense: true,
-                                    suffixText: 'reps',
+                                    labelText: 'Reps',
                                     border: OutlineInputBorder(),
                                     contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 6,
-                                      vertical: 6,
+                                      horizontal: 10,
+                                      vertical: 10,
                                     ),
                                   ),
                                   onChanged: (val) {
@@ -548,9 +559,9 @@ class _StrengthInputSection extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(width: 8),
-                              SizedBox(
-                                width: 70,
+                              Expanded(
                                 child: TextFormField(
+                                  key: ValueKey('weight-$rowKey'),
                                   initialValue: s.weightKg.toStringAsFixed(0),
                                   keyboardType:
                                       const TextInputType.numberWithOptions(
@@ -558,11 +569,11 @@ class _StrengthInputSection extends StatelessWidget {
                                       ),
                                   decoration: const InputDecoration(
                                     isDense: true,
-                                    suffixText: 'kg',
+                                    labelText: 'Weight (kg)',
                                     border: OutlineInputBorder(),
                                     contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 6,
-                                      vertical: 6,
+                                      horizontal: 10,
+                                      vertical: 10,
                                     ),
                                   ),
                                   onChanged: (val) {
@@ -962,7 +973,7 @@ class _DateTimePicker extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(DateFormat.yMMMd().add_jm().format(value)),
+            Flexible(child: Text(DateFormat.yMMMd().add_jm().format(value))),
             const Icon(Icons.edit_calendar_outlined),
           ],
         ),

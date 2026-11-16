@@ -211,17 +211,13 @@ class HubActivityCard extends ConsumerWidget {
         ? (activity.distanceMeters / 1609.34).toStringAsFixed(2)
         : (activity.distanceMeters / 1000.0).toStringAsFixed(2);
 
-    final pace = formatPace(
-      activity.distanceMeters > 0
-          ? activity.movingTime.inSeconds / (activity.distanceMeters / 1000.0)
-          : 0,
-      unitSystem,
-    );
+    final hasDistance = activity.hasDistance;
+    final paceSecondsPerKm = activity.avgPaceSecondsPerKm;
 
     return Wrap(
       spacing: 16,
       children: [
-        if (activity.distanceMeters > 0)
+        if (hasDistance)
           Text(
             '$distVal $distUnit',
             style: textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
@@ -232,9 +228,9 @@ class HubActivityCard extends ConsumerWidget {
             color: colorScheme.onSurfaceVariant,
           ),
         ),
-        if (activity.distanceMeters > 0)
+        if (hasDistance && paceSecondsPerKm != null)
           Text(
-            pace,
+            formatPace(paceSecondsPerKm, unitSystem),
             style: textTheme.bodySmall?.copyWith(
               color: colorScheme.onSurfaceVariant,
             ),

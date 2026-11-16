@@ -80,6 +80,7 @@ class ParsedServing {
     this.grams,
     this.millilitres,
     this.servingsPerPackage,
+    this.hasMultipleGramFigures = false,
   });
 
   /// The serving text as printed (`'2/3 cup (55 g)'`, `'30 g'`). Shown,
@@ -96,6 +97,11 @@ class ParsedServing {
 
   /// "Servings per package: 12", when stated.
   final double? servingsPerPackage;
+
+  /// True when the serving size line contained two or more distinct gram
+  /// figures (e.g. `"1 bar (40g) / 100g"` or `"30g dry (75g prepared)"`),
+  /// signalling the parser should warn the user to verify the serving weight.
+  final bool hasMultipleGramFigures;
 }
 
 /// One column of the panel: every nutrient the parser could place in it.

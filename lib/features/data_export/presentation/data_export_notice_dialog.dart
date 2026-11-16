@@ -117,7 +117,8 @@ class _DataExportNoticeDialogState extends State<DataExportNoticeDialog> {
                 controlAffinity: ListTileControlAffinity.leading,
                 title: const Text('Include health check-in data'),
                 subtitle: Text(
-                  'Daily check-ins, flare-ups and recovery days. Left out '
+                  'Daily check-ins, flare-ups, recovery days, life events and '
+                  'ketone readings. Left out '
                   'unless you ask for them, so the file is safer to share.',
                   style: textTheme.bodySmall,
                 ),

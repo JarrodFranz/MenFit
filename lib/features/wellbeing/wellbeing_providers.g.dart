@@ -75,3 +75,56 @@ final class WellbeingRepositoryProvider
 
 String _$wellbeingRepositoryHash() =>
     r'5fe482723d6da58ff24c376020c27f3d2117faed';
+
+/// Saved event names are user data and must be cleared by Delete my data.
+
+@ProviderFor(customWellbeingEventStore)
+final customWellbeingEventStoreProvider = CustomWellbeingEventStoreProvider._();
+
+/// Saved event names are user data and must be cleared by Delete my data.
+
+final class CustomWellbeingEventStoreProvider
+    extends
+        $FunctionalProvider<
+          CustomWellbeingEventStore,
+          CustomWellbeingEventStore,
+          CustomWellbeingEventStore
+        >
+    with $Provider<CustomWellbeingEventStore> {
+  /// Saved event names are user data and must be cleared by Delete my data.
+  CustomWellbeingEventStoreProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'customWellbeingEventStoreProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$customWellbeingEventStoreHash();
+
+  @$internal
+  @override
+  $ProviderElement<CustomWellbeingEventStore> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  CustomWellbeingEventStore create(Ref ref) {
+    return customWellbeingEventStore(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(CustomWellbeingEventStore value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<CustomWellbeingEventStore>(value),
+    );
+  }
+}
+
+String _$customWellbeingEventStoreHash() =>
+    r'f49e1fc9cde38cc87e181decaa605548683628fa';

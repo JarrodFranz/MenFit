@@ -196,6 +196,14 @@ Future<MonthRecap?> recapForPeriod(Ref ref, RecapPeriod period) async {
     period.end,
   );
   final nutritionGoals = await goalsRepo.getGoals();
+  // `ref.read`, not `.watch`: this whole function is a one-shot snapshot of
+  // a *finished* period (see the class dartdoc above), so the protein
+  // target's calorie basis is fixed at whatever it is right now rather
+  // than tracking a live provider that could move after this recap has
+  // already been built. Same basis `dayCalorieTargetProvider` resolves for
+  // every other nutrition surface — never `nutritionGoals.calorieTargetKcal`
+  // directly (`nutrition_providers.dart#fuelingConsistency`).
+  final basisKcal = ref.read(dayCalorieTargetProvider).targetKcal;
   final checkins = await wellbeingRepo.getRecentCheckins(
     period.totalDays,
     period.end,
@@ -210,6 +218,7 @@ Future<MonthRecap?> recapForPeriod(Ref ref, RecapPeriod period) async {
     waterTotalsByDay: waterTotalsByDay,
     periodNutritionEntries: nutritionEntries,
     nutritionGoals: nutritionGoals,
+    basisKcal: basisKcal,
     periodCheckins: checkins,
   );
 }

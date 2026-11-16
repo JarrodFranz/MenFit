@@ -154,8 +154,7 @@ class ProgressScreen extends ConsumerWidget {
                       totals: totals,
                       target: target,
                       goals: nutritionGoals,
-                      hideCalorieNumbers:
-                          nutritionGoals?.hideCalorieNumbers ?? false,
+                      hideCalorieNumbers: ref.watch(hideCalorieNumbersProvider),
                       period: period,
                     ),
                     loading: () => const _SkeletonBox(height: 180),

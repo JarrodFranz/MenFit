@@ -266,7 +266,7 @@ String _$nutritionGoalsRepositoryHash() =>
 /// whenever FatSecret is configured (ADR 016) — a
 /// `FallbackFoodDataProvider` wraps the two, and everything above `data/`
 /// sees one [FoodDataProvider] regardless of which one actually answered a
-/// given lookup. With no FatSecret credentials configured, Open Food Facts
+/// given lookup. With no FatSecret proxy configured, Open Food Facts
 /// is the only provider, exactly as before this wave.
 ///
 /// Typed as the domain interface so nothing above `data/` knows which
@@ -296,7 +296,7 @@ final foodDataProviderProvider = FoodDataProviderProvider._();
 /// whenever FatSecret is configured (ADR 016) — a
 /// `FallbackFoodDataProvider` wraps the two, and everything above `data/`
 /// sees one [FoodDataProvider] regardless of which one actually answered a
-/// given lookup. With no FatSecret credentials configured, Open Food Facts
+/// given lookup. With no FatSecret proxy configured, Open Food Facts
 /// is the only provider, exactly as before this wave.
 ///
 /// Typed as the domain interface so nothing above `data/` knows which
@@ -331,7 +331,7 @@ final class FoodDataProviderProvider
   /// whenever FatSecret is configured (ADR 016) — a
   /// `FallbackFoodDataProvider` wraps the two, and everything above `data/`
   /// sees one [FoodDataProvider] regardless of which one actually answered a
-  /// given lookup. With no FatSecret credentials configured, Open Food Facts
+  /// given lookup. With no FatSecret proxy configured, Open Food Facts
   /// is the only provider, exactly as before this wave.
   ///
   /// Typed as the domain interface so nothing above `data/` knows which
@@ -384,7 +384,7 @@ final class FoodDataProviderProvider
   }
 }
 
-String _$foodDataProviderHash() => r'5caa3a887de42243878b2e2a1d4b38df1a1ce6c3';
+String _$foodDataProviderHash() => r'61c2fc4adee96086a7abe8fe0ed0687c951c98bc';
 
 /// Remembers whether the first-run online-lookup notice has been shown.
 ///
@@ -887,6 +887,56 @@ final class NutritionGoalsProvider
 }
 
 String _$nutritionGoalsHash() => r'4a494948e37d359798ef19c29c78092cfeda77b0';
+
+/// Shared rendering gate: unknown preferences hide calories. A resolved null
+/// goals row means no preference; refresh/error retains the last known choice.
+
+@ProviderFor(hideCalorieNumbers)
+final hideCalorieNumbersProvider = HideCalorieNumbersProvider._();
+
+/// Shared rendering gate: unknown preferences hide calories. A resolved null
+/// goals row means no preference; refresh/error retains the last known choice.
+
+final class HideCalorieNumbersProvider
+    extends $FunctionalProvider<bool, bool, bool>
+    with $Provider<bool> {
+  /// Shared rendering gate: unknown preferences hide calories. A resolved null
+  /// goals row means no preference; refresh/error retains the last known choice.
+  HideCalorieNumbersProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'hideCalorieNumbersProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$hideCalorieNumbersHash();
+
+  @$internal
+  @override
+  $ProviderElement<bool> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  bool create(Ref ref) {
+    return hideCalorieNumbers(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
+String _$hideCalorieNumbersHash() =>
+    r'9d0a1dbe6aec72a26ba89dd311e2276aaa8f9b8b';
 
 /// Every diary entry logged on [day], grouped by meal.
 
@@ -1440,11 +1490,25 @@ final class DayCalorieTargetProvider
 String _$dayCalorieTargetHash() => r'035bd97d30f7dc834472f133fd619f9c2ac9a9a9';
 
 /// Evaluates 7-day nutrition and protein consistency achievements.
+///
+/// The protein axis is read against [dayCalorieTargetProvider], not
+/// `goals.calorieTargetKcal` directly — same rule as `MacrosTodayCard`'s
+/// energy line: that provider is the one place "the user’s own target, else the
+/// estimate with the BMR floor applied" is decided, so a percent-mode
+/// protein split derives against the same figure the diary shows rather
+/// than a second, potentially disagreeing definition.
 
 @ProviderFor(fuelingConsistency)
 final fuelingConsistencyProvider = FuelingConsistencyProvider._();
 
 /// Evaluates 7-day nutrition and protein consistency achievements.
+///
+/// The protein axis is read against [dayCalorieTargetProvider], not
+/// `goals.calorieTargetKcal` directly — same rule as `MacrosTodayCard`'s
+/// energy line: that provider is the one place "the user’s own target, else the
+/// estimate with the BMR floor applied" is decided, so a percent-mode
+/// protein split derives against the same figure the diary shows rather
+/// than a second, potentially disagreeing definition.
 
 final class FuelingConsistencyProvider
     extends
@@ -1457,6 +1521,13 @@ final class FuelingConsistencyProvider
         $FutureModifier<FuelingConsistencyResult>,
         $StreamProvider<FuelingConsistencyResult> {
   /// Evaluates 7-day nutrition and protein consistency achievements.
+  ///
+  /// The protein axis is read against [dayCalorieTargetProvider], not
+  /// `goals.calorieTargetKcal` directly — same rule as `MacrosTodayCard`'s
+  /// energy line: that provider is the one place "the user’s own target, else the
+  /// estimate with the BMR floor applied" is decided, so a percent-mode
+  /// protein split derives against the same figure the diary shows rather
+  /// than a second, potentially disagreeing definition.
   FuelingConsistencyProvider._()
     : super(
         from: null,
@@ -1484,7 +1555,7 @@ final class FuelingConsistencyProvider
 }
 
 String _$fuelingConsistencyHash() =>
-    r'03c6217f510cd8af90259d612f0798b57066bd35';
+    r'c3bcb1e254228d4ba0f595a8e2ba4afd409072fb';
 
 /// Evaluates micronutrient adequacy items for [day].
 

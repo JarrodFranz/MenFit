@@ -312,7 +312,8 @@ class SettingsScreen extends ConsumerWidget {
           'activities and GPS routes, your saved routes, your check-ins '
           'and symptoms/flare-ups, your marked recovery days, your food '
           'diary (logged entries, saved '
-          'foods, and nutrition targets), your weight history, your synced '
+          'foods, and nutrition targets), your ketone readings, your weight '
+          'history, your synced '
           'step history, your earned achievements, your buddy challenges, '
           'and your app preferences (theme). This cannot be undone.',
         ),

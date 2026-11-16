@@ -50,10 +50,6 @@ class AppEnv {
     required this.offBaseUrl,
     required this.offSearchBaseUrl,
     required this.offContact,
-    required this.fatSecretClientId,
-    required this.fatSecretClientSecret,
-    required this.fatSecretTokenUrl,
-    required this.fatSecretApiBaseUrl,
     required this.fatSecretProxyUrl,
     required this.fatSecretProxyKey,
   });
@@ -68,10 +64,6 @@ class AppEnv {
     offBaseUrl: _offBaseUrl,
     offSearchBaseUrl: _offSearchBaseUrl,
     offContact: _offContact,
-    fatSecretClientId: _fatSecretClientId,
-    fatSecretClientSecret: _fatSecretClientSecret,
-    fatSecretTokenUrl: _fatSecretTokenUrl,
-    fatSecretApiBaseUrl: _fatSecretApiBaseUrl,
     fatSecretProxyUrl: _fatSecretProxyUrl,
     fatSecretProxyKey: _fatSecretProxyKey,
   );
@@ -162,33 +154,6 @@ class AppEnv {
   /// would be publishing the developer's address, not configuring an app.
   static const String _offContact = String.fromEnvironment('OFF_CONTACT');
 
-  /// FatSecret Client ID for food search and barcode lookups.
-  ///
-  /// Supplied via `--dart-define=FATSECRET_CLIENT_ID=...` or via gitignored
-  /// `env/*.secrets.json` overlay.
-  static const String _fatSecretClientId = String.fromEnvironment(
-    'FATSECRET_CLIENT_ID',
-  );
-
-  /// FatSecret Client Secret for OAuth 2.0 Client Credentials grant.
-  ///
-  /// Never commit to git (ADR 006). Supplied via gitignored secrets overlay.
-  static const String _fatSecretClientSecret = String.fromEnvironment(
-    'FATSECRET_CLIENT_SECRET',
-  );
-
-  /// FatSecret OAuth2 token exchange endpoint.
-  static const String _fatSecretTokenUrl = String.fromEnvironment(
-    'FATSECRET_TOKEN_URL',
-    defaultValue: 'https://oauth.fatsecret.com/connect/token',
-  );
-
-  /// FatSecret REST API endpoint.
-  static const String _fatSecretApiBaseUrl = String.fromEnvironment(
-    'FATSECRET_API_BASE_URL',
-    defaultValue: 'https://platform.fatsecret.com/rest/server.api',
-  );
-
   /// Optional FatSecret proxy endpoint URL (the Compute Engine VM proxy,
   /// see backend/fatsecret-proxy/README.md).
   static const String _fatSecretProxyUrl = String.fromEnvironment(
@@ -235,18 +200,6 @@ class AppEnv {
   /// Contact address for the Open Food Facts User-Agent; empty until it is
   /// set before distribution (see `_offContact` above).
   final String offContact;
-
-  /// FatSecret Client ID; empty when not configured.
-  final String fatSecretClientId;
-
-  /// FatSecret Client Secret; empty when not configured.
-  final String fatSecretClientSecret;
-
-  /// FatSecret OAuth2 token exchange endpoint.
-  final String fatSecretTokenUrl;
-
-  /// FatSecret REST API endpoint.
-  final String fatSecretApiBaseUrl;
 
   /// Optional FatSecret proxy endpoint URL.
   final String fatSecretProxyUrl;

@@ -131,7 +131,7 @@ final class OnlineFoodSearchControllerProvider
 }
 
 String _$onlineFoodSearchControllerHash() =>
-    r'e60b8664ad2fcc274484229e09ecb87291eecdf2';
+    r'e9f7f479027dade3590d88cde474eb56deb96e4c';
 
 /// Runs text searches against the food database — **only when asked**.
 ///

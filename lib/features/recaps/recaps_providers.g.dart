@@ -345,7 +345,7 @@ final class RecapForPeriodProvider
   }
 }
 
-String _$recapForPeriodHash() => r'dcf048b2ee7b7071f207d2701e499ab2842c80c8';
+String _$recapForPeriodHash() => r'e4543fe794cb30e7141d158b120b9fd82f86b75f';
 
 /// Builds the [MonthRecap] for an arbitrary [period], gathering every
 /// source through the owning feature's composition surface (ADR 007) —

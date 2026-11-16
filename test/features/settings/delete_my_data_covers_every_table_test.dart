@@ -24,7 +24,9 @@ void main() {
   test(
     'Delete my data empties every table declared in AppDatabase',
     () async {
-      SharedPreferences.setMockInitialValues({});
+      SharedPreferences.setMockInitialValues({
+        'saved_custom_wellbeing_events': ['Personal event'],
+      });
       final prefs = await SharedPreferences.getInstance();
       final database = db.AppDatabase.forTesting(NativeDatabase.memory());
       addTearDown(database.close);
@@ -36,6 +38,19 @@ void main() {
       // `actualTableName` rather than a hand-typed string, so a rename
       // can't silently drift this map out of sync with the schema.
       final seeds = <String, Future<void> Function()>{
+        database.ketoneReadings.actualTableName: () => database
+            .into(database.ketoneReadings)
+            .insert(
+              db.KetoneReadingsCompanion.insert(
+                id: 'ketone-1',
+                day: '2026-01-01',
+                type: 'blood',
+                result: '0.5',
+                measuredAt: now,
+                createdAt: now,
+                updatedAt: now,
+              ),
+            ),
         database.userProfiles.actualTableName: () => database
             .into(database.userProfiles)
             .insert(
@@ -315,6 +330,7 @@ void main() {
       // The same call `settings_screen.dart`'s "Delete my data" button
       // makes.
       await container.read(deleteMyDataServiceProvider).run();
+      expect(prefs.containsKey('saved_custom_wellbeing_events'), isFalse);
 
       final stillPopulated = <String>[];
       for (final tableName in seeds.keys) {

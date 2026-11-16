@@ -65,3 +65,7 @@ const warnDuplicateValues =
 const warnImplausibleUnit =
     "A value was printed in a unit that doesn't fit its nutrient and has "
     'been left out.';
+
+const warnMultipleServingGramFigures =
+    'The serving size line lists more than one gram weight — check that the '
+    'serving weight matches a single serving.';

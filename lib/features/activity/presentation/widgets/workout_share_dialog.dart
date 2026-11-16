@@ -391,7 +391,7 @@ class _WorkoutShareDialogState extends ConsumerState<WorkoutShareDialog> {
                   letterSpacing: -0.5,
                 ),
               )
-            else if (widget.activity.distanceMeters > 0)
+            else if (widget.activity.hasDistance)
               Row(
                 crossAxisAlignment: CrossAxisAlignment.baseline,
                 textBaseline: TextBaseline.alphabetic,
@@ -595,7 +595,7 @@ class _WorkoutShareDialogState extends ConsumerState<WorkoutShareDialog> {
     final prText = _showMilestones && shareableMilestones.isNotEmpty
         ? ' (${shareableMilestones.first.title})'
         : '';
-    final distText = widget.activity.distanceMeters > 0
+    final distText = widget.activity.hasDistance
         ? '• Distance: $distanceKm km\n'
         : '';
     final metricText = widget.primaryMetricValue != null

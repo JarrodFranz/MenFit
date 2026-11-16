@@ -41,10 +41,21 @@ class FuelingConsistencyEvaluator {
   const FuelingConsistencyEvaluator();
 
   /// Evaluates the 7-day window from [today.minusDays(6)] to [today].
+  ///
+  /// [basisKcal] is the day's resolved energy basis (see
+  /// `nutrition/domain/nutrition_goals.dart#macroTargetGramsFor`) — required
+  /// to turn a percent-mode protein target into grams. Never read
+  /// [goals]'s `proteinTargetGrams` directly: that field is only populated
+  /// in gram mode, so a percent-mode goal read that way would never be
+  /// achievable. When [basisKcal] is absent (or [goals] has no target at
+  /// all), the protein axis of the milestone is simply unreachable for the
+  /// window — the honest "no target" answer, not an inflated "target of
+  /// zero" that every day would trivially pass.
   FuelingConsistencyResult evaluate({
     required List<NutritionEntry> entries,
     required NutritionGoals? goals,
     required LocalDate today,
+    required int? basisKcal,
   }) {
     final windowStart = today.addDays(-6);
 
@@ -58,7 +69,7 @@ class FuelingConsistencyEvaluator {
 
     var daysLogged = 0;
     var proteinGoalsMet = 0;
-    final targetProtein = goals?.proteinTargetGrams ?? 0;
+    final targetProtein = goals?.macroTargetGramsFor(basisKcal).protein;
 
     for (var i = 0; i < 7; i++) {
       final day = windowStart.addDays(i);
@@ -70,8 +81,11 @@ class FuelingConsistencyEvaluator {
           daysLogged++;
         }
 
-        // Protein goal met (within 85% threshold of target)
-        if (targetProtein > 0 &&
+        // Protein goal met (within 85% threshold of target). `null` means
+        // no target — grams mode with nothing set, or percent mode with no
+        // calorie basis to derive from — so it can never be met.
+        if (targetProtein != null &&
+            targetProtein > 0 &&
             totals.proteinGrams >= (targetProtein * 0.85)) {
           proteinGoalsMet++;
         }

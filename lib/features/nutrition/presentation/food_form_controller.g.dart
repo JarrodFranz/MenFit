@@ -59,7 +59,7 @@ final class FoodFormControllerProvider
 }
 
 String _$foodFormControllerHash() =>
-    r'1393551e7465286478d9af3db6a9977f5b8510e3';
+    r'93e9c7b9151297634e43dfd975c9fed8e8862da1';
 
 final class FoodFormControllerFamily extends $Family
     with

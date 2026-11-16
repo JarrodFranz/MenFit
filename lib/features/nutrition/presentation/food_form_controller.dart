@@ -229,8 +229,13 @@ class FoodFormController extends _$FoodFormController {
     // renders — a caution to check every value, not a dead end.
     if (label.isEmpty) return LabelScanOutcome.notRecognised;
 
-    state = applyLabelScan(state, mapParsedLabel(label));
+    state = applyLabelScan(state, mapParsedLabel(label), parsedLabel: label);
     return LabelScanOutcome.applied;
+  }
+
+  /// Switches the basis for a scanned label between Per Serving and Per 100g/mL.
+  void switchLabelBasis(LabelScanBasis targetBasis) {
+    state = switchScannedLabelBasis(state, targetBasis);
   }
 
   /// A live catalogue food already keyed on [canonicalBarcode] that is **not
@@ -487,6 +492,7 @@ class FoodFormController extends _$FoodFormController {
         // re-opened for editing keeps whatever it already was. See
         // `presentation/food_form_seed.dart#source` and ADR 010.
         source: seed?.source ?? FoodSource.custom,
+        providerFoodId: seed?.providerFoodId,
         createdAt: now,
         updatedAt: now,
       );

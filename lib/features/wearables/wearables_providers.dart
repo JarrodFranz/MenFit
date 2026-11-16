@@ -67,11 +67,20 @@ class WearablesController extends _$WearablesController {
 
   /// Triggers a full sync of external workouts from Garmin / Health Connect
   /// and connected watch companions.
-  Future<WearableSyncResult> syncAll({DateTime? since}) async {
+  ///
+  /// [userInitiated] lets the service raise the platform permission sheet
+  /// when workout access is missing; background syncs never prompt.
+  Future<WearableSyncResult> syncAll({
+    DateTime? since,
+    bool userInitiated = false,
+  }) async {
     state = state.copyWith(isSyncing: true);
     try {
       final service = ref.read(wearableWorkoutSyncServiceProvider);
-      final result = await service.syncAll(since: since);
+      final result = await service.syncAll(
+        since: since,
+        requestPermissionIfMissing: userInitiated,
+      );
       await _refreshCompanionInfo();
       state = state.copyWith(
         isSyncing: false,

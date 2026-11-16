@@ -19,7 +19,7 @@ import 'package:menfit_app/features/activity/presentation/activity_export_contro
 import 'package:menfit_app/features/activity/presentation/widgets/route_map.dart';
 import 'package:menfit_app/features/activity/presentation/widgets/splits_section.dart';
 import 'package:menfit_app/features/activity/presentation/widgets/workout_share_dialog.dart';
-import 'package:menfit_app/features/nutrition/presentation/nutrition_goals_controller.dart';
+import 'package:menfit_app/features/nutrition/nutrition_providers.dart';
 import 'package:menfit_app/features/profile/presentation/profile_controller.dart';
 import 'package:menfit_app/features/routes/routes_providers.dart';
 import 'package:menfit_app/features/settings/presentation/settings_controller.dart';
@@ -616,8 +616,7 @@ class _EnergyEstimateSection extends ConsumerWidget {
     final showEstimates = ref.watch(activityEnergyEstimatesControllerProvider);
     if (!showEstimates) return const SizedBox.shrink();
 
-    final goals = ref.watch(nutritionGoalsControllerProvider).value;
-    if (goals?.hideCalorieNumbers == true) return const SizedBox.shrink();
+    if (ref.watch(hideCalorieNumbersProvider)) return const SizedBox.shrink();
 
     final profile = ref.watch(profileControllerProvider).value;
     if (profile == null) return const SizedBox.shrink();
@@ -782,20 +781,20 @@ class _StatsGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = Theme.of(context).extension<AppTokens>()!;
 
+    final type = activity.activityType;
+    // "Other" shows a distance only when one was logged; the named distance
+    // types show theirs even at zero.
     final isDistanceRelevant =
-        activity.distanceMeters > 0 ||
-        activity.activityType == ActivityType.run ||
-        activity.activityType == ActivityType.walk ||
-        activity.activityType == ActivityType.hike ||
-        activity.activityType == ActivityType.ride ||
-        activity.activityType == ActivityType.swim;
+        type.tracksDistance &&
+        (activity.distanceMeters > 0 || type != ActivityType.other);
+    final pace = activity.avgPaceSecondsPerKm;
 
     final stats = <_Stat>[
       if (isDistanceRelevant)
         _Stat('Distance', formatDistance(activity.distanceMeters, unitSystem)),
       _Stat('Moving time', formatDuration(activity.movingTime)),
-      if (isDistanceRelevant && (activity.avgPaceSecondsPerKm ?? 0) > 0)
-        _Stat('Pace', formatPace(activity.avgPaceSecondsPerKm, unitSystem)),
+      if (isDistanceRelevant && pace != null)
+        _Stat('Pace', formatPace(pace, unitSystem)),
       if (activity.elapsedTime != activity.movingTime)
         _Stat('Elapsed time', formatDuration(activity.elapsedTime)),
       if (activity.elevationGainMeters != null)

@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+
 import 'package:menfit_app/core/domain/ocr/ocr_text.dart';
 import 'package:menfit_app/features/nutrition/domain/label_ocr/label_warnings.dart';
 import 'package:menfit_app/features/nutrition/domain/label_ocr/nutrition_label_parser.dart';
@@ -422,6 +423,59 @@ void main() {
         label.perServing!.proteinG!.confidence,
         lessThan(withHeadings.perServing!.proteinG!.confidence),
       );
+    });
+
+    test('three columns infer perServing, percentDaily and per100g', () {
+      final label3 = parser.parse(headerlessThreeColumn());
+      expect(label3.warnings, contains(warnColumnsAssumed));
+      expect(label3.perServing?.energyKj?.value, 720);
+      expect(label3.perServing?.proteinG?.value, closeTo(15.0, 0.001));
+      expect(label3.perServing?.fatG?.value, closeTo(1.5, 0.001));
+      expect(label3.per100?.energyKj?.value, 847);
+      expect(label3.per100?.proteinG?.value, closeTo(17.6, 0.001));
+      expect(label3.per100?.fatG?.value, closeTo(1.8, 0.001));
+    });
+  });
+
+  group('FSANZ three-column stacked panel', () {
+    final label = parser.parse(fsanzThreeColumnStacked());
+
+    test('recognises the standard and the serving statement', () {
+      expect(label.format, LabelFormat.fsanz);
+      expect(label.serving?.description, '85g');
+      expect(label.serving?.grams, 85);
+      expect(label.serving?.servingsPerPackage, 2);
+    });
+
+    test('detects multi-line stacked headers and skips both header rows', () {
+      // Both header rows are skipped, so '85g' from 'Serving 85g' is not
+      // mistaken for nutrient data.
+      expect(label.perServing, isNotNull);
+      expect(label.per100, isNotNull);
+      expect(label.perServing?.energyKj?.value, 720);
+      expect(label.perServing?.proteinG?.value, closeTo(15.0, 0.001));
+      expect(label.perServing?.fatG?.value, closeTo(1.5, 0.001));
+      expect(label.perServing?.saturatedFatG?.value, closeTo(0.4, 0.001));
+      expect(label.perServing?.carbsG?.value, closeTo(22.0, 0.001));
+      expect(label.perServing?.sugarsG?.value, closeTo(1.2, 0.001));
+      expect(label.perServing?.sodiumMg?.value, 320);
+
+      expect(label.per100?.energyKj?.value, 847);
+      expect(label.per100?.proteinG?.value, closeTo(17.6, 0.001));
+      expect(label.per100?.fatG?.value, closeTo(1.8, 0.001));
+      expect(label.per100?.saturatedFatG?.value, closeTo(0.5, 0.001));
+      expect(label.per100?.carbsG?.value, closeTo(25.9, 0.001));
+      expect(label.per100?.sugarsG?.value, closeTo(1.4, 0.001));
+      expect(label.per100?.sodiumMg?.value, 376);
+    });
+
+    test('middle %DI column is discarded and does not bleed into macros', () {
+      // Verify that %DI values (8%, 30%, 2%, etc.) are not in perServing
+      // or per100.
+      expect(label.perServing?.proteinG?.value, isNot(closeTo(30.0, 0.001)));
+      expect(label.per100?.proteinG?.value, isNot(closeTo(30.0, 0.001)));
+      expect(label.perServing?.proteinG?.value, closeTo(15.0, 0.001));
+      expect(label.per100?.proteinG?.value, closeTo(17.6, 0.001));
     });
   });
 

@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:menfit_app/core/errors/error_messages.dart';
 import 'package:menfit_app/features/nutrition/data/online_lookup_notice_store.dart';
+import 'package:menfit_app/features/nutrition/domain/food.dart';
 import 'package:menfit_app/features/nutrition/domain/food_search_ranking.dart';
 import 'package:menfit_app/features/nutrition/domain/provider_food.dart';
 import 'package:menfit_app/features/nutrition/nutrition_providers.dart';
@@ -163,16 +164,6 @@ class OnlineFoodSearchController extends _$OnlineFoodSearchController {
         scope: scope,
       );
 
-      _set(
-        OnlineFoodSearchState(
-          results: [...existing, ...rawHits],
-          hasSearched: true,
-          hasMore: rawHits.length == onlineFoodSearchPageSize,
-          query: query,
-          page: page,
-        ),
-      );
-
       // Search index (Search-a-licious) only indexes 100g fields and omits
       // serving sizes. Enrich the hits with actual serving sizes and
       // per-serving macros by checking the local catalogue first, then
@@ -181,75 +172,53 @@ class OnlineFoodSearchController extends _$OnlineFoodSearchController {
       final enrichedHits = await Future.wait(
         rawHits.map((summary) async {
           try {
-            final localFood = await nutritionRepo.getFoodByBarcode(
-              summary.barcode,
-            );
-            if (localFood != null) {
-              final sg = localFood.servingGrams;
-              final hasSg = sg != null && sg > 0;
-              final pS = localFood.perServing;
-              return summary.copyWith(
-                name: localFood.name.isNotEmpty ? localFood.name : summary.name,
-                brand: localFood.brand ?? summary.brand,
-                servingDescription: localFood.servingDescription,
-                servingGrams: sg,
-                servingCaloriesKcal: pS.caloriesKcal,
-                caloriesKcal:
-                    summary.caloriesKcal ??
-                    (hasSg ? pS.caloriesKcal * 100 / sg : pS.caloriesKcal),
-                proteinGrams:
-                    summary.proteinGrams ??
-                    (hasSg ? pS.proteinGrams * 100 / sg : pS.proteinGrams),
-                carbsGrams:
-                    summary.carbsGrams ??
-                    (hasSg ? pS.carbsGrams * 100 / sg : pS.carbsGrams),
-                fatGrams:
-                    summary.fatGrams ??
-                    (hasSg ? pS.fatGrams * 100 / sg : pS.fatGrams),
+            final code = summary.barcode;
+            final local =
+                await nutritionRepo.getFoodByProviderId(
+                  summary.source,
+                  summary.providerFoodId,
+                ) ??
+                (code == null
+                    ? null
+                    : await nutritionRepo.getFoodByBarcode(code));
+            if (local != null) {
+              return _rebase(
+                summary.copyWith(
+                  name: local.name,
+                  brand: local.brand,
+                  servingDescription: local.servingDescription,
+                ),
+                servingGrams: local.servingGrams,
+                servingVolumeMl: local.servingVolumeMl,
+                caloriesKcal: local.perServing.caloriesKcal,
+                proteinGrams: local.perServing.proteinGrams,
+                carbsGrams: local.perServing.carbsGrams,
+                fatGrams: local.perServing.fatGrams,
               );
             }
-
-            // Resolved to the specific provider that produced this hit
-            // (`FoodDataProvider.providerFor`), never the composite: a
-            // FatSecret hit's `barcode` is a FatSecret `food_id`, not a
-            // GTIN, and handing it to the composite would pad it into a
-            // barcode shape, miss on FatSecret, and fall back to Open Food
-            // Facts under a code that means nothing there — risking the
-            // wrong product and a needless second outbound request per hit.
-            final product = await provider
-                .providerFor(summary.source)
-                .findByBarcode(summary.barcode, scope: scope);
-            if (product == null || product.barcode != summary.barcode) {
+            // Structured FatSecret hits already contain their serving figures.
+            if (summary.source == FoodSource.fatSecret &&
+                summary.caloriesKcal != null) {
               return summary;
             }
-            final sg = product.servingGrams;
-            final hasSg = sg != null && sg > 0;
-            return summary.copyWith(
-              name: product.name.isNotEmpty ? product.name : summary.name,
-              brand: product.brand ?? summary.brand,
-              servingDescription: product.servingDescription,
-              servingGrams: sg,
-              servingCaloriesKcal: product.caloriesKcal,
-              caloriesKcal:
-                  summary.caloriesKcal ??
-                  (hasSg && product.caloriesKcal != null
-                      ? product.caloriesKcal! * 100 / sg
-                      : product.caloriesKcal),
-              proteinGrams:
-                  summary.proteinGrams ??
-                  (hasSg && product.proteinGrams != null
-                      ? product.proteinGrams! * 100 / sg
-                      : product.proteinGrams),
-              carbsGrams:
-                  summary.carbsGrams ??
-                  (hasSg && product.carbsGrams != null
-                      ? product.carbsGrams! * 100 / sg
-                      : product.carbsGrams),
-              fatGrams:
-                  summary.fatGrams ??
-                  (hasSg && product.fatGrams != null
-                      ? product.fatGrams! * 100 / sg
-                      : product.fatGrams),
+            final product = await provider.fetchDetails(summary, scope: scope);
+            if (product == null ||
+                (product.providerFoodId ?? product.barcode) !=
+                    summary.providerFoodId) {
+              return summary;
+            }
+            return _rebase(
+              summary.copyWith(
+                name: product.name,
+                brand: product.brand,
+                servingDescription: product.servingDescription,
+              ),
+              servingGrams: product.servingGrams,
+              servingVolumeMl: product.servingVolumeMl,
+              caloriesKcal: product.caloriesKcal,
+              proteinGrams: product.proteinGrams,
+              carbsGrams: product.carbsGrams,
+              fatGrams: product.fatGrams,
             );
           } on Object catch (_) {
             return summary;
@@ -262,9 +231,13 @@ class OnlineFoodSearchController extends _$OnlineFoodSearchController {
         query: query,
       );
 
-      final existingBarcodes = existing.map((e) => e.barcode).toSet();
+      final existingBarcodes = existing
+          .map((e) => (e.source, e.providerFoodId))
+          .toSet();
       final fresh = rankedFreshHits
-          .where((e) => !existingBarcodes.contains(e.barcode))
+          .where(
+            (e) => !existingBarcodes.contains((e.source, e.providerFoodId)),
+          )
           .toList();
 
       _set(
@@ -288,4 +261,44 @@ class OnlineFoodSearchController extends _$OnlineFoodSearchController {
       );
     }
   }
+}
+
+/// Keeps the numbers and their basis together; never infers mass from volume.
+ProviderFoodSummary _rebase(
+  ProviderFoodSummary summary, {
+  required double? servingGrams,
+  required double? servingVolumeMl,
+  required double? caloriesKcal,
+  required double? proteinGrams,
+  required double? carbsGrams,
+  required double? fatGrams,
+}) {
+  final grams =
+      servingGrams != null && servingGrams.isFinite && servingGrams > 0
+      ? servingGrams
+      : null;
+  final ml =
+      servingVolumeMl != null && servingVolumeMl.isFinite && servingVolumeMl > 0
+      ? servingVolumeMl
+      : null;
+  final divisor = grams ?? ml;
+  double? per(double? value) => value == null || !value.isFinite
+      ? null
+      : divisor == null
+      ? value
+      : value * 100 / divisor;
+  return summary.copyWith(
+    servingGrams: grams,
+    servingVolumeMl: ml,
+    servingCaloriesKcal: caloriesKcal,
+    macroBasis: grams != null
+        ? SummaryMacroBasis.per100g
+        : ml != null
+        ? SummaryMacroBasis.per100ml
+        : SummaryMacroBasis.perServing,
+    caloriesKcal: per(caloriesKcal),
+    proteinGrams: per(proteinGrams),
+    carbsGrams: per(carbsGrams),
+    fatGrams: per(fatGrams),
+  );
 }

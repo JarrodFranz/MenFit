@@ -74,6 +74,38 @@ void main() {
     });
   });
 
+  group('Health Connect read permissions', () {
+    final manifest = File(
+      'android/app/src/main/AndroidManifest.xml',
+    ).readAsStringSync();
+
+    // Health Connect silently refuses to grant any permission the manifest
+    // does not declare. READ_EXERCISE and READ_DISTANCE were missing once,
+    // so Garmin/wearable workouts could never be granted or read while
+    // steps kept working - the sync reported "up to date" with nothing in it.
+    for (final permission in [
+      'READ_STEPS',
+      'READ_ACTIVE_CALORIES_BURNED',
+      'READ_TOTAL_CALORIES_BURNED',
+      'READ_EXERCISE',
+      'READ_DISTANCE',
+    ]) {
+      test('declares health.$permission', () {
+        final pattern = RegExp(
+          '<uses-permission\\s+android:name="android\\.permission\\.health\\.$permission"\\s*/>',
+        );
+        expect(
+          pattern.hasMatch(manifest),
+          isTrue,
+          reason:
+              'AndroidManifest.xml must declare '
+              'android.permission.health.$permission or Health Connect '
+              'cannot grant it.',
+        );
+      });
+    }
+  });
+
   test('AndroidManifest.xml queries android.intent.action.TTS_SERVICE', () {
     final manifest = File(
       'android/app/src/main/AndroidManifest.xml',

@@ -64,8 +64,7 @@ class LogEntryDialog extends ConsumerWidget {
     final provider = logEntryControllerProvider(existing, food, day, meal);
     final state = ref.watch(provider);
     final controller = ref.read(provider.notifier);
-    final hideCalories =
-        ref.watch(nutritionGoalsProvider).value?.hideCalorieNumbers ?? false;
+    final hideCalories = ref.watch(hideCalorieNumbersProvider);
     final isEditing = existing != null;
 
     ref.listen(provider, (previous, next) {

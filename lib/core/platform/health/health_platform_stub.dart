@@ -21,6 +21,9 @@ class StubHealthPlatformAdapter implements HealthPlatformAdapter {
   Future<bool> hasStepsPermission() async => false;
 
   @override
+  Future<bool> hasWorkoutPermission() async => false;
+
+  @override
   Future<bool> requestPermissions() async => false;
 
   @override

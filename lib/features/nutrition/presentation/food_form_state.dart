@@ -1,6 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:menfit_app/features/nutrition/domain/food.dart';
+import 'package:menfit_app/features/nutrition/domain/label_ocr/parsed_nutrition_label.dart';
 import 'package:menfit_app/features/nutrition/domain/nutrition_validation.dart';
+import 'package:menfit_app/features/nutrition/presentation/label_scan_fields.dart';
 
 part 'food_form_state.freezed.dart';
 
@@ -90,6 +92,13 @@ abstract class FoodFormState with _$FoodFormState {
     /// interpolated into a message — see `label_scan_merge.dart`. Display
     /// only: never logged, never in an exception.
     @Default(<String>[]) List<String> labelWarnings,
+
+    /// The raw parsed label from the most recent scan, if any.
+    ParsedNutritionLabel? parsedLabel,
+
+    /// Which column basis is currently active in the form if a label was
+    /// scanned.
+    LabelScanBasis? activeLabelBasis,
 
     /// A scanned panel was per 100 **mL**, so no weight could be derived
     /// from it and one is required before saving.

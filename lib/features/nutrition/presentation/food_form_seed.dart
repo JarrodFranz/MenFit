@@ -35,6 +35,7 @@ abstract class FoodFormSeed with _$FoodFormSeed {
   const factory FoodFormSeed({
     /// The provider's **echoed** barcode — see [FoodFormSeed.fromProviderFood].
     required String barcode,
+    String? providerFoodId,
 
     /// Where the *data* in this seed came from, which is what the saved
     /// [Food] must record (ADR 010: provenance records where data came from,
@@ -148,9 +149,14 @@ abstract class FoodFormSeed with _$FoodFormSeed {
   /// default: with a fallback provider live (ADR 016) a single build can
   /// answer with either catalogue, and only the result records which one
   /// actually produced it.
+  ///
+  /// A record with no real barcode (a FatSecret record fetched by its
+  /// `food_id`) seeds an **empty** barcode field: a provider's record id is
+  /// never a barcode (B23).
   factory FoodFormSeed.fromProviderFood(ProviderFood food) => FoodFormSeed(
-    barcode: food.barcode,
+    barcode: food.barcode ?? '',
     source: food.source,
+    providerFoodId: food.providerFoodId,
     name: food.name,
     brand: food.brand ?? '',
     servingDescription: food.servingDescription,
@@ -270,6 +276,7 @@ abstract class FoodFormSeed with _$FoodFormSeed {
     existingFoodId: food.id,
     barcode: food.barcode ?? '',
     source: food.source,
+    providerFoodId: food.providerFoodId,
     name: food.name,
     brand: food.brand ?? '',
     servingDescription: food.servingDescription,

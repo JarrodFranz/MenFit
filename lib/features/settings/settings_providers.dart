@@ -1,6 +1,7 @@
 import 'package:menfit_app/features/achievements/achievements_providers.dart';
 import 'package:menfit_app/features/activity/activity_providers.dart';
 import 'package:menfit_app/features/challenges/challenges_providers.dart';
+import 'package:menfit_app/features/keto/keto_providers.dart';
 import 'package:menfit_app/features/nutrition/nutrition_providers.dart';
 import 'package:menfit_app/features/profile/profile_providers.dart';
 import 'package:menfit_app/features/recaps/recaps_providers.dart';
@@ -23,6 +24,7 @@ part 'settings_providers.g.dart';
 DeleteMyDataService deleteMyDataService(Ref ref) {
   return DeleteMyDataService(
     wellbeingRepository: ref.watch(wellbeingRepositoryProvider),
+    ketoneRepository: ref.watch(ketoneRepositoryProvider),
     recoveryRepository: ref.watch(recoveryRepositoryProvider),
     activityRepository: ref.watch(activityRepositoryProvider),
     routeRepository: ref.watch(routeRepositoryProvider),
@@ -42,5 +44,7 @@ DeleteMyDataService deleteMyDataService(Ref ref) {
     clearRecapMarkers: () => ref.read(recapMarkerStoreProvider).clear(),
     clearOnlineLookupNotice: () =>
         ref.read(onlineLookupNoticeStoreProvider).clear(),
+    clearCustomEventTitles: () =>
+        ref.read(customWellbeingEventStoreProvider).clear(),
   );
 }

@@ -136,7 +136,7 @@ void main() {
       final plist = File('ios/Runner/Info.plist').readAsStringSync();
       expect(
         plist,
-        contains('<key>ITSAppUsesNonExemptEncryption</key>\n\t<false/>'),
+        matches(r'<key>ITSAppUsesNonExemptEncryption</key>\s*<false/>'),
         reason:
             'ITSAppUsesNonExemptEncryption must be false so App Store '
             'Connect stops prompting "Missing Compliance" on every build.',
@@ -164,7 +164,7 @@ void main() {
         final entitlements = file.readAsStringSync();
         expect(
           entitlements,
-          contains('<key>com.apple.developer.healthkit</key>\n\t<true/>'),
+          matches(r'<key>com.apple.developer.healthkit</key>\s*<true/>'),
         );
         expect(
           entitlements,

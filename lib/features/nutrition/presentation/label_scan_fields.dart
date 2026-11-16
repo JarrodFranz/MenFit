@@ -142,7 +142,8 @@ class LabelScanFields {
 
 /// Reads [label] as form-field text.
 ///
-/// Column choice, in order:
+/// If [preferredBasis] is provided and available on [label], that column is
+/// selected. Otherwise, column choice falls back to:
 ///
 /// 1. The per-serving column **when the panel also stated a serving
 ///    weight** — the only case where the numbers and the amount they are
@@ -152,14 +153,34 @@ class LabelScanFields {
 ///    (see [LabelScanBasis.per100ml]).
 /// 3. Otherwise a per-serving column with no weight, which fills the
 ///    numbers and leaves the amount for the user.
-LabelScanFields mapParsedLabel(ParsedNutritionLabel label) {
+LabelScanFields mapParsedLabel(
+  ParsedNutritionLabel label, {
+  LabelScanBasis? preferredBasis,
+}) {
   final serving = label.serving;
   final perServing = label.perServing;
   final per100 = label.per100;
 
   final ParsedColumn? column;
   final LabelScanBasis basis;
-  if (perServing != null && !perServing.isEmpty && serving?.grams != null) {
+  if (preferredBasis == LabelScanBasis.per100g &&
+      per100 != null &&
+      !per100.isEmpty) {
+    column = per100;
+    basis = LabelScanBasis.per100g;
+  } else if (preferredBasis == LabelScanBasis.per100ml &&
+      per100 != null &&
+      !per100.isEmpty) {
+    column = per100;
+    basis = LabelScanBasis.per100ml;
+  } else if (preferredBasis == LabelScanBasis.serving &&
+      perServing != null &&
+      !perServing.isEmpty) {
+    column = perServing;
+    basis = LabelScanBasis.serving;
+  } else if (perServing != null &&
+      !perServing.isEmpty &&
+      serving?.grams != null) {
     column = perServing;
     basis = LabelScanBasis.serving;
   } else if (per100 != null && !per100.isEmpty) {

@@ -46,9 +46,17 @@ class FoodDataAttribution extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Food data from $name', style: style),
+          Text(
+            name == 'FatSecret'
+                ? 'Powered by fatsecret Platform API'
+                : 'Food data from $name',
+            style: style,
+          ),
           SizedBox(height: tokens.spacingXs),
-          SelectableText(url, style: style),
+          SelectableText(
+            name == 'FatSecret' ? 'https://platform.fatsecret.com' : url,
+            style: style,
+          ),
         ],
       ),
     );

@@ -23,22 +23,41 @@ mixin _$ProviderFoodSummary {
 /// back to a second one (`domain/fallback_food_data_provider.dart`), a
 /// missing source here would be a provenance bug, not a detail to paper
 /// over with a guess.
- FoodSource get source;/// The provider's product code, as the provider echoed it back (which
-/// is not necessarily the string that was searched for).
- String get barcode;/// Best available product name; never blank (falls back to the
-/// barcode when the provider has no usable name).
- String get name;/// Brand or maker, when the provider states one.
- String? get brand;/// Energy per 100 g, in kilocalories. `null` means the provider
+ FoodSource get source;/// The provider's **own key** for this record — what
+/// `FoodDataProvider.fetchDetails` fetches the full record by. A
+/// FatSecret `food_id`, an Open Food Facts product code.
+///
+/// **Never a barcode by shape.** A FatSecret `food_id` is a run of
+/// digits, and an 8-digit one can pass the EAN-8 check digit
+/// (`27365861` does), so nothing may infer "this is a GTIN" from what
+/// an id looks like. That inference sent search hits down the barcode
+/// path and put the id in the form's barcode field (B23). Whether a
+/// hit has a barcode at all is [barcode]'s job to say.
+ String get providerFoodId;/// Best available product name; never blank (falls back to the
+/// provider's id when the provider has no usable name).
+ String get name;/// The product's real GTIN barcode, **only when the provider states
+/// one**, as the provider echoed it back. `null` for a FatSecret search
+/// hit — `foods.search` carries no barcode — and never filled from
+/// [providerFoodId].
+ String? get barcode;/// Brand or maker, when the provider states one.
+ String? get brand;/// Energy per [macroBasis], in kilocalories. `null` means the provider
 /// doesn't state it.
- double? get caloriesKcal;/// Protein per 100 g, in grams. `null` means not stated.
- double? get proteinGrams;/// Carbohydrate per 100 g, in grams. `null` means not stated.
- double? get carbsGrams;/// Fat per 100 g, in grams. `null` means not stated.
+ double? get caloriesKcal;/// Protein per [macroBasis], in grams. `null` means not stated.
+ double? get proteinGrams;/// Carbohydrate per [macroBasis], in grams. `null` means not stated.
+ double? get carbsGrams;/// Fat per [macroBasis], in grams. `null` means not stated.
  double? get fatGrams;/// Stated serving description (e.g. "1 bar (45 g)", "250 ml"), when
 /// available.
  String? get servingDescription;/// Serving weight in grams, when available.
  double? get servingGrams;/// Serving volume in millilitres, when available.
  double? get servingVolumeMl;/// Energy per serving in kilocalories, when available.
- double? get servingCaloriesKcal;
+ double? get servingCaloriesKcal;/// What [caloriesKcal], [proteinGrams], [carbsGrams] and [fatGrams] are
+/// per: 100 g, 100 ml, or the stated serving — see [SummaryMacroBasis].
+///
+/// Defaults to [SummaryMacroBasis.per100g] because that is what every
+/// search index answers with unless it says otherwise; a mapper that
+/// knows better sets it, and anything rendering or rescaling these
+/// numbers must read it rather than assume.
+ SummaryMacroBasis get macroBasis;
 /// Create a copy of ProviderFoodSummary
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,16 +68,16 @@ $ProviderFoodSummaryCopyWith<ProviderFoodSummary> get copyWith => _$ProviderFood
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderFoodSummary&&(identical(other.source, source) || other.source == source)&&(identical(other.barcode, barcode) || other.barcode == barcode)&&(identical(other.name, name) || other.name == name)&&(identical(other.brand, brand) || other.brand == brand)&&(identical(other.caloriesKcal, caloriesKcal) || other.caloriesKcal == caloriesKcal)&&(identical(other.proteinGrams, proteinGrams) || other.proteinGrams == proteinGrams)&&(identical(other.carbsGrams, carbsGrams) || other.carbsGrams == carbsGrams)&&(identical(other.fatGrams, fatGrams) || other.fatGrams == fatGrams)&&(identical(other.servingDescription, servingDescription) || other.servingDescription == servingDescription)&&(identical(other.servingGrams, servingGrams) || other.servingGrams == servingGrams)&&(identical(other.servingVolumeMl, servingVolumeMl) || other.servingVolumeMl == servingVolumeMl)&&(identical(other.servingCaloriesKcal, servingCaloriesKcal) || other.servingCaloriesKcal == servingCaloriesKcal));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderFoodSummary&&(identical(other.source, source) || other.source == source)&&(identical(other.providerFoodId, providerFoodId) || other.providerFoodId == providerFoodId)&&(identical(other.name, name) || other.name == name)&&(identical(other.barcode, barcode) || other.barcode == barcode)&&(identical(other.brand, brand) || other.brand == brand)&&(identical(other.caloriesKcal, caloriesKcal) || other.caloriesKcal == caloriesKcal)&&(identical(other.proteinGrams, proteinGrams) || other.proteinGrams == proteinGrams)&&(identical(other.carbsGrams, carbsGrams) || other.carbsGrams == carbsGrams)&&(identical(other.fatGrams, fatGrams) || other.fatGrams == fatGrams)&&(identical(other.servingDescription, servingDescription) || other.servingDescription == servingDescription)&&(identical(other.servingGrams, servingGrams) || other.servingGrams == servingGrams)&&(identical(other.servingVolumeMl, servingVolumeMl) || other.servingVolumeMl == servingVolumeMl)&&(identical(other.servingCaloriesKcal, servingCaloriesKcal) || other.servingCaloriesKcal == servingCaloriesKcal)&&(identical(other.macroBasis, macroBasis) || other.macroBasis == macroBasis));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,source,barcode,name,brand,caloriesKcal,proteinGrams,carbsGrams,fatGrams,servingDescription,servingGrams,servingVolumeMl,servingCaloriesKcal);
+int get hashCode => Object.hash(runtimeType,source,providerFoodId,name,barcode,brand,caloriesKcal,proteinGrams,carbsGrams,fatGrams,servingDescription,servingGrams,servingVolumeMl,servingCaloriesKcal,macroBasis);
 
 @override
 String toString() {
-  return 'ProviderFoodSummary(source: $source, barcode: $barcode, name: $name, brand: $brand, caloriesKcal: $caloriesKcal, proteinGrams: $proteinGrams, carbsGrams: $carbsGrams, fatGrams: $fatGrams, servingDescription: $servingDescription, servingGrams: $servingGrams, servingVolumeMl: $servingVolumeMl, servingCaloriesKcal: $servingCaloriesKcal)';
+  return 'ProviderFoodSummary(source: $source, providerFoodId: $providerFoodId, name: $name, barcode: $barcode, brand: $brand, caloriesKcal: $caloriesKcal, proteinGrams: $proteinGrams, carbsGrams: $carbsGrams, fatGrams: $fatGrams, servingDescription: $servingDescription, servingGrams: $servingGrams, servingVolumeMl: $servingVolumeMl, servingCaloriesKcal: $servingCaloriesKcal, macroBasis: $macroBasis)';
 }
 
 
@@ -69,7 +88,7 @@ abstract mixin class $ProviderFoodSummaryCopyWith<$Res>  {
   factory $ProviderFoodSummaryCopyWith(ProviderFoodSummary value, $Res Function(ProviderFoodSummary) _then) = _$ProviderFoodSummaryCopyWithImpl;
 @useResult
 $Res call({
- FoodSource source, String barcode, String name, String? brand, double? caloriesKcal, double? proteinGrams, double? carbsGrams, double? fatGrams, String? servingDescription, double? servingGrams, double? servingVolumeMl, double? servingCaloriesKcal
+ FoodSource source, String providerFoodId, String name, String? barcode, String? brand, double? caloriesKcal, double? proteinGrams, double? carbsGrams, double? fatGrams, String? servingDescription, double? servingGrams, double? servingVolumeMl, double? servingCaloriesKcal, SummaryMacroBasis macroBasis
 });
 
 
@@ -86,12 +105,13 @@ class _$ProviderFoodSummaryCopyWithImpl<$Res>
 
 /// Create a copy of ProviderFoodSummary
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? source = null,Object? barcode = null,Object? name = null,Object? brand = freezed,Object? caloriesKcal = freezed,Object? proteinGrams = freezed,Object? carbsGrams = freezed,Object? fatGrams = freezed,Object? servingDescription = freezed,Object? servingGrams = freezed,Object? servingVolumeMl = freezed,Object? servingCaloriesKcal = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? source = null,Object? providerFoodId = null,Object? name = null,Object? barcode = freezed,Object? brand = freezed,Object? caloriesKcal = freezed,Object? proteinGrams = freezed,Object? carbsGrams = freezed,Object? fatGrams = freezed,Object? servingDescription = freezed,Object? servingGrams = freezed,Object? servingVolumeMl = freezed,Object? servingCaloriesKcal = freezed,Object? macroBasis = null,}) {
   return _then(ProviderFoodSummary(
 source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
-as FoodSource,barcode: null == barcode ? _self.barcode : barcode // ignore: cast_nullable_to_non_nullable
+as FoodSource,providerFoodId: null == providerFoodId ? _self.providerFoodId : providerFoodId // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,brand: freezed == brand ? _self.brand : brand // ignore: cast_nullable_to_non_nullable
+as String,barcode: freezed == barcode ? _self.barcode : barcode // ignore: cast_nullable_to_non_nullable
+as String?,brand: freezed == brand ? _self.brand : brand // ignore: cast_nullable_to_non_nullable
 as String?,caloriesKcal: freezed == caloriesKcal ? _self.caloriesKcal : caloriesKcal // ignore: cast_nullable_to_non_nullable
 as double?,proteinGrams: freezed == proteinGrams ? _self.proteinGrams : proteinGrams // ignore: cast_nullable_to_non_nullable
 as double?,carbsGrams: freezed == carbsGrams ? _self.carbsGrams : carbsGrams // ignore: cast_nullable_to_non_nullable
@@ -100,7 +120,8 @@ as double?,servingDescription: freezed == servingDescription ? _self.servingDesc
 as String?,servingGrams: freezed == servingGrams ? _self.servingGrams : servingGrams // ignore: cast_nullable_to_non_nullable
 as double?,servingVolumeMl: freezed == servingVolumeMl ? _self.servingVolumeMl : servingVolumeMl // ignore: cast_nullable_to_non_nullable
 as double?,servingCaloriesKcal: freezed == servingCaloriesKcal ? _self.servingCaloriesKcal : servingCaloriesKcal // ignore: cast_nullable_to_non_nullable
-as double?,
+as double?,macroBasis: null == macroBasis ? _self.macroBasis : macroBasis // ignore: cast_nullable_to_non_nullable
+as SummaryMacroBasis,
   ));
 }
 
@@ -185,10 +206,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( FoodSource source,  String barcode,  String name,  String? brand,  double? caloriesKcal,  double? proteinGrams,  double? carbsGrams,  double? fatGrams,  String? servingDescription,  double? servingGrams,  double? servingVolumeMl,  double? servingCaloriesKcal)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( FoodSource source,  String providerFoodId,  String name,  String? barcode,  String? brand,  double? caloriesKcal,  double? proteinGrams,  double? carbsGrams,  double? fatGrams,  String? servingDescription,  double? servingGrams,  double? servingVolumeMl,  double? servingCaloriesKcal,  SummaryMacroBasis macroBasis)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProviderFoodSummary() when $default != null:
-return $default(_that.source,_that.barcode,_that.name,_that.brand,_that.caloriesKcal,_that.proteinGrams,_that.carbsGrams,_that.fatGrams,_that.servingDescription,_that.servingGrams,_that.servingVolumeMl,_that.servingCaloriesKcal);case _:
+return $default(_that.source,_that.providerFoodId,_that.name,_that.barcode,_that.brand,_that.caloriesKcal,_that.proteinGrams,_that.carbsGrams,_that.fatGrams,_that.servingDescription,_that.servingGrams,_that.servingVolumeMl,_that.servingCaloriesKcal,_that.macroBasis);case _:
   return orElse();
 
 }
@@ -206,10 +227,10 @@ return $default(_that.source,_that.barcode,_that.name,_that.brand,_that.calories
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( FoodSource source,  String barcode,  String name,  String? brand,  double? caloriesKcal,  double? proteinGrams,  double? carbsGrams,  double? fatGrams,  String? servingDescription,  double? servingGrams,  double? servingVolumeMl,  double? servingCaloriesKcal)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( FoodSource source,  String providerFoodId,  String name,  String? barcode,  String? brand,  double? caloriesKcal,  double? proteinGrams,  double? carbsGrams,  double? fatGrams,  String? servingDescription,  double? servingGrams,  double? servingVolumeMl,  double? servingCaloriesKcal,  SummaryMacroBasis macroBasis)  $default,) {final _that = this;
 switch (_that) {
 case _ProviderFoodSummary():
-return $default(_that.source,_that.barcode,_that.name,_that.brand,_that.caloriesKcal,_that.proteinGrams,_that.carbsGrams,_that.fatGrams,_that.servingDescription,_that.servingGrams,_that.servingVolumeMl,_that.servingCaloriesKcal);case _:
+return $default(_that.source,_that.providerFoodId,_that.name,_that.barcode,_that.brand,_that.caloriesKcal,_that.proteinGrams,_that.carbsGrams,_that.fatGrams,_that.servingDescription,_that.servingGrams,_that.servingVolumeMl,_that.servingCaloriesKcal,_that.macroBasis);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -226,10 +247,10 @@ return $default(_that.source,_that.barcode,_that.name,_that.brand,_that.calories
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( FoodSource source,  String barcode,  String name,  String? brand,  double? caloriesKcal,  double? proteinGrams,  double? carbsGrams,  double? fatGrams,  String? servingDescription,  double? servingGrams,  double? servingVolumeMl,  double? servingCaloriesKcal)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( FoodSource source,  String providerFoodId,  String name,  String? barcode,  String? brand,  double? caloriesKcal,  double? proteinGrams,  double? carbsGrams,  double? fatGrams,  String? servingDescription,  double? servingGrams,  double? servingVolumeMl,  double? servingCaloriesKcal,  SummaryMacroBasis macroBasis)?  $default,) {final _that = this;
 switch (_that) {
 case _ProviderFoodSummary() when $default != null:
-return $default(_that.source,_that.barcode,_that.name,_that.brand,_that.caloriesKcal,_that.proteinGrams,_that.carbsGrams,_that.fatGrams,_that.servingDescription,_that.servingGrams,_that.servingVolumeMl,_that.servingCaloriesKcal);case _:
+return $default(_that.source,_that.providerFoodId,_that.name,_that.barcode,_that.brand,_that.caloriesKcal,_that.proteinGrams,_that.carbsGrams,_that.fatGrams,_that.servingDescription,_that.servingGrams,_that.servingVolumeMl,_that.servingCaloriesKcal,_that.macroBasis);case _:
   return null;
 
 }
@@ -241,7 +262,7 @@ return $default(_that.source,_that.barcode,_that.name,_that.brand,_that.calories
 
 
 class _ProviderFoodSummary extends ProviderFoodSummary {
-  const _ProviderFoodSummary({required this.source, required this.barcode, required this.name, this.brand, this.caloriesKcal, this.proteinGrams, this.carbsGrams, this.fatGrams, this.servingDescription, this.servingGrams, this.servingVolumeMl, this.servingCaloriesKcal}): super._();
+  const _ProviderFoodSummary({required this.source, required this.providerFoodId, required this.name, this.barcode, this.brand, this.caloriesKcal, this.proteinGrams, this.carbsGrams, this.fatGrams, this.servingDescription, this.servingGrams, this.servingVolumeMl, this.servingCaloriesKcal, this.macroBasis = SummaryMacroBasis.per100g}): super._();
   
 
 /// Which provider produced this specific result.
@@ -253,22 +274,35 @@ class _ProviderFoodSummary extends ProviderFoodSummary {
 /// missing source here would be a provenance bug, not a detail to paper
 /// over with a guess.
 @override final  FoodSource source;
-/// The provider's product code, as the provider echoed it back (which
-/// is not necessarily the string that was searched for).
-@override final  String barcode;
+/// The provider's **own key** for this record — what
+/// `FoodDataProvider.fetchDetails` fetches the full record by. A
+/// FatSecret `food_id`, an Open Food Facts product code.
+///
+/// **Never a barcode by shape.** A FatSecret `food_id` is a run of
+/// digits, and an 8-digit one can pass the EAN-8 check digit
+/// (`27365861` does), so nothing may infer "this is a GTIN" from what
+/// an id looks like. That inference sent search hits down the barcode
+/// path and put the id in the form's barcode field (B23). Whether a
+/// hit has a barcode at all is [barcode]'s job to say.
+@override final  String providerFoodId;
 /// Best available product name; never blank (falls back to the
-/// barcode when the provider has no usable name).
+/// provider's id when the provider has no usable name).
 @override final  String name;
+/// The product's real GTIN barcode, **only when the provider states
+/// one**, as the provider echoed it back. `null` for a FatSecret search
+/// hit — `foods.search` carries no barcode — and never filled from
+/// [providerFoodId].
+@override final  String? barcode;
 /// Brand or maker, when the provider states one.
 @override final  String? brand;
-/// Energy per 100 g, in kilocalories. `null` means the provider
+/// Energy per [macroBasis], in kilocalories. `null` means the provider
 /// doesn't state it.
 @override final  double? caloriesKcal;
-/// Protein per 100 g, in grams. `null` means not stated.
+/// Protein per [macroBasis], in grams. `null` means not stated.
 @override final  double? proteinGrams;
-/// Carbohydrate per 100 g, in grams. `null` means not stated.
+/// Carbohydrate per [macroBasis], in grams. `null` means not stated.
 @override final  double? carbsGrams;
-/// Fat per 100 g, in grams. `null` means not stated.
+/// Fat per [macroBasis], in grams. `null` means not stated.
 @override final  double? fatGrams;
 /// Stated serving description (e.g. "1 bar (45 g)", "250 ml"), when
 /// available.
@@ -279,6 +313,14 @@ class _ProviderFoodSummary extends ProviderFoodSummary {
 @override final  double? servingVolumeMl;
 /// Energy per serving in kilocalories, when available.
 @override final  double? servingCaloriesKcal;
+/// What [caloriesKcal], [proteinGrams], [carbsGrams] and [fatGrams] are
+/// per: 100 g, 100 ml, or the stated serving — see [SummaryMacroBasis].
+///
+/// Defaults to [SummaryMacroBasis.per100g] because that is what every
+/// search index answers with unless it says otherwise; a mapper that
+/// knows better sets it, and anything rendering or rescaling these
+/// numbers must read it rather than assume.
+@override@JsonKey() final  SummaryMacroBasis macroBasis;
 
 /// Create a copy of ProviderFoodSummary
 /// with the given fields replaced by the non-null parameter values.
@@ -290,16 +332,16 @@ _$ProviderFoodSummaryCopyWith<_ProviderFoodSummary> get copyWith => __$ProviderF
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderFoodSummary&&(identical(other.source, source) || other.source == source)&&(identical(other.barcode, barcode) || other.barcode == barcode)&&(identical(other.name, name) || other.name == name)&&(identical(other.brand, brand) || other.brand == brand)&&(identical(other.caloriesKcal, caloriesKcal) || other.caloriesKcal == caloriesKcal)&&(identical(other.proteinGrams, proteinGrams) || other.proteinGrams == proteinGrams)&&(identical(other.carbsGrams, carbsGrams) || other.carbsGrams == carbsGrams)&&(identical(other.fatGrams, fatGrams) || other.fatGrams == fatGrams)&&(identical(other.servingDescription, servingDescription) || other.servingDescription == servingDescription)&&(identical(other.servingGrams, servingGrams) || other.servingGrams == servingGrams)&&(identical(other.servingVolumeMl, servingVolumeMl) || other.servingVolumeMl == servingVolumeMl)&&(identical(other.servingCaloriesKcal, servingCaloriesKcal) || other.servingCaloriesKcal == servingCaloriesKcal));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderFoodSummary&&(identical(other.source, source) || other.source == source)&&(identical(other.providerFoodId, providerFoodId) || other.providerFoodId == providerFoodId)&&(identical(other.name, name) || other.name == name)&&(identical(other.barcode, barcode) || other.barcode == barcode)&&(identical(other.brand, brand) || other.brand == brand)&&(identical(other.caloriesKcal, caloriesKcal) || other.caloriesKcal == caloriesKcal)&&(identical(other.proteinGrams, proteinGrams) || other.proteinGrams == proteinGrams)&&(identical(other.carbsGrams, carbsGrams) || other.carbsGrams == carbsGrams)&&(identical(other.fatGrams, fatGrams) || other.fatGrams == fatGrams)&&(identical(other.servingDescription, servingDescription) || other.servingDescription == servingDescription)&&(identical(other.servingGrams, servingGrams) || other.servingGrams == servingGrams)&&(identical(other.servingVolumeMl, servingVolumeMl) || other.servingVolumeMl == servingVolumeMl)&&(identical(other.servingCaloriesKcal, servingCaloriesKcal) || other.servingCaloriesKcal == servingCaloriesKcal)&&(identical(other.macroBasis, macroBasis) || other.macroBasis == macroBasis));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,source,barcode,name,brand,caloriesKcal,proteinGrams,carbsGrams,fatGrams,servingDescription,servingGrams,servingVolumeMl,servingCaloriesKcal);
+int get hashCode => Object.hash(runtimeType,source,providerFoodId,name,barcode,brand,caloriesKcal,proteinGrams,carbsGrams,fatGrams,servingDescription,servingGrams,servingVolumeMl,servingCaloriesKcal,macroBasis);
 
 @override
 String toString() {
-  return 'ProviderFoodSummary(source: $source, barcode: $barcode, name: $name, brand: $brand, caloriesKcal: $caloriesKcal, proteinGrams: $proteinGrams, carbsGrams: $carbsGrams, fatGrams: $fatGrams, servingDescription: $servingDescription, servingGrams: $servingGrams, servingVolumeMl: $servingVolumeMl, servingCaloriesKcal: $servingCaloriesKcal)';
+  return 'ProviderFoodSummary(source: $source, providerFoodId: $providerFoodId, name: $name, barcode: $barcode, brand: $brand, caloriesKcal: $caloriesKcal, proteinGrams: $proteinGrams, carbsGrams: $carbsGrams, fatGrams: $fatGrams, servingDescription: $servingDescription, servingGrams: $servingGrams, servingVolumeMl: $servingVolumeMl, servingCaloriesKcal: $servingCaloriesKcal, macroBasis: $macroBasis)';
 }
 
 
@@ -310,7 +352,7 @@ abstract mixin class _$ProviderFoodSummaryCopyWith<$Res> implements $ProviderFoo
   factory _$ProviderFoodSummaryCopyWith(_ProviderFoodSummary value, $Res Function(_ProviderFoodSummary) _then) = __$ProviderFoodSummaryCopyWithImpl;
 @override @useResult
 $Res call({
- FoodSource source, String barcode, String name, String? brand, double? caloriesKcal, double? proteinGrams, double? carbsGrams, double? fatGrams, String? servingDescription, double? servingGrams, double? servingVolumeMl, double? servingCaloriesKcal
+ FoodSource source, String providerFoodId, String name, String? barcode, String? brand, double? caloriesKcal, double? proteinGrams, double? carbsGrams, double? fatGrams, String? servingDescription, double? servingGrams, double? servingVolumeMl, double? servingCaloriesKcal, SummaryMacroBasis macroBasis
 });
 
 
@@ -327,12 +369,13 @@ class __$ProviderFoodSummaryCopyWithImpl<$Res>
 
 /// Create a copy of ProviderFoodSummary
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? source = null,Object? barcode = null,Object? name = null,Object? brand = freezed,Object? caloriesKcal = freezed,Object? proteinGrams = freezed,Object? carbsGrams = freezed,Object? fatGrams = freezed,Object? servingDescription = freezed,Object? servingGrams = freezed,Object? servingVolumeMl = freezed,Object? servingCaloriesKcal = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? source = null,Object? providerFoodId = null,Object? name = null,Object? barcode = freezed,Object? brand = freezed,Object? caloriesKcal = freezed,Object? proteinGrams = freezed,Object? carbsGrams = freezed,Object? fatGrams = freezed,Object? servingDescription = freezed,Object? servingGrams = freezed,Object? servingVolumeMl = freezed,Object? servingCaloriesKcal = freezed,Object? macroBasis = null,}) {
   return _then(_ProviderFoodSummary(
 source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
-as FoodSource,barcode: null == barcode ? _self.barcode : barcode // ignore: cast_nullable_to_non_nullable
+as FoodSource,providerFoodId: null == providerFoodId ? _self.providerFoodId : providerFoodId // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,brand: freezed == brand ? _self.brand : brand // ignore: cast_nullable_to_non_nullable
+as String,barcode: freezed == barcode ? _self.barcode : barcode // ignore: cast_nullable_to_non_nullable
+as String?,brand: freezed == brand ? _self.brand : brand // ignore: cast_nullable_to_non_nullable
 as String?,caloriesKcal: freezed == caloriesKcal ? _self.caloriesKcal : caloriesKcal // ignore: cast_nullable_to_non_nullable
 as double?,proteinGrams: freezed == proteinGrams ? _self.proteinGrams : proteinGrams // ignore: cast_nullable_to_non_nullable
 as double?,carbsGrams: freezed == carbsGrams ? _self.carbsGrams : carbsGrams // ignore: cast_nullable_to_non_nullable
@@ -341,7 +384,8 @@ as double?,servingDescription: freezed == servingDescription ? _self.servingDesc
 as String?,servingGrams: freezed == servingGrams ? _self.servingGrams : servingGrams // ignore: cast_nullable_to_non_nullable
 as double?,servingVolumeMl: freezed == servingVolumeMl ? _self.servingVolumeMl : servingVolumeMl // ignore: cast_nullable_to_non_nullable
 as double?,servingCaloriesKcal: freezed == servingCaloriesKcal ? _self.servingCaloriesKcal : servingCaloriesKcal // ignore: cast_nullable_to_non_nullable
-as double?,
+as double?,macroBasis: null == macroBasis ? _self.macroBasis : macroBasis // ignore: cast_nullable_to_non_nullable
+as SummaryMacroBasis,
   ));
 }
 
@@ -354,13 +398,17 @@ mixin _$ProviderFood {
 /// Which provider produced this result — see
 /// [ProviderFoodSummary.source], which carries the same requirement for
 /// the same reason.
- FoodSource get source;/// The provider's product code, **as the provider echoed it back**.
+ FoodSource get source;/// The product's real GTIN barcode, **as the provider echoed it back**,
+/// or `null` when this record was reached without one (a FatSecret
+/// record fetched by its `food_id` from a search hit).
 ///
 /// Providers normalise codes server-side (leading zeros, EAN-8 to
 /// EAN-13), so this can differ from the scanned string. Anything keyed
-/// on a barcode — a cache, a saved `Food.barcode` — keys on this.
- String get barcode;/// Best available product name; never blank (falls back to the
-/// barcode when the provider has no usable name for it).
+/// on a barcode — a cache, a saved `Food.barcode` — keys on this, and
+/// only on this: a provider's record id is never a barcode (B23, see
+/// [ProviderFoodSummary.providerFoodId]).
+ String? get barcode;/// Best available product name; never blank (falls back to the
+/// barcode or the provider's id when the provider has no usable name).
  String get name;/// Free-text description of one serving, exactly as the provider
 /// states it (`'3/4 cup (28 g)'`), or `'100 g'` when
 /// [servingBasis] is [ServingBasis.per100g].
@@ -370,7 +418,10 @@ mixin _$ProviderFood {
  String get servingDescription;/// Where the per-serving numbers below came from. Shown to the user —
 /// see [ServingBasis].
  ServingBasis get servingBasis;/// Brand or maker, when the provider states one.
- String? get brand;/// Mass of one serving in grams, when a usable one is known. `100`
+ String? get brand;/// The provider's own key for this record (a FatSecret `food_id`, an
+/// Open Food Facts product code), when known — see
+/// [ProviderFoodSummary.providerFoodId]. Identity only; never a barcode.
+ String? get providerFoodId;/// Mass of one serving in grams, when a usable one is known. `100`
 /// when [servingBasis] is [ServingBasis.per100g].
  double? get servingGrams;/// Volume of one serving in millilitres, when a usable one is known.
  double? get servingVolumeMl;/// Energy per serving, in kilocalories. `null` means **not stated** —
@@ -413,16 +464,16 @@ $ProviderFoodCopyWith<ProviderFood> get copyWith => _$ProviderFoodCopyWithImpl<P
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderFood&&(identical(other.source, source) || other.source == source)&&(identical(other.barcode, barcode) || other.barcode == barcode)&&(identical(other.name, name) || other.name == name)&&(identical(other.servingDescription, servingDescription) || other.servingDescription == servingDescription)&&(identical(other.servingBasis, servingBasis) || other.servingBasis == servingBasis)&&(identical(other.brand, brand) || other.brand == brand)&&(identical(other.servingGrams, servingGrams) || other.servingGrams == servingGrams)&&(identical(other.servingVolumeMl, servingVolumeMl) || other.servingVolumeMl == servingVolumeMl)&&(identical(other.caloriesKcal, caloriesKcal) || other.caloriesKcal == caloriesKcal)&&(identical(other.proteinGrams, proteinGrams) || other.proteinGrams == proteinGrams)&&(identical(other.carbsGrams, carbsGrams) || other.carbsGrams == carbsGrams)&&(identical(other.fatGrams, fatGrams) || other.fatGrams == fatGrams)&&(identical(other.ironMg, ironMg) || other.ironMg == ironMg)&&(identical(other.calciumMg, calciumMg) || other.calciumMg == calciumMg)&&(identical(other.vitaminDMcg, vitaminDMcg) || other.vitaminDMcg == vitaminDMcg)&&(identical(other.vitaminCMg, vitaminCMg) || other.vitaminCMg == vitaminCMg)&&(identical(other.fiberGrams, fiberGrams) || other.fiberGrams == fiberGrams)&&(identical(other.sodiumMg, sodiumMg) || other.sodiumMg == sodiumMg)&&(identical(other.potassiumMg, potassiumMg) || other.potassiumMg == potassiumMg)&&(identical(other.saturatedFatGrams, saturatedFatGrams) || other.saturatedFatGrams == saturatedFatGrams)&&(identical(other.completeness, completeness) || other.completeness == completeness)&&(identical(other.hasCompleteNutritionFacts, hasCompleteNutritionFacts) || other.hasCompleteNutritionFacts == hasCompleteNutritionFacts)&&(identical(other.hasNoNutritionData, hasNoNutritionData) || other.hasNoNutritionData == hasNoNutritionData));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProviderFood&&(identical(other.source, source) || other.source == source)&&(identical(other.barcode, barcode) || other.barcode == barcode)&&(identical(other.name, name) || other.name == name)&&(identical(other.servingDescription, servingDescription) || other.servingDescription == servingDescription)&&(identical(other.servingBasis, servingBasis) || other.servingBasis == servingBasis)&&(identical(other.brand, brand) || other.brand == brand)&&(identical(other.providerFoodId, providerFoodId) || other.providerFoodId == providerFoodId)&&(identical(other.servingGrams, servingGrams) || other.servingGrams == servingGrams)&&(identical(other.servingVolumeMl, servingVolumeMl) || other.servingVolumeMl == servingVolumeMl)&&(identical(other.caloriesKcal, caloriesKcal) || other.caloriesKcal == caloriesKcal)&&(identical(other.proteinGrams, proteinGrams) || other.proteinGrams == proteinGrams)&&(identical(other.carbsGrams, carbsGrams) || other.carbsGrams == carbsGrams)&&(identical(other.fatGrams, fatGrams) || other.fatGrams == fatGrams)&&(identical(other.ironMg, ironMg) || other.ironMg == ironMg)&&(identical(other.calciumMg, calciumMg) || other.calciumMg == calciumMg)&&(identical(other.vitaminDMcg, vitaminDMcg) || other.vitaminDMcg == vitaminDMcg)&&(identical(other.vitaminCMg, vitaminCMg) || other.vitaminCMg == vitaminCMg)&&(identical(other.fiberGrams, fiberGrams) || other.fiberGrams == fiberGrams)&&(identical(other.sodiumMg, sodiumMg) || other.sodiumMg == sodiumMg)&&(identical(other.potassiumMg, potassiumMg) || other.potassiumMg == potassiumMg)&&(identical(other.saturatedFatGrams, saturatedFatGrams) || other.saturatedFatGrams == saturatedFatGrams)&&(identical(other.completeness, completeness) || other.completeness == completeness)&&(identical(other.hasCompleteNutritionFacts, hasCompleteNutritionFacts) || other.hasCompleteNutritionFacts == hasCompleteNutritionFacts)&&(identical(other.hasNoNutritionData, hasNoNutritionData) || other.hasNoNutritionData == hasNoNutritionData));
 }
 
 
 @override
-int get hashCode => Object.hashAll([runtimeType,source,barcode,name,servingDescription,servingBasis,brand,servingGrams,servingVolumeMl,caloriesKcal,proteinGrams,carbsGrams,fatGrams,ironMg,calciumMg,vitaminDMcg,vitaminCMg,fiberGrams,sodiumMg,potassiumMg,saturatedFatGrams,completeness,hasCompleteNutritionFacts,hasNoNutritionData]);
+int get hashCode => Object.hashAll([runtimeType,source,barcode,name,servingDescription,servingBasis,brand,providerFoodId,servingGrams,servingVolumeMl,caloriesKcal,proteinGrams,carbsGrams,fatGrams,ironMg,calciumMg,vitaminDMcg,vitaminCMg,fiberGrams,sodiumMg,potassiumMg,saturatedFatGrams,completeness,hasCompleteNutritionFacts,hasNoNutritionData]);
 
 @override
 String toString() {
-  return 'ProviderFood(source: $source, barcode: $barcode, name: $name, servingDescription: $servingDescription, servingBasis: $servingBasis, brand: $brand, servingGrams: $servingGrams, servingVolumeMl: $servingVolumeMl, caloriesKcal: $caloriesKcal, proteinGrams: $proteinGrams, carbsGrams: $carbsGrams, fatGrams: $fatGrams, ironMg: $ironMg, calciumMg: $calciumMg, vitaminDMcg: $vitaminDMcg, vitaminCMg: $vitaminCMg, fiberGrams: $fiberGrams, sodiumMg: $sodiumMg, potassiumMg: $potassiumMg, saturatedFatGrams: $saturatedFatGrams, completeness: $completeness, hasCompleteNutritionFacts: $hasCompleteNutritionFacts, hasNoNutritionData: $hasNoNutritionData)';
+  return 'ProviderFood(source: $source, barcode: $barcode, name: $name, servingDescription: $servingDescription, servingBasis: $servingBasis, brand: $brand, providerFoodId: $providerFoodId, servingGrams: $servingGrams, servingVolumeMl: $servingVolumeMl, caloriesKcal: $caloriesKcal, proteinGrams: $proteinGrams, carbsGrams: $carbsGrams, fatGrams: $fatGrams, ironMg: $ironMg, calciumMg: $calciumMg, vitaminDMcg: $vitaminDMcg, vitaminCMg: $vitaminCMg, fiberGrams: $fiberGrams, sodiumMg: $sodiumMg, potassiumMg: $potassiumMg, saturatedFatGrams: $saturatedFatGrams, completeness: $completeness, hasCompleteNutritionFacts: $hasCompleteNutritionFacts, hasNoNutritionData: $hasNoNutritionData)';
 }
 
 
@@ -433,7 +484,7 @@ abstract mixin class $ProviderFoodCopyWith<$Res>  {
   factory $ProviderFoodCopyWith(ProviderFood value, $Res Function(ProviderFood) _then) = _$ProviderFoodCopyWithImpl;
 @useResult
 $Res call({
- FoodSource source, String barcode, String name, String servingDescription, ServingBasis servingBasis, String? brand, double? servingGrams, double? servingVolumeMl, double? caloriesKcal, double? proteinGrams, double? carbsGrams, double? fatGrams, double? ironMg, double? calciumMg, double? vitaminDMcg, double? vitaminCMg, double? fiberGrams, double? sodiumMg, double? potassiumMg, double? saturatedFatGrams, double? completeness, bool hasCompleteNutritionFacts, bool hasNoNutritionData
+ FoodSource source, String? barcode, String name, String servingDescription, ServingBasis servingBasis, String? brand, String? providerFoodId, double? servingGrams, double? servingVolumeMl, double? caloriesKcal, double? proteinGrams, double? carbsGrams, double? fatGrams, double? ironMg, double? calciumMg, double? vitaminDMcg, double? vitaminCMg, double? fiberGrams, double? sodiumMg, double? potassiumMg, double? saturatedFatGrams, double? completeness, bool hasCompleteNutritionFacts, bool hasNoNutritionData
 });
 
 
@@ -450,14 +501,15 @@ class _$ProviderFoodCopyWithImpl<$Res>
 
 /// Create a copy of ProviderFood
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? source = null,Object? barcode = null,Object? name = null,Object? servingDescription = null,Object? servingBasis = null,Object? brand = freezed,Object? servingGrams = freezed,Object? servingVolumeMl = freezed,Object? caloriesKcal = freezed,Object? proteinGrams = freezed,Object? carbsGrams = freezed,Object? fatGrams = freezed,Object? ironMg = freezed,Object? calciumMg = freezed,Object? vitaminDMcg = freezed,Object? vitaminCMg = freezed,Object? fiberGrams = freezed,Object? sodiumMg = freezed,Object? potassiumMg = freezed,Object? saturatedFatGrams = freezed,Object? completeness = freezed,Object? hasCompleteNutritionFacts = null,Object? hasNoNutritionData = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? source = null,Object? barcode = freezed,Object? name = null,Object? servingDescription = null,Object? servingBasis = null,Object? brand = freezed,Object? providerFoodId = freezed,Object? servingGrams = freezed,Object? servingVolumeMl = freezed,Object? caloriesKcal = freezed,Object? proteinGrams = freezed,Object? carbsGrams = freezed,Object? fatGrams = freezed,Object? ironMg = freezed,Object? calciumMg = freezed,Object? vitaminDMcg = freezed,Object? vitaminCMg = freezed,Object? fiberGrams = freezed,Object? sodiumMg = freezed,Object? potassiumMg = freezed,Object? saturatedFatGrams = freezed,Object? completeness = freezed,Object? hasCompleteNutritionFacts = null,Object? hasNoNutritionData = null,}) {
   return _then(ProviderFood(
 source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
-as FoodSource,barcode: null == barcode ? _self.barcode : barcode // ignore: cast_nullable_to_non_nullable
-as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as FoodSource,barcode: freezed == barcode ? _self.barcode : barcode // ignore: cast_nullable_to_non_nullable
+as String?,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,servingDescription: null == servingDescription ? _self.servingDescription : servingDescription // ignore: cast_nullable_to_non_nullable
 as String,servingBasis: null == servingBasis ? _self.servingBasis : servingBasis // ignore: cast_nullable_to_non_nullable
 as ServingBasis,brand: freezed == brand ? _self.brand : brand // ignore: cast_nullable_to_non_nullable
+as String?,providerFoodId: freezed == providerFoodId ? _self.providerFoodId : providerFoodId // ignore: cast_nullable_to_non_nullable
 as String?,servingGrams: freezed == servingGrams ? _self.servingGrams : servingGrams // ignore: cast_nullable_to_non_nullable
 as double?,servingVolumeMl: freezed == servingVolumeMl ? _self.servingVolumeMl : servingVolumeMl // ignore: cast_nullable_to_non_nullable
 as double?,caloriesKcal: freezed == caloriesKcal ? _self.caloriesKcal : caloriesKcal // ignore: cast_nullable_to_non_nullable
@@ -560,10 +612,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( FoodSource source,  String barcode,  String name,  String servingDescription,  ServingBasis servingBasis,  String? brand,  double? servingGrams,  double? servingVolumeMl,  double? caloriesKcal,  double? proteinGrams,  double? carbsGrams,  double? fatGrams,  double? ironMg,  double? calciumMg,  double? vitaminDMcg,  double? vitaminCMg,  double? fiberGrams,  double? sodiumMg,  double? potassiumMg,  double? saturatedFatGrams,  double? completeness,  bool hasCompleteNutritionFacts,  bool hasNoNutritionData)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( FoodSource source,  String? barcode,  String name,  String servingDescription,  ServingBasis servingBasis,  String? brand,  String? providerFoodId,  double? servingGrams,  double? servingVolumeMl,  double? caloriesKcal,  double? proteinGrams,  double? carbsGrams,  double? fatGrams,  double? ironMg,  double? calciumMg,  double? vitaminDMcg,  double? vitaminCMg,  double? fiberGrams,  double? sodiumMg,  double? potassiumMg,  double? saturatedFatGrams,  double? completeness,  bool hasCompleteNutritionFacts,  bool hasNoNutritionData)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProviderFood() when $default != null:
-return $default(_that.source,_that.barcode,_that.name,_that.servingDescription,_that.servingBasis,_that.brand,_that.servingGrams,_that.servingVolumeMl,_that.caloriesKcal,_that.proteinGrams,_that.carbsGrams,_that.fatGrams,_that.ironMg,_that.calciumMg,_that.vitaminDMcg,_that.vitaminCMg,_that.fiberGrams,_that.sodiumMg,_that.potassiumMg,_that.saturatedFatGrams,_that.completeness,_that.hasCompleteNutritionFacts,_that.hasNoNutritionData);case _:
+return $default(_that.source,_that.barcode,_that.name,_that.servingDescription,_that.servingBasis,_that.brand,_that.providerFoodId,_that.servingGrams,_that.servingVolumeMl,_that.caloriesKcal,_that.proteinGrams,_that.carbsGrams,_that.fatGrams,_that.ironMg,_that.calciumMg,_that.vitaminDMcg,_that.vitaminCMg,_that.fiberGrams,_that.sodiumMg,_that.potassiumMg,_that.saturatedFatGrams,_that.completeness,_that.hasCompleteNutritionFacts,_that.hasNoNutritionData);case _:
   return orElse();
 
 }
@@ -581,10 +633,10 @@ return $default(_that.source,_that.barcode,_that.name,_that.servingDescription,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( FoodSource source,  String barcode,  String name,  String servingDescription,  ServingBasis servingBasis,  String? brand,  double? servingGrams,  double? servingVolumeMl,  double? caloriesKcal,  double? proteinGrams,  double? carbsGrams,  double? fatGrams,  double? ironMg,  double? calciumMg,  double? vitaminDMcg,  double? vitaminCMg,  double? fiberGrams,  double? sodiumMg,  double? potassiumMg,  double? saturatedFatGrams,  double? completeness,  bool hasCompleteNutritionFacts,  bool hasNoNutritionData)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( FoodSource source,  String? barcode,  String name,  String servingDescription,  ServingBasis servingBasis,  String? brand,  String? providerFoodId,  double? servingGrams,  double? servingVolumeMl,  double? caloriesKcal,  double? proteinGrams,  double? carbsGrams,  double? fatGrams,  double? ironMg,  double? calciumMg,  double? vitaminDMcg,  double? vitaminCMg,  double? fiberGrams,  double? sodiumMg,  double? potassiumMg,  double? saturatedFatGrams,  double? completeness,  bool hasCompleteNutritionFacts,  bool hasNoNutritionData)  $default,) {final _that = this;
 switch (_that) {
 case _ProviderFood():
-return $default(_that.source,_that.barcode,_that.name,_that.servingDescription,_that.servingBasis,_that.brand,_that.servingGrams,_that.servingVolumeMl,_that.caloriesKcal,_that.proteinGrams,_that.carbsGrams,_that.fatGrams,_that.ironMg,_that.calciumMg,_that.vitaminDMcg,_that.vitaminCMg,_that.fiberGrams,_that.sodiumMg,_that.potassiumMg,_that.saturatedFatGrams,_that.completeness,_that.hasCompleteNutritionFacts,_that.hasNoNutritionData);case _:
+return $default(_that.source,_that.barcode,_that.name,_that.servingDescription,_that.servingBasis,_that.brand,_that.providerFoodId,_that.servingGrams,_that.servingVolumeMl,_that.caloriesKcal,_that.proteinGrams,_that.carbsGrams,_that.fatGrams,_that.ironMg,_that.calciumMg,_that.vitaminDMcg,_that.vitaminCMg,_that.fiberGrams,_that.sodiumMg,_that.potassiumMg,_that.saturatedFatGrams,_that.completeness,_that.hasCompleteNutritionFacts,_that.hasNoNutritionData);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -601,10 +653,10 @@ return $default(_that.source,_that.barcode,_that.name,_that.servingDescription,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( FoodSource source,  String barcode,  String name,  String servingDescription,  ServingBasis servingBasis,  String? brand,  double? servingGrams,  double? servingVolumeMl,  double? caloriesKcal,  double? proteinGrams,  double? carbsGrams,  double? fatGrams,  double? ironMg,  double? calciumMg,  double? vitaminDMcg,  double? vitaminCMg,  double? fiberGrams,  double? sodiumMg,  double? potassiumMg,  double? saturatedFatGrams,  double? completeness,  bool hasCompleteNutritionFacts,  bool hasNoNutritionData)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( FoodSource source,  String? barcode,  String name,  String servingDescription,  ServingBasis servingBasis,  String? brand,  String? providerFoodId,  double? servingGrams,  double? servingVolumeMl,  double? caloriesKcal,  double? proteinGrams,  double? carbsGrams,  double? fatGrams,  double? ironMg,  double? calciumMg,  double? vitaminDMcg,  double? vitaminCMg,  double? fiberGrams,  double? sodiumMg,  double? potassiumMg,  double? saturatedFatGrams,  double? completeness,  bool hasCompleteNutritionFacts,  bool hasNoNutritionData)?  $default,) {final _that = this;
 switch (_that) {
 case _ProviderFood() when $default != null:
-return $default(_that.source,_that.barcode,_that.name,_that.servingDescription,_that.servingBasis,_that.brand,_that.servingGrams,_that.servingVolumeMl,_that.caloriesKcal,_that.proteinGrams,_that.carbsGrams,_that.fatGrams,_that.ironMg,_that.calciumMg,_that.vitaminDMcg,_that.vitaminCMg,_that.fiberGrams,_that.sodiumMg,_that.potassiumMg,_that.saturatedFatGrams,_that.completeness,_that.hasCompleteNutritionFacts,_that.hasNoNutritionData);case _:
+return $default(_that.source,_that.barcode,_that.name,_that.servingDescription,_that.servingBasis,_that.brand,_that.providerFoodId,_that.servingGrams,_that.servingVolumeMl,_that.caloriesKcal,_that.proteinGrams,_that.carbsGrams,_that.fatGrams,_that.ironMg,_that.calciumMg,_that.vitaminDMcg,_that.vitaminCMg,_that.fiberGrams,_that.sodiumMg,_that.potassiumMg,_that.saturatedFatGrams,_that.completeness,_that.hasCompleteNutritionFacts,_that.hasNoNutritionData);case _:
   return null;
 
 }
@@ -616,21 +668,25 @@ return $default(_that.source,_that.barcode,_that.name,_that.servingDescription,_
 
 
 class _ProviderFood extends ProviderFood {
-  const _ProviderFood({required this.source, required this.barcode, required this.name, required this.servingDescription, required this.servingBasis, this.brand, this.servingGrams, this.servingVolumeMl, this.caloriesKcal, this.proteinGrams, this.carbsGrams, this.fatGrams, this.ironMg, this.calciumMg, this.vitaminDMcg, this.vitaminCMg, this.fiberGrams, this.sodiumMg, this.potassiumMg, this.saturatedFatGrams, this.completeness, this.hasCompleteNutritionFacts = false, this.hasNoNutritionData = false}): super._();
+  const _ProviderFood({required this.source, required this.barcode, required this.name, required this.servingDescription, required this.servingBasis, this.brand, this.providerFoodId, this.servingGrams, this.servingVolumeMl, this.caloriesKcal, this.proteinGrams, this.carbsGrams, this.fatGrams, this.ironMg, this.calciumMg, this.vitaminDMcg, this.vitaminCMg, this.fiberGrams, this.sodiumMg, this.potassiumMg, this.saturatedFatGrams, this.completeness, this.hasCompleteNutritionFacts = false, this.hasNoNutritionData = false}): super._();
   
 
 /// Which provider produced this result — see
 /// [ProviderFoodSummary.source], which carries the same requirement for
 /// the same reason.
 @override final  FoodSource source;
-/// The provider's product code, **as the provider echoed it back**.
+/// The product's real GTIN barcode, **as the provider echoed it back**,
+/// or `null` when this record was reached without one (a FatSecret
+/// record fetched by its `food_id` from a search hit).
 ///
 /// Providers normalise codes server-side (leading zeros, EAN-8 to
 /// EAN-13), so this can differ from the scanned string. Anything keyed
-/// on a barcode — a cache, a saved `Food.barcode` — keys on this.
-@override final  String barcode;
+/// on a barcode — a cache, a saved `Food.barcode` — keys on this, and
+/// only on this: a provider's record id is never a barcode (B23, see
+/// [ProviderFoodSummary.providerFoodId]).
+@override final  String? barcode;
 /// Best available product name; never blank (falls back to the
-/// barcode when the provider has no usable name for it).
+/// barcode or the provider's id when the provider has no usable name).
 @override final  String name;
 /// Free-text description of one serving, exactly as the provider
 /// states it (`'3/4 cup (28 g)'`), or `'100 g'` when
@@ -644,6 +700,10 @@ class _ProviderFood extends ProviderFood {
 @override final  ServingBasis servingBasis;
 /// Brand or maker, when the provider states one.
 @override final  String? brand;
+/// The provider's own key for this record (a FatSecret `food_id`, an
+/// Open Food Facts product code), when known — see
+/// [ProviderFoodSummary.providerFoodId]. Identity only; never a barcode.
+@override final  String? providerFoodId;
 /// Mass of one serving in grams, when a usable one is known. `100`
 /// when [servingBasis] is [ServingBasis.per100g].
 @override final  double? servingGrams;
@@ -704,16 +764,16 @@ _$ProviderFoodCopyWith<_ProviderFood> get copyWith => __$ProviderFoodCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderFood&&(identical(other.source, source) || other.source == source)&&(identical(other.barcode, barcode) || other.barcode == barcode)&&(identical(other.name, name) || other.name == name)&&(identical(other.servingDescription, servingDescription) || other.servingDescription == servingDescription)&&(identical(other.servingBasis, servingBasis) || other.servingBasis == servingBasis)&&(identical(other.brand, brand) || other.brand == brand)&&(identical(other.servingGrams, servingGrams) || other.servingGrams == servingGrams)&&(identical(other.servingVolumeMl, servingVolumeMl) || other.servingVolumeMl == servingVolumeMl)&&(identical(other.caloriesKcal, caloriesKcal) || other.caloriesKcal == caloriesKcal)&&(identical(other.proteinGrams, proteinGrams) || other.proteinGrams == proteinGrams)&&(identical(other.carbsGrams, carbsGrams) || other.carbsGrams == carbsGrams)&&(identical(other.fatGrams, fatGrams) || other.fatGrams == fatGrams)&&(identical(other.ironMg, ironMg) || other.ironMg == ironMg)&&(identical(other.calciumMg, calciumMg) || other.calciumMg == calciumMg)&&(identical(other.vitaminDMcg, vitaminDMcg) || other.vitaminDMcg == vitaminDMcg)&&(identical(other.vitaminCMg, vitaminCMg) || other.vitaminCMg == vitaminCMg)&&(identical(other.fiberGrams, fiberGrams) || other.fiberGrams == fiberGrams)&&(identical(other.sodiumMg, sodiumMg) || other.sodiumMg == sodiumMg)&&(identical(other.potassiumMg, potassiumMg) || other.potassiumMg == potassiumMg)&&(identical(other.saturatedFatGrams, saturatedFatGrams) || other.saturatedFatGrams == saturatedFatGrams)&&(identical(other.completeness, completeness) || other.completeness == completeness)&&(identical(other.hasCompleteNutritionFacts, hasCompleteNutritionFacts) || other.hasCompleteNutritionFacts == hasCompleteNutritionFacts)&&(identical(other.hasNoNutritionData, hasNoNutritionData) || other.hasNoNutritionData == hasNoNutritionData));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProviderFood&&(identical(other.source, source) || other.source == source)&&(identical(other.barcode, barcode) || other.barcode == barcode)&&(identical(other.name, name) || other.name == name)&&(identical(other.servingDescription, servingDescription) || other.servingDescription == servingDescription)&&(identical(other.servingBasis, servingBasis) || other.servingBasis == servingBasis)&&(identical(other.brand, brand) || other.brand == brand)&&(identical(other.providerFoodId, providerFoodId) || other.providerFoodId == providerFoodId)&&(identical(other.servingGrams, servingGrams) || other.servingGrams == servingGrams)&&(identical(other.servingVolumeMl, servingVolumeMl) || other.servingVolumeMl == servingVolumeMl)&&(identical(other.caloriesKcal, caloriesKcal) || other.caloriesKcal == caloriesKcal)&&(identical(other.proteinGrams, proteinGrams) || other.proteinGrams == proteinGrams)&&(identical(other.carbsGrams, carbsGrams) || other.carbsGrams == carbsGrams)&&(identical(other.fatGrams, fatGrams) || other.fatGrams == fatGrams)&&(identical(other.ironMg, ironMg) || other.ironMg == ironMg)&&(identical(other.calciumMg, calciumMg) || other.calciumMg == calciumMg)&&(identical(other.vitaminDMcg, vitaminDMcg) || other.vitaminDMcg == vitaminDMcg)&&(identical(other.vitaminCMg, vitaminCMg) || other.vitaminCMg == vitaminCMg)&&(identical(other.fiberGrams, fiberGrams) || other.fiberGrams == fiberGrams)&&(identical(other.sodiumMg, sodiumMg) || other.sodiumMg == sodiumMg)&&(identical(other.potassiumMg, potassiumMg) || other.potassiumMg == potassiumMg)&&(identical(other.saturatedFatGrams, saturatedFatGrams) || other.saturatedFatGrams == saturatedFatGrams)&&(identical(other.completeness, completeness) || other.completeness == completeness)&&(identical(other.hasCompleteNutritionFacts, hasCompleteNutritionFacts) || other.hasCompleteNutritionFacts == hasCompleteNutritionFacts)&&(identical(other.hasNoNutritionData, hasNoNutritionData) || other.hasNoNutritionData == hasNoNutritionData));
 }
 
 
 @override
-int get hashCode => Object.hashAll([runtimeType,source,barcode,name,servingDescription,servingBasis,brand,servingGrams,servingVolumeMl,caloriesKcal,proteinGrams,carbsGrams,fatGrams,ironMg,calciumMg,vitaminDMcg,vitaminCMg,fiberGrams,sodiumMg,potassiumMg,saturatedFatGrams,completeness,hasCompleteNutritionFacts,hasNoNutritionData]);
+int get hashCode => Object.hashAll([runtimeType,source,barcode,name,servingDescription,servingBasis,brand,providerFoodId,servingGrams,servingVolumeMl,caloriesKcal,proteinGrams,carbsGrams,fatGrams,ironMg,calciumMg,vitaminDMcg,vitaminCMg,fiberGrams,sodiumMg,potassiumMg,saturatedFatGrams,completeness,hasCompleteNutritionFacts,hasNoNutritionData]);
 
 @override
 String toString() {
-  return 'ProviderFood(source: $source, barcode: $barcode, name: $name, servingDescription: $servingDescription, servingBasis: $servingBasis, brand: $brand, servingGrams: $servingGrams, servingVolumeMl: $servingVolumeMl, caloriesKcal: $caloriesKcal, proteinGrams: $proteinGrams, carbsGrams: $carbsGrams, fatGrams: $fatGrams, ironMg: $ironMg, calciumMg: $calciumMg, vitaminDMcg: $vitaminDMcg, vitaminCMg: $vitaminCMg, fiberGrams: $fiberGrams, sodiumMg: $sodiumMg, potassiumMg: $potassiumMg, saturatedFatGrams: $saturatedFatGrams, completeness: $completeness, hasCompleteNutritionFacts: $hasCompleteNutritionFacts, hasNoNutritionData: $hasNoNutritionData)';
+  return 'ProviderFood(source: $source, barcode: $barcode, name: $name, servingDescription: $servingDescription, servingBasis: $servingBasis, brand: $brand, providerFoodId: $providerFoodId, servingGrams: $servingGrams, servingVolumeMl: $servingVolumeMl, caloriesKcal: $caloriesKcal, proteinGrams: $proteinGrams, carbsGrams: $carbsGrams, fatGrams: $fatGrams, ironMg: $ironMg, calciumMg: $calciumMg, vitaminDMcg: $vitaminDMcg, vitaminCMg: $vitaminCMg, fiberGrams: $fiberGrams, sodiumMg: $sodiumMg, potassiumMg: $potassiumMg, saturatedFatGrams: $saturatedFatGrams, completeness: $completeness, hasCompleteNutritionFacts: $hasCompleteNutritionFacts, hasNoNutritionData: $hasNoNutritionData)';
 }
 
 
@@ -724,7 +784,7 @@ abstract mixin class _$ProviderFoodCopyWith<$Res> implements $ProviderFoodCopyWi
   factory _$ProviderFoodCopyWith(_ProviderFood value, $Res Function(_ProviderFood) _then) = __$ProviderFoodCopyWithImpl;
 @override @useResult
 $Res call({
- FoodSource source, String barcode, String name, String servingDescription, ServingBasis servingBasis, String? brand, double? servingGrams, double? servingVolumeMl, double? caloriesKcal, double? proteinGrams, double? carbsGrams, double? fatGrams, double? ironMg, double? calciumMg, double? vitaminDMcg, double? vitaminCMg, double? fiberGrams, double? sodiumMg, double? potassiumMg, double? saturatedFatGrams, double? completeness, bool hasCompleteNutritionFacts, bool hasNoNutritionData
+ FoodSource source, String? barcode, String name, String servingDescription, ServingBasis servingBasis, String? brand, String? providerFoodId, double? servingGrams, double? servingVolumeMl, double? caloriesKcal, double? proteinGrams, double? carbsGrams, double? fatGrams, double? ironMg, double? calciumMg, double? vitaminDMcg, double? vitaminCMg, double? fiberGrams, double? sodiumMg, double? potassiumMg, double? saturatedFatGrams, double? completeness, bool hasCompleteNutritionFacts, bool hasNoNutritionData
 });
 
 
@@ -741,14 +801,15 @@ class __$ProviderFoodCopyWithImpl<$Res>
 
 /// Create a copy of ProviderFood
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? source = null,Object? barcode = null,Object? name = null,Object? servingDescription = null,Object? servingBasis = null,Object? brand = freezed,Object? servingGrams = freezed,Object? servingVolumeMl = freezed,Object? caloriesKcal = freezed,Object? proteinGrams = freezed,Object? carbsGrams = freezed,Object? fatGrams = freezed,Object? ironMg = freezed,Object? calciumMg = freezed,Object? vitaminDMcg = freezed,Object? vitaminCMg = freezed,Object? fiberGrams = freezed,Object? sodiumMg = freezed,Object? potassiumMg = freezed,Object? saturatedFatGrams = freezed,Object? completeness = freezed,Object? hasCompleteNutritionFacts = null,Object? hasNoNutritionData = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? source = null,Object? barcode = freezed,Object? name = null,Object? servingDescription = null,Object? servingBasis = null,Object? brand = freezed,Object? providerFoodId = freezed,Object? servingGrams = freezed,Object? servingVolumeMl = freezed,Object? caloriesKcal = freezed,Object? proteinGrams = freezed,Object? carbsGrams = freezed,Object? fatGrams = freezed,Object? ironMg = freezed,Object? calciumMg = freezed,Object? vitaminDMcg = freezed,Object? vitaminCMg = freezed,Object? fiberGrams = freezed,Object? sodiumMg = freezed,Object? potassiumMg = freezed,Object? saturatedFatGrams = freezed,Object? completeness = freezed,Object? hasCompleteNutritionFacts = null,Object? hasNoNutritionData = null,}) {
   return _then(_ProviderFood(
 source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
-as FoodSource,barcode: null == barcode ? _self.barcode : barcode // ignore: cast_nullable_to_non_nullable
-as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as FoodSource,barcode: freezed == barcode ? _self.barcode : barcode // ignore: cast_nullable_to_non_nullable
+as String?,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,servingDescription: null == servingDescription ? _self.servingDescription : servingDescription // ignore: cast_nullable_to_non_nullable
 as String,servingBasis: null == servingBasis ? _self.servingBasis : servingBasis // ignore: cast_nullable_to_non_nullable
 as ServingBasis,brand: freezed == brand ? _self.brand : brand // ignore: cast_nullable_to_non_nullable
+as String?,providerFoodId: freezed == providerFoodId ? _self.providerFoodId : providerFoodId // ignore: cast_nullable_to_non_nullable
 as String?,servingGrams: freezed == servingGrams ? _self.servingGrams : servingGrams // ignore: cast_nullable_to_non_nullable
 as double?,servingVolumeMl: freezed == servingVolumeMl ? _self.servingVolumeMl : servingVolumeMl // ignore: cast_nullable_to_non_nullable
 as double?,caloriesKcal: freezed == caloriesKcal ? _self.caloriesKcal : caloriesKcal // ignore: cast_nullable_to_non_nullable

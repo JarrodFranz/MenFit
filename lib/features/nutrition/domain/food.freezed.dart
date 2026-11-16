@@ -25,7 +25,8 @@ mixin _$Food {
  double? get servingGrams;/// Volume of one serving in millilitres, when known. `null` when the
 /// serving has no fluid volume specified.
  double? get servingVolumeMl;/// EAN/UPC barcode, when known. `null` for hand-entered foods.
- String? get barcode; FoodSource get source;
+ String? get barcode;/// Source-scoped catalogue key; never a product barcode.
+ String? get providerFoodId; FoodSource get source;
 /// Create a copy of Food
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -36,16 +37,16 @@ $FoodCopyWith<Food> get copyWith => _$FoodCopyWithImpl<Food>(this as Food, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Food&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.servingDescription, servingDescription) || other.servingDescription == servingDescription)&&(identical(other.perServing, perServing) || other.perServing == perServing)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.brand, brand) || other.brand == brand)&&(identical(other.servingGrams, servingGrams) || other.servingGrams == servingGrams)&&(identical(other.servingVolumeMl, servingVolumeMl) || other.servingVolumeMl == servingVolumeMl)&&(identical(other.barcode, barcode) || other.barcode == barcode)&&(identical(other.source, source) || other.source == source));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Food&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.servingDescription, servingDescription) || other.servingDescription == servingDescription)&&(identical(other.perServing, perServing) || other.perServing == perServing)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.brand, brand) || other.brand == brand)&&(identical(other.servingGrams, servingGrams) || other.servingGrams == servingGrams)&&(identical(other.servingVolumeMl, servingVolumeMl) || other.servingVolumeMl == servingVolumeMl)&&(identical(other.barcode, barcode) || other.barcode == barcode)&&(identical(other.providerFoodId, providerFoodId) || other.providerFoodId == providerFoodId)&&(identical(other.source, source) || other.source == source));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,servingDescription,perServing,createdAt,updatedAt,brand,servingGrams,servingVolumeMl,barcode,source);
+int get hashCode => Object.hash(runtimeType,id,name,servingDescription,perServing,createdAt,updatedAt,brand,servingGrams,servingVolumeMl,barcode,providerFoodId,source);
 
 @override
 String toString() {
-  return 'Food(id: $id, name: $name, servingDescription: $servingDescription, perServing: $perServing, createdAt: $createdAt, updatedAt: $updatedAt, brand: $brand, servingGrams: $servingGrams, servingVolumeMl: $servingVolumeMl, barcode: $barcode, source: $source)';
+  return 'Food(id: $id, name: $name, servingDescription: $servingDescription, perServing: $perServing, createdAt: $createdAt, updatedAt: $updatedAt, brand: $brand, servingGrams: $servingGrams, servingVolumeMl: $servingVolumeMl, barcode: $barcode, providerFoodId: $providerFoodId, source: $source)';
 }
 
 
@@ -56,7 +57,7 @@ abstract mixin class $FoodCopyWith<$Res>  {
   factory $FoodCopyWith(Food value, $Res Function(Food) _then) = _$FoodCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, String servingDescription, NutritionFacts perServing, DateTime createdAt, DateTime updatedAt, String? brand, double? servingGrams, double? servingVolumeMl, String? barcode, FoodSource source
+ String id, String name, String servingDescription, NutritionFacts perServing, DateTime createdAt, DateTime updatedAt, String? brand, double? servingGrams, double? servingVolumeMl, String? barcode, String? providerFoodId, FoodSource source
 });
 
 
@@ -73,7 +74,7 @@ class _$FoodCopyWithImpl<$Res>
 
 /// Create a copy of Food
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? servingDescription = null,Object? perServing = null,Object? createdAt = null,Object? updatedAt = null,Object? brand = freezed,Object? servingGrams = freezed,Object? servingVolumeMl = freezed,Object? barcode = freezed,Object? source = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? servingDescription = null,Object? perServing = null,Object? createdAt = null,Object? updatedAt = null,Object? brand = freezed,Object? servingGrams = freezed,Object? servingVolumeMl = freezed,Object? barcode = freezed,Object? providerFoodId = freezed,Object? source = null,}) {
   return _then(Food(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -85,6 +86,7 @@ as DateTime,brand: freezed == brand ? _self.brand : brand // ignore: cast_nullab
 as String?,servingGrams: freezed == servingGrams ? _self.servingGrams : servingGrams // ignore: cast_nullable_to_non_nullable
 as double?,servingVolumeMl: freezed == servingVolumeMl ? _self.servingVolumeMl : servingVolumeMl // ignore: cast_nullable_to_non_nullable
 as double?,barcode: freezed == barcode ? _self.barcode : barcode // ignore: cast_nullable_to_non_nullable
+as String?,providerFoodId: freezed == providerFoodId ? _self.providerFoodId : providerFoodId // ignore: cast_nullable_to_non_nullable
 as String?,source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
 as FoodSource,
   ));
@@ -180,10 +182,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  String servingDescription,  NutritionFacts perServing,  DateTime createdAt,  DateTime updatedAt,  String? brand,  double? servingGrams,  double? servingVolumeMl,  String? barcode,  FoodSource source)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  String servingDescription,  NutritionFacts perServing,  DateTime createdAt,  DateTime updatedAt,  String? brand,  double? servingGrams,  double? servingVolumeMl,  String? barcode,  String? providerFoodId,  FoodSource source)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Food() when $default != null:
-return $default(_that.id,_that.name,_that.servingDescription,_that.perServing,_that.createdAt,_that.updatedAt,_that.brand,_that.servingGrams,_that.servingVolumeMl,_that.barcode,_that.source);case _:
+return $default(_that.id,_that.name,_that.servingDescription,_that.perServing,_that.createdAt,_that.updatedAt,_that.brand,_that.servingGrams,_that.servingVolumeMl,_that.barcode,_that.providerFoodId,_that.source);case _:
   return orElse();
 
 }
@@ -201,10 +203,10 @@ return $default(_that.id,_that.name,_that.servingDescription,_that.perServing,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  String servingDescription,  NutritionFacts perServing,  DateTime createdAt,  DateTime updatedAt,  String? brand,  double? servingGrams,  double? servingVolumeMl,  String? barcode,  FoodSource source)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  String servingDescription,  NutritionFacts perServing,  DateTime createdAt,  DateTime updatedAt,  String? brand,  double? servingGrams,  double? servingVolumeMl,  String? barcode,  String? providerFoodId,  FoodSource source)  $default,) {final _that = this;
 switch (_that) {
 case _Food():
-return $default(_that.id,_that.name,_that.servingDescription,_that.perServing,_that.createdAt,_that.updatedAt,_that.brand,_that.servingGrams,_that.servingVolumeMl,_that.barcode,_that.source);case _:
+return $default(_that.id,_that.name,_that.servingDescription,_that.perServing,_that.createdAt,_that.updatedAt,_that.brand,_that.servingGrams,_that.servingVolumeMl,_that.barcode,_that.providerFoodId,_that.source);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -221,10 +223,10 @@ return $default(_that.id,_that.name,_that.servingDescription,_that.perServing,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  String servingDescription,  NutritionFacts perServing,  DateTime createdAt,  DateTime updatedAt,  String? brand,  double? servingGrams,  double? servingVolumeMl,  String? barcode,  FoodSource source)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  String servingDescription,  NutritionFacts perServing,  DateTime createdAt,  DateTime updatedAt,  String? brand,  double? servingGrams,  double? servingVolumeMl,  String? barcode,  String? providerFoodId,  FoodSource source)?  $default,) {final _that = this;
 switch (_that) {
 case _Food() when $default != null:
-return $default(_that.id,_that.name,_that.servingDescription,_that.perServing,_that.createdAt,_that.updatedAt,_that.brand,_that.servingGrams,_that.servingVolumeMl,_that.barcode,_that.source);case _:
+return $default(_that.id,_that.name,_that.servingDescription,_that.perServing,_that.createdAt,_that.updatedAt,_that.brand,_that.servingGrams,_that.servingVolumeMl,_that.barcode,_that.providerFoodId,_that.source);case _:
   return null;
 
 }
@@ -236,7 +238,7 @@ return $default(_that.id,_that.name,_that.servingDescription,_that.perServing,_t
 
 
 class _Food extends Food {
-  const _Food({required this.id, required this.name, required this.servingDescription, required this.perServing, required this.createdAt, required this.updatedAt, this.brand, this.servingGrams, this.servingVolumeMl, this.barcode, this.source = FoodSource.custom}): super._();
+  const _Food({required this.id, required this.name, required this.servingDescription, required this.perServing, required this.createdAt, required this.updatedAt, this.brand, this.servingGrams, this.servingVolumeMl, this.barcode, this.providerFoodId, this.source = FoodSource.custom}): super._();
   
 
 @override final  String id;
@@ -259,6 +261,8 @@ class _Food extends Food {
 @override final  double? servingVolumeMl;
 /// EAN/UPC barcode, when known. `null` for hand-entered foods.
 @override final  String? barcode;
+/// Source-scoped catalogue key; never a product barcode.
+@override final  String? providerFoodId;
 @override@JsonKey() final  FoodSource source;
 
 /// Create a copy of Food
@@ -271,16 +275,16 @@ _$FoodCopyWith<_Food> get copyWith => __$FoodCopyWithImpl<_Food>(this, _$identit
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Food&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.servingDescription, servingDescription) || other.servingDescription == servingDescription)&&(identical(other.perServing, perServing) || other.perServing == perServing)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.brand, brand) || other.brand == brand)&&(identical(other.servingGrams, servingGrams) || other.servingGrams == servingGrams)&&(identical(other.servingVolumeMl, servingVolumeMl) || other.servingVolumeMl == servingVolumeMl)&&(identical(other.barcode, barcode) || other.barcode == barcode)&&(identical(other.source, source) || other.source == source));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Food&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.servingDescription, servingDescription) || other.servingDescription == servingDescription)&&(identical(other.perServing, perServing) || other.perServing == perServing)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.brand, brand) || other.brand == brand)&&(identical(other.servingGrams, servingGrams) || other.servingGrams == servingGrams)&&(identical(other.servingVolumeMl, servingVolumeMl) || other.servingVolumeMl == servingVolumeMl)&&(identical(other.barcode, barcode) || other.barcode == barcode)&&(identical(other.providerFoodId, providerFoodId) || other.providerFoodId == providerFoodId)&&(identical(other.source, source) || other.source == source));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,name,servingDescription,perServing,createdAt,updatedAt,brand,servingGrams,servingVolumeMl,barcode,source);
+int get hashCode => Object.hash(runtimeType,id,name,servingDescription,perServing,createdAt,updatedAt,brand,servingGrams,servingVolumeMl,barcode,providerFoodId,source);
 
 @override
 String toString() {
-  return 'Food(id: $id, name: $name, servingDescription: $servingDescription, perServing: $perServing, createdAt: $createdAt, updatedAt: $updatedAt, brand: $brand, servingGrams: $servingGrams, servingVolumeMl: $servingVolumeMl, barcode: $barcode, source: $source)';
+  return 'Food(id: $id, name: $name, servingDescription: $servingDescription, perServing: $perServing, createdAt: $createdAt, updatedAt: $updatedAt, brand: $brand, servingGrams: $servingGrams, servingVolumeMl: $servingVolumeMl, barcode: $barcode, providerFoodId: $providerFoodId, source: $source)';
 }
 
 
@@ -291,7 +295,7 @@ abstract mixin class _$FoodCopyWith<$Res> implements $FoodCopyWith<$Res> {
   factory _$FoodCopyWith(_Food value, $Res Function(_Food) _then) = __$FoodCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, String servingDescription, NutritionFacts perServing, DateTime createdAt, DateTime updatedAt, String? brand, double? servingGrams, double? servingVolumeMl, String? barcode, FoodSource source
+ String id, String name, String servingDescription, NutritionFacts perServing, DateTime createdAt, DateTime updatedAt, String? brand, double? servingGrams, double? servingVolumeMl, String? barcode, String? providerFoodId, FoodSource source
 });
 
 
@@ -308,7 +312,7 @@ class __$FoodCopyWithImpl<$Res>
 
 /// Create a copy of Food
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? servingDescription = null,Object? perServing = null,Object? createdAt = null,Object? updatedAt = null,Object? brand = freezed,Object? servingGrams = freezed,Object? servingVolumeMl = freezed,Object? barcode = freezed,Object? source = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? servingDescription = null,Object? perServing = null,Object? createdAt = null,Object? updatedAt = null,Object? brand = freezed,Object? servingGrams = freezed,Object? servingVolumeMl = freezed,Object? barcode = freezed,Object? providerFoodId = freezed,Object? source = null,}) {
   return _then(_Food(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -320,6 +324,7 @@ as DateTime,brand: freezed == brand ? _self.brand : brand // ignore: cast_nullab
 as String?,servingGrams: freezed == servingGrams ? _self.servingGrams : servingGrams // ignore: cast_nullable_to_non_nullable
 as double?,servingVolumeMl: freezed == servingVolumeMl ? _self.servingVolumeMl : servingVolumeMl // ignore: cast_nullable_to_non_nullable
 as double?,barcode: freezed == barcode ? _self.barcode : barcode // ignore: cast_nullable_to_non_nullable
+as String?,providerFoodId: freezed == providerFoodId ? _self.providerFoodId : providerFoodId // ignore: cast_nullable_to_non_nullable
 as String?,source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
 as FoodSource,
   ));

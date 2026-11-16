@@ -15,13 +15,23 @@
     <uses-permission android:name="android.permission.health.READ_STEPS"/>
     <uses-permission android:name="android.permission.health.READ_ACTIVE_CALORIES_BURNED"/>
     <uses-permission android:name="android.permission.health.READ_TOTAL_CALORIES_BURNED"/>
+    <!-- Wearable workout import (Garmin Connect etc. via Health Connect).
+         READ_EXERCISE gates ExerciseSessionRecord; READ_DISTANCE is required
+         too, because the health plugin reads DistanceRecord for every session
+         and a missing grant makes the whole workout read come back empty. -->
+    <uses-permission android:name="android.permission.health.READ_EXERCISE"/>
+    <uses-permission android:name="android.permission.health.READ_DISTANCE"/>
     <!-- Bluetooth Low Energy (BLE) Heart Rate Monitors & Watch Broadcast -->
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" android:usesPermissionFlags="neverForLocation" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="false" />
+    <!-- Sensitive local data must not enter cloud backup or device transfer. -->
     <application
+        android:allowBackup="false"
+        android:fullBackupContent="@xml/backup_rules"
+        android:dataExtractionRules="@xml/data_extraction_rules"
         android:label="MenFit"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"

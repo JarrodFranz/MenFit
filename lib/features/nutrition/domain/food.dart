@@ -101,6 +101,9 @@ abstract class Food with _$Food {
 
     /// EAN/UPC barcode, when known. `null` for hand-entered foods.
     String? barcode,
+
+    /// Source-scoped catalogue key; never a product barcode.
+    String? providerFoodId,
     @Default(FoodSource.custom) FoodSource source,
   }) = _Food;
 

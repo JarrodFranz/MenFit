@@ -95,8 +95,7 @@ class _FoodSearchScreenState extends ConsumerState<FoodSearchScreen> {
   Widget build(BuildContext context) {
     final tokens = Theme.of(context).extension<AppTokens>()!;
     final resultsAsync = ref.watch(foodSearchResultsProvider(_query));
-    final hideCalories =
-        ref.watch(nutritionGoalsProvider).value?.hideCalorieNumbers ?? false;
+    final hideCalories = ref.watch(hideCalorieNumbersProvider);
     final dataProvider = ref.watch(foodDataProviderProvider);
     final region = ref.watch(foodSearchRegionControllerProvider);
     final onlineState = ref.watch(onlineFoodSearchControllerProvider);
@@ -378,11 +377,7 @@ class _FoodSearchScreenState extends ConsumerState<FoodSearchScreen> {
   Future<void> _pickOnline(ProviderFoodSummary summary) async {
     final result = await ref
         .read(barcodeLookupControllerProvider.notifier)
-        .fetchFullRecord(
-          summary.barcode,
-          source: summary.source,
-          confirmOnlineLookup: _confirmOnlineLookup,
-        );
+        .fetchFullRecord(summary, confirmOnlineLookup: _confirmOnlineLookup);
     if (!mounted) return;
     await _route(result);
   }

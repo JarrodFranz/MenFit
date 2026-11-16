@@ -10,7 +10,6 @@ import 'package:menfit_app/features/nutrition/data/drift_nutrition_goals_reposit
 import 'package:menfit_app/features/nutrition/data/drift_nutrition_repository.dart';
 import 'package:menfit_app/features/nutrition/data/drift_water_repository.dart';
 import 'package:menfit_app/features/nutrition/data/fat_secret_service.dart';
-import 'package:menfit_app/features/nutrition/data/fat_secret_token_manager.dart';
 import 'package:menfit_app/features/nutrition/data/food_search_region_store.dart';
 import 'package:menfit_app/features/nutrition/data/online_lookup_notice_store.dart';
 import 'package:menfit_app/features/nutrition/data/open_food_facts_service.dart';
@@ -29,6 +28,8 @@ import 'package:menfit_app/features/nutrition/domain/nutrition_totals.dart';
 import 'package:menfit_app/features/nutrition/domain/water_repository.dart';
 import 'package:menfit_app/features/profile/profile_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+export 'presentation/nutrition_day_controller.dart';
 
 part 'nutrition_providers.g.dart';
 
@@ -72,7 +73,7 @@ NutritionGoalsRepository nutritionGoalsRepository(Ref ref) {
 /// whenever FatSecret is configured (ADR 016) — a
 /// `FallbackFoodDataProvider` wraps the two, and everything above `data/`
 /// sees one [FoodDataProvider] regardless of which one actually answered a
-/// given lookup. With no FatSecret credentials configured, Open Food Facts
+/// given lookup. With no FatSecret proxy configured, Open Food Facts
 /// is the only provider, exactly as before this wave.
 ///
 /// Typed as the domain interface so nothing above `data/` knows which
@@ -121,23 +122,6 @@ FoodDataProvider foodDataProvider(Ref ref) {
         proxyApiKey: env.fatSecretProxyKey.isNotEmpty
             ? env.fatSecretProxyKey
             : null,
-      ),
-      fallback: off,
-    );
-  }
-
-  if (env.fatSecretClientId.isNotEmpty &&
-      env.fatSecretClientSecret.isNotEmpty) {
-    return FallbackFoodDataProvider(
-      primary: FatSecretService(
-        dio: dio,
-        tokenManager: FatSecretTokenManager(
-          dio: dio,
-          clientId: env.fatSecretClientId,
-          clientSecret: env.fatSecretClientSecret,
-          tokenUrl: env.fatSecretTokenUrl,
-        ),
-        apiBaseUrl: env.fatSecretApiBaseUrl,
       ),
       fallback: off,
     );
@@ -271,6 +255,14 @@ Stream<List<Food>> recentFoods(Ref ref) {
 @riverpod
 Stream<NutritionGoals?> nutritionGoals(Ref ref) {
   return ref.watch(nutritionGoalsRepositoryProvider).watchGoals();
+}
+
+/// Shared rendering gate: unknown preferences hide calories. A resolved null
+/// goals row means no preference; refresh/error retains the last known choice.
+@riverpod
+bool hideCalorieNumbers(Ref ref) {
+  final goals = ref.watch(nutritionGoalsProvider);
+  return !goals.hasValue || (goals.value?.hideCalorieNumbers ?? false);
 }
 
 /// Every diary entry logged on [day], grouped by meal.
@@ -412,10 +404,18 @@ DayCalorieTarget dayCalorieTarget(Ref ref) {
 }
 
 /// Evaluates 7-day nutrition and protein consistency achievements.
+///
+/// The protein axis is read against [dayCalorieTargetProvider], not
+/// `goals.calorieTargetKcal` directly — same rule as `MacrosTodayCard`'s
+/// energy line: that provider is the one place "the user’s own target, else the
+/// estimate with the BMR floor applied" is decided, so a percent-mode
+/// protein split derives against the same figure the diary shows rather
+/// than a second, potentially disagreeing definition.
 @riverpod
 Stream<FuelingConsistencyResult> fuelingConsistency(Ref ref) {
   final nutritionRepository = ref.watch(nutritionRepositoryProvider);
   final goalsRepository = ref.watch(nutritionGoalsRepositoryProvider);
+  final basisKcal = ref.watch(dayCalorieTargetProvider).targetKcal;
   final today = LocalDate.today();
   final windowStart = today.addDays(-6);
 
@@ -426,6 +426,7 @@ Stream<FuelingConsistencyResult> fuelingConsistency(Ref ref) {
       entries: entries,
       goals: goals,
       today: today,
+      basisKcal: basisKcal,
     ),
   );
 }

@@ -8,7 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:menfit_app/core/theme/app_theme.dart';
 import 'package:menfit_app/core/widgets/adaptive_scaffold.dart';
 
-/// Does the five-destination bottom bar actually fit on a phone?
+/// Does the six-destination bottom bar actually fit on a phone?
 ///
 /// Ordinary widget tests cannot answer this. They run with
 /// `--use-test-fonts`, whose glyphs are fixed-width boxes about one em
@@ -44,14 +44,19 @@ void main() {
       label: 'Home',
     ),
     AdaptiveDestination(
-      icon: Icons.directions_run_outlined,
-      selectedIcon: Icons.directions_run,
-      label: 'Activity',
+      icon: Icons.fitness_center_outlined,
+      selectedIcon: Icons.fitness_center,
+      label: 'Train',
     ),
     AdaptiveDestination(
       icon: Icons.restaurant_outlined,
       selectedIcon: Icons.restaurant,
       label: 'Nutrition',
+    ),
+    AdaptiveDestination(
+      icon: Icons.science_outlined,
+      selectedIcon: Icons.science,
+      label: 'Keto',
     ),
     AdaptiveDestination(
       icon: Icons.self_improvement_outlined,

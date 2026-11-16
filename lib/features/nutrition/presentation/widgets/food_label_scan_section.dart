@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:menfit_app/core/platform/ocr/text_recognition.dart';
 import 'package:menfit_app/core/theme/tokens.dart';
+import 'package:menfit_app/features/nutrition/domain/label_ocr/parsed_nutrition_label.dart';
 import 'package:menfit_app/features/nutrition/presentation/food_form_controller.dart';
 import 'package:menfit_app/features/nutrition/presentation/food_form_seed.dart';
 import 'package:menfit_app/features/nutrition/presentation/label_scan_fields.dart';
+import 'package:menfit_app/features/nutrition/presentation/nutrition_format.dart';
 
 /// "Scan nutrition label" — photograph a printed panel into the form
 /// (ADR 012), plus the review banner that appears once one has been.
@@ -51,6 +53,13 @@ class FoodLabelScanSection extends ConsumerWidget {
           SizedBox(height: tokens.spacingMd),
           LabelScanBanner(
             warnings: state.labelWarnings,
+            parsedLabel: state.parsedLabel,
+            activeBasis: state.activeLabelBasis,
+            onSelectBasis: (basis) {
+              ref
+                  .read(foodFormControllerProvider(seed).notifier)
+                  .switchLabelBasis(basis);
+            },
           ),
         ],
       ],
@@ -84,14 +93,32 @@ class FoodLabelScanSection extends ConsumerWidget {
 /// review step is not a state the form passes through; it is what these
 /// numbers are, until they save them as their own.
 class LabelScanBanner extends StatelessWidget {
-  const LabelScanBanner({required this.warnings, super.key});
+  const LabelScanBanner({
+    required this.warnings,
+    this.parsedLabel,
+    this.activeBasis,
+    this.onSelectBasis,
+    super.key,
+  });
 
   final List<String> warnings;
+  final ParsedNutritionLabel? parsedLabel;
+  final LabelScanBasis? activeBasis;
+  final ValueChanged<LabelScanBasis>? onSelectBasis;
 
   @override
   Widget build(BuildContext context) {
     final tokens = Theme.of(context).extension<AppTokens>()!;
     final scheme = Theme.of(context).colorScheme;
+
+    final hasBothColumns =
+        parsedLabel != null &&
+        parsedLabel!.perServing != null &&
+        !parsedLabel!.perServing!.isEmpty &&
+        parsedLabel!.per100 != null &&
+        !parsedLabel!.per100!.isEmpty;
+    final is100ml = parsedLabel?.per100?.basis == ColumnBasis.per100ml;
+    final servingGrams = parsedLabel?.serving?.grams;
 
     return Container(
       key: const Key('labelScanBanner'),
@@ -117,6 +144,55 @@ class LabelScanBanner extends StatelessWidget {
               ),
             ],
           ),
+          if (hasBothColumns && onSelectBasis != null) ...[
+            SizedBox(height: tokens.spacingSm),
+            Text(
+              'Nutrition column:',
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: scheme.onSurfaceVariant,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: tokens.spacingXs),
+            SizedBox(
+              width: double.infinity,
+              child: SegmentedButton<LabelScanBasis>(
+                key: const Key('labelScanBasisSelector'),
+                segments: [
+                  ButtonSegment<LabelScanBasis>(
+                    value: LabelScanBasis.serving,
+                    label: Text(
+                      servingGrams != null
+                          ? 'Per Serving '
+                                '(${formatNutritionField(servingGrams)}g)'
+                          : 'Per Serving',
+                    ),
+                    icon: const Icon(Icons.restaurant_outlined, size: 16),
+                  ),
+                  ButtonSegment<LabelScanBasis>(
+                    value: is100ml
+                        ? LabelScanBasis.per100ml
+                        : LabelScanBasis.per100g,
+                    label: Text(is100ml ? 'Per 100 mL' : 'Per 100 g'),
+                    icon: const Icon(Icons.scale_outlined, size: 16),
+                  ),
+                ],
+                selected: {
+                  activeBasis ??
+                      (servingGrams != null
+                          ? LabelScanBasis.serving
+                          : (is100ml
+                                ? LabelScanBasis.per100ml
+                                : LabelScanBasis.per100g)),
+                },
+                onSelectionChanged: (selected) {
+                  if (selected.isNotEmpty) {
+                    onSelectBasis!(selected.first);
+                  }
+                },
+              ),
+            ),
+          ],
           for (final warning in warnings) ...[
             SizedBox(height: tokens.spacingSm),
             Text(

@@ -13,6 +13,7 @@
 /// runs; this owns what it does.
 library;
 
+import 'package:menfit_app/features/nutrition/domain/label_ocr/parsed_nutrition_label.dart';
 import 'package:menfit_app/features/nutrition/presentation/food_form_state.dart';
 import 'package:menfit_app/features/nutrition/presentation/label_scan_fields.dart';
 
@@ -23,8 +24,9 @@ import 'package:menfit_app/features/nutrition/presentation/label_scan_fields.dar
 /// already set is a field like any other, and a scan may not move it.
 FoodFormState applyLabelScan(
   FoodFormState current,
-  LabelScanFields fields,
-) {
+  LabelScanFields fields, {
+  ParsedNutritionLabel? parsedLabel,
+}) {
   final filled = <String, String>{};
   final kept = <String>[];
 
@@ -48,6 +50,8 @@ FoodFormState applyLabelScan(
 
   return next.copyWith(
     labelScanApplied: true,
+    parsedLabel: parsedLabel ?? current.parsedLabel,
+    activeLabelBasis: fields.basis,
     // Only the fields actually taken from the panel can be marked "check
     // this": a marker beside a number they typed themselves would be the app
     // doubting their handwriting.
@@ -76,6 +80,56 @@ FoodFormState applyLabelScan(
     // basis, so a per-volume panel always asks again. Cleared by
     // `FoodFormController.updateBasisAmount` — touching the amount is the
     // confirmation.
+    labelVolumeWeightConfirmed:
+        !fields.needsWeight && current.labelVolumeWeightConfirmed,
+  );
+}
+
+/// Switches the form between "Per Serving" and "Per 100g/mL" for a scanned
+/// label.
+FoodFormState switchScannedLabelBasis(
+  FoodFormState current,
+  LabelScanBasis targetBasis,
+) {
+  final label = current.parsedLabel;
+  if (label == null || current.activeLabelBasis == targetBasis) {
+    return current;
+  }
+
+  final fields = mapParsedLabel(label, preferredBasis: targetBasis);
+  if (fields.isEmpty) return current;
+
+  final previousFields = current.activeLabelBasis != null
+      ? mapParsedLabel(label, preferredBasis: current.activeLabelBasis)
+      : null;
+
+  final filled = <String, String>{};
+  final kept = <String>[];
+
+  for (final entry in fields.values.entries) {
+    final currentVal = _fieldOf(current, entry.key).trim();
+    final prevScanVal = previousFields?.values[entry.key]?.trim();
+    if (currentVal.isEmpty ||
+        (prevScanVal != null && currentVal == prevScanVal)) {
+      filled[entry.key] = entry.value;
+    } else if (currentVal != entry.value) {
+      kept.add(_keptNote(entry.key, read: entry.value));
+    }
+  }
+
+  var next = _withValues(current, filled);
+  next = _withBasis(next, fields);
+
+  return next.copyWith(
+    activeLabelBasis: targetBasis,
+    lowConfidenceFields: {
+      for (final field in current.lowConfidenceFields)
+        if (!filled.containsKey(field)) field,
+      for (final field in fields.lowConfidenceFields)
+        if (filled.containsKey(field)) field,
+    },
+    labelWarnings: [...fields.warnings, ...kept],
+    labelIsPerVolume: fields.needsWeight || current.labelIsPerVolume,
     labelVolumeWeightConfirmed:
         !fields.needsWeight && current.labelVolumeWeightConfirmed,
   );

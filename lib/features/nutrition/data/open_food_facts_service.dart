@@ -202,6 +202,14 @@ class OpenFoodFactsService implements FoodDataProvider {
     );
   }
 
+  /// An Open Food Facts hit's id **is** its product code, so the full
+  /// record is the product lookup by that code.
+  @override
+  Future<ProviderFood?> fetchDetails(
+    ProviderFoodSummary hit, {
+    FoodSearchScope scope = FoodSearchScope.anywhereInEnglish,
+  }) => findByBarcode(hit.providerFoodId, scope: scope);
+
   /// Free-text search, served by whichever of the two endpoints the
   /// platform can actually reach.
   ///

@@ -91,3 +91,14 @@ This is the plugin's documented resolution — the -dontwarn lines don't disable
 **Current status note:** the "Current status (2026-08-27)" section above, which says release builds succeeded, predates ADR 012's ML Kit adoption. That statement was true when written; it stopped being true once `google_mlkit_text_recognition` was added and needed the fix documented here. Both debug and release builds pass again as of this fix.
 
 > **APK size note (2026-09-04):** the 63.7 MB release figure above predates the bundled ML Kit Latin model (ADR 012) and the audio/wakelock plugins (ADR 014); the release APK is now 123.0 MB (debug-signed, single universal ABI). Split-per-ABI / App Bundle remains the registered fix.
+
+
+## Linux checkout after Windows build (2026-11-16)
+
+A first Linux release build failed in `compileFlutterBuildRelease` trying to
+create a relative `android/app/D:/Documents/.../arm64-v8a` directory. The copied
+`.dart_tool/flutter_build` hook results contained the old Windows project path.
+`flutter clean` followed by `flutter pub get` regenerated host-specific build
+metadata and moved the retry past that failure. This deletes generated build
+artifacts only; do not rewrite source paths or lower Android SDK versions.
+The old Windows watchdog is not appropriate on this host.

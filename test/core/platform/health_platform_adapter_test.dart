@@ -32,6 +32,9 @@ class MockHealthPlatformAdapter implements HealthPlatformAdapter {
   Future<bool> hasStepsPermission() async => permissionsGranted;
 
   @override
+  Future<bool> hasWorkoutPermission() async => permissionsGranted;
+
+  @override
   Future<bool> requestPermissions() async {
     permissionsGranted = true;
     return true;

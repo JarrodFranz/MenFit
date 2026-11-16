@@ -16,7 +16,7 @@ void main() {
   });
 
   testWidgets(
-    'app pumps, shows the home screen and all 5 destinations, and '
+    'app pumps, shows the home screen and all 6 destinations, and '
     'navigating to Settings shows the theme selector',
     (tester) async {
       // Force a compact width so navigation renders as a bottom
@@ -31,10 +31,19 @@ void main() {
       // this test on the main shell instead of sending it to /onboarding.
       SharedPreferences.setMockInitialValues({'onboarding_complete': true});
       final prefs = await SharedPreferences.getInstance();
+      final database = AppDatabase.forTesting(NativeDatabase.memory());
+      addTearDown(database.close);
+      addTearDown(() async {
+        await tester.pumpWidget(const SizedBox.shrink());
+        await tester.pump(const Duration(milliseconds: 1));
+      });
 
       await tester.pumpWidget(
         ProviderScope(
-          overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
+          overrides: [
+            sharedPreferencesProvider.overrideWithValue(prefs),
+            appDatabaseProvider.overrideWithValue(database),
+          ],
           child: const App(),
         ),
       );
@@ -43,7 +52,7 @@ void main() {
       // Home screen is visible by default.
       expect(find.text('Welcome back'), findsOneWidget);
 
-      // All 5 shell destinations are present in the bottom NavigationBar.
+      // All 6 shell destinations are present in the bottom NavigationBar.
       // (Scoped to the NavigationBar because some labels, e.g. "Nutrition",
       // also appear as home-screen dashboard card titles.)
       final navigationBar = find.byType(NavigationBar);
@@ -53,6 +62,7 @@ void main() {
         'Home',
         'Train',
         'Nutrition',
+        'Keto',
         'Recovery',
         'Settings',
       ]) {
@@ -79,22 +89,29 @@ void main() {
       expect(find.text('System'), findsOneWidget);
       expect(find.text('Light'), findsOneWidget);
       expect(find.text('Dark'), findsOneWidget);
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(const Duration(milliseconds: 1));
     },
   );
 
   testWidgets(
-    'shell renders all 5 destination labels with no overflow at compact '
+    'shell renders all 6 destination labels with no overflow at compact '
     '(375x812) and expanded (1200x900) window sizes',
     (tester) async {
       SharedPreferences.setMockInitialValues({'onboarding_complete': true});
       final prefs = await SharedPreferences.getInstance();
       final database = AppDatabase.forTesting(NativeDatabase.memory());
       addTearDown(database.close);
+      addTearDown(() async {
+        await tester.pumpWidget(const SizedBox.shrink());
+        await tester.pump(const Duration(milliseconds: 1));
+      });
 
       const expectedLabels = [
         'Home',
         'Train',
         'Nutrition',
+        'Keto',
         'Recovery',
         'Settings',
       ];

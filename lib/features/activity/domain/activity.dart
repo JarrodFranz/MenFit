@@ -61,7 +61,43 @@ enum ActivityType {
     ActivityType.swim => 'Swim',
     ActivityType.other => 'Other',
   };
+
+  /// Whether distance is a meaningful measure of this kind of activity -
+  /// the single predicate every distance reader goes through.
+  ///
+  /// `false` for strength, yoga, HIIT and pilates: a wearable that sums the
+  /// platform's distance records over such a session's window picks up the
+  /// steps walked between sets, so any distance attached to one is noise.
+  /// [other] stays `true` because it covers both manual "other" entries with
+  /// a typed distance and wearable sessions the mapper could not classify
+  /// (rowing, skiing, skating) where distance is real.
+  bool get tracksDistance => switch (this) {
+    ActivityType.run ||
+    ActivityType.walk ||
+    ActivityType.hike ||
+    ActivityType.ride ||
+    ActivityType.swim ||
+    ActivityType.other => true,
+    ActivityType.strength ||
+    ActivityType.yoga ||
+    ActivityType.hiit ||
+    ActivityType.pilates => false,
+  };
+
+  /// [meters] as this type may count it: unchanged when it [tracksDistance],
+  /// otherwise `0` (the stored "no distance" value - the column is not
+  /// nullable). Applied when activities are read and written, so totals,
+  /// badges, charts and stat tiles never see a non-distance type's distance.
+  double countedDistanceMeters(double meters) => tracksDistance ? meters : 0;
 }
+
+/// Display threshold for average pace; short records may contain incidental
+/// distance. This is a presentation heuristic, not a physiological limit.
+const double minPaceDistanceMeters = 200;
+
+/// Slowest average pace displayed (60:00 /km), a presentation heuristic
+/// for incidental distance rather than a judgement of the activity.
+const double maxPlausiblePaceSecondsPerKm = 3600;
 
 /// Parses the `:type` segment of `/activity/hub/:type`, defaulting to
 /// [ActivityType.strength] for anything unrecognised.
@@ -150,13 +186,23 @@ abstract class Activity with _$Activity {
 
   const Activity._();
 
-  /// Average moving pace, in seconds per kilometre. `null` when
-  /// [distanceMeters] is zero (or negative) — pace is undefined without
-  /// distance, not zero.
+  /// Whether this activity has a distance worth showing: its type
+  /// [ActivityType.tracksDistance] and a positive distance was recorded.
+  bool get hasDistance => activityType.tracksDistance && distanceMeters > 0;
+
+  /// Average moving pace, in seconds per kilometre. `null` — pace
+  /// undefined, never zero — when the type does not track distance, when
+  /// [distanceMeters] is under [minPaceDistanceMeters], or when the result
+  /// would be slower than [maxPlausiblePaceSecondsPerKm] (a 0.13 km
+  /// "distance" over a 38-minute session is not a 295:25 /km pace).
   double? get avgPaceSecondsPerKm {
-    if (distanceMeters <= 0) return null;
-    final km = distanceMeters / 1000;
-    return movingTime.inSeconds / km;
+    if (!activityType.tracksDistance) return null;
+    if (!distanceMeters.isFinite || distanceMeters < minPaceDistanceMeters) {
+      return null;
+    }
+    final pace = movingTime.inSeconds / (distanceMeters / 1000);
+    if (pace <= 0 || pace > maxPlausiblePaceSecondsPerKm) return null;
+    return pace;
   }
 
   /// Average moving speed, in kilometres per hour. `0` when [movingTime]

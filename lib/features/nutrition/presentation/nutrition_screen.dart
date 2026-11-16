@@ -16,7 +16,6 @@ import 'package:menfit_app/features/nutrition/domain/nutrition_totals.dart';
 import 'package:menfit_app/features/nutrition/nutrition_providers.dart';
 import 'package:menfit_app/features/nutrition/presentation/copy_meal_controller.dart';
 import 'package:menfit_app/features/nutrition/presentation/log_entry_dialog.dart';
-import 'package:menfit_app/features/nutrition/presentation/nutrition_day_controller.dart';
 import 'package:menfit_app/features/nutrition/presentation/quick_add_dialog.dart';
 import 'package:menfit_app/features/nutrition/presentation/widgets/day_selector.dart';
 import 'package:menfit_app/features/nutrition/presentation/widgets/day_totals_card.dart';
@@ -109,7 +108,7 @@ class _DayView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = Theme.of(context).extension<AppTokens>()!;
     final fuelingConsistency = ref.watch(fuelingConsistencyProvider).value;
-    final hideCalories = goals?.hideCalorieNumbers ?? false;
+    final hideCalories = ref.watch(hideCalorieNumbersProvider);
     // Which meals the day before this one has something in. Absent while it
     // loads, which reads as "no offer yet" rather than a flicker of one.
     final copyable =

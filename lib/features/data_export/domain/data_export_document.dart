@@ -112,12 +112,15 @@ class DataExportDocument {
     for (final entry in rawTables.entries) {
       final key = entry.key;
       final val = entry.value;
-      if (key is! String || val is! List) continue;
+      if (key is! String || val is! List) {
+        throw const FormatException('Invalid table payload.');
+      }
       final rows = <Map<String, Object?>>[];
       for (final r in val) {
-        if (r is Map) {
-          rows.add(Map<String, Object?>.from(r));
+        if (r is! Map || r.keys.any((key) => key is! String)) {
+          throw const FormatException('Invalid row payload.');
         }
+        rows.add(Map<String, Object?>.from(r));
       }
       tables[key] = rows;
     }

@@ -65,7 +65,7 @@ void main() {
           isNot(contains('FATSECRET_CLIENT_SECRET')),
           reason:
               'env/$name is committed - FatSecret secret belongs in a '
-              '--dart-define or gitignored env/*.secrets.json (ADR 006).',
+              'the proxy server configuration, never the application.',
         );
 
         final decoded = jsonDecode(raw) as Map<String, dynamic>;

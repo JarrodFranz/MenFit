@@ -5343,6 +5343,17 @@ class $FoodsTable extends Foods with TableInfo<$FoodsTable, Food> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _providerFoodIdMeta = const VerificationMeta(
+    'providerFoodId',
+  );
+  @override
+  late final GeneratedColumn<String> providerFoodId = GeneratedColumn<String>(
+    'provider_food_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
@@ -5660,6 +5671,7 @@ class $FoodsTable extends Foods with TableInfo<$FoodsTable, Food> {
   @override
   List<GeneratedColumn> get $columns => [
     id,
+    providerFoodId,
     name,
     brand,
     servingDescription,
@@ -5706,6 +5718,15 @@ class $FoodsTable extends Foods with TableInfo<$FoodsTable, Food> {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
       context.missing(_idMeta);
+    }
+    if (data.containsKey('provider_food_id')) {
+      context.handle(
+        _providerFoodIdMeta,
+        providerFoodId.isAcceptableOrUnknown(
+          data['provider_food_id']!,
+          _providerFoodIdMeta,
+        ),
+      );
     }
     if (data.containsKey('name')) {
       context.handle(
@@ -5955,6 +5976,10 @@ class $FoodsTable extends Foods with TableInfo<$FoodsTable, Food> {
         DriftSqlType.string,
         data['${effectivePrefix}id'],
       )!,
+      providerFoodId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}provider_food_id'],
+      ),
       name: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}name'],
@@ -6084,6 +6109,9 @@ class Food extends DataClass implements Insertable<Food> {
   /// Client-generated UUIDv7.
   final String id;
 
+  /// Catalogue identity, distinct from a retail barcode.
+  final String? providerFoodId;
+
   /// What the user calls this food, e.g. `'Porridge oats'`.
   final String name;
 
@@ -6187,6 +6215,7 @@ class Food extends DataClass implements Insertable<Food> {
   final String syncStatus;
   const Food({
     required this.id,
+    this.providerFoodId,
     required this.name,
     this.brand,
     required this.servingDescription,
@@ -6221,6 +6250,9 @@ class Food extends DataClass implements Insertable<Food> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
+    if (!nullToAbsent || providerFoodId != null) {
+      map['provider_food_id'] = Variable<String>(providerFoodId);
+    }
     map['name'] = Variable<String>(name);
     if (!nullToAbsent || brand != null) {
       map['brand'] = Variable<String>(brand);
@@ -6298,6 +6330,9 @@ class Food extends DataClass implements Insertable<Food> {
   FoodsCompanion toCompanion(bool nullToAbsent) {
     return FoodsCompanion(
       id: Value(id),
+      providerFoodId: providerFoodId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(providerFoodId),
       name: Value(name),
       brand: brand == null && nullToAbsent
           ? const Value.absent()
@@ -6375,6 +6410,7 @@ class Food extends DataClass implements Insertable<Food> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Food(
       id: serializer.fromJson<String>(json['id']),
+      providerFoodId: serializer.fromJson<String?>(json['providerFoodId']),
       name: serializer.fromJson<String>(json['name']),
       brand: serializer.fromJson<String?>(json['brand']),
       servingDescription: serializer.fromJson<String>(
@@ -6419,6 +6455,7 @@ class Food extends DataClass implements Insertable<Food> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
+      'providerFoodId': serializer.toJson<String?>(providerFoodId),
       'name': serializer.toJson<String>(name),
       'brand': serializer.toJson<String?>(brand),
       'servingDescription': serializer.toJson<String>(servingDescription),
@@ -6457,6 +6494,7 @@ class Food extends DataClass implements Insertable<Food> {
 
   Food copyWith({
     String? id,
+    Value<String?> providerFoodId = const Value.absent(),
     String? name,
     Value<String?> brand = const Value.absent(),
     String? servingDescription,
@@ -6488,6 +6526,9 @@ class Food extends DataClass implements Insertable<Food> {
     String? syncStatus,
   }) => Food(
     id: id ?? this.id,
+    providerFoodId: providerFoodId.present
+        ? providerFoodId.value
+        : this.providerFoodId,
     name: name ?? this.name,
     brand: brand.present ? brand.value : this.brand,
     servingDescription: servingDescription ?? this.servingDescription,
@@ -6535,6 +6576,9 @@ class Food extends DataClass implements Insertable<Food> {
   Food copyWithCompanion(FoodsCompanion data) {
     return Food(
       id: data.id.present ? data.id.value : this.id,
+      providerFoodId: data.providerFoodId.present
+          ? data.providerFoodId.value
+          : this.providerFoodId,
       name: data.name.present ? data.name.value : this.name,
       brand: data.brand.present ? data.brand.value : this.brand,
       servingDescription: data.servingDescription.present
@@ -6607,6 +6651,7 @@ class Food extends DataClass implements Insertable<Food> {
   String toString() {
     return (StringBuffer('Food(')
           ..write('id: $id, ')
+          ..write('providerFoodId: $providerFoodId, ')
           ..write('name: $name, ')
           ..write('brand: $brand, ')
           ..write('servingDescription: $servingDescription, ')
@@ -6643,6 +6688,7 @@ class Food extends DataClass implements Insertable<Food> {
   @override
   int get hashCode => Object.hashAll([
     id,
+    providerFoodId,
     name,
     brand,
     servingDescription,
@@ -6678,6 +6724,7 @@ class Food extends DataClass implements Insertable<Food> {
       identical(this, other) ||
       (other is Food &&
           other.id == this.id &&
+          other.providerFoodId == this.providerFoodId &&
           other.name == this.name &&
           other.brand == this.brand &&
           other.servingDescription == this.servingDescription &&
@@ -6711,6 +6758,7 @@ class Food extends DataClass implements Insertable<Food> {
 
 class FoodsCompanion extends UpdateCompanion<Food> {
   final Value<String> id;
+  final Value<String?> providerFoodId;
   final Value<String> name;
   final Value<String?> brand;
   final Value<String> servingDescription;
@@ -6743,6 +6791,7 @@ class FoodsCompanion extends UpdateCompanion<Food> {
   final Value<int> rowid;
   const FoodsCompanion({
     this.id = const Value.absent(),
+    this.providerFoodId = const Value.absent(),
     this.name = const Value.absent(),
     this.brand = const Value.absent(),
     this.servingDescription = const Value.absent(),
@@ -6776,6 +6825,7 @@ class FoodsCompanion extends UpdateCompanion<Food> {
   });
   FoodsCompanion.insert({
     required String id,
+    this.providerFoodId = const Value.absent(),
     required String name,
     this.brand = const Value.absent(),
     required String servingDescription,
@@ -6817,6 +6867,7 @@ class FoodsCompanion extends UpdateCompanion<Food> {
        updatedAt = Value(updatedAt);
   static Insertable<Food> custom({
     Expression<String>? id,
+    Expression<String>? providerFoodId,
     Expression<String>? name,
     Expression<String>? brand,
     Expression<String>? servingDescription,
@@ -6850,6 +6901,7 @@ class FoodsCompanion extends UpdateCompanion<Food> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (providerFoodId != null) 'provider_food_id': providerFoodId,
       if (name != null) 'name': name,
       if (brand != null) 'brand': brand,
       if (servingDescription != null) 'serving_description': servingDescription,
@@ -6887,6 +6939,7 @@ class FoodsCompanion extends UpdateCompanion<Food> {
 
   FoodsCompanion copyWith({
     Value<String>? id,
+    Value<String?>? providerFoodId,
     Value<String>? name,
     Value<String?>? brand,
     Value<String>? servingDescription,
@@ -6920,6 +6973,7 @@ class FoodsCompanion extends UpdateCompanion<Food> {
   }) {
     return FoodsCompanion(
       id: id ?? this.id,
+      providerFoodId: providerFoodId ?? this.providerFoodId,
       name: name ?? this.name,
       brand: brand ?? this.brand,
       servingDescription: servingDescription ?? this.servingDescription,
@@ -6960,6 +7014,9 @@ class FoodsCompanion extends UpdateCompanion<Food> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<String>(id.value);
+    }
+    if (providerFoodId.present) {
+      map['provider_food_id'] = Variable<String>(providerFoodId.value);
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
@@ -7062,6 +7119,7 @@ class FoodsCompanion extends UpdateCompanion<Food> {
   String toString() {
     return (StringBuffer('FoodsCompanion(')
           ..write('id: $id, ')
+          ..write('providerFoodId: $providerFoodId, ')
           ..write('name: $name, ')
           ..write('brand: $brand, ')
           ..write('servingDescription: $servingDescription, ')
@@ -15139,6 +15197,459 @@ class WellbeingEventsCompanion extends UpdateCompanion<WellbeingEvent> {
   }
 }
 
+class $KetoneReadingsTable extends KetoneReadings
+    with TableInfo<$KetoneReadingsTable, KetoneReading> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $KetoneReadingsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dayMeta = const VerificationMeta('day');
+  @override
+  late final GeneratedColumn<String> day = GeneratedColumn<String>(
+    'day',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _measuredAtMeta = const VerificationMeta(
+    'measuredAt',
+  );
+  @override
+  late final GeneratedColumn<int> measuredAt = GeneratedColumn<int>(
+    'measured_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _resultMeta = const VerificationMeta('result');
+  @override
+  late final GeneratedColumn<String> result = GeneratedColumn<String>(
+    'result',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    day,
+    measuredAt,
+    type,
+    result,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'ketone_readings';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<KetoneReading> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('day')) {
+      context.handle(
+        _dayMeta,
+        day.isAcceptableOrUnknown(data['day']!, _dayMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dayMeta);
+    }
+    if (data.containsKey('measured_at')) {
+      context.handle(
+        _measuredAtMeta,
+        measuredAt.isAcceptableOrUnknown(data['measured_at']!, _measuredAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_measuredAtMeta);
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
+    if (data.containsKey('result')) {
+      context.handle(
+        _resultMeta,
+        result.isAcceptableOrUnknown(data['result']!, _resultMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_resultMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  KetoneReading map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return KetoneReading(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      day: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}day'],
+      )!,
+      measuredAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}measured_at'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      result: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}result'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $KetoneReadingsTable createAlias(String alias) {
+    return $KetoneReadingsTable(attachedDatabase, alias);
+  }
+}
+
+class KetoneReading extends DataClass implements Insertable<KetoneReading> {
+  final String id;
+  final String day;
+  final int measuredAt;
+  final String type;
+  final String result;
+  final int createdAt;
+  final int updatedAt;
+  const KetoneReading({
+    required this.id,
+    required this.day,
+    required this.measuredAt,
+    required this.type,
+    required this.result,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['day'] = Variable<String>(day);
+    map['measured_at'] = Variable<int>(measuredAt);
+    map['type'] = Variable<String>(type);
+    map['result'] = Variable<String>(result);
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    return map;
+  }
+
+  KetoneReadingsCompanion toCompanion(bool nullToAbsent) {
+    return KetoneReadingsCompanion(
+      id: Value(id),
+      day: Value(day),
+      measuredAt: Value(measuredAt),
+      type: Value(type),
+      result: Value(result),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory KetoneReading.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return KetoneReading(
+      id: serializer.fromJson<String>(json['id']),
+      day: serializer.fromJson<String>(json['day']),
+      measuredAt: serializer.fromJson<int>(json['measuredAt']),
+      type: serializer.fromJson<String>(json['type']),
+      result: serializer.fromJson<String>(json['result']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'day': serializer.toJson<String>(day),
+      'measuredAt': serializer.toJson<int>(measuredAt),
+      'type': serializer.toJson<String>(type),
+      'result': serializer.toJson<String>(result),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+    };
+  }
+
+  KetoneReading copyWith({
+    String? id,
+    String? day,
+    int? measuredAt,
+    String? type,
+    String? result,
+    int? createdAt,
+    int? updatedAt,
+  }) => KetoneReading(
+    id: id ?? this.id,
+    day: day ?? this.day,
+    measuredAt: measuredAt ?? this.measuredAt,
+    type: type ?? this.type,
+    result: result ?? this.result,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  KetoneReading copyWithCompanion(KetoneReadingsCompanion data) {
+    return KetoneReading(
+      id: data.id.present ? data.id.value : this.id,
+      day: data.day.present ? data.day.value : this.day,
+      measuredAt: data.measuredAt.present
+          ? data.measuredAt.value
+          : this.measuredAt,
+      type: data.type.present ? data.type.value : this.type,
+      result: data.result.present ? data.result.value : this.result,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('KetoneReading(')
+          ..write('id: $id, ')
+          ..write('day: $day, ')
+          ..write('measuredAt: $measuredAt, ')
+          ..write('type: $type, ')
+          ..write('result: $result, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, day, measuredAt, type, result, createdAt, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is KetoneReading &&
+          other.id == this.id &&
+          other.day == this.day &&
+          other.measuredAt == this.measuredAt &&
+          other.type == this.type &&
+          other.result == this.result &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class KetoneReadingsCompanion extends UpdateCompanion<KetoneReading> {
+  final Value<String> id;
+  final Value<String> day;
+  final Value<int> measuredAt;
+  final Value<String> type;
+  final Value<String> result;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int> rowid;
+  const KetoneReadingsCompanion({
+    this.id = const Value.absent(),
+    this.day = const Value.absent(),
+    this.measuredAt = const Value.absent(),
+    this.type = const Value.absent(),
+    this.result = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  KetoneReadingsCompanion.insert({
+    required String id,
+    required String day,
+    required int measuredAt,
+    required String type,
+    required String result,
+    required int createdAt,
+    required int updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       day = Value(day),
+       measuredAt = Value(measuredAt),
+       type = Value(type),
+       result = Value(result),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<KetoneReading> custom({
+    Expression<String>? id,
+    Expression<String>? day,
+    Expression<int>? measuredAt,
+    Expression<String>? type,
+    Expression<String>? result,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (day != null) 'day': day,
+      if (measuredAt != null) 'measured_at': measuredAt,
+      if (type != null) 'type': type,
+      if (result != null) 'result': result,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  KetoneReadingsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? day,
+    Value<int>? measuredAt,
+    Value<String>? type,
+    Value<String>? result,
+    Value<int>? createdAt,
+    Value<int>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return KetoneReadingsCompanion(
+      id: id ?? this.id,
+      day: day ?? this.day,
+      measuredAt: measuredAt ?? this.measuredAt,
+      type: type ?? this.type,
+      result: result ?? this.result,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (day.present) {
+      map['day'] = Variable<String>(day.value);
+    }
+    if (measuredAt.present) {
+      map['measured_at'] = Variable<int>(measuredAt.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (result.present) {
+      map['result'] = Variable<String>(result.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('KetoneReadingsCompanion(')
+          ..write('id: $id, ')
+          ..write('day: $day, ')
+          ..write('measuredAt: $measuredAt, ')
+          ..write('type: $type, ')
+          ..write('result: $result, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -15171,6 +15682,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $WellbeingEventsTable wellbeingEvents = $WellbeingEventsTable(
     this,
   );
+  late final $KetoneReadingsTable ketoneReadings = $KetoneReadingsTable(this);
   late final Index idxActivitiesStartedAt = Index(
     'idx_activities_started_at',
     'CREATE INDEX idx_activities_started_at ON activities (started_at)',
@@ -15199,6 +15711,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'idx_foods_barcode',
     'CREATE INDEX idx_foods_barcode ON foods (barcode)',
   );
+  late final Index idxFoodsProviderFoodId = Index(
+    'idx_foods_provider_food_id',
+    'CREATE INDEX idx_foods_provider_food_id ON foods (source, provider_food_id)',
+  );
   late final Index idxNutritionEntriesDay = Index(
     'idx_nutrition_entries_day',
     'CREATE INDEX idx_nutrition_entries_day ON nutrition_entries (day)',
@@ -15210,6 +15726,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final Index idxWeightLogsDay = Index(
     'idx_weight_logs_day',
     'CREATE INDEX idx_weight_logs_day ON weight_logs (day)',
+  );
+  late final Index idxKetoneReadingsDay = Index(
+    'idx_ketone_readings_day',
+    'CREATE INDEX idx_ketone_readings_day ON ketone_readings (day)',
   );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
@@ -15235,6 +15755,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     dailyStepTotals,
     yogaSequences,
     wellbeingEvents,
+    ketoneReadings,
     idxActivitiesStartedAt,
     idxActivitySamplesActivityIdTimestampMs,
     idxDailyCheckinsDay,
@@ -15242,9 +15763,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     idxRecoveryDaysDay,
     idxFoodsName,
     idxFoodsBarcode,
+    idxFoodsProviderFoodId,
     idxNutritionEntriesDay,
     idxWaterLogsDay,
     idxWeightLogsDay,
+    idxKetoneReadingsDay,
   ];
 }
 
@@ -17875,6 +18398,7 @@ typedef $$RoutesTableProcessedTableManager =
     >;
 typedef $$FoodsTableCreateCompanionBuilder = FoodsCompanion Function({
   required String id,
+  Value<String?> providerFoodId,
   required String name,
   Value<String?> brand,
   required String servingDescription,
@@ -17908,6 +18432,7 @@ typedef $$FoodsTableCreateCompanionBuilder = FoodsCompanion Function({
 });
 typedef $$FoodsTableUpdateCompanionBuilder = FoodsCompanion Function({
   Value<String> id,
+  Value<String?> providerFoodId,
   Value<String> name,
   Value<String?> brand,
   Value<String> servingDescription,
@@ -17950,6 +18475,11 @@ class $$FoodsTableFilterComposer extends Composer<_$AppDatabase, $FoodsTable> {
   });
   ColumnFilters<String> get id => $composableBuilder(
     column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get providerFoodId => $composableBuilder(
+    column: $table.providerFoodId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -18113,6 +18643,11 @@ class $$FoodsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get providerFoodId => $composableBuilder(
+    column: $table.providerFoodId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get name => $composableBuilder(
     column: $table.name,
     builder: (column) => ColumnOrderings(column),
@@ -18271,6 +18806,11 @@ class $$FoodsTableAnnotationComposer
   GeneratedColumn<String> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
+  GeneratedColumn<String> get providerFoodId => $composableBuilder(
+    column: $table.providerFoodId,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
@@ -18424,6 +18964,7 @@ class $$FoodsTableTableManager
           updateCompanionCallback:
               ({
                 Value<String> id = const Value.absent(),
+                Value<String?> providerFoodId = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<String?> brand = const Value.absent(),
                 Value<String> servingDescription = const Value.absent(),
@@ -18456,6 +18997,7 @@ class $$FoodsTableTableManager
                 Value<int> rowid = const Value.absent(),
               }) => FoodsCompanion(
                 id: id,
+                providerFoodId: providerFoodId,
                 name: name,
                 brand: brand,
                 servingDescription: servingDescription,
@@ -18490,6 +19032,7 @@ class $$FoodsTableTableManager
           createCompanionCallback:
               ({
                 required String id,
+                Value<String?> providerFoodId = const Value.absent(),
                 required String name,
                 Value<String?> brand = const Value.absent(),
                 required String servingDescription,
@@ -18522,6 +19065,7 @@ class $$FoodsTableTableManager
                 Value<int> rowid = const Value.absent(),
               }) => FoodsCompanion.insert(
                 id: id,
+                providerFoodId: providerFoodId,
                 name: name,
                 brand: brand,
                 servingDescription: servingDescription,
@@ -22207,6 +22751,248 @@ typedef $$WellbeingEventsTableProcessedTableManager =
       WellbeingEvent,
       PrefetchHooks Function()
     >;
+typedef $$KetoneReadingsTableCreateCompanionBuilder =
+    KetoneReadingsCompanion Function({
+      required String id,
+      required String day,
+      required int measuredAt,
+      required String type,
+      required String result,
+      required int createdAt,
+      required int updatedAt,
+      Value<int> rowid,
+    });
+typedef $$KetoneReadingsTableUpdateCompanionBuilder =
+    KetoneReadingsCompanion Function({
+      Value<String> id,
+      Value<String> day,
+      Value<int> measuredAt,
+      Value<String> type,
+      Value<String> result,
+      Value<int> createdAt,
+      Value<int> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$KetoneReadingsTableFilterComposer
+    extends Composer<_$AppDatabase, $KetoneReadingsTable> {
+  $$KetoneReadingsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get day => $composableBuilder(
+    column: $table.day,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get measuredAt => $composableBuilder(
+    column: $table.measuredAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get result => $composableBuilder(
+    column: $table.result,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$KetoneReadingsTableOrderingComposer
+    extends Composer<_$AppDatabase, $KetoneReadingsTable> {
+  $$KetoneReadingsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get day => $composableBuilder(
+    column: $table.day,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get measuredAt => $composableBuilder(
+    column: $table.measuredAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get result => $composableBuilder(
+    column: $table.result,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$KetoneReadingsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $KetoneReadingsTable> {
+  $$KetoneReadingsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get day =>
+      $composableBuilder(column: $table.day, builder: (column) => column);
+
+  GeneratedColumn<int> get measuredAt => $composableBuilder(
+    column: $table.measuredAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<String> get result =>
+      $composableBuilder(column: $table.result, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$KetoneReadingsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $KetoneReadingsTable,
+          KetoneReading,
+          $$KetoneReadingsTableFilterComposer,
+          $$KetoneReadingsTableOrderingComposer,
+          $$KetoneReadingsTableAnnotationComposer,
+          $$KetoneReadingsTableCreateCompanionBuilder,
+          $$KetoneReadingsTableUpdateCompanionBuilder,
+          (
+            KetoneReading,
+            BaseReferences<_$AppDatabase, $KetoneReadingsTable, KetoneReading>,
+          ),
+          KetoneReading,
+          PrefetchHooks Function()
+        > {
+  $$KetoneReadingsTableTableManager(
+    _$AppDatabase db,
+    $KetoneReadingsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$KetoneReadingsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$KetoneReadingsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$KetoneReadingsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> day = const Value.absent(),
+                Value<int> measuredAt = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<String> result = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => KetoneReadingsCompanion(
+                id: id,
+                day: day,
+                measuredAt: measuredAt,
+                type: type,
+                result: result,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String day,
+                required int measuredAt,
+                required String type,
+                required String result,
+                required int createdAt,
+                required int updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => KetoneReadingsCompanion.insert(
+                id: id,
+                day: day,
+                measuredAt: measuredAt,
+                type: type,
+                result: result,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$KetoneReadingsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $KetoneReadingsTable,
+      KetoneReading,
+      $$KetoneReadingsTableFilterComposer,
+      $$KetoneReadingsTableOrderingComposer,
+      $$KetoneReadingsTableAnnotationComposer,
+      $$KetoneReadingsTableCreateCompanionBuilder,
+      $$KetoneReadingsTableUpdateCompanionBuilder,
+      (
+        KetoneReading,
+        BaseReferences<_$AppDatabase, $KetoneReadingsTable, KetoneReading>,
+      ),
+      KetoneReading,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -22249,4 +23035,6 @@ class $AppDatabaseManager {
       $$YogaSequencesTableTableManager(_db, _db.yogaSequences);
   $$WellbeingEventsTableTableManager get wellbeingEvents =>
       $$WellbeingEventsTableTableManager(_db, _db.wellbeingEvents);
+  $$KetoneReadingsTableTableManager get ketoneReadings =>
+      $$KetoneReadingsTableTableManager(_db, _db.ketoneReadings);
 }

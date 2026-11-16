@@ -4,6 +4,7 @@ import 'package:menfit_app/features/activity/domain/activity.dart';
 import 'package:menfit_app/features/activity/domain/activity_sample.dart';
 import 'package:menfit_app/features/activity/domain/personal_records.dart';
 import 'package:menfit_app/features/activity/domain/workout_details.dart';
+import 'package:menfit_app/features/nutrition/domain/macro_targets.dart';
 import 'package:menfit_app/features/nutrition/domain/meal_type.dart';
 import 'package:menfit_app/features/nutrition/domain/nutrition_entry.dart';
 import 'package:menfit_app/features/nutrition/domain/nutrition_facts.dart';
@@ -126,6 +127,20 @@ NutritionGoals _goals({double? proteinTargetGrams}) => NutritionGoals(
   proteinTargetGrams: proteinTargetGrams,
 );
 
+/// A percent-mode goal, so a test can check the protein target is derived
+/// from [proteinPercent] of `basisKcal` rather than read from the
+/// (unpopulated, in this mode) `proteinTargetGrams` field.
+NutritionGoals _percentGoals({required double proteinPercent}) =>
+    NutritionGoals(
+      id: 'goals-percent',
+      createdAt: DateTime.utc(2026),
+      updatedAt: DateTime.utc(2026),
+      macroTargetMode: MacroTargetMode.percent,
+      proteinTargetPercent: proteinPercent,
+      carbTargetPercent: 40,
+      fatTargetPercent: 100 - proteinPercent - 40,
+    );
+
 /// Standing records from *before* the period, high enough that nothing a
 /// test logs inside the period can beat them — lets a totals-focused test
 /// assert on totals without PR highlights appearing as a side effect.
@@ -169,6 +184,7 @@ MonthRecap? _build({
   Map<LocalDate, int> water = const {},
   List<NutritionEntry> nutrition = const [],
   NutritionGoals? goals,
+  int? basisKcal,
   List<DailyCheckin> checkins = const [],
 }) {
   return const RecapBuilder().build(
@@ -180,6 +196,7 @@ MonthRecap? _build({
     waterTotalsByDay: water,
     periodNutritionEntries: nutrition,
     nutritionGoals: goals,
+    basisKcal: basisKcal,
     periodCheckins: checkins,
   );
 }
@@ -492,6 +509,46 @@ void main() {
       );
       expect(recap!.fuelingConsistencyRatio, isNull);
     });
+
+    test(
+      'derives the protein target from a percent-mode goal instead of the '
+      'unpopulated proteinTargetGrams field (30% of 1800 kcal = 135 g, 85% '
+      'threshold 114.75 g)',
+      () {
+        final recap = _build(
+          period: _july,
+          activities: _fillerSessions(),
+          goals: _percentGoals(proteinPercent: 30),
+          basisKcal: 1800,
+          nutrition: [
+            _entry(1, proteinGrams: 114.75), // exactly at threshold -> met
+            _entry(2, proteinGrams: 100), // below threshold -> not met
+            _entry(3, proteinGrams: 114.75),
+          ],
+        );
+
+        expect(recap!.fuelingConsistencyRatio, closeTo(2 / 3, 1e-9));
+      },
+    );
+
+    test(
+      'is null for a percent-mode goal with no calorie basis to derive a '
+      'target from',
+      () {
+        final recap = _build(
+          period: _july,
+          activities: _fillerSessions(),
+          goals: _percentGoals(proteinPercent: 30),
+          nutrition: [
+            _entry(1, proteinGrams: 200),
+            _entry(2, proteinGrams: 200),
+            _entry(3, proteinGrams: 200),
+          ],
+        );
+
+        expect(recap!.fuelingConsistencyRatio, isNull);
+      },
+    );
   });
 
   group('RecapBuilder personal records', () {

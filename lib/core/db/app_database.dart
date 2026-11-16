@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
+import 'package:menfit_app/core/db/foods_provider_id_backfill.dart';
 import 'package:menfit_app/core/db/tables/activities.dart';
 import 'package:menfit_app/core/db/tables/activity_samples.dart';
 import 'package:menfit_app/core/db/tables/badge_awards.dart';
@@ -8,6 +9,7 @@ import 'package:menfit_app/core/db/tables/daily_checkins.dart';
 import 'package:menfit_app/core/db/tables/daily_step_totals.dart';
 import 'package:menfit_app/core/db/tables/flare_events.dart';
 import 'package:menfit_app/core/db/tables/foods.dart';
+import 'package:menfit_app/core/db/tables/ketone_readings.dart';
 import 'package:menfit_app/core/db/tables/nutrition_entries.dart';
 import 'package:menfit_app/core/db/tables/nutrition_goals.dart';
 import 'package:menfit_app/core/db/tables/recovery_days.dart';
@@ -48,6 +50,7 @@ part 'app_database.g.dart';
     DailyStepTotals,
     YogaSequences,
     WellbeingEvents,
+    KetoneReadings,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -62,15 +65,30 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(QueryExecutor executor) : super(executor);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 3;
 
-  /// MenFit forked from FemFit with no installed base, so the schema starts
-  /// again at v1 with a clean `createAll`. Future changes: bump
-  /// [schemaVersion], add an `onUpgrade` branch, and never edit this
-  /// baseline in place (`knowledge/troubleshooting/database_migrations.md`).
+  /// MenFit's shipped v1 schema is independent of Frelia's migration chain.
   @override
-  MigrationStrategy get migration =>
-      MigrationStrategy(onCreate: (m) => m.createAll());
+  MigrationStrategy get migration => MigrationStrategy(
+    onCreate: (m) => m.createAll(),
+    onUpgrade: (m, from, to) async {
+      if (from < 2) {
+        await m.createTable(ketoneReadings);
+        await customStatement(
+          'CREATE INDEX IF NOT EXISTS idx_ketone_readings_day '
+          'ON ketone_readings (day)',
+        );
+      }
+      if (from < 3) {
+        await m.addColumn(foods, foods.providerFoodId);
+        await customStatement(
+          'CREATE INDEX IF NOT EXISTS idx_foods_provider_food_id '
+          'ON foods (source, provider_food_id)',
+        );
+        await backfillFoodsProviderFoodId(this);
+      }
+    },
+  );
 }
 
 QueryExecutor _openConnection() {

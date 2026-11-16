@@ -153,7 +153,9 @@ class DriftActivityRepository implements ActivityRepository {
             startedAt: activity.startedAt.toUtc().millisecondsSinceEpoch,
             movingTimeMs: activity.movingTime.inMilliseconds,
             elapsedTimeMs: activity.elapsedTime.inMilliseconds,
-            distanceMeters: activity.distanceMeters,
+            distanceMeters: activity.activityType.countedDistanceMeters(
+              activity.distanceMeters,
+            ),
             elevationGainMeters: Value(activity.elevationGainMeters),
             avgHeartRate: Value(activity.avgHeartRate),
             source: activity.source.toStorage(),
@@ -339,9 +341,10 @@ class DriftActivityRepository implements ActivityRepository {
   }
 
   Activity _toEntity(db.Activity row) {
+    final activityType = ActivityType.fromStorage(row.activityType);
     return Activity(
       id: row.id,
-      activityType: ActivityType.fromStorage(row.activityType),
+      activityType: activityType,
       title: row.title,
       notes: row.notes,
       startedAt: DateTime.fromMillisecondsSinceEpoch(
@@ -350,7 +353,10 @@ class DriftActivityRepository implements ActivityRepository {
       ),
       movingTime: Duration(milliseconds: row.movingTimeMs),
       elapsedTime: Duration(milliseconds: row.elapsedTimeMs),
-      distanceMeters: row.distanceMeters,
+      // Rows imported before the import-side filter can carry a spurious
+      // wearable distance on a strength/yoga/HIIT/pilates session; every
+      // reader sees it zeroed here rather than each one re-checking the type.
+      distanceMeters: activityType.countedDistanceMeters(row.distanceMeters),
       elevationGainMeters: row.elevationGainMeters,
       avgHeartRate: row.avgHeartRate,
       source: ActivitySource.fromStorage(row.source),

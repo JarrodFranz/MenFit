@@ -101,6 +101,12 @@ abstract interface class FoodDataProvider {
   /// several and the user should see theirs.
   Future<ProviderFood?> findByBarcode(String barcode, {FoodSearchScope scope});
 
+  /// Fetches a search hit by its provider identity, never by guessed barcode.
+  Future<ProviderFood?> fetchDetails(
+    ProviderFoodSummary hit, {
+    FoodSearchScope scope,
+  });
+
   /// Free-text product search, [pageSize] hits at a time, [page] counting
   /// from 1.
   ///

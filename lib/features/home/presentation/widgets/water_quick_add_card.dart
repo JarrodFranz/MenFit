@@ -8,6 +8,7 @@ import 'package:menfit_app/core/theme/card_shape.dart';
 import 'package:menfit_app/core/theme/tokens.dart';
 import 'package:menfit_app/features/accessibility/presentation/accessibility_haptics.dart';
 import 'package:menfit_app/features/nutrition/nutrition_providers.dart';
+import 'package:menfit_app/features/streaks/streaks_providers.dart';
 
 /// Quick-add water card on the home dashboard.
 class WaterQuickAddCard extends ConsumerWidget {
@@ -17,7 +18,7 @@ class WaterQuickAddCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = Theme.of(context).extension<AppTokens>()!;
     final colorScheme = Theme.of(context).colorScheme;
-    final today = LocalDate.today();
+    final today = ref.watch(localDayProvider).value ?? LocalDate.today();
     final waterAsync = ref.watch(dayWaterIntakeProvider(today));
     final waterMl = waterAsync.value ?? 0;
     const targetMl = 2000;
@@ -30,7 +31,10 @@ class WaterQuickAddCard extends ConsumerWidget {
       shape: themedCardShape(context, radius: tokens.radiusMd),
       child: InkWell(
         borderRadius: BorderRadius.circular(tokens.radiusMd),
-        onTap: () => const NutritionRouteData().go(context),
+        onTap: () {
+          ref.read(selectedNutritionDayProvider.notifier).goToToday();
+          const NutritionRouteData().go(context);
+        },
         child: Padding(
           padding: EdgeInsets.all(tokens.spacingMd),
           child: Row(

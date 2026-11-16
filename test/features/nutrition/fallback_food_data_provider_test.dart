@@ -42,6 +42,7 @@ class _FakeProvider implements FoodDataProvider {
   ProviderFood? barcodeResult;
   Object? barcodeError;
   final List<String> barcodeCalls = [];
+  final List<String> detailCalls = [];
 
   List<ProviderFoodSummary> searchResult = const [];
   Object? searchError;
@@ -59,6 +60,15 @@ class _FakeProvider implements FoodDataProvider {
     // so a test can also exercise an unexpected throw if it ever needs to.
     // ignore: only_throw_errors
     if (error != null) throw error;
+    return barcodeResult;
+  }
+
+  @override
+  Future<ProviderFood?> fetchDetails(
+    ProviderFoodSummary hit, {
+    FoodSearchScope scope = FoodSearchScope.anywhereInEnglish,
+  }) async {
+    detailCalls.add(hit.providerFoodId);
     return barcodeResult;
   }
 
@@ -243,7 +253,7 @@ void main() {
         primary.searchResult = [
           const ProviderFoodSummary(
             source: FoodSource.fatSecret,
-            barcode: '1',
+            providerFoodId: '1',
             name: 'A',
           ),
         ];
@@ -262,6 +272,7 @@ void main() {
         fallback.searchResult = [
           const ProviderFoodSummary(
             source: FoodSource.openFoodFacts,
+            providerFoodId: '2',
             barcode: '2',
             name: 'B',
           ),
@@ -300,6 +311,7 @@ void main() {
         ..searchResult = [
           const ProviderFoodSummary(
             source: FoodSource.openFoodFacts,
+            providerFoodId: '3',
             barcode: '3',
             name: 'C',
           ),

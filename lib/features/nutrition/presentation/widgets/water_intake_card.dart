@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/core/theme/tokens.dart';
 import 'package:menfit_app/features/accessibility/presentation/accessibility_haptics.dart';
 import 'package:menfit_app/features/nutrition/nutrition_providers.dart';
+import 'package:menfit_app/features/streaks/streaks_providers.dart';
 
 /// Card displaying daily water intake progress and quick logging actions.
 class WaterIntakeCard extends ConsumerWidget {
@@ -43,7 +45,7 @@ class WaterIntakeCard extends ConsumerWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  'Hydration Target Hit! 💧 $newTotal ml logged today.',
+                  'Hydration Target Hit! 💧 $newTotal ml logged.',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
@@ -59,6 +61,8 @@ class WaterIntakeCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final today = ref.watch(localDayProvider).value ?? LocalDate.today();
+    final isToday = day == today;
     final tokens = Theme.of(context).extension<AppTokens>()!;
     final colorScheme = Theme.of(context).colorScheme;
     final waterAsync = ref.watch(dayWaterIntakeProvider(day));
@@ -105,6 +109,16 @@ class WaterIntakeCard extends ConsumerWidget {
                 ),
               ],
             ),
+            if (!isToday) ...[
+              SizedBox(height: tokens.spacingXs),
+              Text('Viewing past day (${_dayLabel(day, today)})'),
+              TextButton(
+                key: const Key('waterCardGoToTodayButton'),
+                onPressed: () =>
+                    ref.read(selectedNutritionDayProvider.notifier).goToToday(),
+                child: const Text('Go to today'),
+              ),
+            ],
             SizedBox(height: tokens.spacingXs),
             Text(
               '$cups of $targetCups cups logged',
@@ -203,4 +217,10 @@ class WaterIntakeCard extends ConsumerWidget {
       ),
     );
   }
+}
+
+String _dayLabel(LocalDate day, LocalDate today) {
+  if (day == today.addDays(-1)) return 'Yesterday';
+  return DateFormat('EEE, d MMM')
+      .format(DateTime(day.year, day.month, day.day));
 }

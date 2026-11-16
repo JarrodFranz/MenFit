@@ -144,19 +144,31 @@ void main() {
     updatedAt: now,
   );
 
-  Widget buildScreen(Widget screen) {
+  Widget buildScreen(Widget screen, {bool goalsPending = false}) {
     return ProviderScope(
-      overrides: [appDatabaseProvider.overrideWithValue(database)],
+      overrides: [
+        appDatabaseProvider.overrideWithValue(database),
+        // A stream that closes without emitting holds the provider in
+        // `AsyncLoading` — the state every cold start passes through while
+        // Drift reads the goals row back, and the one the hide-calories gate
+        // has to fail closed on.
+        if (goalsPending)
+          nutritionGoalsProvider.overrideWith(
+            (ref) => const Stream<NutritionGoals?>.empty(),
+          ),
+      ],
       child: MaterialApp(theme: AppTheme.light(), home: screen),
     );
   }
 
-  Future<void> pumpDay(WidgetTester tester) async {
+  Future<void> pumpDay(WidgetTester tester, {bool goalsPending = false}) async {
     tester.view
       ..physicalSize = const Size(500, 1400)
       ..devicePixelRatio = 1;
     addTearDown(() => flushDriftTimers(tester));
-    await tester.pumpWidget(buildScreen(const NutritionScreen()));
+    await tester.pumpWidget(
+      buildScreen(const NutritionScreen(), goalsPending: goalsPending),
+    );
     await tester.pumpAndSettle();
   }
 
@@ -559,4 +571,15 @@ void main() {
       await flushDriftTimers(tester);
     },
   );
+  testWidgets('pending goals hide calories throughout the diary', (
+    tester,
+  ) async {
+    await logEntry(food: oats(), meal: MealType.breakfast, amount: 2);
+    await pumpDay(tester, goalsPending: true);
+    expect(find.textContaining('kcal'), findsNothing);
+    await scrollTo(tester, mealSection(MealType.breakfast));
+    expect(find.textContaining('kcal'), findsNothing);
+    expect(find.text('Porridge oats'), findsOneWidget);
+    await flushDriftTimers(tester);
+  });
 }

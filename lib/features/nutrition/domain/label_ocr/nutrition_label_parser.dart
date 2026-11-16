@@ -50,8 +50,11 @@ class NutritionLabelParser {
     final warnings = <String>{};
     final format = _detectFormat(ocr, rows);
     final serving = parseServing(rows);
+    if (serving != null && serving.hasMultipleGramFigures) {
+      warnings.add(warnMultipleServingGramFigures);
+    }
     final headerLayout = detectHeaderColumns(rows);
-    final readings = _readRows(rows, headerLayout?.headerRowIndex);
+    final readings = _readRows(rows, headerLayout);
 
     if (readings.isEmpty) {
       warnings.add(warnNoPanelFound);
@@ -157,11 +160,11 @@ class NutritionLabelParser {
     );
   }
 
-  List<_RowReading> _readRows(List<OcrRow> rows, int? headerRowIndex) {
+  List<_RowReading> _readRows(List<OcrRow> rows, ColumnLayout? headerLayout) {
     final out = <_RowReading>[];
     var energySeen = false;
     for (var i = 0; i < rows.length; i++) {
-      if (i == headerRowIndex) continue;
+      if (headerLayout?.isHeaderRow(i) ?? false) continue;
       final reading = _readRow(rows[i], energySeen: energySeen);
       if (reading == null) continue;
       if (reading.field == LabelField.energy) energySeen = true;
@@ -251,13 +254,22 @@ class NutritionLabelParser {
       warnings.add(warnBasisUnclear);
       return const ColumnLayout(columns: [], fromHeaders: false);
     }
-    // Capped at two: guessing what a third unlabelled column means is not
-    // a guess worth making.
-    final count = maxPerRow < 2 ? 1 : 2;
+    // When 3 or more values appear per row (common in Australian panels with
+    // a middle %DI column), isolate the middle column as percentDaily so it
+    // does not bleed into serving or 100g numbers.
+    final count = maxPerRow >= 3 ? 3 : (maxPerRow < 2 ? 1 : 2);
     if (count == 1) {
       warnings.add(warnBasisUnclear);
       return columnsFromValuePositions(xs, 1, const [
         ColumnKind.perServing,
+      ]);
+    }
+    if (count == 3) {
+      warnings.add(warnColumnsAssumed);
+      return columnsFromValuePositions(xs, 3, const [
+        ColumnKind.perServing,
+        ColumnKind.percentDaily,
+        ColumnKind.per100g,
       ]);
     }
     warnings.add(warnColumnsAssumed);

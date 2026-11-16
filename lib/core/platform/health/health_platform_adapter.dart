@@ -17,7 +17,7 @@ abstract class HealthPlatformAdapter {
   Future<bool> isSupported();
 
   /// Whether **any** of the health permissions this app asks for (steps,
-  /// active calories, total calories) have been granted.
+  /// active calories, total calories, workouts) have been granted.
   ///
   /// An OR, deliberately: the home dashboard shows steps *or* energy and is
   /// useful with either. Anything that reads specifically one of them must
@@ -39,7 +39,21 @@ abstract class HealthPlatformAdapter {
   /// must document how they resolve that; see `health_platform_io.dart`.
   Future<bool> hasStepsPermission();
 
-  /// Requests authorization from the user to read steps and active calories.
+  /// Whether READ access to **completed workouts** has been granted — every
+  /// type a workout read needs, not just the session record itself (on
+  /// Android the plugin also reads distance per session, and a missing
+  /// distance grant empties the whole read).
+  ///
+  /// Separate from [hasPermissions] for the same reason as
+  /// [hasStepsPermission]: a user who granted steps before workout import
+  /// existed passes the OR while every workout read silently returns nothing.
+  /// `null` means authorization is undisclosed (iOS). An explicit sync must
+  /// request authorization before reading; a background sync may attempt a
+  /// read without prompting, with the OS enforcing any denial.
+  Future<bool?> hasWorkoutPermission();
+
+  /// Requests authorization from the user to read steps, energy and
+  /// workouts. Types already granted are not asked for again.
   Future<bool> requestPermissions();
 
   /// Fetches the health data snapshot (steps, active calories) for [date].

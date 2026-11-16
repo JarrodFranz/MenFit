@@ -8,6 +8,7 @@ void main() {
     test('returns false when all nutrition fields are null', () {
       const summary = ProviderFoodSummary(
         source: FoodSource.fatSecret,
+        providerFoodId: '1',
         barcode: '1',
         name: 'Empty Food',
       );
@@ -17,6 +18,7 @@ void main() {
     test('returns true when only calories are present', () {
       const summary = ProviderFoodSummary(
         source: FoodSource.fatSecret,
+        providerFoodId: '2',
         barcode: '2',
         name: 'Calorie Food',
         caloriesKcal: 150,
@@ -27,6 +29,7 @@ void main() {
     test('returns true when calories are zero (e.g. Diet Coke)', () {
       const summary = ProviderFoodSummary(
         source: FoodSource.openFoodFacts,
+        providerFoodId: '3',
         barcode: '3',
         name: 'Diet Coke',
         caloriesKcal: 0,
@@ -40,6 +43,7 @@ void main() {
     test('returns true when servingCaloriesKcal is present', () {
       const summary = ProviderFoodSummary(
         source: FoodSource.fatSecret,
+        providerFoodId: '4',
         barcode: '4',
         name: 'Serving Calorie Food',
         servingCaloriesKcal: 120,
@@ -50,6 +54,7 @@ void main() {
     test('returns true when only macros are present', () {
       const summary = ProviderFoodSummary(
         source: FoodSource.openFoodFacts,
+        providerFoodId: '5',
         barcode: '5',
         name: 'Macro Food',
         proteinGrams: 20,
@@ -62,6 +67,7 @@ void main() {
     test('identifies full macros and calories', () {
       const food = ProviderFoodSummary(
         source: FoodSource.fatSecret,
+        providerFoodId: '1',
         barcode: '1',
         name: 'Complete',
         caloriesKcal: 200,
@@ -78,6 +84,7 @@ void main() {
     test('identifies partial macros and calories', () {
       const food = ProviderFoodSummary(
         source: FoodSource.fatSecret,
+        providerFoodId: '2',
         barcode: '2',
         name: 'Partial',
         caloriesKcal: 200,
@@ -92,6 +99,7 @@ void main() {
     test('identifies calories only', () {
       const food = ProviderFoodSummary(
         source: FoodSource.fatSecret,
+        providerFoodId: '3',
         barcode: '3',
         name: 'Calories Only',
         caloriesKcal: 100,
@@ -105,6 +113,7 @@ void main() {
     test('identifies macros only', () {
       const food = ProviderFoodSummary(
         source: FoodSource.fatSecret,
+        providerFoodId: '4',
         barcode: '4',
         name: 'Macros Only',
         proteinGrams: 15,
@@ -118,6 +127,7 @@ void main() {
     test('identifies none', () {
       const food = ProviderFoodSummary(
         source: FoodSource.fatSecret,
+        providerFoodId: '5',
         barcode: '5',
         name: 'Empty',
       );
@@ -132,12 +142,14 @@ void main() {
     test('filters out foods with neither calories nor macros', () {
       const valid = ProviderFoodSummary(
         source: FoodSource.fatSecret,
+        providerFoodId: '1',
         barcode: '1',
         name: 'Latte',
         caloriesKcal: 150,
       );
       const empty = ProviderFoodSummary(
         source: FoodSource.openFoodFacts,
+        providerFoodId: '2',
         barcode: '2',
         name: 'Hollow Product',
       );
@@ -153,6 +165,7 @@ void main() {
     test('prioritizes exact match over prefix match', () {
       const prefix = ProviderFoodSummary(
         source: FoodSource.fatSecret,
+        providerFoodId: '1',
         barcode: '1',
         name: 'Starbucks Coffee Drink',
         caloriesKcal: 100,
@@ -162,6 +175,7 @@ void main() {
       );
       const exact = ProviderFoodSummary(
         source: FoodSource.fatSecret,
+        providerFoodId: '2',
         barcode: '2',
         name: 'Starbucks',
         caloriesKcal: 100,
@@ -181,12 +195,14 @@ void main() {
     test('prioritizes macros + cals over cals only within same match tier', () {
       const calsOnly = ProviderFoodSummary(
         source: FoodSource.fatSecret,
+        providerFoodId: '1',
         barcode: '1',
         name: 'Starbucks Iced Latte',
         caloriesKcal: 120,
       );
       const withMacros = ProviderFoodSummary(
         source: FoodSource.fatSecret,
+        providerFoodId: '2',
         barcode: '2',
         name: 'Starbucks Iced Latte',
         caloriesKcal: 120,
@@ -206,12 +222,14 @@ void main() {
     test('prioritizes cals only over macros only', () {
       const macrosOnly = ProviderFoodSummary(
         source: FoodSource.fatSecret,
+        providerFoodId: '1',
         barcode: '1',
         name: 'Starbucks Iced Latte',
         proteinGrams: 6,
       );
       const calsOnly = ProviderFoodSummary(
         source: FoodSource.fatSecret,
+        providerFoodId: '2',
         barcode: '2',
         name: 'Starbucks Iced Latte',
         caloriesKcal: 120,
@@ -228,6 +246,7 @@ void main() {
     test('prioritizes tighter/closer matches when match tier is the same', () {
       const longTitle = ProviderFoodSummary(
         source: FoodSource.fatSecret,
+        providerFoodId: '1',
         barcode: '1',
         name: 'Starbucks Iced Latte Extra Foam Sugar Free Vanilla Syrup',
         caloriesKcal: 120,
@@ -237,6 +256,7 @@ void main() {
       );
       const shortTitle = ProviderFoodSummary(
         source: FoodSource.fatSecret,
+        providerFoodId: '2',
         barcode: '2',
         name: 'Starbucks Iced Latte',
         caloriesKcal: 120,

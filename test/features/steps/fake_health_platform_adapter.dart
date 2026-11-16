@@ -19,6 +19,7 @@ class FakeHealthPlatformAdapter implements HealthPlatformAdapter {
     this.throwOnRange = false,
     this.throwOnPermissions = false,
     this.workoutsToReturn = const [],
+    this.workoutPermissionGranted = true,
   });
 
   /// The energy-only grant, which is the case the split exists for: the
@@ -36,6 +37,18 @@ class FakeHealthPlatformAdapter implements HealthPlatformAdapter {
 
   /// READ access to one of the energy types, and nothing else.
   bool energyPermissionGranted;
+
+  /// READ access to workouts (exercise + distance on Android).
+  bool? workoutPermissionGranted;
+
+  /// When set, [requestPermissions] leaves workout access denied — the
+  /// user dismissed or refused the platform sheet.
+  bool denyWorkoutOnRequest = false;
+
+  /// Whether the platform authorization flow itself completes successfully.
+  bool permissionRequestSucceeds = true;
+
+  int requestPermissionsCallCount = 0;
 
   /// Steps reported for every day in a requested window.
   int stepsPerDay;
@@ -81,7 +94,15 @@ class FakeHealthPlatformAdapter implements HealthPlatformAdapter {
   }
 
   @override
+  Future<bool?> hasWorkoutPermission() async => workoutPermissionGranted;
+
+  @override
   Future<bool> requestPermissions() async {
+    requestPermissionsCallCount++;
+    if (!permissionRequestSucceeds) return false;
+    if (!denyWorkoutOnRequest && workoutPermissionGranted != null) {
+      workoutPermissionGranted = true;
+    }
     stepsPermissionGranted = true;
     energyPermissionGranted = true;
     return true;
@@ -121,12 +142,14 @@ class FakeHealthPlatformAdapter implements HealthPlatformAdapter {
   }
 
   List<HealthWorkoutSession> workoutsToReturn;
+  int workoutReadCallCount = 0;
 
   @override
   Future<List<HealthWorkoutSession>> getCompletedWorkouts({
     required DateTime start,
     required DateTime end,
   }) async {
+    workoutReadCallCount++;
     return workoutsToReturn;
   }
 }

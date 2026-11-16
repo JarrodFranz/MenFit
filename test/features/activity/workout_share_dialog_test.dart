@@ -58,7 +58,7 @@ void main() {
     ),
   ];
 
-  Widget buildTestWidget({FakeSharingAdapter? sharing}) {
+  Widget buildTestWidget({FakeSharingAdapter? sharing, Activity? activity}) {
     return ProviderScope(
       overrides: [
         if (sharing != null) sharingAdapterProvider.overrideWithValue(sharing),
@@ -67,8 +67,8 @@ void main() {
         theme: AppTheme.light(),
         home: Scaffold(
           body: WorkoutShareDialog(
-            activity: testActivity,
-            milestones: testMilestones,
+            activity: activity ?? testActivity,
+            milestones: activity == null ? testMilestones : const [],
           ),
         ),
       ),
@@ -189,6 +189,28 @@ void main() {
       expect(shared.text, contains('Completed a Run on MenFit!'));
       // Share is not a copy in disguise - the clipboard is untouched.
       expect(copied(), isNull);
+    });
+
+    testWidgets('strength share omits incidental distance from card and text', (
+      tester,
+    ) async {
+      useTallWindow(tester);
+      final copied = interceptClipboard(tester);
+      await mountDialog(
+        tester,
+        buildTestWidget(
+          activity: testActivity.copyWith(
+            activityType: ActivityType.strength,
+            distanceMeters: 130,
+          ),
+        ),
+      );
+      expect(find.textContaining('0.13'), findsNothing);
+      expect(find.text('Distance'), findsNothing);
+      await tester.tap(find.text('Copy text'));
+      await tester.pumpAndSettle();
+      expect(copied(), isNot(contains('Distance:')));
+      expect(copied(), contains('Strength'));
     });
 
     testWidgets('Share and Copy produce byte-identical text', (tester) async {

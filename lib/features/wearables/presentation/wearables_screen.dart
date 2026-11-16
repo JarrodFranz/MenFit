@@ -134,7 +134,7 @@ class WearablesScreen extends ConsumerWidget {
               style: textTheme.bodyMedium,
             ),
             SizedBox(height: tokens.spacingMd),
-            if (state.lastResult != null && state.lastResult!.isSuccess)
+            if (state.lastResult != null)
               Container(
                 margin: EdgeInsets.only(bottom: tokens.spacingSm),
                 padding: EdgeInsets.all(tokens.spacingSm),
@@ -145,14 +145,20 @@ class WearablesScreen extends ConsumerWidget {
                 child: Row(
                   children: [
                     Icon(
-                      Icons.check_circle_outline,
-                      color: colorScheme.primary,
+                      state.lastResult!.isSuccess
+                          ? Icons.check_circle_outline
+                          : Icons.info_outline,
+                      color: state.lastResult!.isSuccess
+                          ? colorScheme.primary
+                          : colorScheme.error,
                       size: 18,
                     ),
                     SizedBox(width: tokens.spacingSm),
                     Expanded(
                       child: Text(
-                        state.lastResult!.syncedCount > 0
+                        !state.lastResult!.isSuccess
+                            ? state.lastResult!.errorMessage!
+                            : state.lastResult!.syncedCount > 0
                             ? 'Synced ${state.lastResult!.syncedCount} '
                                   'new workout(s)!'
                             : 'Everything is up to date (no new workouts).',
@@ -181,7 +187,7 @@ class WearablesScreen extends ConsumerWidget {
                     ? null
                     : () => ref
                           .read(wearablesControllerProvider.notifier)
-                          .syncAll(),
+                          .syncAll(userInitiated: true),
               ),
             ),
           ],
@@ -290,7 +296,7 @@ class WearablesScreen extends ConsumerWidget {
                         ? null
                         : () => ref
                               .read(wearablesControllerProvider.notifier)
-                              .syncAll(),
+                              .syncAll(userInitiated: true),
                   ),
                 ),
               ],

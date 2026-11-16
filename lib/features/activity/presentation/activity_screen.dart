@@ -518,12 +518,13 @@ class _ActivityTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = Theme.of(context).extension<AppTokens>()!;
     final textTheme = Theme.of(context).textTheme;
-    final hasDistance = activity.distanceMeters > 0;
-    final summary = hasDistance
-        ? '${formatDistance(activity.distanceMeters, unitSystem)} · '
-              '${formatDuration(activity.movingTime)} · '
-              '${formatPace(activity.avgPaceSecondsPerKm, unitSystem)}'
-        : formatDuration(activity.movingTime);
+    final hasDistance = activity.hasDistance;
+    final pace = activity.avgPaceSecondsPerKm;
+    final summary = [
+      if (hasDistance) formatDistance(activity.distanceMeters, unitSystem),
+      formatDuration(activity.movingTime),
+      if (hasDistance && pace != null) formatPace(pace, unitSystem),
+    ].join(' · ');
 
     return Card(
       margin: EdgeInsets.only(bottom: tokens.spacingSm),

@@ -15,7 +15,7 @@ lib/
     router/                # ALL route definitions + redirect logic live here (single route table)
   core/                    # shared kernel — no feature imports core→feature
     config/                # env.dart (ADR 006), shared_preferences_provider  [exists]
-    db/                    # app_database (schema v8: profiles, activities+samples, cycle, checkins, flares, recovery days, routes) — ALL Drift tables central  [exists]
+    db/                    # app_database (schema v3: profiles, activities+samples, checkins, flares, recovery days, routes, ketone readings) — ALL Drift tables central  [exists]
     domain/                # shared value types: entity ids (UUIDv7), units, LocalDate  [exists]
     errors/                # sealed AppException hierarchy + user message mapping  [exists]
     platform/              # platform adapters (location/…) behind interfaces  [exists]
@@ -31,7 +31,7 @@ lib/
     presentation/          # screens, widgets, @riverpod controllers
 ```
 
-Features as of 2026-08-28: `home` (dashboard: streak card + Today sheet, check-in card), `activity` (manual entry, history, GPS recording with forgotten-end handling, splits/PRs, route maps), `routes` (suggestion via ORS — ADR 009, saved routes), `cycle` (period tracking), `wellbeing` (check-ins, flares), `streaks` (protected-recovery engine + recovery_days data), `progress` (weekly trends + PRs), `nutrition` (food diary, custom foods, day/meal totals, targets + BMR/TDEE estimate — S1-4), `profile` (expanded §5.1), `onboarding`, `settings`. Planned: `auth`, `workouts`, `safety` (trusted contacts + live tracking), `social`.
+Features as of 2026-08-28: `home` (dashboard: streak card + Today sheet, check-in card), `activity` (manual entry, history, GPS recording with forgotten-end handling, splits/PRs, route maps), `routes` (suggestion via ORS — ADR 009, saved routes), `keto` (own tab: diary macros + manual blood/urine/breath ketone readings, S3 — added 2026-11-16), `wellbeing` (check-ins, flares), `streaks` (protected-recovery engine + recovery_days data), `progress` (weekly trends + PRs), `nutrition` (food diary, custom foods, day/meal totals, targets + BMR/TDEE estimate — S1-4), `profile` (expanded §5.1), `onboarding`, `settings`. Planned: `auth`, `workouts`, `safety` (trusted contacts + live tracking), `social`.
 
 ## Dependency rules (enforced by convention + review; lint tooling if violated repeatedly)
 

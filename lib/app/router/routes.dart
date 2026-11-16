@@ -19,6 +19,7 @@ import 'package:menfit_app/features/challenges/presentation/challenges_screen.da
 import 'package:menfit_app/features/challenges/presentation/create_challenge_screen.dart';
 import 'package:menfit_app/features/challenges/presentation/join_challenge_screen.dart';
 import 'package:menfit_app/features/home/presentation/home_screen.dart';
+import 'package:menfit_app/features/keto/presentation/keto_screen.dart';
 import 'package:menfit_app/features/nutrition/domain/meal_type.dart';
 import 'package:menfit_app/features/nutrition/presentation/food_form_screen.dart';
 import 'package:menfit_app/features/nutrition/presentation/food_form_seed.dart';
@@ -414,7 +415,7 @@ class ChallengeDetailRouteData extends GoRouteData
 }
 
 /// The single typed route table for the app: a five-tab
-/// [StatefulShellRoute] (Home, Activity, Nutrition, Recovery,
+/// [StatefulShellRoute] (Home, Activity, Nutrition, Keto, Recovery,
 /// Settings), each branch holding exactly one top-level route.
 @TypedStatefulShellRoute<AppShellRouteData>(
   branches: [
@@ -465,6 +466,9 @@ class ChallengeDetailRouteData extends GoRouteData
         ),
       ],
     ),
+    TypedStatefulShellBranch<KetoBranchData>(
+      routes: [TypedGoRoute<KetoRouteData>(path: '/keto')],
+    ),
     TypedStatefulShellBranch<WellbeingBranchData>(
       routes: [TypedGoRoute<WellbeingRouteData>(path: '/recovery')],
     ),
@@ -504,6 +508,11 @@ class AppShellRouteData extends StatefulShellRouteData {
       icon: Icons.restaurant_outlined,
       selectedIcon: Icons.restaurant,
       label: 'Nutrition',
+    ),
+    AdaptiveDestination(
+      icon: Icons.science_outlined,
+      selectedIcon: Icons.science,
+      label: 'Keto',
     ),
     AdaptiveDestination(
       icon: Icons.self_improvement_outlined,
@@ -735,6 +744,17 @@ LocalDate parseDiaryDay(String? value) {
   } on FormatException {
     return today;
   }
+}
+
+class KetoBranchData extends StatefulShellBranchData {
+  const KetoBranchData();
+}
+
+class KetoRouteData extends GoRouteData with $KetoRouteData {
+  const KetoRouteData();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) => const KetoScreen();
 }
 
 class WellbeingBranchData extends StatefulShellBranchData {

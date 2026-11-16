@@ -17,6 +17,10 @@ import 'package:menfit_app/features/nutrition/presentation/widgets/provider_food
 /// `/nutrition/add/food` — describe a food once so it can be logged again,
 /// and the review-before-save step for a food from the food database or
 /// from a photographed nutrition label.
+const String foodNotFoundOnlineCopy =
+    "We couldn't find this food online. You can add it from the packet — "
+    "it'll be in your foods next time, and we won't need to look it up again.";
+
 class FoodFormScreen extends ConsumerWidget {
   const FoodFormScreen({this.seed, super.key});
 
@@ -339,10 +343,6 @@ class _SeedIntro extends ConsumerWidget {
     }
 
     final tokens = Theme.of(context).extension<AppTokens>()!;
-    // A miss means every configured catalogue was asked (the fallback
-    // provider tries both on "not found"), so name the whole composite,
-    // not the catalogue this seed happens to be stamped with.
-    final name = ref.watch(foodDataProviderProvider).attributionName;
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(tokens.spacingMd),
@@ -351,9 +351,7 @@ class _SeedIntro extends ConsumerWidget {
         borderRadius: BorderRadius.circular(tokens.radiusSm),
       ),
       child: Text(
-        'Nothing found for this one at $name. You can add it from the '
-        "packet — it'll be in your foods next time, and we won't need to "
-        'ask anyone about it again.',
+        foodNotFoundOnlineCopy,
         style: Theme.of(context).textTheme.bodyMedium,
       ),
     );

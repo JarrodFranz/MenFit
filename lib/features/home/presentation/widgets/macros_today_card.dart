@@ -9,6 +9,7 @@ import 'package:menfit_app/features/nutrition/domain/calorie_target.dart';
 import 'package:menfit_app/features/nutrition/domain/nutrition_totals.dart';
 import 'package:menfit_app/features/nutrition/nutrition_providers.dart';
 import 'package:menfit_app/features/nutrition/nutrition_widgets.dart';
+import 'package:menfit_app/features/streaks/streaks_providers.dart';
 
 /// Today's energy and macros, compact, on the home dashboard.
 ///
@@ -19,7 +20,10 @@ import 'package:menfit_app/features/nutrition/nutrition_widgets.dart';
 ///
 /// * **`hideCalorieNumbers` removes the energy line entirely** — not
 ///   blanked, not greyed, not replaced by a dash. The macros stay, which is
-///   the whole point of the preference (`domain/nutrition_goals.dart`).
+///   the whole point of the preference (`domain/nutrition_goals.dart`). The
+///   flag comes from `nutrition_providers.dart#hideCalorieNumbersProvider`,
+///   which also hides the line while the goals row is still loading, so a
+///   cold start never flashes a kcal figure at a user who hid them.
 /// * **No judgement copy.** "N of M kcal", never "N remaining", never
 ///   "M over". Nothing turns red past the target and the bars clamp at
 ///   full (`domain/home_macro_rows.dart`).
@@ -40,13 +44,13 @@ class MacrosTodayCard extends ConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
 
-    final today = LocalDate.today();
+    final today = ref.watch(localDayProvider).value ?? LocalDate.today();
     final totals =
         ref.watch(dayNutritionTotalsProvider(today)).value?.total ??
         NutritionTotals.empty;
     final goals = ref.watch(nutritionGoalsProvider).value;
     final target = ref.watch(dayCalorieTargetProvider);
-    final hideCalorieNumbers = goals?.hideCalorieNumbers ?? false;
+    final hideCalorieNumbers = ref.watch(hideCalorieNumbersProvider);
 
     final rows = homeMacroRows(
       totals: totals,
@@ -57,7 +61,10 @@ class MacrosTodayCard extends ConsumerWidget {
     return HomeCard(
       icon: Icons.restaurant_outlined,
       title: 'Nutrition today',
-      onTap: () => const NutritionRouteData().go(context),
+      onTap: () {
+        ref.read(selectedNutritionDayProvider.notifier).goToToday();
+        const NutritionRouteData().go(context);
+      },
       semanticsLabel: 'Nutrition today, open the food diary',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -57,7 +57,7 @@ final class SelectedNutritionDayProvider
 }
 
 String _$selectedNutritionDayHash() =>
-    r'297b7a76b800444c35c8cbf1eea8a70a206d7466';
+    r'72c6d6a33529c8853e90ea2d797138d3ac94bd54';
 
 /// Which calendar day the diary is showing.
 ///

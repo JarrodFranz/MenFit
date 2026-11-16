@@ -3,8 +3,8 @@ import 'package:menfit_app/core/theme/tokens.dart';
 import 'package:menfit_app/core/widgets/field_error_text.dart';
 import 'package:menfit_app/features/nutrition/domain/food.dart';
 import 'package:menfit_app/features/nutrition/domain/provider_food.dart';
-import 'package:menfit_app/features/nutrition/presentation/nutrition_format.dart';
 import 'package:menfit_app/features/nutrition/presentation/online_food_search_controller.dart';
+import 'package:menfit_app/features/nutrition/presentation/online_result_display.dart';
 import 'package:menfit_app/features/nutrition/presentation/widgets/food_data_attribution.dart';
 import 'package:menfit_app/features/nutrition/presentation/widgets/local_food_results.dart';
 
@@ -236,7 +236,9 @@ class _OnlineFoodResults extends StatelessWidget {
         if (state.results.isNotEmpty) ...[
           for (final summary in state.results)
             _OnlineResultTile(
-              key: ValueKey('online-${summary.barcode}'),
+              key: ValueKey(
+                'online-${summary.source.name}-${summary.providerFoodId}',
+              ),
               summary: summary,
               hideCalorieNumbers: hideCalorieNumbers,
               busy: busy,
@@ -255,7 +257,18 @@ class _OnlineFoodResults extends StatelessWidget {
               child: const Text('Show more results'),
             ),
           ),
-        if (state.hasSearched)
+        for (final source in state.results.map((hit) => hit.source).toSet())
+          if (source == FoodSource.fatSecret ||
+              source == FoodSource.openFoodFacts)
+            FoodDataAttribution(
+              name: source == FoodSource.fatSecret
+                  ? 'FatSecret'
+                  : 'Open Food Facts',
+              url: source == FoodSource.fatSecret
+                  ? 'https://platform.fatsecret.com'
+                  : 'https://world.openfoodfacts.org',
+            ),
+        if (state.hasSearched && state.results.isEmpty)
           Padding(
             padding: EdgeInsets.symmetric(horizontal: tokens.spacingMd),
             child: FoodDataAttribution(
@@ -284,73 +297,10 @@ class _OnlineResultTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String basis;
-    final rawDesc = summary.servingDescription;
-    final sKcal = summary.servingCaloriesKcal;
-    final kcal = summary.caloriesKcal;
-    final grams = summary.servingGrams;
-
-    final String? desc;
-    if (rawDesc != null &&
-        rawDesc.toLowerCase().trim() == '1 serving' &&
-        grams != null &&
-        grams > 0) {
-      final formattedGrams = grams == grams.roundToDouble()
-          ? grams.round().toString()
-          : grams.toStringAsFixed(1).replaceAll(RegExp(r'\.0$'), '');
-      desc = '1 serving ($formattedGrams g)';
-    } else {
-      desc = rawDesc;
-    }
-
-    final double? displayProtein;
-    final double? displayCarbs;
-    final double? displayFat;
-
-    final isPer100g =
-        desc == null ||
-        desc.toLowerCase().trim() == '100 g' ||
-        desc.toLowerCase().trim() == '100g';
-
-    if (!isPer100g && (sKcal != null || grams != null)) {
-      final calories =
-          sKcal ?? (kcal != null && grams != null ? kcal * grams / 100 : kcal);
-      basis = hideCalorieNumbers
-          ? 'Serving: $desc'
-          : 'Serving: $desc · ${formatOptionalKcal(calories)}';
-
-      if (grams != null) {
-        final scale = grams / 100;
-        displayProtein = summary.proteinGrams == null
-            ? null
-            : summary.proteinGrams! * scale;
-        displayCarbs = summary.carbsGrams == null
-            ? null
-            : summary.carbsGrams! * scale;
-        displayFat = summary.fatGrams == null
-            ? null
-            : summary.fatGrams! * scale;
-      } else {
-        displayProtein = summary.proteinGrams;
-        displayCarbs = summary.carbsGrams;
-        displayFat = summary.fatGrams;
-      }
-    } else if (!isPer100g) {
-      basis = hideCalorieNumbers
-          ? 'Serving: $desc'
-          : 'Per 100 g · ${formatOptionalKcal(kcal)} ($desc)';
-      displayProtein = summary.proteinGrams;
-      displayCarbs = summary.carbsGrams;
-      displayFat = summary.fatGrams;
-    } else {
-      basis = hideCalorieNumbers
-          ? 'Per 100 g'
-          : 'Per 100 g · ${formatOptionalKcal(kcal)}';
-      displayProtein = summary.proteinGrams;
-      displayCarbs = summary.carbsGrams;
-      displayFat = summary.fatGrams;
-    }
-
+    final display = resolveOnlineResultDisplay(
+      summary,
+      hideCalorieNumbers: hideCalorieNumbers,
+    );
     final tokens = Theme.of(context).extension<AppTokens>()!;
     return ListTile(
       title: Text(summary.displayName),
@@ -358,14 +308,8 @@ class _OnlineResultTile extends StatelessWidget {
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(basis),
-          Text(
-            formatPer100gMacroLine(
-              proteinGrams: displayProtein,
-              carbsGrams: displayCarbs,
-              fatGrams: displayFat,
-            ),
-          ),
+          Text(display.basisLine),
+          Text(display.macroLine),
           SizedBox(height: tokens.spacingXs),
           _OnlineSourceBadge(source: summary.source),
         ],

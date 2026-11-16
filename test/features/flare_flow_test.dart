@@ -31,6 +31,10 @@ void main() {
       final prefs = await SharedPreferences.getInstance();
       final database = db.AppDatabase.forTesting(NativeDatabase.memory());
       addTearDown(database.close);
+      addTearDown(() async {
+        await tester.pumpWidget(const SizedBox.shrink());
+        await tester.pump(const Duration(milliseconds: 1));
+      });
 
       await tester.pumpWidget(
         ProviderScope(
@@ -114,6 +118,12 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(WellbeingScreen), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.byType(FlareTile),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
       // Scoped to the history CARD. The tab now also carries a calendar
       // whose legend names the same glyph vocabulary the cards use, so a
       // bare `textContaining('Flare-up')` matches the legend item as well
@@ -127,8 +137,6 @@ void main() {
       expect(find.textContaining('Reduced my training'), findsOneWidget);
 
       // Tap through to edit/delete it.
-      await tester.drag(find.byType(ListView), const Offset(0, -300));
-      await tester.pumpAndSettle();
       await tester.tap(flareCardTitle);
       await tester.pumpAndSettle();
 

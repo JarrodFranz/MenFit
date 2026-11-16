@@ -40,9 +40,16 @@ import 'package:drift/drift.dart';
 /// not disturb the history that referenced it.
 @TableIndex(name: 'idx_foods_name', columns: {#name})
 @TableIndex(name: 'idx_foods_barcode', columns: {#barcode})
+@TableIndex(
+  name: 'idx_foods_provider_food_id',
+  columns: {#source, #providerFoodId},
+)
 class Foods extends Table {
   /// Client-generated UUIDv7.
   TextColumn get id => text()();
+
+  /// Catalogue identity, distinct from a retail barcode.
+  TextColumn get providerFoodId => text().nullable()();
 
   /// What the user calls this food, e.g. `'Porridge oats'`.
   TextColumn get name => text()();

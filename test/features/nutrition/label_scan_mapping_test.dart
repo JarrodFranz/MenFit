@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+
 import 'package:menfit_app/features/nutrition/domain/food.dart';
 import 'package:menfit_app/features/nutrition/domain/label_ocr/label_warnings.dart';
 import 'package:menfit_app/features/nutrition/domain/label_ocr/nutrition_label_parser.dart';
@@ -170,6 +171,26 @@ void main() {
       );
 
       expect(fields.lowConfidenceFields, {ScanField.carbs});
+    });
+
+    test('respects preferredBasis when explicitly passed', () {
+      final parsed = parser.parse(fsanzTwoColumn());
+      final servingFields = mapParsedLabel(
+        parsed,
+        preferredBasis: LabelScanBasis.serving,
+      );
+      final per100Fields = mapParsedLabel(
+        parsed,
+        preferredBasis: LabelScanBasis.per100g,
+      );
+
+      expect(servingFields.basis, LabelScanBasis.serving);
+      expect(servingFields.values[ScanField.calories], '198');
+      expect(servingFields.values[ScanField.protein], '5.2');
+
+      expect(per100Fields.basis, LabelScanBasis.per100g);
+      expect(per100Fields.values[ScanField.calories], '662');
+      expect(per100Fields.values[ScanField.protein], '17.3');
     });
   });
 
@@ -474,6 +495,51 @@ void main() {
       expect(seed.servingBasis, isNull);
       expect(seed.servingGrams, isEmpty);
       expect(seed.carbs, '10.6');
+    });
+  });
+
+  group('switchScannedLabelBasis', () {
+    const blank = FoodFormState();
+    final parsed = parser.parse(fsanzTwoColumn());
+
+    test('switches from serving to per 100g and updates macro values', () {
+      final stateServing = applyLabelScan(
+        blank,
+        mapParsedLabel(parsed),
+        parsedLabel: parsed,
+      );
+      expect(stateServing.calories, '198');
+      expect(stateServing.protein, '5.2');
+      expect(stateServing.activeLabelBasis, LabelScanBasis.serving);
+
+      final state100g = switchScannedLabelBasis(
+        stateServing,
+        LabelScanBasis.per100g,
+      );
+      expect(state100g.calories, '662');
+      expect(state100g.protein, '17.3');
+      expect(state100g.activeLabelBasis, LabelScanBasis.per100g);
+      expect(state100g.basisMode, FoodBasisMode.perReference);
+      expect(state100g.basisUnit, 'g');
+      expect(state100g.basisAmount, '100');
+    });
+
+    test('preserves user dirty fields when basis is switched', () {
+      final stateServing = applyLabelScan(
+        blank.copyWith(protein: '10.0'),
+        mapParsedLabel(parsed),
+        parsedLabel: parsed,
+      );
+      expect(stateServing.calories, '198');
+      expect(stateServing.protein, '10.0');
+
+      final state100g = switchScannedLabelBasis(
+        stateServing,
+        LabelScanBasis.per100g,
+      );
+      expect(state100g.calories, '662');
+      expect(state100g.protein, '10.0', reason: 'user dirty field preserved');
+      expect(state100g.activeLabelBasis, LabelScanBasis.per100g);
     });
   });
 }

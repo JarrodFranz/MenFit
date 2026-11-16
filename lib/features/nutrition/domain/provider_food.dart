@@ -8,7 +8,7 @@ part 'provider_food.freezed.dart';
 /// This is an honesty requirement rather than bookkeeping: "per serving"
 /// means three materially different things depending on what the source
 /// database actually stated, and the review screen shows the user which one
-/// they are looking at instead of presenting all three as equally
+/// the user is looking at instead of presenting all three as equally
 /// authoritative.
 enum ServingBasis {
   /// The provider stated per-serving values itself. Authoritative — prefer
@@ -29,6 +29,27 @@ enum ServingBasis {
   per100ml,
 }
 
+/// What a [ProviderFoodSummary]'s energy and macro figures are *per*.
+///
+/// A search hit's numbers are not always per 100 g, however much the field
+/// names suggest it. FatSecret answers "Per 1 serving" with no size at all,
+/// and a per-serving figure rendered as a per-100 g one is wrong by a factor
+/// nobody can see — a 680 g serving shown as per-100 g is 6.8× out. So the
+/// basis travels with the numbers instead of being assumed by whatever draws
+/// them.
+enum SummaryMacroBasis {
+  /// Per 100 grams.
+  per100g,
+
+  /// Per 100 millilitres — the same shape as [per100g] for a food the
+  /// provider states by volume.
+  per100ml,
+
+  /// Per the serving [ProviderFoodSummary.servingDescription] names, which
+  /// may have no stated size at all. Never scaled.
+  perServing,
+}
+
 /// One hit from a food provider's text search — enough to render a result
 /// row and nothing more.
 ///
@@ -38,11 +59,12 @@ enum ServingBasis {
 /// (Open Food Facts' search index carries seven nutriments and iron is not
 /// among them), as are per-serving values and any quality signal. A missing
 /// iron figure here therefore says nothing whatsoever about the food — it
-/// is a property of the endpoint. Anything that needs iron must look the
-/// product up by barcode via `FoodDataProvider.findByBarcode`.
+/// is a property of the endpoint. Anything that needs iron must fetch the
+/// full record via `FoodDataProvider.fetchDetails`.
 ///
-/// Every nutrition number is per 100 g and nullable — see [ProviderFood]'s
-/// doc for why `null` is never coalesced to `0`.
+/// Every nutrition number is nullable — see [ProviderFood]'s doc for why
+/// `null` is never coalesced to `0` — and is per whatever [macroBasis]
+/// says, which is per 100 g unless the provider stated otherwise.
 @freezed
 abstract class ProviderFoodSummary with _$ProviderFoodSummary {
   const factory ProviderFoodSummary({
@@ -56,28 +78,42 @@ abstract class ProviderFoodSummary with _$ProviderFoodSummary {
     /// over with a guess.
     required FoodSource source,
 
-    /// The provider's product code, as the provider echoed it back (which
-    /// is not necessarily the string that was searched for).
-    required String barcode,
+    /// The provider's **own key** for this record — what
+    /// `FoodDataProvider.fetchDetails` fetches the full record by. A
+    /// FatSecret `food_id`, an Open Food Facts product code.
+    ///
+    /// **Never a barcode by shape.** A FatSecret `food_id` is a run of
+    /// digits, and an 8-digit one can pass the EAN-8 check digit
+    /// (`27365861` does), so nothing may infer "this is a GTIN" from what
+    /// an id looks like. That inference sent search hits down the barcode
+    /// path and put the id in the form's barcode field (B23). Whether a
+    /// hit has a barcode at all is [barcode]'s job to say.
+    required String providerFoodId,
 
     /// Best available product name; never blank (falls back to the
-    /// barcode when the provider has no usable name).
+    /// provider's id when the provider has no usable name).
     required String name,
+
+    /// The product's real GTIN barcode, **only when the provider states
+    /// one**, as the provider echoed it back. `null` for a FatSecret search
+    /// hit — `foods.search` carries no barcode — and never filled from
+    /// [providerFoodId].
+    String? barcode,
 
     /// Brand or maker, when the provider states one.
     String? brand,
 
-    /// Energy per 100 g, in kilocalories. `null` means the provider
+    /// Energy per [macroBasis], in kilocalories. `null` means the provider
     /// doesn't state it.
     double? caloriesKcal,
 
-    /// Protein per 100 g, in grams. `null` means not stated.
+    /// Protein per [macroBasis], in grams. `null` means not stated.
     double? proteinGrams,
 
-    /// Carbohydrate per 100 g, in grams. `null` means not stated.
+    /// Carbohydrate per [macroBasis], in grams. `null` means not stated.
     double? carbsGrams,
 
-    /// Fat per 100 g, in grams. `null` means not stated.
+    /// Fat per [macroBasis], in grams. `null` means not stated.
     double? fatGrams,
 
     /// Stated serving description (e.g. "1 bar (45 g)", "250 ml"), when
@@ -92,6 +128,15 @@ abstract class ProviderFoodSummary with _$ProviderFoodSummary {
 
     /// Energy per serving in kilocalories, when available.
     double? servingCaloriesKcal,
+
+    /// What [caloriesKcal], [proteinGrams], [carbsGrams] and [fatGrams] are
+    /// per: 100 g, 100 ml, or the stated serving — see [SummaryMacroBasis].
+    ///
+    /// Defaults to [SummaryMacroBasis.per100g] because that is what every
+    /// search index answers with unless it says otherwise; a mapper that
+    /// knows better sets it, and anything rendering or rescaling these
+    /// numbers must read it rather than assume.
+    @Default(SummaryMacroBasis.per100g) SummaryMacroBasis macroBasis,
   }) = _ProviderFoodSummary;
 
   const ProviderFoodSummary._();
@@ -130,15 +175,19 @@ abstract class ProviderFood with _$ProviderFood {
     /// the same reason.
     required FoodSource source,
 
-    /// The provider's product code, **as the provider echoed it back**.
+    /// The product's real GTIN barcode, **as the provider echoed it back**,
+    /// or `null` when this record was reached without one (a FatSecret
+    /// record fetched by its `food_id` from a search hit).
     ///
     /// Providers normalise codes server-side (leading zeros, EAN-8 to
     /// EAN-13), so this can differ from the scanned string. Anything keyed
-    /// on a barcode — a cache, a saved `Food.barcode` — keys on this.
-    required String barcode,
+    /// on a barcode — a cache, a saved `Food.barcode` — keys on this, and
+    /// only on this: a provider's record id is never a barcode (B23, see
+    /// [ProviderFoodSummary.providerFoodId]).
+    required String? barcode,
 
     /// Best available product name; never blank (falls back to the
-    /// barcode when the provider has no usable name for it).
+    /// barcode or the provider's id when the provider has no usable name).
     required String name,
 
     /// Free-text description of one serving, exactly as the provider
@@ -155,6 +204,11 @@ abstract class ProviderFood with _$ProviderFood {
 
     /// Brand or maker, when the provider states one.
     String? brand,
+
+    /// The provider's own key for this record (a FatSecret `food_id`, an
+    /// Open Food Facts product code), when known — see
+    /// [ProviderFoodSummary.providerFoodId]. Identity only; never a barcode.
+    String? providerFoodId,
 
     /// Mass of one serving in grams, when a usable one is known. `100`
     /// when [servingBasis] is [ServingBasis.per100g].

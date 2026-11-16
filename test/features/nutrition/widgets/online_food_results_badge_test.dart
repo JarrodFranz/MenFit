@@ -38,6 +38,7 @@ void main() {
   ) async {
     const hit = ProviderFoodSummary(
       source: FoodSource.fatSecret,
+      providerFoodId: 'fs-1',
       barcode: 'fs-1',
       name: 'Iced Shaken Espresso',
       brand: 'Starbucks',
@@ -63,6 +64,7 @@ void main() {
   ) async {
     const hit = ProviderFoodSummary(
       source: FoodSource.openFoodFacts,
+      providerFoodId: 'off-1',
       barcode: 'off-1',
       name: 'Oat Milk',
       brand: 'Oatly',
@@ -86,6 +88,7 @@ void main() {
     (tester) async {
       const hit = ProviderFoodSummary(
         source: FoodSource.fatSecret,
+        providerFoodId: 'fs-2',
         barcode: 'fs-2',
         name: 'Cooked Rice',
         brand: 'SunRice',

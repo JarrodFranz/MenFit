@@ -74,11 +74,13 @@ const _synonyms = <LabelField, List<String>>{
   LabelField.energy: [
     'energy',
     'energykj',
+    'energykcal',
     'energykjcal',
     'energyvalue',
     'calories',
     'calorie',
     'kilojoules',
+    'kj',
   ],
   LabelField.protein: ['protein', 'proteins'],
   LabelField.fat: ['fat', 'fats', 'fattotal', 'fatstotal', 'lipids'],
@@ -216,7 +218,7 @@ int _toleranceFor(String synonym) {
 /// (not substring) so that `saturated fat` cannot resolve to `fat`.
 LabelFieldMatch? matchLabelField(String raw) {
   final text = normaliseLabelText(raw);
-  if (text.length < 3) return null;
+  if (text.length < 2) return null;
 
   LabelFieldMatch? best;
   for (final entry in _synonyms.entries) {

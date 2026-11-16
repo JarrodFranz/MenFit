@@ -223,7 +223,7 @@ class _WorkoutCelebrationDialogState
                         value: widget.primaryMetricValue!,
                         icon: Icons.straighten_rounded,
                       )
-                    else if (widget.activity.distanceMeters > 0)
+                    else if (widget.activity.hasDistance)
                       _MetricColumn(
                         label: 'Distance',
                         value: () {

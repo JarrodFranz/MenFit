@@ -139,7 +139,7 @@ final class WearablesControllerProvider
 }
 
 String _$wearablesControllerHash() =>
-    r'8ea1278e506fbb4f7ec8d3078f1bb0b5c9dfc42d';
+    r'2b89d54bda11eebff38f4bfbe53230079633d10a';
 
 abstract class _$WearablesController extends $Notifier<WearablesState> {
   WearablesState build();

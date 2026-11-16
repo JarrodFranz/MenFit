@@ -146,6 +146,7 @@ ProviderFood parseOpenFoodFactsProduct(
   return ProviderFood(
     source: FoodSource.openFoodFacts,
     barcode: barcode,
+    providerFoodId: barcode,
     name: _productName(product, languageCode) ?? barcode,
     servingDescription: description,
     servingBasis: basis,
@@ -240,6 +241,9 @@ ProviderFoodSummary? parseOpenFoodFactsHit(
 
   return ProviderFoodSummary(
     source: FoodSource.openFoodFacts,
+    // An Open Food Facts product is keyed on its barcode, so here the two
+    // genuinely are the same string.
+    providerFoodId: barcode,
     barcode: barcode,
     name: _productName(hit, languageCode) ?? barcode,
     brand: _brand(hit['brands']),

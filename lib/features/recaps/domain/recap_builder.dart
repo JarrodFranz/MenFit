@@ -96,6 +96,7 @@ class RecapBuilder {
     required Map<LocalDate, int> waterTotalsByDay,
     required List<NutritionEntry> periodNutritionEntries,
     required NutritionGoals? nutritionGoals,
+    required int? basisKcal,
     required List<DailyCheckin> periodCheckins,
   }) {
     // Sparse-data guard. A month recap must earn its interruption with
@@ -197,6 +198,7 @@ class RecapBuilder {
       fuelingConsistencyRatio: _computeFuelingConsistency(
         entries: periodNutritionEntries,
         goals: nutritionGoals,
+        basisKcal: basisKcal,
       ),
       topPrs: prHighlights.take(3).toList(),
       wellbeingObservation: _buildWellbeingObservation(periodCheckins),
@@ -310,16 +312,20 @@ class RecapBuilder {
   }
 
   /// Days the protein target was met divided by days with anything logged
-  /// — `null` when no protein target is set, or nothing was logged this
-  /// period. Same day-qualifies rule and threshold as
-  /// `domain/fueling_consistency_evaluator.dart`, generalised from its
-  /// fixed 7-day window to an arbitrary period.
+  /// — `null` when no protein target is set (or none can be derived — see
+  /// [basisKcal]), or nothing was logged this period. Same day-qualifies
+  /// rule and threshold as `domain/fueling_consistency_evaluator.dart`,
+  /// generalised from its fixed 7-day window to an arbitrary period.
   double? _computeFuelingConsistency({
     required List<NutritionEntry> entries,
     required NutritionGoals? goals,
+    required int? basisKcal,
   }) {
-    final target = goals?.proteinTargetGrams ?? 0;
-    if (target <= 0 || entries.isEmpty) return null;
+    // Never `goals?.proteinTargetGrams` directly: only populated in gram
+    // mode, so a percent-mode goal read that way would never have a target
+    // to meet (`domain/nutrition_goals.dart#macroTargetGramsFor`).
+    final target = goals?.macroTargetGramsFor(basisKcal).protein;
+    if (target == null || target <= 0 || entries.isEmpty) return null;
 
     final entriesByDay = <LocalDate, List<NutritionEntry>>{};
     for (final entry in entries) {

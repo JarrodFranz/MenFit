@@ -108,6 +108,7 @@ Food foodToEntity(db.Food row) {
     ),
     barcode: row.barcode,
     source: FoodSource.fromStorage(row.source),
+    providerFoodId: row.providerFoodId,
     createdAt: _utcFromMillis(row.createdAt),
     updatedAt: _utcFromMillis(row.updatedAt),
   );

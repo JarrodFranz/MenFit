@@ -1,8 +1,10 @@
+import 'package:menfit_app/core/errors/app_exception.dart';
 import 'package:menfit_app/features/achievements/domain/award_repository.dart';
 import 'package:menfit_app/features/activity/domain/activity_repository.dart';
 import 'package:menfit_app/features/activity/domain/strength_routine_repository.dart';
 import 'package:menfit_app/features/activity/domain/yoga_sequence_repository.dart';
 import 'package:menfit_app/features/challenges/domain/challenge_repository.dart';
+import 'package:menfit_app/features/keto/domain/ketone_repository.dart';
 import 'package:menfit_app/features/nutrition/domain/nutrition_repository.dart';
 import 'package:menfit_app/features/nutrition/domain/water_repository.dart';
 import 'package:menfit_app/features/profile/domain/profile_repository.dart';
@@ -57,6 +59,7 @@ import 'package:menfit_app/features/wellbeing/domain/wellbeing_repository.dart';
 class DeleteMyDataService {
   const DeleteMyDataService({
     required this.wellbeingRepository,
+    required this.ketoneRepository,
     required this.recoveryRepository,
     required this.activityRepository,
     required this.routeRepository,
@@ -72,9 +75,11 @@ class DeleteMyDataService {
     required this.profileRepository,
     required this.clearRecapMarkers,
     required this.clearOnlineLookupNotice,
+    required this.clearCustomEventTitles,
   });
 
   final WellbeingRepository wellbeingRepository;
+  final KetoneRepository ketoneRepository;
   final RecoveryRepository recoveryRepository;
   final ActivityRepository activityRepository;
   final RouteRepository routeRepository;
@@ -98,6 +103,7 @@ class DeleteMyDataService {
   /// these are bound (`settings_providers.dart`).
   final Future<void> Function() clearRecapMarkers;
   final Future<void> Function() clearOnlineLookupNotice;
+  final Future<void> Function() clearCustomEventTitles;
 
   /// Runs the full wipe. Throws whatever the first failing repository call
   /// throws (each repository already wraps its own failure in a
@@ -110,7 +116,15 @@ class DeleteMyDataService {
     // are health-adjacent for the same reason - deleted alongside them,
     // still ahead of the less sensitive activities/profile/preferences.
     await wellbeingRepository.deleteAllData();
+    await ketoneRepository.deleteAllData();
     await recoveryRepository.deleteAllData();
+    var customNamesCleared = true;
+    try {
+      await clearCustomEventTitles();
+    } on Object {
+      // A preference failure must not prevent the database health-data wipe.
+      customNamesCleared = false;
+    }
     // Activities (and their GPS samples) are location data - also
     // sensitive, but ordered after the S3 tier per the same policy
     // document's tiering, ahead of the least-sensitive profile/prefs.
@@ -162,5 +176,10 @@ class DeleteMyDataService {
     // failure here must not stop the tables being emptied.
     await clearRecapMarkers();
     await clearOnlineLookupNotice();
+    if (!customNamesCleared) {
+      throw const StorageException(
+        message: 'Failed to clear saved event names',
+      );
+    }
   }
 }

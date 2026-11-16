@@ -49,6 +49,10 @@ void main() {
     final resolvedDatabase =
         database ?? db.AppDatabase.forTesting(NativeDatabase.memory());
     if (database == null) addTearDown(resolvedDatabase.close);
+    addTearDown(() async {
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump(const Duration(milliseconds: 1));
+    });
 
     await tester.pumpWidget(
       ProviderScope(
@@ -270,6 +274,12 @@ void main() {
       await tester.tap(find.text('History'));
       await tester.pumpAndSettle();
       expect(find.byType(WellbeingScreen), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.byType(RecoveryTile),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
 
       // Scoped to the history CARD: the tab's calendar legend names the
       // same three record types the cards do, so an unscoped
@@ -283,8 +293,6 @@ void main() {
       );
       expect(find.text('Sore calves after Tuesday'), findsOneWidget);
 
-      await tester.drag(find.byType(ListView), const Offset(0, -300));
-      await tester.pumpAndSettle();
       await tester.tap(find.byTooltip('Remove'));
       await settleRealAsync(tester);
       await flushSnackbar(tester);

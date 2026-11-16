@@ -192,3 +192,19 @@ Any S3 export path deliberately stays clipboard-only rather than gaining a
 share button: a share sheet would put the user's complete health-check-in
 history one tap away from every installed app, which the clipboard-only
 path does not.
+
+
+## Manual ketone readings (2026-11-16)
+
+`ketone_readings` is S3 health data: locally stored method/result and measurement
+date/time, never sent to logs/analytics. Domain `toString` contains no values;
+repository and import errors omit raw causes that could embed row contents.
+Individual deletion is hard deletion. Whole-app deletion includes readings in
+its S3 phase. Default exports omit the table; explicitly including sensitive
+health data exports it. Imports validate every reading before replacement;
+old backups without the table leave current readings intact.
+
+Saved custom wellbeing names are health-data residue. They can be removed
+individually without deleting recorded events, and Delete my data clears them.
+Android backup/transfer rules exclude private app data; these settings do not
+remove copies made by earlier versions or change manually exported files.
