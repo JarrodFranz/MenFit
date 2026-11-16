@@ -472,3 +472,13 @@ cost an hour is in `handoff/HANDOFF.md`'s Traps and Corrections.*
 - Built release APK from `8490d46` with staging env + secrets overlay: CN=MenFit Upload Key, versionCode 3. Not re-smoke-tested after the rebuild.
 - Upload ran ~35 min then failed with HTTP 403: this host's Firebase CLI account has no access to `menfit-f17b3`. Not worked around; owner must log in with the right account. Nothing distributed.
 - Owner added a second Firebase CLI account. Verified it lists `menfit-f17b3` and the tester groups, then re-ran the upload with `--account`: release 0.1.0 (3) uploaded and distributed to group `main` (1 tester). Default CLI login left unchanged.
+
+## 2026-11-16 - Health area: plan, contract, first two workstreams
+
+- Owner asked for a Health section: watch data (heart rate, SpO2, sleep), manual blood pressure and blood readings with history, blood-pressure category and chart.
+- Created worktree `../MenFit-health` on `feat/health` from `main` (`39fbd75`); `flutter pub get` + `build_runner` left the tree clean.
+- Decided without the owner: manual readings are S3; watch vitals are read on demand and never persisted; a separate just-in-time permission request for vitals; one `blood_marker_readings` table for all markers with the value stored as entered. Contract written to `docs/superpowers/specs/2026-11-16-health-tab-design.md`.
+- Launched in parallel: workstream A (schema v4, domain, repository, export/import/delete) and workstream B (adapter vitals, manifest permissions, watch card). A researcher is gathering the blood-pressure guideline evidence. UI and navigation not started: they need the owner's answers.
+- Evidence: no adult guideline (Heart Foundation AU 2016, ACC/AHA, ESC 2024, ESH 2023) varies blood-pressure categories by age or sex. Note saved to `knowledge/research/blood_pressure_classification.md`.
+- Owner answers relayed by the parent session: Heart Foundation AU categories; Health replaces the Settings tab (Settings behind the Home gear); show reference ranges for blood markers (not the store-and-chart default I recommended). Contract amended; launched C1 (blood-pressure UI), D (navigation + screen) and a glucose reference-range evidence review.
+- My addition beyond the owner's wording: readings under 90 systolic or 60 diastolic get no category (the guideline does not classify low readings) and a neutral low-reading line instead of "Optimal".

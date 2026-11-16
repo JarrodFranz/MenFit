@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/core/platform/health/health_data_snapshot.dart';
 import 'package:menfit_app/core/platform/health/health_platform_adapter.dart';
+import 'package:menfit_app/core/platform/health/health_vitals_snapshot.dart';
 import 'package:menfit_app/core/platform/health/health_workout_session.dart';
 
 /// A [HealthPlatformAdapter] test double with no platform behind it.
@@ -151,5 +154,43 @@ class FakeHealthPlatformAdapter implements HealthPlatformAdapter {
   }) async {
     workoutReadCallCount++;
     return workoutsToReturn;
+  }
+
+  /// READ access to watch vitals; null = undisclosed (iOS).
+  bool? vitalsPermissionGranted = true;
+
+  /// Result of the vitals authorisation sheet.
+  bool vitalsRequestSucceeds = true;
+
+  /// Snapshot [getVitals] returns; null = unsupported.
+  HealthVitalsSnapshot? vitalsToReturn;
+
+  /// Replaces [vitalsToReturn] once a vitals request succeeds, so a test
+  /// can model "granted, now there is data".
+  HealthVitalsSnapshot? vitalsAfterRequest;
+
+  int requestVitalsCallCount = 0;
+  int vitalsReadCallCount = 0;
+
+  @override
+  Future<bool?> hasVitalsPermission() async => vitalsPermissionGranted;
+
+  @override
+  Future<bool> requestVitalsPermissions() async {
+    requestVitalsCallCount++;
+    if (!vitalsRequestSucceeds) return false;
+    if (vitalsPermissionGranted != null) vitalsPermissionGranted = true;
+    if (vitalsAfterRequest != null) vitalsToReturn = vitalsAfterRequest;
+    return true;
+  }
+
+  /// When set, [getVitals] waits for it — lets a test see the loading state.
+  Completer<void>? vitalsGate;
+
+  @override
+  Future<HealthVitalsSnapshot?> getVitals({required DateTime now}) async {
+    vitalsReadCallCount++;
+    await vitalsGate?.future;
+    return vitalsToReturn;
   }
 }

@@ -149,6 +149,17 @@ void main() {
       expect(plist, contains('<key>NSHealthUpdateUsageDescription</key>'));
     });
 
+    test('the HealthKit share string names the watch vitals it reads', () {
+      final plist = File('ios/Runner/Info.plist').readAsStringSync();
+      final share = RegExp(
+        r'<key>NSHealthShareUsageDescription</key>\s*<string>([^<]*)</string>',
+      ).firstMatch(plist)?.group(1);
+      expect(share, isNotNull);
+      // App Review rejects a purpose string that omits data the app reads.
+      expect(share, contains('heart rate'));
+      expect(share, contains('sleep'));
+    });
+
     test(
       'Runner.entitlements exists and grants HealthKit',
       () {

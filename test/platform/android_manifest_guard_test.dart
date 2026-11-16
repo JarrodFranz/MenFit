@@ -89,6 +89,13 @@ void main() {
       'READ_TOTAL_CALORIES_BURNED',
       'READ_EXERCISE',
       'READ_DISTANCE',
+      // Watch vitals (Health screen), requested just-in-time, READ only.
+      'READ_HEART_RATE',
+      'READ_RESTING_HEART_RATE',
+      'READ_OXYGEN_SATURATION',
+      'READ_SLEEP',
+      'READ_HEART_RATE_VARIABILITY',
+      'READ_RESPIRATORY_RATE',
     ]) {
       test('declares health.$permission', () {
         final pattern = RegExp(
@@ -104,6 +111,15 @@ void main() {
         );
       });
     }
+
+    test('declares no health WRITE permission', () {
+      // Every health type is read-only; a WRITE grant is a separate Play
+      // declaration and must be a deliberate decision.
+      expect(
+        RegExp(r'android\.permission\.health\.WRITE_').hasMatch(manifest),
+        isFalse,
+      );
+    });
   });
 
   test('AndroidManifest.xml queries android.intent.action.TTS_SERVICE', () {

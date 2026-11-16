@@ -1,4 +1,5 @@
-/// The SQL tables that hold S3-tier health check-in and ketone data, and are
+/// The SQL tables that hold S3-tier health check-in, ketone, blood-pressure
+/// and blood-reading data, and are
 /// therefore left out of a whole-app export unless the user explicitly asks
 /// for them.
 ///
@@ -19,4 +20,6 @@ const Set<String> sensitiveHealthTables = {
   'recovery_days',
   'wellbeing_events',
   'ketone_readings',
+  'blood_pressure_readings',
+  'blood_marker_readings',
 };

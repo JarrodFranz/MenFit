@@ -1,6 +1,7 @@
 import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/core/platform/health/health_data_snapshot.dart';
 import 'package:menfit_app/core/platform/health/health_platform_adapter.dart';
+import 'package:menfit_app/core/platform/health/health_vitals_snapshot.dart';
 import 'package:menfit_app/core/platform/health/health_workout_session.dart';
 
 HealthPlatformAdapter createDefaultHealthAdapter() =>
@@ -40,4 +41,14 @@ class StubHealthPlatformAdapter implements HealthPlatformAdapter {
     required DateTime start,
     required DateTime end,
   }) async => const [];
+
+  @override
+  Future<bool?> hasVitalsPermission() async => false;
+
+  @override
+  Future<bool> requestVitalsPermissions() async => false;
+
+  @override
+  Future<HealthVitalsSnapshot?> getVitals({required DateTime now}) async =>
+      null;
 }

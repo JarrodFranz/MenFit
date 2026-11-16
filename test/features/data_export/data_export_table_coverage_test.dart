@@ -96,6 +96,8 @@ void main() {
       'recovery_days',
       'wellbeing_events',
       'ketone_readings',
+      'blood_pressure_readings',
+      'blood_marker_readings',
     });
   });
 }

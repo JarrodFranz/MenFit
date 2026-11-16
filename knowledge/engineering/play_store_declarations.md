@@ -15,12 +15,16 @@
 
 ## 2. Google Play Data Safety Form Answers
 
+**Definition applied (checked 2026-11-16, re-confirm against the current Play Console help before submitting).** Google Play treats data as "collected" only when the app transmits it off the user's device. Data that is read, stored or shown on the device and never leaves it is not "collected", and it is not "shared". The Health & Fitness rows below apply that definition. Rows for other categories (location, contacts, photos, personal info) are unchanged and are flagged for an owner review against the same definition, because contacts are used to send an SMS and some lookups use the network.
+
 | Category | Data Type | Collected? | Shared? | Purpose | Ephemeral / Stored |
 |---|---|---|---|---|---|
 | **Location** | Approximate & Precise Location | Yes | **No** (Stored locally on device) | App functionality (GPS outdoor workout tracking, route maps, pace calculation) | Stored locally in SQLite; deleted on activity deletion or full data wipe. |
-| **Health & Fitness** | Fitness info (Workouts, steps, active calories) | Yes | **No** | App functionality (Exercise logging, activity analytics, daily step goals) | Stored locally on device. |
-| **Health & Fitness** | Health info (Health check-ins — sleep, energy, soreness, pain, mood — and logged injury/illness flares) | Yes | **No** | App functionality (Recovery tracking, protecting training streaks during illness, injury, or a planned recovery day) | Stored locally on device. Never uploaded to remote servers. |
-| **Health & Fitness** | Nutrition & hydration logs (food diary, water intake) | Yes | **No** | App functionality (Fuelling and hydration tracking) | Stored locally on device. |
+| **Health & Fitness** | Fitness info (Workouts, steps, active calories) | **No** (on device only) | **No** | App functionality (Exercise logging, activity analytics, daily step goals) | Stored locally on device. |
+| **Health & Fitness** | Health info (Health check-ins — sleep, energy, soreness, pain, mood — and logged injury/illness flares) | **No** (on device only) | **No** | App functionality (Recovery tracking, protecting training streaks during illness, injury, or a planned recovery day) | Stored locally on device. Never uploaded to remote servers. |
+| **Health & Fitness** | Health info — watch vitals read from Health Connect: heart rate, resting heart rate, blood oxygen (SpO2), sleep (sessions and stages), heart-rate variability (RMSSD), respiratory rate | **No** (read and shown on device only; never transmitted off the device) | **No** | App functionality (Health screen "Watch data" card showing the latest readings) | **Ephemeral** — read on demand into memory when the Health screen is open; never written to the database, preferences, export files or logs. |
+| **Health & Fitness** | Health info — manual readings: ketone, blood pressure (with pulse) and blood glucose, with optional notes | **No** (on device only) | **No** | App functionality (Keto and Health screens: history, charts, guideline category and reference range) | Stored locally on device; excluded from default export and from Android backup; removed by "Delete my data". |
+| **Health & Fitness** | Nutrition & hydration logs (food diary, water intake) | **No** (on device only) | **No** | App functionality (Fuelling and hydration tracking) | Stored locally on device. |
 | **Photos & Videos** | Photos / Images | Yes | **No** | App functionality (Nutrition label OCR and barcode scanning) | **Ephemeral** — processed on-device in memory and deleted immediately from disk. |
 | **Personal Info** | Name, Height, Weight | Yes | **No** | App functionality (Profile personalization and metabolic energy calculations) | Stored locally on device. |
 | **Contacts** | Trusted Contacts (Name, Phone number) | Yes | **No** | Safety & Emergency SOS (Optional SMS dispatch if the user is stationary) | Stored locally on device. |
@@ -44,13 +48,44 @@ Google Play requires explicit functional justification for each requested Health
 - **Justification:**
   > "MenFit reads daily step totals from Health Connect to display daily step progress on the Activity dashboard, Progress analytics screens, and Walking hub. This allows users to track baseline non-exercise activity without manually entering daily steps."
 
-### B. Permission: `android.permission.health.READ_ACTIVE_ENERGY_BURNED` & `READ_TOTAL_CALORIES_BURNED`
+### B. Permission: `android.permission.health.READ_ACTIVE_CALORIES_BURNED` & `READ_TOTAL_CALORIES_BURNED`
 - **Justification:**
   > "MenFit accesses active energy burned to calculate daily workout caloric expenditure and summarize physical workload alongside logged runs, walks, and strength workouts. This ensures fueling and nutrition targets accurately reflect training volume."
 
 ### C. Permission: `android.permission.health.READ_EXERCISE`
 - **Justification:**
   > "MenFit accesses completed exercise workouts to allow users to automatically ingest activities recorded on Garmin, WearOS, or external fitness watches directly into their local MenFit activity diary."
+
+### D. Watch vitals (Health screen) — added 2026-11-16
+
+All six are READ only, requested together in a separate just-in-time sheet
+when the user taps "Connect watch data" on the Health screen (the steps /
+workout request is unchanged). Values are read on demand, shown on screen and
+discarded; nothing is stored, exported or sent anywhere. No reference ranges
+or interpretation are shown ("Not for medical use").
+
+- **`android.permission.health.READ_HEART_RATE`**
+  > "MenFit reads the most recent heart-rate sample from the last 24 hours to show the user their latest heart rate from their watch on the Health screen."
+- **`android.permission.health.READ_RESTING_HEART_RATE`**
+  > "MenFit reads the most recent resting heart rate from the last 48 hours so the user can see it alongside their training and recovery information on the Health screen."
+- **`android.permission.health.READ_OXYGEN_SATURATION`**
+  > "MenFit reads the most recent blood-oxygen (SpO2) reading from the last 24 hours to show it on the Health screen. It is displayed as recorded, without interpretation."
+- **`android.permission.health.READ_SLEEP`**
+  > "MenFit reads the most recent sleep session ending in the last 24 hours, including its stages when the watch records them, to show last night's sleep duration on the Health screen as context for recovery and training."
+- **`android.permission.health.READ_HEART_RATE_VARIABILITY`**
+  > "MenFit reads the most recent heart-rate-variability (RMSSD) value from the last 48 hours to show it on the Health screen as recovery context."
+- **`android.permission.health.READ_RESPIRATORY_RATE`**
+  > "MenFit reads the most recent respiratory-rate reading from the last 24 hours to show it on the Health screen."
+
+**Before the next Play release:** update the Play Console Health apps
+declaration (App content > Health apps / Health Connect permissions) to list
+these six permissions (and `READ_DISTANCE`, which section E justifies) with the justifications above, and add the watch-vitals
+row to the Data Safety form. Shipping the manifest without the declaration
+update risks rejection of the release.
+
+### E. Permission: `android.permission.health.READ_DISTANCE`
+- **Justification:**
+  > "MenFit reads distance records alongside imported exercise sessions. The Health Connect plugin reads the distance of every exercise session, and without this permission the whole workout import fails, so activities recorded on a watch (for example a run) would not appear in the user's MenFit activity diary with their distance."
 
 ### Core Health Connect Compliance Statements:
 - Health Connect data is **never transferred, sold, or shared** with third parties or data brokers.

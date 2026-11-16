@@ -24,3 +24,8 @@ No major new go_router features expected (fine — set is complete); shell+redir
 - **auto_route** — capable but single-maintainer third-party with breaking-major-version history; unjustified bet vs the first-party option.
 - **beamer** — effectively dormant.
 - **raw Navigator 2.0** — weeks of RouterDelegate plumbing maintained forever, for no exotic need we have.
+
+## Amendment — 2026-11-16: Health tab; Settings moves behind the Home gear
+The shell is Home, Train (`/activity`), Nutrition, Keto, **Health** (`/health`), Recovery. Adding Health would have made seven destinations, but the bottom bar is at its six-destination limit on 320 dp phones (`test/core/adaptive_scaffold_real_font_test.dart`). The owner chose to drop the Settings tab and reach Settings from the gear already on the Home app bar.
+
+The Settings route subtree keeps every typed route class and is nested under the Home route: `/home/settings`, `/home/settings/{profile,accessibility,wearables,safety}`. Every `Settings…RouteData().go(context)` call keeps working; a deep link into Settings selects the Home tab, and back returns to Home. Coverage: `test/app/health_branch_test.dart`.

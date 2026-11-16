@@ -32,6 +32,7 @@ WeightLog (body weight time series; S3)               landed schema v18 as `weig
 BodyMetric (other body metrics; S3, future)
 DailyStepTotal (one row per calendar day, day is the PK; S2)  landed schema v22 as `daily_step_totals`
 DailyCheckin / FlareEvent / RecoveryDay (health check-ins, flares, recovery days; S3)
+BloodPressureReading / BloodMarkerReading (manual BP, manual blood results; S3)  MenFit v4 as `blood_pressure_readings` / `blood_marker_readings`
 StreakState (derived; stores paused-day facts, minimal reason detail)
 HealthMetric (imported HR etc.; S2, future - steps landed at v22, see above)
 SocialPost / Comment / Relationship / Challenge      (future, backend-dependent)
@@ -174,3 +175,18 @@ until a real sync design exists.
 Food provider identity is separate from the retail barcode. The v3 repair moves
 unambiguous old FatSecret ids out of barcode, preserves ambiguous codes, and is
 idempotent. The same repair runs after restoring food rows from older backups.
+
+## MenFit schema v4 (2026-11-16)
+
+v4 adds two S3 manual-entry tables, created by an `if (from < 4)` step (fresh
+installs use `createAll`): `blood_pressure_readings` (systolic/diastolic mmHg
+integers, optional pulse bpm and single-line note; index on `measured_at`) and
+`blood_marker_readings` (one row per blood result: `marker`, `value` REAL as
+entered, `unit`, optional glucose `context`, optional note; index on
+`(marker, measured_at)`). Only `glucose` is enabled; a new marker is an enum
+value, not a table. Values keep the unit they were entered in; mmol/L and mg/dL
+conversion is presentation-only. Plausibility bounds live in one file,
+`features/health/domain/health_reading_validation.dart`, shared by save and
+backup import. Both tables are S3 opt-in for export, wiped in the S3 phase of
+"Delete my data", hard-deleted, with no soft-delete or sync columns. Watch
+vitals (heart rate, SpO2, sleep, HRV) are read on demand and never stored.

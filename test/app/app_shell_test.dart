@@ -17,7 +17,7 @@ void main() {
 
   testWidgets(
     'app pumps, shows the home screen and all 6 destinations, and '
-    'navigating to Settings shows the theme selector',
+    'the Home gear opens Settings, which shows the theme selector',
     (tester) async {
       // Force a compact width so navigation renders as a bottom
       // NavigationBar, independent of the default test surface size.
@@ -63,8 +63,8 @@ void main() {
         'Train',
         'Nutrition',
         'Keto',
+        'Health',
         'Recovery',
-        'Settings',
       ]) {
         expect(
           find.descendant(of: navigationBar, matching: find.text(label)),
@@ -72,10 +72,14 @@ void main() {
         );
       }
 
-      // Navigating to Settings shows the working theme-mode selector.
-      await tester.tap(
+      // Settings is not a tab (ADR 002 amendment, 2026-11-16).
+      expect(
         find.descendant(of: navigationBar, matching: find.text('Settings')),
+        findsNothing,
       );
+
+      // The Home app-bar gear opens the working theme-mode selector.
+      await tester.tap(find.byTooltip('Settings'));
       await tester.pumpAndSettle();
 
       await tester.scrollUntilVisible(
@@ -112,8 +116,8 @@ void main() {
         'Train',
         'Nutrition',
         'Keto',
+        'Health',
         'Recovery',
-        'Settings',
       ];
 
       // Build the widget tree once and just resize the view for each
@@ -135,7 +139,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Compact: a 375dp-wide phone, five destinations in a bottom
+      // Compact: a 375dp-wide phone, six destinations in a bottom
       // NavigationBar - the tight end of the supported range.
       expect(tester.takeException(), isNull);
 

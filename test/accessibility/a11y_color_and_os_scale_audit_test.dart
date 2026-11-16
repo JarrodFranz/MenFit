@@ -47,7 +47,7 @@ void main() {
     A11yScreen(name: 'Home', location: (_) => '/home'),
     A11yScreen(name: 'Train', location: (_) => '/activity'),
     A11yScreen(name: 'Nutrition', location: (_) => '/nutrition'),
-    A11yScreen(name: 'Settings', location: (_) => '/settings'),
+    A11yScreen(name: 'Settings', location: (_) => '/home/settings'),
   ];
 
   for (final screen in osScaleScreens) {

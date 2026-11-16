@@ -15,7 +15,7 @@ This app holds GPS/location history, body metrics, nutrition, heart rate, and **
 
 | Tier | Data | Rules |
 |---|---|---|
-| **S3 — most sensitive** | Health check-ins, injury/illness flares, body weight, precise location streams | Local-first; never in analytics/logs/crash reports; sync only with separate explicit consent and end-to-end encryption as the design goal; deletable independently. |
+| **S3 — most sensitive** | Health check-ins, injury/illness flares, body weight, manual ketone, blood pressure and blood-marker readings, precise location streams | Local-first; never in analytics/logs/crash reports; sync only with separate explicit consent and end-to-end encryption as the design goal; deletable independently. |
 | **S2 — sensitive** | GPS tracks/routes, nutrition logs, health-platform data | Never in logs/analytics payloads; explicit permission per source; privacy zones for shared routes; deletable/exportable. |
 | **S1 — personal** | Profile, goals, social content, trusted-contact list | Standard auth-protected handling; user-controlled visibility. |
 | **S0 — non-personal** | App settings, feature flags, anonymous diagnostics (if any) | Normal handling. |
@@ -208,3 +208,26 @@ Saved custom wellbeing names are health-data residue. They can be removed
 individually without deleting recorded events, and Delete my data clears them.
 Android backup/transfer rules exclude private app data; these settings do not
 remove copies made by earlier versions or change manually exported files.
+
+## Health tab: manual readings and watch vitals (2026-11-16)
+
+`blood_pressure_readings` and `blood_marker_readings` are S3 health data:
+manually entered measurements with their date and time. They are never sent
+to logs or analytics. Repository errors are static messages with no cause, so
+bound row values are never retained. Domain `toString` prints no values.
+Individual deletion is hard deletion. Both tables are listed in
+`sensitiveHealthTables`, so the default export omits them and only an export
+that explicitly includes sensitive health data contains them. Import validates
+every row of both tables before any write; an old backup without the tables
+leaves current readings intact. Delete my data clears both tables in its S3
+phase. The Android backup and transfer rules already exclude private app
+data, so they cover the new tables without change.
+
+Watch vitals (heart rate, resting heart rate, blood oxygen, sleep, heart rate
+variability, respiratory rate) are read on demand through the existing health
+platform adapter. They are held in provider memory only and are never written
+to the database, preferences or logs. They disappear when the Health screen's
+provider is disposed. The platform permission request for these types is
+separate and just-in-time, triggered from the Health screen, and asks for READ
+access only. The app declares no health WRITE permission; a manifest guard
+test enforces this.

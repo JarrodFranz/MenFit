@@ -1,6 +1,7 @@
 import 'package:menfit_app/features/achievements/achievements_providers.dart';
 import 'package:menfit_app/features/activity/activity_providers.dart';
 import 'package:menfit_app/features/challenges/challenges_providers.dart';
+import 'package:menfit_app/features/health/health_providers.dart';
 import 'package:menfit_app/features/keto/keto_providers.dart';
 import 'package:menfit_app/features/nutrition/nutrition_providers.dart';
 import 'package:menfit_app/features/profile/profile_providers.dart';
@@ -25,6 +26,7 @@ DeleteMyDataService deleteMyDataService(Ref ref) {
   return DeleteMyDataService(
     wellbeingRepository: ref.watch(wellbeingRepositoryProvider),
     ketoneRepository: ref.watch(ketoneRepositoryProvider),
+    healthReadingsRepository: ref.watch(healthReadingsRepositoryProvider),
     recoveryRepository: ref.watch(recoveryRepositoryProvider),
     activityRepository: ref.watch(activityRepositoryProvider),
     routeRepository: ref.watch(routeRepositoryProvider),

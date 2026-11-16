@@ -25,6 +25,30 @@
 5. **Recovery is never failure:** streak logic treats recovery days and
    flare-protected days as success-equivalent, no proof demanded.
 
+## Evidence-gated displays shipped on the Health tab (2026-11-16)
+
+Two physiology-based displays have passed the evidence gate and the owner's
+sign-off, and are now in the app:
+
+- **Blood-pressure guideline category** per reading and for a 7-day average
+  (Heart Foundation of Australia 2016). Evidence and wording:
+  `knowledge/research/blood_pressure_classification.md`.
+- **Blood-glucose reference range** for fasting and after-meal readings (RCPA
+  Manual reference interval). Evidence, as-built narrowing and open items:
+  `knowledge/research/blood_glucose_reference_ranges.md`.
+
+Both carry a source line and a not-a-diagnosis line, and neither uses valence
+wording (no good or bad, no green or red). No other blood marker has a range;
+each new marker needs its own per-marker evidence review first.
+
+**Regulatory caution (not legal advice).** Named guideline categories, a
+high-reading prompt and glucose reference ranges sit nearer the boundary
+between a general wellness product and a regulated medical device (TGA
+excluded-goods rules in Australia, FDA general wellness policy in the US) than
+plain logging does. The legal position needs review before a public store
+release. A private tester build does not change the legal test, only the
+exposure.
+
 ## Privacy
 
 Health check-ins, injury/illness flares, body weight and location are

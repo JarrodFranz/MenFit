@@ -21,6 +21,8 @@
 ## Project-specific traps
 
 - Shell navigation labels ("Nutrition", "Cycle"…) collide textually with dashboard card titles — `find.text(...)` is ambiguous in shell-level widget tests; scope with `find.descendant(of: find.byType(NavigationBar), matching: ...)`.
+- **Real `App` with an in-memory Drift database: unmount inside the test body (2026-11-16).** After the last assertion, `await tester.pumpWidget(const SizedBox.shrink());` then `await tester.pump(const Duration(milliseconds: 1));` as `test/app/keto_branch_test.dart` does. Doing it in `addTearDown` is too late and fails with "A Timer is still pending even after the widget tree was disposed".
+- **Format by explicit path in a shared worktree.** `dart format <dir>` in a worktree several agents are editing reformats the other agents' files too. Pass the exact files you own.
 
 ## Commands
 

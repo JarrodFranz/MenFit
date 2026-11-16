@@ -35,6 +35,22 @@
 
 ## In flight
 
+- **Health area started 2026-11-16 on branch `feat/health`, worktree
+  `../MenFit-health`** (a separate checkout so the widget port on
+  `feat/home-widgets` is undisturbed; a fresh worktree has no CRLF phantom
+  diffs). Contract: `docs/superpowers/specs/2026-11-16-health-tab-design.md`.
+  Schema goes v3 → v4 (`blood_pressure_readings`, `blood_marker_readings`).
+  Owner decided (2026-11-16, relayed by the parent session): Heart Foundation
+  of Australia 2016 categories; Health takes the Settings tab slot and
+  Settings moves behind the Home gear (`/home/settings/...`); blood markers
+  show sourced reference ranges, evidence-reviewed per marker. Evidence:
+  `knowledge/research/blood_pressure_classification.md`,
+  `knowledge/research/blood_glucose_reference_ranges.md` (being written).
+  Stage: five subagent workstreams in flight in the one worktree (A data,
+  B watch vitals, C1 blood-pressure UI, D navigation + screen, glucose
+  evidence review); C2 glucose UI not started. Nothing verified, no test run
+  yet. Nothing committed, merged, pushed or distributed.
+
 - Nothing mid-edit. **Build 0.1.0 (3) is on Firebase App Distribution**
   (2026-11-16, project `menfit-f17b3`, group `main`, 1 tester at upload time;
   CLI: "uploaded new release 0.1.0 (3) successfully", "distributed to

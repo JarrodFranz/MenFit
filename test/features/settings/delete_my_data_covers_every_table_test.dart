@@ -51,6 +51,33 @@ void main() {
                 updatedAt: now,
               ),
             ),
+        database.bloodPressureReadings.actualTableName: () => database
+            .into(database.bloodPressureReadings)
+            .insert(
+              db.BloodPressureReadingsCompanion.insert(
+                id: 'bp-1',
+                day: '2026-01-01',
+                systolic: 120,
+                diastolic: 80,
+                measuredAt: now,
+                createdAt: now,
+                updatedAt: now,
+              ),
+            ),
+        database.bloodMarkerReadings.actualTableName: () => database
+            .into(database.bloodMarkerReadings)
+            .insert(
+              db.BloodMarkerReadingsCompanion.insert(
+                id: 'marker-1',
+                day: '2026-01-01',
+                marker: 'glucose',
+                value: 5.4,
+                unit: 'mmol/L',
+                measuredAt: now,
+                createdAt: now,
+                updatedAt: now,
+              ),
+            ),
         database.userProfiles.actualTableName: () => database
             .into(database.userProfiles)
             .insert(

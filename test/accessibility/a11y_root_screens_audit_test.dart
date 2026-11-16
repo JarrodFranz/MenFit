@@ -32,10 +32,10 @@ void main() {
       name: 'Challenge detail',
       location: (ids) => '/challenges/${ids.challengeId}',
     ),
-    A11yScreen(name: 'Profile', location: (_) => '/settings/profile'),
+    A11yScreen(name: 'Profile', location: (_) => '/home/settings/profile'),
     A11yScreen(
       name: 'Accessibility settings',
-      location: (_) => '/settings/accessibility',
+      location: (_) => '/home/settings/accessibility',
     ),
     A11yScreen(name: 'Nutrition goals', location: (_) => '/nutrition/goals'),
     A11yScreen(name: 'Food picker', location: (_) => '/nutrition/add'),

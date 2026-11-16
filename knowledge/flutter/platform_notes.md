@@ -273,6 +273,33 @@ opened and discarded). `WakelockPlusScreenAwake` therefore counts holders and
 disables only at the last release; `TrackerScreenAwake` makes each controller
 exactly one holder. Do not "simplify" the port back to a bool.
 
+## `health` 13.3.2: reading vitals and sleep (2026-11-16)
+
+Learned while building the Health tab's watch card (code in
+`lib/core/platform/health/health_vitals_reader.dart`). Items marked "from
+plugin source" were not verified on a device.
+
+- **Query each type separately.** `getHealthDataFromTypes` fails the whole call
+  if any one type fails (for example a type the user has not granted), so a
+  combined query can lose every metric. Read one type per call and treat a
+  failure as "that metric is unknown".
+- **Sleep `value` differs by platform.** On iOS it is a HealthKit category
+  code. On Android the stage `value` is minutes. Do not use `value`; derive
+  durations from `dateFrom` and `dateTo`.
+- **iOS has no `SLEEP_SESSION` type.** Build the session from the stage
+  records (asleep, deep, light, REM, awake).
+- **HRV is not one metric.** Health Connect reports RMSSD and HealthKit
+  reports SDNN. They must never be compared or shown as the same number. The
+  snapshot carries an `HrvKind` for this reason.
+- **Blood-oxygen scale (from plugin source).** HealthKit SpO2 arrives as a
+  0 to 1 fraction and Health Connect as 0 to 100. Normalise before display.
+- **Health Connect source fields.** Rows have an empty `sourceId`, with the
+  package name in `sourceName`.
+- **Manifest gate.** Health Connect refuses any permission request for a type
+  that is not declared in the manifest. A new read type needs its
+  `uses-permission` line first; `test/platform/android_manifest_guard_test.dart`
+  guards the list.
+
 ## Add entries as platform work happens
 
 (per-platform build issues → `../troubleshooting/`; behaviours/quirks here)

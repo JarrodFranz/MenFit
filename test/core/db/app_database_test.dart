@@ -11,9 +11,12 @@ void main() {
 
   tearDown(() => db.close());
 
-  test('schema version includes Keto and provider identity migrations', () {
-    expect(db.schemaVersion, 3);
-  });
+  test(
+    'schema version includes Keto, provider identity and health migrations',
+    () {
+      expect(db.schemaVersion, 4);
+    },
+  );
 
   test('onCreate creates every table the app uses', () async {
     final rows = await db
@@ -41,6 +44,8 @@ void main() {
       'yoga_sequences',
       'wellbeing_events',
       'ketone_readings',
+      'blood_pressure_readings',
+      'blood_marker_readings',
     };
     expect(
       names.containsAll(expected),

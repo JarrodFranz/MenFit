@@ -1,10 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:menfit_app/core/platform/health/health_providers.dart';
 
+import '../features/steps/fake_health_platform_adapter.dart';
 import 'harness/a11y_driver.dart';
 import 'harness/a11y_findings.dart';
 import 'harness/a11y_scenarios.dart';
 
-/// Accessibility audit of the six shell tabs plus Progress.
+/// Accessibility audit of the shell tabs plus Progress and Settings
+/// (pushed from the Home gear since 2026-11-16).
 ///
 /// **These tests report; they do not gate.** They fail only when a screen
 /// cannot be rendered at all — layout findings are written to
@@ -26,8 +29,17 @@ void main() {
     A11yScreen(name: 'Progress', location: (_) => '/home/progress'),
     A11yScreen(name: 'Train', location: (_) => '/activity'),
     A11yScreen(name: 'Nutrition', location: (_) => '/nutrition'),
+    A11yScreen(
+      name: 'Health',
+      location: (_) => '/health',
+      overrides: [
+        healthPlatformAdapterProvider.overrideWithValue(
+          FakeHealthPlatformAdapter(),
+        ),
+      ],
+    ),
     A11yScreen(name: 'Recovery', location: (_) => '/recovery'),
-    A11yScreen(name: 'Settings', location: (_) => '/settings'),
+    A11yScreen(name: 'Settings', location: (_) => '/home/settings'),
   ];
 
   for (final screen in screens) {

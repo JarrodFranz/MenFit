@@ -4,6 +4,7 @@ import 'package:menfit_app/features/activity/domain/activity_repository.dart';
 import 'package:menfit_app/features/activity/domain/strength_routine_repository.dart';
 import 'package:menfit_app/features/activity/domain/yoga_sequence_repository.dart';
 import 'package:menfit_app/features/challenges/domain/challenge_repository.dart';
+import 'package:menfit_app/features/health/domain/health_readings_repository.dart';
 import 'package:menfit_app/features/keto/domain/ketone_repository.dart';
 import 'package:menfit_app/features/nutrition/domain/nutrition_repository.dart';
 import 'package:menfit_app/features/nutrition/domain/water_repository.dart';
@@ -60,6 +61,7 @@ class DeleteMyDataService {
   const DeleteMyDataService({
     required this.wellbeingRepository,
     required this.ketoneRepository,
+    required this.healthReadingsRepository,
     required this.recoveryRepository,
     required this.activityRepository,
     required this.routeRepository,
@@ -80,6 +82,7 @@ class DeleteMyDataService {
 
   final WellbeingRepository wellbeingRepository;
   final KetoneRepository ketoneRepository;
+  final HealthReadingsRepository healthReadingsRepository;
   final RecoveryRepository recoveryRepository;
   final ActivityRepository activityRepository;
   final RouteRepository routeRepository;
@@ -117,6 +120,8 @@ class DeleteMyDataService {
     // still ahead of the less sensitive activities/profile/preferences.
     await wellbeingRepository.deleteAllData();
     await ketoneRepository.deleteAllData();
+    // Manual blood-pressure and blood readings: S3, same phase as ketones.
+    await healthReadingsRepository.deleteAllData();
     await recoveryRepository.deleteAllData();
     var customNamesCleared = true;
     try {

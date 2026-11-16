@@ -56,9 +56,9 @@ void main() {
       label: 'Recovery',
     ),
     AdaptiveDestination(
-      icon: Icons.settings_outlined,
-      selectedIcon: Icons.settings,
-      label: 'Settings',
+      icon: Icons.monitor_heart_outlined,
+      selectedIcon: Icons.monitor_heart,
+      label: 'Health',
     ),
   ];
 

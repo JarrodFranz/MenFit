@@ -59,7 +59,7 @@
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>MenFit only uses your location while you're recording a run, walk, hike, or ride. It never tracks you in the background or asks for always-on access.</string>
 	<key>NSHealthShareUsageDescription</key>
-	<string>MenFit reads your step count and active energy burn to show your daily activity and progress.</string>
+	<string>MenFit reads your steps, active energy, workouts, heart rate, resting heart rate, blood oxygen, sleep, heart-rate variability and respiratory rate to show your activity and recent watch readings. MenFit only reads this data; it does not change it.</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>MenFit syncs your fitness activity data with Apple Health.</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>

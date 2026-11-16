@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:menfit_app/core/platform/health/health_providers.dart';
 
+import '../features/steps/fake_health_platform_adapter.dart';
 import 'harness/a11y_driver.dart';
 import 'harness/a11y_findings.dart';
 import 'harness/a11y_scenarios.dart';
@@ -34,11 +36,20 @@ void main() {
     A11yScreen(name: 'Progress', location: (_) => '/home/progress'),
     A11yScreen(name: 'Train', location: (_) => '/activity'),
     A11yScreen(name: 'Nutrition', location: (_) => '/nutrition'),
+    A11yScreen(
+      name: 'Health',
+      location: (_) => '/health',
+      overrides: [
+        healthPlatformAdapterProvider.overrideWithValue(
+          FakeHealthPlatformAdapter(),
+        ),
+      ],
+    ),
     A11yScreen(name: 'Recovery', location: (_) => '/recovery'),
-    A11yScreen(name: 'Settings', location: (_) => '/settings'),
+    A11yScreen(name: 'Settings', location: (_) => '/home/settings'),
     A11yScreen(
       name: 'Accessibility settings',
-      location: (_) => '/settings/accessibility',
+      location: (_) => '/home/settings/accessibility',
     ),
     A11yScreen(
       name: 'Strength tracker',

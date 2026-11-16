@@ -4,6 +4,8 @@ import 'package:menfit_app/core/db/foods_provider_id_backfill.dart';
 import 'package:menfit_app/core/db/tables/activities.dart';
 import 'package:menfit_app/core/db/tables/activity_samples.dart';
 import 'package:menfit_app/core/db/tables/badge_awards.dart';
+import 'package:menfit_app/core/db/tables/blood_marker_readings.dart';
+import 'package:menfit_app/core/db/tables/blood_pressure_readings.dart';
 import 'package:menfit_app/core/db/tables/challenges.dart';
 import 'package:menfit_app/core/db/tables/daily_checkins.dart';
 import 'package:menfit_app/core/db/tables/daily_step_totals.dart';
@@ -51,6 +53,8 @@ part 'app_database.g.dart';
     YogaSequences,
     WellbeingEvents,
     KetoneReadings,
+    BloodPressureReadings,
+    BloodMarkerReadings,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -65,7 +69,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.forTesting(QueryExecutor executor) : super(executor);
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   /// MenFit's shipped v1 schema is independent of Frelia's migration chain.
   @override
@@ -86,6 +90,19 @@ class AppDatabase extends _$AppDatabase {
           'ON foods (source, provider_food_id)',
         );
         await backfillFoodsProviderFoodId(this);
+      }
+      if (from < 4) {
+        await m.createTable(bloodPressureReadings);
+        await m.createTable(bloodMarkerReadings);
+        await customStatement(
+          'CREATE INDEX IF NOT EXISTS idx_blood_pressure_readings_measured_at '
+          'ON blood_pressure_readings (measured_at)',
+        );
+        await customStatement(
+          'CREATE INDEX IF NOT EXISTS '
+          'idx_blood_marker_readings_marker_measured_at '
+          'ON blood_marker_readings (marker, measured_at)',
+        );
       }
     },
   );

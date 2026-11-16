@@ -596,6 +596,33 @@ RouteBase get $appShellRouteData => StatefulShellRouteData.$route(
               hasOverriddenOnExit: false,
               factory: $ProgressRouteData._fromState,
             ),
+            GoRouteData.$route(
+              path: 'settings',
+              hasOverriddenOnExit: false,
+              factory: $SettingsRouteData._fromState,
+              routes: [
+                GoRouteData.$route(
+                  path: 'profile',
+                  hasOverriddenOnExit: false,
+                  factory: $SettingsProfileRouteData._fromState,
+                ),
+                GoRouteData.$route(
+                  path: 'accessibility',
+                  hasOverriddenOnExit: false,
+                  factory: $SettingsAccessibilityRouteData._fromState,
+                ),
+                GoRouteData.$route(
+                  path: 'wearables',
+                  hasOverriddenOnExit: false,
+                  factory: $SettingsWearablesRouteData._fromState,
+                ),
+                GoRouteData.$route(
+                  path: 'safety',
+                  hasOverriddenOnExit: false,
+                  factory: $SettingsSafetyRouteData._fromState,
+                ),
+              ],
+            ),
           ],
         ),
       ],
@@ -678,40 +705,18 @@ RouteBase get $appShellRouteData => StatefulShellRouteData.$route(
     StatefulShellBranchData.$branch(
       routes: [
         GoRouteData.$route(
-          path: '/recovery',
+          path: '/health',
           hasOverriddenOnExit: false,
-          factory: $WellbeingRouteData._fromState,
+          factory: $HealthRouteData._fromState,
         ),
       ],
     ),
     StatefulShellBranchData.$branch(
       routes: [
         GoRouteData.$route(
-          path: '/settings',
+          path: '/recovery',
           hasOverriddenOnExit: false,
-          factory: $SettingsRouteData._fromState,
-          routes: [
-            GoRouteData.$route(
-              path: 'profile',
-              hasOverriddenOnExit: false,
-              factory: $SettingsProfileRouteData._fromState,
-            ),
-            GoRouteData.$route(
-              path: 'accessibility',
-              hasOverriddenOnExit: false,
-              factory: $SettingsAccessibilityRouteData._fromState,
-            ),
-            GoRouteData.$route(
-              path: 'wearables',
-              hasOverriddenOnExit: false,
-              factory: $SettingsWearablesRouteData._fromState,
-            ),
-            GoRouteData.$route(
-              path: 'safety',
-              hasOverriddenOnExit: false,
-              factory: $SettingsSafetyRouteData._fromState,
-            ),
-          ],
+          factory: $WellbeingRouteData._fromState,
         ),
       ],
     ),
@@ -749,6 +754,111 @@ mixin $ProgressRouteData on GoRouteData {
 
   @override
   String get location => GoRouteData.$location('/home/progress');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $SettingsRouteData on GoRouteData {
+  static SettingsRouteData _fromState(GoRouterState state) =>
+      const SettingsRouteData();
+
+  @override
+  String get location => GoRouteData.$location('/home/settings');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $SettingsProfileRouteData on GoRouteData {
+  static SettingsProfileRouteData _fromState(GoRouterState state) =>
+      const SettingsProfileRouteData();
+
+  @override
+  String get location => GoRouteData.$location('/home/settings/profile');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $SettingsAccessibilityRouteData on GoRouteData {
+  static SettingsAccessibilityRouteData _fromState(GoRouterState state) =>
+      const SettingsAccessibilityRouteData();
+
+  @override
+  String get location => GoRouteData.$location('/home/settings/accessibility');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $SettingsWearablesRouteData on GoRouteData {
+  static SettingsWearablesRouteData _fromState(GoRouterState state) =>
+      const SettingsWearablesRouteData();
+
+  @override
+  String get location => GoRouteData.$location('/home/settings/wearables');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $SettingsSafetyRouteData on GoRouteData {
+  static SettingsSafetyRouteData _fromState(GoRouterState state) =>
+      const SettingsSafetyRouteData();
+
+  @override
+  String get location => GoRouteData.$location('/home/settings/safety');
 
   @override
   void go(BuildContext context) => context.go(location);
@@ -1034,117 +1144,33 @@ mixin $KetoRouteData on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
+mixin $HealthRouteData on GoRouteData {
+  static HealthRouteData _fromState(GoRouterState state) =>
+      const HealthRouteData();
+
+  @override
+  String get location => GoRouteData.$location('/health');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
 mixin $WellbeingRouteData on GoRouteData {
   static WellbeingRouteData _fromState(GoRouterState state) =>
       const WellbeingRouteData();
 
   @override
   String get location => GoRouteData.$location('/recovery');
-
-  @override
-  void go(BuildContext context) => context.go(location);
-
-  @override
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  @override
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  @override
-  void replace(BuildContext context) => context.replace(location);
-}
-
-mixin $SettingsRouteData on GoRouteData {
-  static SettingsRouteData _fromState(GoRouterState state) =>
-      const SettingsRouteData();
-
-  @override
-  String get location => GoRouteData.$location('/settings');
-
-  @override
-  void go(BuildContext context) => context.go(location);
-
-  @override
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  @override
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  @override
-  void replace(BuildContext context) => context.replace(location);
-}
-
-mixin $SettingsProfileRouteData on GoRouteData {
-  static SettingsProfileRouteData _fromState(GoRouterState state) =>
-      const SettingsProfileRouteData();
-
-  @override
-  String get location => GoRouteData.$location('/settings/profile');
-
-  @override
-  void go(BuildContext context) => context.go(location);
-
-  @override
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  @override
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  @override
-  void replace(BuildContext context) => context.replace(location);
-}
-
-mixin $SettingsAccessibilityRouteData on GoRouteData {
-  static SettingsAccessibilityRouteData _fromState(GoRouterState state) =>
-      const SettingsAccessibilityRouteData();
-
-  @override
-  String get location => GoRouteData.$location('/settings/accessibility');
-
-  @override
-  void go(BuildContext context) => context.go(location);
-
-  @override
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  @override
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  @override
-  void replace(BuildContext context) => context.replace(location);
-}
-
-mixin $SettingsWearablesRouteData on GoRouteData {
-  static SettingsWearablesRouteData _fromState(GoRouterState state) =>
-      const SettingsWearablesRouteData();
-
-  @override
-  String get location => GoRouteData.$location('/settings/wearables');
-
-  @override
-  void go(BuildContext context) => context.go(location);
-
-  @override
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  @override
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  @override
-  void replace(BuildContext context) => context.replace(location);
-}
-
-mixin $SettingsSafetyRouteData on GoRouteData {
-  static SettingsSafetyRouteData _fromState(GoRouterState state) =>
-      const SettingsSafetyRouteData();
-
-  @override
-  String get location => GoRouteData.$location('/settings/safety');
 
   @override
   void go(BuildContext context) => context.go(location);

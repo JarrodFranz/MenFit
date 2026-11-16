@@ -15650,6 +15650,1165 @@ class KetoneReadingsCompanion extends UpdateCompanion<KetoneReading> {
   }
 }
 
+class $BloodPressureReadingsTable extends BloodPressureReadings
+    with TableInfo<$BloodPressureReadingsTable, BloodPressureReading> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BloodPressureReadingsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dayMeta = const VerificationMeta('day');
+  @override
+  late final GeneratedColumn<String> day = GeneratedColumn<String>(
+    'day',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _measuredAtMeta = const VerificationMeta(
+    'measuredAt',
+  );
+  @override
+  late final GeneratedColumn<int> measuredAt = GeneratedColumn<int>(
+    'measured_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _systolicMeta = const VerificationMeta(
+    'systolic',
+  );
+  @override
+  late final GeneratedColumn<int> systolic = GeneratedColumn<int>(
+    'systolic',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _diastolicMeta = const VerificationMeta(
+    'diastolic',
+  );
+  @override
+  late final GeneratedColumn<int> diastolic = GeneratedColumn<int>(
+    'diastolic',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _pulseMeta = const VerificationMeta('pulse');
+  @override
+  late final GeneratedColumn<int> pulse = GeneratedColumn<int>(
+    'pulse',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    day,
+    measuredAt,
+    systolic,
+    diastolic,
+    pulse,
+    note,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'blood_pressure_readings';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<BloodPressureReading> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('day')) {
+      context.handle(
+        _dayMeta,
+        day.isAcceptableOrUnknown(data['day']!, _dayMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dayMeta);
+    }
+    if (data.containsKey('measured_at')) {
+      context.handle(
+        _measuredAtMeta,
+        measuredAt.isAcceptableOrUnknown(data['measured_at']!, _measuredAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_measuredAtMeta);
+    }
+    if (data.containsKey('systolic')) {
+      context.handle(
+        _systolicMeta,
+        systolic.isAcceptableOrUnknown(data['systolic']!, _systolicMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_systolicMeta);
+    }
+    if (data.containsKey('diastolic')) {
+      context.handle(
+        _diastolicMeta,
+        diastolic.isAcceptableOrUnknown(data['diastolic']!, _diastolicMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_diastolicMeta);
+    }
+    if (data.containsKey('pulse')) {
+      context.handle(
+        _pulseMeta,
+        pulse.isAcceptableOrUnknown(data['pulse']!, _pulseMeta),
+      );
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  BloodPressureReading map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BloodPressureReading(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      day: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}day'],
+      )!,
+      measuredAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}measured_at'],
+      )!,
+      systolic: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}systolic'],
+      )!,
+      diastolic: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}diastolic'],
+      )!,
+      pulse: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}pulse'],
+      ),
+      note: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $BloodPressureReadingsTable createAlias(String alias) {
+    return $BloodPressureReadingsTable(attachedDatabase, alias);
+  }
+}
+
+class BloodPressureReading extends DataClass
+    implements Insertable<BloodPressureReading> {
+  final String id;
+  final String day;
+  final int measuredAt;
+  final int systolic;
+  final int diastolic;
+  final int? pulse;
+  final String? note;
+  final int createdAt;
+  final int updatedAt;
+  const BloodPressureReading({
+    required this.id,
+    required this.day,
+    required this.measuredAt,
+    required this.systolic,
+    required this.diastolic,
+    this.pulse,
+    this.note,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['day'] = Variable<String>(day);
+    map['measured_at'] = Variable<int>(measuredAt);
+    map['systolic'] = Variable<int>(systolic);
+    map['diastolic'] = Variable<int>(diastolic);
+    if (!nullToAbsent || pulse != null) {
+      map['pulse'] = Variable<int>(pulse);
+    }
+    if (!nullToAbsent || note != null) {
+      map['note'] = Variable<String>(note);
+    }
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    return map;
+  }
+
+  BloodPressureReadingsCompanion toCompanion(bool nullToAbsent) {
+    return BloodPressureReadingsCompanion(
+      id: Value(id),
+      day: Value(day),
+      measuredAt: Value(measuredAt),
+      systolic: Value(systolic),
+      diastolic: Value(diastolic),
+      pulse: pulse == null && nullToAbsent
+          ? const Value.absent()
+          : Value(pulse),
+      note: note == null && nullToAbsent ? const Value.absent() : Value(note),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory BloodPressureReading.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BloodPressureReading(
+      id: serializer.fromJson<String>(json['id']),
+      day: serializer.fromJson<String>(json['day']),
+      measuredAt: serializer.fromJson<int>(json['measuredAt']),
+      systolic: serializer.fromJson<int>(json['systolic']),
+      diastolic: serializer.fromJson<int>(json['diastolic']),
+      pulse: serializer.fromJson<int?>(json['pulse']),
+      note: serializer.fromJson<String?>(json['note']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'day': serializer.toJson<String>(day),
+      'measuredAt': serializer.toJson<int>(measuredAt),
+      'systolic': serializer.toJson<int>(systolic),
+      'diastolic': serializer.toJson<int>(diastolic),
+      'pulse': serializer.toJson<int?>(pulse),
+      'note': serializer.toJson<String?>(note),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+    };
+  }
+
+  BloodPressureReading copyWith({
+    String? id,
+    String? day,
+    int? measuredAt,
+    int? systolic,
+    int? diastolic,
+    Value<int?> pulse = const Value.absent(),
+    Value<String?> note = const Value.absent(),
+    int? createdAt,
+    int? updatedAt,
+  }) => BloodPressureReading(
+    id: id ?? this.id,
+    day: day ?? this.day,
+    measuredAt: measuredAt ?? this.measuredAt,
+    systolic: systolic ?? this.systolic,
+    diastolic: diastolic ?? this.diastolic,
+    pulse: pulse.present ? pulse.value : this.pulse,
+    note: note.present ? note.value : this.note,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  BloodPressureReading copyWithCompanion(BloodPressureReadingsCompanion data) {
+    return BloodPressureReading(
+      id: data.id.present ? data.id.value : this.id,
+      day: data.day.present ? data.day.value : this.day,
+      measuredAt: data.measuredAt.present
+          ? data.measuredAt.value
+          : this.measuredAt,
+      systolic: data.systolic.present ? data.systolic.value : this.systolic,
+      diastolic: data.diastolic.present ? data.diastolic.value : this.diastolic,
+      pulse: data.pulse.present ? data.pulse.value : this.pulse,
+      note: data.note.present ? data.note.value : this.note,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BloodPressureReading(')
+          ..write('id: $id, ')
+          ..write('day: $day, ')
+          ..write('measuredAt: $measuredAt, ')
+          ..write('systolic: $systolic, ')
+          ..write('diastolic: $diastolic, ')
+          ..write('pulse: $pulse, ')
+          ..write('note: $note, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    day,
+    measuredAt,
+    systolic,
+    diastolic,
+    pulse,
+    note,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BloodPressureReading &&
+          other.id == this.id &&
+          other.day == this.day &&
+          other.measuredAt == this.measuredAt &&
+          other.systolic == this.systolic &&
+          other.diastolic == this.diastolic &&
+          other.pulse == this.pulse &&
+          other.note == this.note &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class BloodPressureReadingsCompanion
+    extends UpdateCompanion<BloodPressureReading> {
+  final Value<String> id;
+  final Value<String> day;
+  final Value<int> measuredAt;
+  final Value<int> systolic;
+  final Value<int> diastolic;
+  final Value<int?> pulse;
+  final Value<String?> note;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int> rowid;
+  const BloodPressureReadingsCompanion({
+    this.id = const Value.absent(),
+    this.day = const Value.absent(),
+    this.measuredAt = const Value.absent(),
+    this.systolic = const Value.absent(),
+    this.diastolic = const Value.absent(),
+    this.pulse = const Value.absent(),
+    this.note = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  BloodPressureReadingsCompanion.insert({
+    required String id,
+    required String day,
+    required int measuredAt,
+    required int systolic,
+    required int diastolic,
+    this.pulse = const Value.absent(),
+    this.note = const Value.absent(),
+    required int createdAt,
+    required int updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       day = Value(day),
+       measuredAt = Value(measuredAt),
+       systolic = Value(systolic),
+       diastolic = Value(diastolic),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<BloodPressureReading> custom({
+    Expression<String>? id,
+    Expression<String>? day,
+    Expression<int>? measuredAt,
+    Expression<int>? systolic,
+    Expression<int>? diastolic,
+    Expression<int>? pulse,
+    Expression<String>? note,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (day != null) 'day': day,
+      if (measuredAt != null) 'measured_at': measuredAt,
+      if (systolic != null) 'systolic': systolic,
+      if (diastolic != null) 'diastolic': diastolic,
+      if (pulse != null) 'pulse': pulse,
+      if (note != null) 'note': note,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  BloodPressureReadingsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? day,
+    Value<int>? measuredAt,
+    Value<int>? systolic,
+    Value<int>? diastolic,
+    Value<int?>? pulse,
+    Value<String?>? note,
+    Value<int>? createdAt,
+    Value<int>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return BloodPressureReadingsCompanion(
+      id: id ?? this.id,
+      day: day ?? this.day,
+      measuredAt: measuredAt ?? this.measuredAt,
+      systolic: systolic ?? this.systolic,
+      diastolic: diastolic ?? this.diastolic,
+      pulse: pulse ?? this.pulse,
+      note: note ?? this.note,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (day.present) {
+      map['day'] = Variable<String>(day.value);
+    }
+    if (measuredAt.present) {
+      map['measured_at'] = Variable<int>(measuredAt.value);
+    }
+    if (systolic.present) {
+      map['systolic'] = Variable<int>(systolic.value);
+    }
+    if (diastolic.present) {
+      map['diastolic'] = Variable<int>(diastolic.value);
+    }
+    if (pulse.present) {
+      map['pulse'] = Variable<int>(pulse.value);
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BloodPressureReadingsCompanion(')
+          ..write('id: $id, ')
+          ..write('day: $day, ')
+          ..write('measuredAt: $measuredAt, ')
+          ..write('systolic: $systolic, ')
+          ..write('diastolic: $diastolic, ')
+          ..write('pulse: $pulse, ')
+          ..write('note: $note, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $BloodMarkerReadingsTable extends BloodMarkerReadings
+    with TableInfo<$BloodMarkerReadingsTable, BloodMarkerReading> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BloodMarkerReadingsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dayMeta = const VerificationMeta('day');
+  @override
+  late final GeneratedColumn<String> day = GeneratedColumn<String>(
+    'day',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _measuredAtMeta = const VerificationMeta(
+    'measuredAt',
+  );
+  @override
+  late final GeneratedColumn<int> measuredAt = GeneratedColumn<int>(
+    'measured_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _markerMeta = const VerificationMeta('marker');
+  @override
+  late final GeneratedColumn<String> marker = GeneratedColumn<String>(
+    'marker',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
+  late final GeneratedColumn<double> value = GeneratedColumn<double>(
+    'value',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _unitMeta = const VerificationMeta('unit');
+  @override
+  late final GeneratedColumn<String> unit = GeneratedColumn<String>(
+    'unit',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contextMeta = const VerificationMeta(
+    'context',
+  );
+  @override
+  late final GeneratedColumn<String> context = GeneratedColumn<String>(
+    'context',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    day,
+    measuredAt,
+    marker,
+    value,
+    unit,
+    context,
+    note,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'blood_marker_readings';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<BloodMarkerReading> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('day')) {
+      context.handle(
+        _dayMeta,
+        day.isAcceptableOrUnknown(data['day']!, _dayMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dayMeta);
+    }
+    if (data.containsKey('measured_at')) {
+      context.handle(
+        _measuredAtMeta,
+        measuredAt.isAcceptableOrUnknown(data['measured_at']!, _measuredAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_measuredAtMeta);
+    }
+    if (data.containsKey('marker')) {
+      context.handle(
+        _markerMeta,
+        marker.isAcceptableOrUnknown(data['marker']!, _markerMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_markerMeta);
+    }
+    if (data.containsKey('value')) {
+      context.handle(
+        _valueMeta,
+        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_valueMeta);
+    }
+    if (data.containsKey('unit')) {
+      context.handle(
+        _unitMeta,
+        unit.isAcceptableOrUnknown(data['unit']!, _unitMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_unitMeta);
+    }
+    if (data.containsKey('context')) {
+      context.handle(
+        _contextMeta,
+        this.context.isAcceptableOrUnknown(data['context']!, _contextMeta),
+      );
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  BloodMarkerReading map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BloodMarkerReading(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      day: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}day'],
+      )!,
+      measuredAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}measured_at'],
+      )!,
+      marker: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}marker'],
+      )!,
+      value: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}value'],
+      )!,
+      unit: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}unit'],
+      )!,
+      context: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}context'],
+      ),
+      note: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $BloodMarkerReadingsTable createAlias(String alias) {
+    return $BloodMarkerReadingsTable(attachedDatabase, alias);
+  }
+}
+
+class BloodMarkerReading extends DataClass
+    implements Insertable<BloodMarkerReading> {
+  final String id;
+  final String day;
+  final int measuredAt;
+  final String marker;
+  final double value;
+  final String unit;
+  final String? context;
+  final String? note;
+  final int createdAt;
+  final int updatedAt;
+  const BloodMarkerReading({
+    required this.id,
+    required this.day,
+    required this.measuredAt,
+    required this.marker,
+    required this.value,
+    required this.unit,
+    this.context,
+    this.note,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['day'] = Variable<String>(day);
+    map['measured_at'] = Variable<int>(measuredAt);
+    map['marker'] = Variable<String>(marker);
+    map['value'] = Variable<double>(value);
+    map['unit'] = Variable<String>(unit);
+    if (!nullToAbsent || context != null) {
+      map['context'] = Variable<String>(context);
+    }
+    if (!nullToAbsent || note != null) {
+      map['note'] = Variable<String>(note);
+    }
+    map['created_at'] = Variable<int>(createdAt);
+    map['updated_at'] = Variable<int>(updatedAt);
+    return map;
+  }
+
+  BloodMarkerReadingsCompanion toCompanion(bool nullToAbsent) {
+    return BloodMarkerReadingsCompanion(
+      id: Value(id),
+      day: Value(day),
+      measuredAt: Value(measuredAt),
+      marker: Value(marker),
+      value: Value(value),
+      unit: Value(unit),
+      context: context == null && nullToAbsent
+          ? const Value.absent()
+          : Value(context),
+      note: note == null && nullToAbsent ? const Value.absent() : Value(note),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory BloodMarkerReading.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BloodMarkerReading(
+      id: serializer.fromJson<String>(json['id']),
+      day: serializer.fromJson<String>(json['day']),
+      measuredAt: serializer.fromJson<int>(json['measuredAt']),
+      marker: serializer.fromJson<String>(json['marker']),
+      value: serializer.fromJson<double>(json['value']),
+      unit: serializer.fromJson<String>(json['unit']),
+      context: serializer.fromJson<String?>(json['context']),
+      note: serializer.fromJson<String?>(json['note']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'day': serializer.toJson<String>(day),
+      'measuredAt': serializer.toJson<int>(measuredAt),
+      'marker': serializer.toJson<String>(marker),
+      'value': serializer.toJson<double>(value),
+      'unit': serializer.toJson<String>(unit),
+      'context': serializer.toJson<String?>(context),
+      'note': serializer.toJson<String?>(note),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+    };
+  }
+
+  BloodMarkerReading copyWith({
+    String? id,
+    String? day,
+    int? measuredAt,
+    String? marker,
+    double? value,
+    String? unit,
+    Value<String?> context = const Value.absent(),
+    Value<String?> note = const Value.absent(),
+    int? createdAt,
+    int? updatedAt,
+  }) => BloodMarkerReading(
+    id: id ?? this.id,
+    day: day ?? this.day,
+    measuredAt: measuredAt ?? this.measuredAt,
+    marker: marker ?? this.marker,
+    value: value ?? this.value,
+    unit: unit ?? this.unit,
+    context: context.present ? context.value : this.context,
+    note: note.present ? note.value : this.note,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  BloodMarkerReading copyWithCompanion(BloodMarkerReadingsCompanion data) {
+    return BloodMarkerReading(
+      id: data.id.present ? data.id.value : this.id,
+      day: data.day.present ? data.day.value : this.day,
+      measuredAt: data.measuredAt.present
+          ? data.measuredAt.value
+          : this.measuredAt,
+      marker: data.marker.present ? data.marker.value : this.marker,
+      value: data.value.present ? data.value.value : this.value,
+      unit: data.unit.present ? data.unit.value : this.unit,
+      context: data.context.present ? data.context.value : this.context,
+      note: data.note.present ? data.note.value : this.note,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BloodMarkerReading(')
+          ..write('id: $id, ')
+          ..write('day: $day, ')
+          ..write('measuredAt: $measuredAt, ')
+          ..write('marker: $marker, ')
+          ..write('value: $value, ')
+          ..write('unit: $unit, ')
+          ..write('context: $context, ')
+          ..write('note: $note, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    day,
+    measuredAt,
+    marker,
+    value,
+    unit,
+    context,
+    note,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BloodMarkerReading &&
+          other.id == this.id &&
+          other.day == this.day &&
+          other.measuredAt == this.measuredAt &&
+          other.marker == this.marker &&
+          other.value == this.value &&
+          other.unit == this.unit &&
+          other.context == this.context &&
+          other.note == this.note &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class BloodMarkerReadingsCompanion extends UpdateCompanion<BloodMarkerReading> {
+  final Value<String> id;
+  final Value<String> day;
+  final Value<int> measuredAt;
+  final Value<String> marker;
+  final Value<double> value;
+  final Value<String> unit;
+  final Value<String?> context;
+  final Value<String?> note;
+  final Value<int> createdAt;
+  final Value<int> updatedAt;
+  final Value<int> rowid;
+  const BloodMarkerReadingsCompanion({
+    this.id = const Value.absent(),
+    this.day = const Value.absent(),
+    this.measuredAt = const Value.absent(),
+    this.marker = const Value.absent(),
+    this.value = const Value.absent(),
+    this.unit = const Value.absent(),
+    this.context = const Value.absent(),
+    this.note = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  BloodMarkerReadingsCompanion.insert({
+    required String id,
+    required String day,
+    required int measuredAt,
+    required String marker,
+    required double value,
+    required String unit,
+    this.context = const Value.absent(),
+    this.note = const Value.absent(),
+    required int createdAt,
+    required int updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       day = Value(day),
+       measuredAt = Value(measuredAt),
+       marker = Value(marker),
+       value = Value(value),
+       unit = Value(unit),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<BloodMarkerReading> custom({
+    Expression<String>? id,
+    Expression<String>? day,
+    Expression<int>? measuredAt,
+    Expression<String>? marker,
+    Expression<double>? value,
+    Expression<String>? unit,
+    Expression<String>? context,
+    Expression<String>? note,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (day != null) 'day': day,
+      if (measuredAt != null) 'measured_at': measuredAt,
+      if (marker != null) 'marker': marker,
+      if (value != null) 'value': value,
+      if (unit != null) 'unit': unit,
+      if (context != null) 'context': context,
+      if (note != null) 'note': note,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  BloodMarkerReadingsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? day,
+    Value<int>? measuredAt,
+    Value<String>? marker,
+    Value<double>? value,
+    Value<String>? unit,
+    Value<String?>? context,
+    Value<String?>? note,
+    Value<int>? createdAt,
+    Value<int>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return BloodMarkerReadingsCompanion(
+      id: id ?? this.id,
+      day: day ?? this.day,
+      measuredAt: measuredAt ?? this.measuredAt,
+      marker: marker ?? this.marker,
+      value: value ?? this.value,
+      unit: unit ?? this.unit,
+      context: context ?? this.context,
+      note: note ?? this.note,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (day.present) {
+      map['day'] = Variable<String>(day.value);
+    }
+    if (measuredAt.present) {
+      map['measured_at'] = Variable<int>(measuredAt.value);
+    }
+    if (marker.present) {
+      map['marker'] = Variable<String>(marker.value);
+    }
+    if (value.present) {
+      map['value'] = Variable<double>(value.value);
+    }
+    if (unit.present) {
+      map['unit'] = Variable<String>(unit.value);
+    }
+    if (context.present) {
+      map['context'] = Variable<String>(context.value);
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BloodMarkerReadingsCompanion(')
+          ..write('id: $id, ')
+          ..write('day: $day, ')
+          ..write('measuredAt: $measuredAt, ')
+          ..write('marker: $marker, ')
+          ..write('value: $value, ')
+          ..write('unit: $unit, ')
+          ..write('context: $context, ')
+          ..write('note: $note, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -15683,6 +16842,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this,
   );
   late final $KetoneReadingsTable ketoneReadings = $KetoneReadingsTable(this);
+  late final $BloodPressureReadingsTable bloodPressureReadings =
+      $BloodPressureReadingsTable(this);
+  late final $BloodMarkerReadingsTable bloodMarkerReadings =
+      $BloodMarkerReadingsTable(this);
   late final Index idxActivitiesStartedAt = Index(
     'idx_activities_started_at',
     'CREATE INDEX idx_activities_started_at ON activities (started_at)',
@@ -15731,6 +16894,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'idx_ketone_readings_day',
     'CREATE INDEX idx_ketone_readings_day ON ketone_readings (day)',
   );
+  late final Index idxBloodPressureReadingsMeasuredAt = Index(
+    'idx_blood_pressure_readings_measured_at',
+    'CREATE INDEX idx_blood_pressure_readings_measured_at ON blood_pressure_readings (measured_at)',
+  );
+  late final Index idxBloodMarkerReadingsMarkerMeasuredAt = Index(
+    'idx_blood_marker_readings_marker_measured_at',
+    'CREATE INDEX idx_blood_marker_readings_marker_measured_at ON blood_marker_readings (marker, measured_at)',
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -15756,6 +16927,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     yogaSequences,
     wellbeingEvents,
     ketoneReadings,
+    bloodPressureReadings,
+    bloodMarkerReadings,
     idxActivitiesStartedAt,
     idxActivitySamplesActivityIdTimestampMs,
     idxDailyCheckinsDay,
@@ -15768,6 +16941,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     idxWaterLogsDay,
     idxWeightLogsDay,
     idxKetoneReadingsDay,
+    idxBloodPressureReadingsMeasuredAt,
+    idxBloodMarkerReadingsMarkerMeasuredAt,
   ];
 }
 
@@ -22993,6 +24168,616 @@ typedef $$KetoneReadingsTableProcessedTableManager =
       KetoneReading,
       PrefetchHooks Function()
     >;
+typedef $$BloodPressureReadingsTableCreateCompanionBuilder =
+    BloodPressureReadingsCompanion Function({
+      required String id,
+      required String day,
+      required int measuredAt,
+      required int systolic,
+      required int diastolic,
+      Value<int?> pulse,
+      Value<String?> note,
+      required int createdAt,
+      required int updatedAt,
+      Value<int> rowid,
+    });
+typedef $$BloodPressureReadingsTableUpdateCompanionBuilder =
+    BloodPressureReadingsCompanion Function({
+      Value<String> id,
+      Value<String> day,
+      Value<int> measuredAt,
+      Value<int> systolic,
+      Value<int> diastolic,
+      Value<int?> pulse,
+      Value<String?> note,
+      Value<int> createdAt,
+      Value<int> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$BloodPressureReadingsTableFilterComposer
+    extends Composer<_$AppDatabase, $BloodPressureReadingsTable> {
+  $$BloodPressureReadingsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get day => $composableBuilder(
+    column: $table.day,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get measuredAt => $composableBuilder(
+    column: $table.measuredAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get systolic => $composableBuilder(
+    column: $table.systolic,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get diastolic => $composableBuilder(
+    column: $table.diastolic,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get pulse => $composableBuilder(
+    column: $table.pulse,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$BloodPressureReadingsTableOrderingComposer
+    extends Composer<_$AppDatabase, $BloodPressureReadingsTable> {
+  $$BloodPressureReadingsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get day => $composableBuilder(
+    column: $table.day,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get measuredAt => $composableBuilder(
+    column: $table.measuredAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get systolic => $composableBuilder(
+    column: $table.systolic,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get diastolic => $composableBuilder(
+    column: $table.diastolic,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get pulse => $composableBuilder(
+    column: $table.pulse,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$BloodPressureReadingsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BloodPressureReadingsTable> {
+  $$BloodPressureReadingsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get day =>
+      $composableBuilder(column: $table.day, builder: (column) => column);
+
+  GeneratedColumn<int> get measuredAt => $composableBuilder(
+    column: $table.measuredAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get systolic =>
+      $composableBuilder(column: $table.systolic, builder: (column) => column);
+
+  GeneratedColumn<int> get diastolic =>
+      $composableBuilder(column: $table.diastolic, builder: (column) => column);
+
+  GeneratedColumn<int> get pulse =>
+      $composableBuilder(column: $table.pulse, builder: (column) => column);
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$BloodPressureReadingsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $BloodPressureReadingsTable,
+          BloodPressureReading,
+          $$BloodPressureReadingsTableFilterComposer,
+          $$BloodPressureReadingsTableOrderingComposer,
+          $$BloodPressureReadingsTableAnnotationComposer,
+          $$BloodPressureReadingsTableCreateCompanionBuilder,
+          $$BloodPressureReadingsTableUpdateCompanionBuilder,
+          (
+            BloodPressureReading,
+            BaseReferences<
+              _$AppDatabase,
+              $BloodPressureReadingsTable,
+              BloodPressureReading
+            >,
+          ),
+          BloodPressureReading,
+          PrefetchHooks Function()
+        > {
+  $$BloodPressureReadingsTableTableManager(
+    _$AppDatabase db,
+    $BloodPressureReadingsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BloodPressureReadingsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$BloodPressureReadingsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$BloodPressureReadingsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> day = const Value.absent(),
+                Value<int> measuredAt = const Value.absent(),
+                Value<int> systolic = const Value.absent(),
+                Value<int> diastolic = const Value.absent(),
+                Value<int?> pulse = const Value.absent(),
+                Value<String?> note = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => BloodPressureReadingsCompanion(
+                id: id,
+                day: day,
+                measuredAt: measuredAt,
+                systolic: systolic,
+                diastolic: diastolic,
+                pulse: pulse,
+                note: note,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String day,
+                required int measuredAt,
+                required int systolic,
+                required int diastolic,
+                Value<int?> pulse = const Value.absent(),
+                Value<String?> note = const Value.absent(),
+                required int createdAt,
+                required int updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => BloodPressureReadingsCompanion.insert(
+                id: id,
+                day: day,
+                measuredAt: measuredAt,
+                systolic: systolic,
+                diastolic: diastolic,
+                pulse: pulse,
+                note: note,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$BloodPressureReadingsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $BloodPressureReadingsTable,
+      BloodPressureReading,
+      $$BloodPressureReadingsTableFilterComposer,
+      $$BloodPressureReadingsTableOrderingComposer,
+      $$BloodPressureReadingsTableAnnotationComposer,
+      $$BloodPressureReadingsTableCreateCompanionBuilder,
+      $$BloodPressureReadingsTableUpdateCompanionBuilder,
+      (
+        BloodPressureReading,
+        BaseReferences<
+          _$AppDatabase,
+          $BloodPressureReadingsTable,
+          BloodPressureReading
+        >,
+      ),
+      BloodPressureReading,
+      PrefetchHooks Function()
+    >;
+typedef $$BloodMarkerReadingsTableCreateCompanionBuilder =
+    BloodMarkerReadingsCompanion Function({
+      required String id,
+      required String day,
+      required int measuredAt,
+      required String marker,
+      required double value,
+      required String unit,
+      Value<String?> context,
+      Value<String?> note,
+      required int createdAt,
+      required int updatedAt,
+      Value<int> rowid,
+    });
+typedef $$BloodMarkerReadingsTableUpdateCompanionBuilder =
+    BloodMarkerReadingsCompanion Function({
+      Value<String> id,
+      Value<String> day,
+      Value<int> measuredAt,
+      Value<String> marker,
+      Value<double> value,
+      Value<String> unit,
+      Value<String?> context,
+      Value<String?> note,
+      Value<int> createdAt,
+      Value<int> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$BloodMarkerReadingsTableFilterComposer
+    extends Composer<_$AppDatabase, $BloodMarkerReadingsTable> {
+  $$BloodMarkerReadingsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get day => $composableBuilder(
+    column: $table.day,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get measuredAt => $composableBuilder(
+    column: $table.measuredAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get marker => $composableBuilder(
+    column: $table.marker,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get unit => $composableBuilder(
+    column: $table.unit,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get context => $composableBuilder(
+    column: $table.context,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$BloodMarkerReadingsTableOrderingComposer
+    extends Composer<_$AppDatabase, $BloodMarkerReadingsTable> {
+  $$BloodMarkerReadingsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get day => $composableBuilder(
+    column: $table.day,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get measuredAt => $composableBuilder(
+    column: $table.measuredAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get marker => $composableBuilder(
+    column: $table.marker,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get unit => $composableBuilder(
+    column: $table.unit,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get context => $composableBuilder(
+    column: $table.context,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$BloodMarkerReadingsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BloodMarkerReadingsTable> {
+  $$BloodMarkerReadingsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get day =>
+      $composableBuilder(column: $table.day, builder: (column) => column);
+
+  GeneratedColumn<int> get measuredAt => $composableBuilder(
+    column: $table.measuredAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get marker =>
+      $composableBuilder(column: $table.marker, builder: (column) => column);
+
+  GeneratedColumn<double> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => column);
+
+  GeneratedColumn<String> get unit =>
+      $composableBuilder(column: $table.unit, builder: (column) => column);
+
+  GeneratedColumn<String> get context =>
+      $composableBuilder(column: $table.context, builder: (column) => column);
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$BloodMarkerReadingsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $BloodMarkerReadingsTable,
+          BloodMarkerReading,
+          $$BloodMarkerReadingsTableFilterComposer,
+          $$BloodMarkerReadingsTableOrderingComposer,
+          $$BloodMarkerReadingsTableAnnotationComposer,
+          $$BloodMarkerReadingsTableCreateCompanionBuilder,
+          $$BloodMarkerReadingsTableUpdateCompanionBuilder,
+          (
+            BloodMarkerReading,
+            BaseReferences<
+              _$AppDatabase,
+              $BloodMarkerReadingsTable,
+              BloodMarkerReading
+            >,
+          ),
+          BloodMarkerReading,
+          PrefetchHooks Function()
+        > {
+  $$BloodMarkerReadingsTableTableManager(
+    _$AppDatabase db,
+    $BloodMarkerReadingsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BloodMarkerReadingsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BloodMarkerReadingsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$BloodMarkerReadingsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> day = const Value.absent(),
+                Value<int> measuredAt = const Value.absent(),
+                Value<String> marker = const Value.absent(),
+                Value<double> value = const Value.absent(),
+                Value<String> unit = const Value.absent(),
+                Value<String?> context = const Value.absent(),
+                Value<String?> note = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => BloodMarkerReadingsCompanion(
+                id: id,
+                day: day,
+                measuredAt: measuredAt,
+                marker: marker,
+                value: value,
+                unit: unit,
+                context: context,
+                note: note,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String day,
+                required int measuredAt,
+                required String marker,
+                required double value,
+                required String unit,
+                Value<String?> context = const Value.absent(),
+                Value<String?> note = const Value.absent(),
+                required int createdAt,
+                required int updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => BloodMarkerReadingsCompanion.insert(
+                id: id,
+                day: day,
+                measuredAt: measuredAt,
+                marker: marker,
+                value: value,
+                unit: unit,
+                context: context,
+                note: note,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$BloodMarkerReadingsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $BloodMarkerReadingsTable,
+      BloodMarkerReading,
+      $$BloodMarkerReadingsTableFilterComposer,
+      $$BloodMarkerReadingsTableOrderingComposer,
+      $$BloodMarkerReadingsTableAnnotationComposer,
+      $$BloodMarkerReadingsTableCreateCompanionBuilder,
+      $$BloodMarkerReadingsTableUpdateCompanionBuilder,
+      (
+        BloodMarkerReading,
+        BaseReferences<
+          _$AppDatabase,
+          $BloodMarkerReadingsTable,
+          BloodMarkerReading
+        >,
+      ),
+      BloodMarkerReading,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -23037,4 +24822,8 @@ class $AppDatabaseManager {
       $$WellbeingEventsTableTableManager(_db, _db.wellbeingEvents);
   $$KetoneReadingsTableTableManager get ketoneReadings =>
       $$KetoneReadingsTableTableManager(_db, _db.ketoneReadings);
+  $$BloodPressureReadingsTableTableManager get bloodPressureReadings =>
+      $$BloodPressureReadingsTableTableManager(_db, _db.bloodPressureReadings);
+  $$BloodMarkerReadingsTableTableManager get bloodMarkerReadings =>
+      $$BloodMarkerReadingsTableTableManager(_db, _db.bloodMarkerReadings);
 }

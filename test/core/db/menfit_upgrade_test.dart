@@ -78,6 +78,29 @@ void main() {
         ketoneIndexes.map((row) => row.read<String>('name')),
         contains('idx_ketone_readings_day'),
       );
+      expect(
+        await database.select(database.bloodPressureReadings).get(),
+        isEmpty,
+      );
+      expect(
+        await database.select(database.bloodMarkerReadings).get(),
+        isEmpty,
+      );
+      for (final (table, index) in [
+        ('blood_pressure_readings', 'idx_blood_pressure_readings_measured_at'),
+        (
+          'blood_marker_readings',
+          'idx_blood_marker_readings_marker_measured_at',
+        ),
+      ]) {
+        final healthIndexes = await database
+            .customSelect('PRAGMA index_list($table)')
+            .get();
+        expect(
+          healthIndexes.map((row) => row.read<String>('name')),
+          contains(index),
+        );
+      }
     },
   );
 }

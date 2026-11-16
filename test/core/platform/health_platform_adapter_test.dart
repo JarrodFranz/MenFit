@@ -5,6 +5,7 @@ import 'package:menfit_app/core/platform/health/health_data_snapshot.dart';
 import 'package:menfit_app/core/platform/health/health_platform_adapter.dart';
 import 'package:menfit_app/core/platform/health/health_platform_stub.dart';
 import 'package:menfit_app/core/platform/health/health_providers.dart';
+import 'package:menfit_app/core/platform/health/health_vitals_snapshot.dart';
 import 'package:menfit_app/core/platform/health/health_workout_session.dart';
 
 class MockHealthPlatformAdapter implements HealthPlatformAdapter {
@@ -71,6 +72,16 @@ class MockHealthPlatformAdapter implements HealthPlatformAdapter {
     if (!permissionsGranted) return const [];
     return workoutsToReturn;
   }
+
+  @override
+  Future<bool?> hasVitalsPermission() async => permissionsGranted;
+
+  @override
+  Future<bool> requestVitalsPermissions() async => true;
+
+  @override
+  Future<HealthVitalsSnapshot?> getVitals({required DateTime now}) async =>
+      HealthVitalsSnapshot(readAt: now);
 }
 
 void main() {
@@ -86,6 +97,13 @@ void main() {
         await stub.getDailyStepTotals(LocalDate.today(), LocalDate.today()),
         isEmpty,
       );
+    });
+
+    test('stub vitals: not granted, request refused, no read', () async {
+      const stub = StubHealthPlatformAdapter();
+      expect(await stub.hasVitalsPermission(), isFalse);
+      expect(await stub.requestVitalsPermissions(), isFalse);
+      expect(await stub.getVitals(now: DateTime.utc(2026, 11, 16)), isNull);
     });
   });
 

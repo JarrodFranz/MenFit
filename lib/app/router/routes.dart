@@ -18,6 +18,7 @@ import 'package:menfit_app/features/challenges/presentation/challenge_detail_scr
 import 'package:menfit_app/features/challenges/presentation/challenges_screen.dart';
 import 'package:menfit_app/features/challenges/presentation/create_challenge_screen.dart';
 import 'package:menfit_app/features/challenges/presentation/join_challenge_screen.dart';
+import 'package:menfit_app/features/health/presentation/health_screen.dart';
 import 'package:menfit_app/features/home/presentation/home_screen.dart';
 import 'package:menfit_app/features/keto/presentation/keto_screen.dart';
 import 'package:menfit_app/features/nutrition/domain/meal_type.dart';
@@ -414,9 +415,11 @@ class ChallengeDetailRouteData extends GoRouteData
   }
 }
 
-/// The single typed route table for the app: a five-tab
-/// [StatefulShellRoute] (Home, Activity, Nutrition, Keto, Recovery,
-/// Settings), each branch holding exactly one top-level route.
+/// The single typed route table for the app: a six-tab
+/// [StatefulShellRoute] (Home, Activity, Nutrition, Keto, Health,
+/// Recovery), each branch holding exactly one top-level route. Settings is
+/// not a tab: it lives under Home (`/home/settings`), opened from the Home
+/// app-bar gear (owner decision 2026-11-16, ADR 002 amendment).
 @TypedStatefulShellRoute<AppShellRouteData>(
   branches: [
     TypedStatefulShellBranch<HomeBranchData>(
@@ -425,6 +428,17 @@ class ChallengeDetailRouteData extends GoRouteData
           path: '/home',
           routes: [
             TypedGoRoute<ProgressRouteData>(path: 'progress'),
+            TypedGoRoute<SettingsRouteData>(
+              path: 'settings',
+              routes: [
+                TypedGoRoute<SettingsProfileRouteData>(path: 'profile'),
+                TypedGoRoute<SettingsAccessibilityRouteData>(
+                  path: 'accessibility',
+                ),
+                TypedGoRoute<SettingsWearablesRouteData>(path: 'wearables'),
+                TypedGoRoute<SettingsSafetyRouteData>(path: 'safety'),
+              ],
+            ),
           ],
         ),
       ],
@@ -469,21 +483,11 @@ class ChallengeDetailRouteData extends GoRouteData
     TypedStatefulShellBranch<KetoBranchData>(
       routes: [TypedGoRoute<KetoRouteData>(path: '/keto')],
     ),
+    TypedStatefulShellBranch<HealthBranchData>(
+      routes: [TypedGoRoute<HealthRouteData>(path: '/health')],
+    ),
     TypedStatefulShellBranch<WellbeingBranchData>(
       routes: [TypedGoRoute<WellbeingRouteData>(path: '/recovery')],
-    ),
-    TypedStatefulShellBranch<SettingsBranchData>(
-      routes: [
-        TypedGoRoute<SettingsRouteData>(
-          path: '/settings',
-          routes: [
-            TypedGoRoute<SettingsProfileRouteData>(path: 'profile'),
-            TypedGoRoute<SettingsAccessibilityRouteData>(path: 'accessibility'),
-            TypedGoRoute<SettingsWearablesRouteData>(path: 'wearables'),
-            TypedGoRoute<SettingsSafetyRouteData>(path: 'safety'),
-          ],
-        ),
-      ],
     ),
   ],
 )
@@ -515,14 +519,14 @@ class AppShellRouteData extends StatefulShellRouteData {
       label: 'Keto',
     ),
     AdaptiveDestination(
+      icon: Icons.monitor_heart_outlined,
+      selectedIcon: Icons.monitor_heart,
+      label: 'Health',
+    ),
+    AdaptiveDestination(
       icon: Icons.self_improvement_outlined,
       selectedIcon: Icons.self_improvement,
       label: 'Recovery',
-    ),
-    AdaptiveDestination(
-      icon: Icons.settings_outlined,
-      selectedIcon: Icons.settings,
-      label: 'Settings',
     ),
   ];
 
@@ -554,7 +558,7 @@ class HomeRouteData extends GoRouteData with $HomeRouteData {
 
 /// `/home/progress` - weekly trends + personal records. Nested under the
 /// home branch (rather than a top-level route) so the nav bar/rail stays
-/// visible, same pattern as `/settings/profile`.
+/// visible, same pattern as `/home/settings/profile`.
 class ProgressRouteData extends GoRouteData with $ProgressRouteData {
   const ProgressRouteData();
 
@@ -646,7 +650,7 @@ class NutritionRouteData extends GoRouteData with $NutritionRouteData {
 
 /// `/nutrition/goals` — daily targets, activity level, weight goal, and the
 /// hide-calorie-numbers preference. Nested under the nutrition branch so the
-/// nav bar/rail stays visible, same pattern as `/settings/profile`.
+/// nav bar/rail stays visible, same pattern as `/home/settings/profile`.
 class NutritionGoalsRouteData extends GoRouteData
     with $NutritionGoalsRouteData {
   const NutritionGoalsRouteData();
@@ -757,6 +761,18 @@ class KetoRouteData extends GoRouteData with $KetoRouteData {
   Widget build(BuildContext context, GoRouterState state) => const KetoScreen();
 }
 
+class HealthBranchData extends StatefulShellBranchData {
+  const HealthBranchData();
+}
+
+class HealthRouteData extends GoRouteData with $HealthRouteData {
+  const HealthRouteData();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const HealthScreen();
+}
+
 class WellbeingBranchData extends StatefulShellBranchData {
   const WellbeingBranchData();
 }
@@ -773,10 +789,8 @@ class WellbeingRouteData extends GoRouteData with $WellbeingRouteData {
   }
 }
 
-class SettingsBranchData extends StatefulShellBranchData {
-  const SettingsBranchData();
-}
-
+/// `/home/settings` - not a shell tab: nested under Home so the gear on the
+/// Home app bar opens it, back returns to Home, and Home stays selected.
 class SettingsRouteData extends GoRouteData with $SettingsRouteData {
   const SettingsRouteData();
 
@@ -786,8 +800,8 @@ class SettingsRouteData extends GoRouteData with $SettingsRouteData {
   }
 }
 
-/// Sub-route of `/settings` (`/settings/profile`) - stays inside the
-/// settings branch's navigator stack, so the nav bar/rail remains visible,
+/// Sub-route of `/home/settings` (`/home/settings/profile`) - stays inside
+/// the home branch's navigator stack, so the nav bar/rail remains visible,
 /// unlike the top-level onboarding route.
 class SettingsProfileRouteData extends GoRouteData
     with $SettingsProfileRouteData {
@@ -799,7 +813,7 @@ class SettingsProfileRouteData extends GoRouteData
   }
 }
 
-/// Sub-route of `/settings` (`/settings/accessibility`) - allows
+/// Sub-route of `/home/settings` (`/home/settings/accessibility`) - allows
 /// configuring color blindness, high contrast, text scaling, bold text,
 /// motion, and haptics.
 class SettingsAccessibilityRouteData extends GoRouteData
@@ -812,7 +826,7 @@ class SettingsAccessibilityRouteData extends GoRouteData
   }
 }
 
-/// Sub-route of `/settings` (`/settings/wearables`) - allows managing
+/// Sub-route of `/home/settings` (`/home/settings/wearables`) - allows managing
 /// Garmin Connect auto-sync, Apple Watch / WearOS companion, and live HR sensors.
 class SettingsWearablesRouteData extends GoRouteData
     with $SettingsWearablesRouteData {
@@ -824,7 +838,7 @@ class SettingsWearablesRouteData extends GoRouteData
   }
 }
 
-/// Sub-route of `/settings` (`/settings/safety`) - allows managing
+/// Sub-route of `/home/settings` (`/home/settings/safety`) - allows managing
 /// trusted emergency contacts, check-in timer, and inactivity alerts.
 class SettingsSafetyRouteData extends GoRouteData
     with $SettingsSafetyRouteData {

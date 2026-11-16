@@ -350,11 +350,8 @@ void main() {
       // Starts on home - onboarding is already complete.
       expect(find.textContaining('Welcome back'), findsOneWidget);
 
-      // Navigate to Settings.
-      final navigationBar = find.byType(NavigationBar);
-      await tester.tap(
-        find.descendant(of: navigationBar, matching: find.text('Settings')),
-      );
+      // Navigate to Settings via the Home app-bar gear.
+      await tester.tap(find.byTooltip('Settings'));
       await tester.pumpAndSettle();
 
       await tester.scrollUntilVisible(

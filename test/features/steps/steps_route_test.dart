@@ -55,7 +55,7 @@ GoRouter _buildRouter({
       $stepsRouteData,
       GoRoute(path: '/home', builder: (context, state) => homeBuilder(context)),
       GoRoute(
-        path: '/settings',
+        path: '/home/settings',
         builder: (context, state) =>
             const Scaffold(body: Text('settings stub')),
       ),

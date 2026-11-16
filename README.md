@@ -45,8 +45,18 @@ No `--dart-define` needed for dev (defaults apply). Other environments: `flutter
 ## Six tabs
 
 Home (strength-first dashboard), Train (`/activity` — GPS recording, strength
-workouts, exercise hubs), Nutrition, Keto (`/keto` — diary macros plus a manual blood/urine/breath ketone log), Recovery (`/recovery` — check-ins, flare
-logging, protected-recovery history), Settings.
+workouts, exercise hubs), Nutrition, Keto (`/keto` — diary macros plus a manual blood/urine/breath ketone log), Health (`/health` — watch vitals, blood
+pressure and blood glucose logs), Recovery (`/recovery` — check-ins, flare
+logging, protected-recovery history). Settings is not a tab: open it from the
+gear on the Home app bar (`/home/settings`).
+
+The Health tab shows recent watch data (heart rate, blood oxygen, sleep, heart
+rate variability, respiratory rate) read on demand and never stored. It also
+holds manual blood pressure and blood glucose logs with history charts. Each
+blood pressure reading shows its Heart Foundation of Australia 2016 category,
+and glucose readings show a published reference range, each with its source and
+a not-a-diagnosis line. Details: `knowledge/research/blood_pressure_classification.md`
+and `knowledge/research/blood_glucose_reference_ranges.md`.
 
 ## Distribute to testers
 

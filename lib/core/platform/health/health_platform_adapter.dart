@@ -3,6 +3,7 @@ import 'package:menfit_app/core/platform/health/health_data_snapshot.dart';
 import 'package:menfit_app/core/platform/health/health_platform_stub.dart'
     if (dart.library.io) 'package:menfit_app/core/platform/health/health_platform_io.dart'
     as impl;
+import 'package:menfit_app/core/platform/health/health_vitals_snapshot.dart';
 import 'package:menfit_app/core/platform/health/health_workout_session.dart';
 
 /// Abstract contract for reading health and fitness data from platform APIs
@@ -84,4 +85,23 @@ abstract class HealthPlatformAdapter {
     required DateTime start,
     required DateTime end,
   });
+
+  /// Whether READ access to any watch vitals type has been granted.
+  ///
+  /// `null` = cannot be determined: iOS never reveals read authorisation
+  /// (see [hasStepsPermission]), so callers attempt [getVitals] and treat an
+  /// empty snapshot as "maybe not granted". False where no health platform
+  /// exists (web, desktop).
+  Future<bool?> hasVitalsPermission();
+
+  /// Requests READ for the vitals types only — heart rate, resting heart
+  /// rate, blood oxygen, respiratory rate, sleep and HRV (RMSSD on Android,
+  /// SDNN on iOS) — in one platform sheet. Separate from
+  /// [requestPermissions], which is unchanged. False on failure/unsupported.
+  Future<bool> requestVitalsPermissions();
+
+  /// Latest values in the 24 h before [now] (resting HR / HRV: 48 h; sleep:
+  /// most recent session ending in the last 24 h). Null when unsupported.
+  /// Never throws; a metric that cannot be read is null. Never persisted.
+  Future<HealthVitalsSnapshot?> getVitals({required DateTime now});
 }

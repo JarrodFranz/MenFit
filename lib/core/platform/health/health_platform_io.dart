@@ -5,6 +5,8 @@ import 'package:health/health.dart';
 import 'package:menfit_app/core/domain/local_date.dart';
 import 'package:menfit_app/core/platform/health/health_data_snapshot.dart';
 import 'package:menfit_app/core/platform/health/health_platform_adapter.dart';
+import 'package:menfit_app/core/platform/health/health_vitals_reader.dart';
+import 'package:menfit_app/core/platform/health/health_vitals_snapshot.dart';
 import 'package:menfit_app/core/platform/health/health_workout_session.dart';
 import 'package:menfit_app/features/activity/domain/activity.dart';
 
@@ -407,6 +409,49 @@ class IoHealthPlatformAdapter implements HealthPlatformAdapter {
       return sessions;
     } on Object catch (_) {
       return const [];
+    }
+  }
+
+  @override
+  Future<bool?> hasVitalsPermission() async {
+    if (!Platform.isAndroid && !Platform.isIOS) return false;
+    // HealthKit never discloses read grants: unknown, not denied.
+    if (Platform.isIOS) return null;
+    // An OR, like [hasPermissions]: a partial grant still has data to show.
+    for (final type in HealthVitalsReader.androidPermissionCheckTypes) {
+      if (await _hasReadPermission(type)) return true;
+    }
+    return false;
+  }
+
+  @override
+  Future<bool> requestVitalsPermissions() async {
+    if (!Platform.isAndroid && !Platform.isIOS) return false;
+    try {
+      final types = HealthVitalsReader.requestTypes(
+        android: Platform.isAndroid,
+      );
+      return await _health.requestAuthorization(
+        types,
+        permissions: [for (final _ in types) HealthDataAccess.READ],
+      );
+    } on Object catch (_) {
+      return false;
+    }
+  }
+
+  @override
+  Future<HealthVitalsSnapshot?> getVitals({required DateTime now}) async {
+    if (!Platform.isAndroid && !Platform.isIOS) return null;
+    try {
+      if (!await isSupported()) return null;
+      return await HealthVitalsReader(
+        _health,
+        android: Platform.isAndroid,
+      ).read(now);
+    } on Object catch (_) {
+      // S2: swallowed without logging; see `_stepsForDay`.
+      return HealthVitalsSnapshot(readAt: now);
     }
   }
 

@@ -59,14 +59,14 @@ void main() {
       label: 'Keto',
     ),
     AdaptiveDestination(
+      icon: Icons.monitor_heart_outlined,
+      selectedIcon: Icons.monitor_heart,
+      label: 'Health',
+    ),
+    AdaptiveDestination(
       icon: Icons.self_improvement_outlined,
       selectedIcon: Icons.self_improvement,
       label: 'Recovery',
-    ),
-    AdaptiveDestination(
-      icon: Icons.settings_outlined,
-      selectedIcon: Icons.settings,
-      label: 'Settings',
     ),
   ];
 
@@ -123,13 +123,13 @@ void main() {
           '"$label" wraps at this width. Material\'s bottom-bar label has '
           'no ellipsis and no hyphenation, so a wrap breaks the word '
           'mid-way ("Wellb / eing"). Either the label shrink in '
-          'AppAdaptiveScaffold needs to go further, or five tabs is one '
-          'too many for this width and Settings should move to an app-bar '
+          'AppAdaptiveScaffold needs to go further, or six tabs is one '
+          'too many for this width and one tab should move to an app-bar '
           'action.',
     );
   }
 
-  testWidgets('five labels fit on one line at 375dp (small phone)', (
+  testWidgets('six labels fit on one line at 375dp (small phone)', (
     tester,
   ) async {
     await pumpAt(tester, const Size(375, 812));
@@ -138,7 +138,7 @@ void main() {
     }
   });
 
-  testWidgets('five labels fit on one line at 320dp (smallest supported)', (
+  testWidgets('six labels fit on one line at 320dp (smallest supported)', (
     tester,
   ) async {
     await pumpAt(tester, const Size(320, 640));
@@ -147,7 +147,7 @@ void main() {
     }
   });
 
-  testWidgets('five labels fit on one line at 412dp (large phone)', (
+  testWidgets('six labels fit on one line at 412dp (large phone)', (
     tester,
   ) async {
     await pumpAt(tester, const Size(412, 915));
