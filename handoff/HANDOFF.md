@@ -1,13 +1,13 @@
 # Handoff — MenFit (men's training + nutrition app)
 
-*Live state. Last updated 2026-11-16 22:20 AEST (Health area on `main` and pushed 2026-11-17; build 0.1.0 (3) on Firebase group `main` predates it).*
+*Live state. Last updated 2026-11-16 22:20 AEST (Health area on `main`; build 0.1.0 (4) with it distributed to Firebase group `main` 2026-11-17).*
 
 ## State
 
 - **Flutter 3.47.2 / Dart 3.13.2.** `main` == `fork-femfit`, pushed to `https://github.com/JarrodFranz/MenFit` (2026-09-08).
-- **`main` == `origin/main` is schema v4** with tabs Home, Train, Nutrition,
-  Keto, Health, Recovery (Health merged and pushed 2026-11-17). Testers
-  still have build 0.1.0 (3): schema v3, Settings tab, no Health. `pubspec.yaml` is `0.1.0+3`. Details under In flight.
+- **`main` is schema v4** with tabs Home, Train, Nutrition, Keto, Health,
+  Recovery (Health merged and pushed 2026-11-17). `pubspec.yaml` is
+  `0.1.0+4`; build 0.1.0 (4) is on Firebase group `main`. `pubspec.yaml` is `0.1.0+3`. Details under In flight.
 - **Fork complete (2026-09-08):** all 14 plan tasks done
   (`docs/superpowers/plans/2026-09-07-menfit-fork.md`, ledger in
   `.git/sdd/progress.md`). Cycle tracking removed; tabs Home / Train /
@@ -41,8 +41,20 @@
   commits `7f3c2f4` + `21ceb73`). A fast-forward, so the merged tree is the
   tree that was tested; the suite was not re-run. **Pushed to
   `origin/main` 2026-11-17** (owner: "Push main"; `39fbd75..b87cb5b`, then
-  this handoff commit). **NOT distributed** - a tester build needs the
-  owner's say-so. `pubspec.yaml` is still `0.1.0+3`. Built in worktree
+  this handoff commit). **Distributed 2026-11-17** (owner: "distribute to
+  Firebase"): release **0.1.0 (4)**, project `menfit-f17b3`, group `main`;
+  CLI: "uploaded new release 0.1.0 (4) successfully", "distributed to
+  testers/groups successfully". Release:
+  https://console.firebase.google.com/project/menfit-f17b3/appdistribution/app/android:com.jarrodfranz.menfit/releases/22km0736fa290
+  Built from `04361dc` (`0.1.0+4`, staging env + secrets overlay):
+  apksigner CN=MenFit Upload Key, aapt versionCode 4. On that exact source,
+  2026-11-17 11:31 AEST: `dart format` 0 changed, `flutter analyze
+  --fatal-infos` No issues found, `flutter test` **3,940 passed, 0 failed**
+  (3m26s). That exact APK was installed over a schema-v3 build (versionCode
+  3) on a throwaway emulator: profile kept, six tabs, Health tab rendered,
+  0 FATAL / E-flutter. Not checked on a physical device. `04361dc` and
+  this handoff commit are on local `main`; whether they are pushed: see
+  `git status -sb`. `pubspec.yaml` is still `0.1.0+3`. Built in worktree
   `../MenFit-health`. A separate checkout was used
   so the widget port on `feat/home-widgets` is undisturbed.
   - What it is: sixth tab **Health** (`/health`) with read-on-demand watch
@@ -126,8 +138,9 @@
 
 ## Next
 
--1. **Health (on `main`, pushed 2026-11-17):** owner to decide the tester
-   build (`0.1.0+4`). `feat/home-widgets` must now merge or rebase
+-1. **Health (build 0.1.0 (4) distributed 2026-11-17):** install it from
+   Firebase on a physical Android phone over build 3 and check the upgrade.
+   Next tester build needs `0.1.0+5`. `feat/home-widgets` must now merge or rebase
    onto `main` (see merge notes under In flight); re-run the full suite on
    the result.
    On a physical Android phone with a watch: grant the six vitals, check

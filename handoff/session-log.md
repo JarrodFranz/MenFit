@@ -497,3 +497,10 @@ cost an hour is in `handoff/HANDOFF.md`'s Traps and Corrections.*
 - Owner said "Merge to main". `main` was still `39fbd75` (= `origin/main`) and is checked out nowhere, so it was fast-forwarded to the `feat/health` tip with `git fetch . feat/health:main`. No merge commit, no conflicts; tree identical to the tested one, suite not re-run. Not pushed, not distributed.
 - `feat/home-widgets` (tip `857622e`, other session) now has to merge or rebase onto the new `main`; conflict list is in `HANDOFF.md` and the shared hand-over note.
 - Owner said "Push main". `git push origin main`: `39fbd75..b87cb5b`. Handoff updated and pushed in a follow-up commit. Nothing distributed to Firebase.
+
+## 2026-11-17 - Build 0.1.0 (4) distributed
+
+- Owner said "distribute to Firebase." Checked first that a CLI account lists `menfit-f17b3` (one of two does). Bumped to `0.1.0+4` (`04361dc`).
+- Full central validation on the bumped source at 11:31 AEST: format 0 changed, analyzer clean, 3,940 tests passed.
+- Built the release APK (staging env + secrets overlay): CN=MenFit Upload Key, versionCode 4. Installed it over a schema-v3 build (versionCode 3) on a throwaway AVD (`MenFit_HealthQA`, since deleted): profile kept, Health tab rendered, no fatal log lines.
+- `firebase appdistribution:distribute ... --groups main`: "uploaded new release 0.1.0 (4) successfully", "distributed to testers/groups successfully". Local `main` fast-forwarded to include the bump; pushing it was not part of the request and is left to the owner.
