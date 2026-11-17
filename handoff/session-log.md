@@ -496,3 +496,4 @@ cost an hour is in `handoff/HANDOFF.md`'s Traps and Corrections.*
 
 - Owner said "Merge to main". `main` was still `39fbd75` (= `origin/main`) and is checked out nowhere, so it was fast-forwarded to the `feat/health` tip with `git fetch . feat/health:main`. No merge commit, no conflicts; tree identical to the tested one, suite not re-run. Not pushed, not distributed.
 - `feat/home-widgets` (tip `857622e`, other session) now has to merge or rebase onto the new `main`; conflict list is in `HANDOFF.md` and the shared hand-over note.
+- Owner said "Push main". `git push origin main`: `39fbd75..b87cb5b`. Handoff updated and pushed in a follow-up commit. Nothing distributed to Firebase.
