@@ -491,3 +491,8 @@ cost an hour is in `handoff/HANDOFF.md`'s Traps and Corrections.*
 - Final central validation 22:12-22:15 AEST: format 0 changed, 3,940 tests passed; analyzer clean after a two-line lint fix in one test (that file re-run 15/15).
 - Release APK built and smoke-tested on a throwaway AVD (`MenFit_HealthQA`, port 5586), including an upgrade install over a schema-v3 build. Two defects found there and fixed in `21ceb73` (chart order for same-minute readings; truncated dropdown hint).
 - Commits `7f3c2f4`, `21ceb73` on `feat/health`. Not merged, not pushed, not distributed.
+
+## 2026-11-17 - Health merged to local main
+
+- Owner said "Merge to main". `main` was still `39fbd75` (= `origin/main`) and is checked out nowhere, so it was fast-forwarded to the `feat/health` tip with `git fetch . feat/health:main`. No merge commit, no conflicts; tree identical to the tested one, suite not re-run. Not pushed, not distributed.
+- `feat/home-widgets` (tip `857622e`, other session) now has to merge or rebase onto the new `main`; conflict list is in `HANDOFF.md` and the shared hand-over note.

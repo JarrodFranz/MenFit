@@ -1,12 +1,13 @@
 # Handoff — MenFit (men's training + nutrition app)
 
-*Live state. Last updated 2026-11-16 22:20 AEST (Health area committed on `feat/health`, unmerged; `main` unchanged: Keto + Frelia ports, build 0.1.0 (3) on Firebase group `main`).*
+*Live state. Last updated 2026-11-16 22:20 AEST (Health area merged to local `main` 2026-11-17, not pushed; build 0.1.0 (3) on Firebase group `main` predates it).*
 
 ## State
 
 - **Flutter 3.47.2 / Dart 3.13.2.** `main` == `fork-femfit`, pushed to `https://github.com/JarrodFranz/MenFit` (2026-09-08).
-- **`main` is schema v3 with six tabs** (Keto added) since `d87bc68`, pushed
-  2026-11-16. `pubspec.yaml` is `0.1.0+3`. Details under In flight.
+- **Local `main` is schema v4** with tabs Home, Train, Nutrition, Keto,
+  Health, Recovery (Health merged 2026-11-17, unpushed). `origin/main` is
+  schema v3 with six tabs (Keto added) since `d87bc68`, pushed 2026-11-16. `pubspec.yaml` is `0.1.0+3`. Details under In flight.
 - **Fork complete (2026-09-08):** all 14 plan tasks done
   (`docs/superpowers/plans/2026-09-07-menfit-fork.md`, ledger in
   `.git/sdd/progress.md`). Cycle tracking removed; tabs Home / Train /
@@ -35,9 +36,13 @@
 
 ## In flight
 
-- **Health area built on branch `feat/health` (worktree `../MenFit-health`),
-  commits `7f3c2f4` + `21ceb73`. NOT merged to `main`, NOT pushed, NOT
-  distributed** - each needs the owner's say-so. A separate checkout was used
+- **Health area is on local `main`** (owner: "Merge to main", 2026-11-17):
+  `main` fast-forwarded from `39fbd75` to the `feat/health` tip (feature
+  commits `7f3c2f4` + `21ceb73`). A fast-forward, so the merged tree is the
+  tree that was tested; the suite was not re-run. **NOT pushed
+  (`origin/main` is still `39fbd75`), NOT distributed** - each needs the
+  owner's say-so. `pubspec.yaml` is still `0.1.0+3`. Built in worktree
+  `../MenFit-health`. A separate checkout was used
   so the widget port on `feat/home-widgets` is undisturbed.
   - What it is: sixth tab **Health** (`/health`) with read-on-demand watch
     vitals (heart rate, resting HR, SpO2, sleep, HRV, respiratory rate; never
@@ -120,9 +125,10 @@
 
 ## Next
 
--1. **Health (`feat/health`):** owner to decide merge / push / tester build
-   (`0.1.0+4`). Before merging, merge or rebase against `feat/home-widgets`
-   (see merge notes under In flight) and re-run the full suite on the result.
+-1. **Health (merged to local `main` 2026-11-17):** owner to decide push and
+   tester build (`0.1.0+4`). `feat/home-widgets` must now merge or rebase
+   onto `main` (see merge notes under In flight); re-run the full suite on
+   the result.
    On a physical Android phone with a watch: grant the six vitals, check
    sleep, SpO2 and HRV values against the watch's own app. Full device, Mac and web/Windows checklist: end of
    `docs/superpowers/specs/2026-11-16-health-tab-design.md`.
